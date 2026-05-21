@@ -1,4 +1,5 @@
 import Image from "next/image";
+import EcosystemSwitcher from "../components/EcosystemSwitcher";
 
 export default function Home() {
   return (
@@ -18,9 +19,9 @@ export default function Home() {
           <a href="#" className="hover:text-cyan-600 transition-colors">Patient Portal</a>
           <a href="#" className="hover:text-cyan-600 transition-colors">Medplum Cloud</a>
         </nav>
-        <button className="px-6 py-2.5 bg-slate-900 text-white rounded-full font-bold text-sm hover:bg-slate-800 transition-all">
-          Provider Login
-        </button>
+        <div className="flex items-center gap-3">
+          <EcosystemSwitcher />
+        </div>
       </header>
 
       {/* Hero Section */}
