@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MedplumProviderWrapper from "@/components/MedplumProviderWrapper";
 
 export const metadata: Metadata = {
   title: "DehaPa Health OS",
@@ -16,7 +17,11 @@ export default function RootLayout({
       lang="en"
       className="h-full antialiased"
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <MedplumProviderWrapper>
+          {children}
+        </MedplumProviderWrapper>
+      </body>
     </html>
   );
 }

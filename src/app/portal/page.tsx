@@ -1,0 +1,157 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import EcosystemSwitcher from '@/components/EcosystemSwitcher';
+import { useRouter } from 'next/navigation';
+
+export default function PatientPortal() {
+  const router = useRouter();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>("Patient");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const email = localStorage.getItem("sd_current_user_email");
+      const name = localStorage.getItem("sd_current_user_name");
+      
+      if (!email) {
+        // Redirect to Auth Center if not logged in
+        window.location.href = "https://sd-auth-center.vercel.app";
+      } else {
+        setUserEmail(email);
+        setUserName(name || email.split("@")[0]);
+      }
+    }
+  }, [router]);
+
+  if (!userEmail) return null; // Loading state
+
+  return (
+    <div className="min-h-screen bg-[#020610] text-[#f8fafc] font-sans selection:bg-[#06b6d4]/30">
+      {/* Global Header */}
+      <header className="relative z-50 h-[80px] border-b border-[#06b6d4]/20 bg-[#020610]/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12 sticky top-0">
+        <Link href="/" className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#06b6d4] to-[#0d9488] flex items-center justify-center text-white font-bold text-xl shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold tracking-widest text-white uppercase font-serif">DehaPa <span className="text-[#06b6d4]">Health</span></span>
+            <span className="text-[9px] text-[#0d9488] tracking-[0.2em] uppercase font-mono">Patient Portal</span>
+          </div>
+        </Link>
+        <div className="flex items-center gap-4">
+          <EcosystemSwitcher />
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-6 py-12 relative z-10 flex flex-col md:flex-row gap-8">
+        
+        {/* Sidebar */}
+        <aside className="w-full md:w-64 shrink-0 flex flex-col gap-2">
+          <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 mb-4 flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-[#1e293b] border-2 border-[#06b6d4] rounded-full mb-3 flex items-center justify-center text-2xl font-bold text-[#06b6d4]">
+              {userName?.charAt(0).toUpperCase()}
+            </div>
+            <h3 className="font-bold text-white mb-1">{userName}</h3>
+            <p className="text-[10px] text-[#64748b] font-mono uppercase tracking-widest">{userEmail}</p>
+          </div>
+          
+          <nav className="flex flex-col gap-2">
+            <button className="bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/30 px-4 py-3 rounded-xl text-sm font-bold flex items-center gap-3 transition-colors text-left">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              Dashboard
+            </button>
+            <Link href="/doctors" className="text-[#94a3b8] hover:bg-[#1e293b] hover:text-white px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3 transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              Find a Doctor
+            </Link>
+            <button className="text-[#94a3b8] hover:bg-[#1e293b] hover:text-white px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3 transition-colors text-left">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              Medical Records
+            </button>
+            <button className="text-[#94a3b8] hover:bg-[#1e293b] hover:text-white px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-3 transition-colors text-left">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              Lab Results
+            </button>
+          </nav>
+        </aside>
+
+        {/* Main Dashboard Content */}
+        <div className="flex-1 flex flex-col gap-8">
+          
+          <div className="bg-gradient-to-r from-[#06b6d4]/20 to-[#0d9488]/10 border border-[#06b6d4]/30 rounded-2xl p-8 flex justify-between items-center relative overflow-hidden">
+             <div className="z-10">
+               <h2 className="text-2xl font-serif font-bold text-white mb-2">Welcome back, {userName}</h2>
+               <p className="text-[#94a3b8] text-sm">Your FHIR-compliant medical records are up to date.</p>
+             </div>
+             <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-[#06b6d4]/20 to-transparent pointer-events-none" />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            {/* Upcoming Appointments */}
+            <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 flex flex-col">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold text-white text-lg font-serif">Upcoming Consultations</h3>
+                <Link href="/doctors" className="text-[#06b6d4] text-xs uppercase tracking-widest font-bold hover:underline">Book New</Link>
+              </div>
+              
+              <div className="bg-[#1e293b]/50 border border-[#334155] rounded-xl p-4 flex gap-4">
+                <div className="bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/30 rounded-lg p-3 flex flex-col items-center justify-center min-w-[70px]">
+                  <span className="text-xs uppercase font-bold tracking-widest mb-1">MAY</span>
+                  <span className="text-2xl font-black font-serif">24</span>
+                </div>
+                <div className="flex flex-col justify-center flex-1">
+                  <h4 className="text-white font-bold text-sm mb-1">Dr. Sandeep Mohanty</h4>
+                  <p className="text-[#64748b] text-xs font-mono mb-2">Cardiology • Video Call</p>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Confirmed</span>
+                    <span className="text-xs text-[#94a3b8] font-mono">10:30 AM IST</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Prescriptions */}
+            <div className="bg-[#0f172a] border border-[#1e293b] rounded-2xl p-6 flex flex-col">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold text-white text-lg font-serif">Active Prescriptions</h3>
+                <button className="text-[#06b6d4] text-xs uppercase tracking-widest font-bold hover:underline">View All</button>
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between border-b border-[#1e293b] pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded bg-[#1e293b] flex items-center justify-center">
+                      <svg className="w-5 h-5 text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <div>
+                      <p className="text-sm text-white font-bold">Azithromycin 500mg</p>
+                      <p className="text-[10px] text-[#64748b] uppercase tracking-widest font-mono">1 Tablet Daily • After Food</p>
+                    </div>
+                  </div>
+                  <button className="text-[#06b6d4] text-[10px] uppercase font-bold tracking-wider hover:underline">Order Refill</button>
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded bg-[#1e293b] flex items-center justify-center">
+                      <svg className="w-5 h-5 text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <div>
+                      <p className="text-sm text-white font-bold">Paracetamol 650mg</p>
+                      <p className="text-[10px] text-[#64748b] uppercase tracking-widest font-mono">As needed for fever</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  );
+}
