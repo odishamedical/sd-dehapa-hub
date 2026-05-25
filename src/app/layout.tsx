@@ -18,7 +18,7 @@ export default function RootLayout({
       lang="en"
       className="h-full antialiased"
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
         <TenantProvider>
           <GlobalHeader activeProject="Telemedicine" />
           {children}
