@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import EcosystemSwitcher from '@/components/EcosystemSwitcher';
+import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 
 const DOCTORS = [
   { id: "dr-01", name: "Dr. Sandeep Mohanty", specialty: "Cardiologist", experience: "15 Years", rating: 4.9, hospital: "Apollo Hospitals, Bhubaneswar", fee: 800, available: true, img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=200&auto=format&fit=crop" },
@@ -13,8 +15,32 @@ const DOCTORS = [
 ];
 
 export default function DoctorsDirectory() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [specialty, setSpecialty] = useState("All");
+  const [showProfileBlocker, setShowProfileBlocker] = useState(false);
+
+  const handleBookClick = (e: React.MouseEvent, docId: string) => {
+    e.preventDefault();
+    const userEmail = localStorage.getItem("sd_current_user_email");
+    const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
+
+    if (!userEmail) {
+      const currentUrl = window.location.href;
+      const authCenterBase = window.location.hostname === "localhost" 
+        ? "http://localhost:3000" 
+        : "https://sd-auth-center.vercel.app";
+      window.location.href = `${authCenterBase}?redirect_uri=${encodeURIComponent(currentUrl)}`;
+      return;
+    }
+
+    if (!isProfileComplete) {
+      setShowProfileBlocker(true);
+      return;
+    }
+
+    router.push(`/portal/book?doctor=${docId}`);
+  };
 
   const filteredDoctors = DOCTORS.filter(doc => {
     const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.hospital.toLowerCase().includes(search.toLowerCase());
@@ -105,9 +131,12 @@ export default function DoctorsDirectory() {
                   <span className="text-white font-bold text-lg">₹{doc.fee}</span>
                 </div>
                 {doc.available ? (
-                  <Link href={`/portal/book?doctor=${doc.id}`} className="bg-[#06b6d4]/10 hover:bg-[#06b6d4] text-[#06b6d4] hover:text-[#020610] border border-[#06b6d4]/30 border-transparent hover:border-[#06b6d4] px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all">
+                  <button 
+                    onClick={(e) => handleBookClick(e, doc.id)}
+                    className="bg-[#06b6d4]/10 hover:bg-[#06b6d4] text-[#06b6d4] hover:text-[#020610] border border-[#06b6d4]/30 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  >
                     Book Now
-                  </Link>
+                  </button>
                 ) : (
                   <button disabled className="bg-[#1e293b] text-[#64748b] px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider cursor-not-allowed">
                     Waitlist
@@ -118,6 +147,9 @@ export default function DoctorsDirectory() {
           ))}
         </div>
       </main>
+      {showProfileBlocker && (
+        <ProfileBlockerModal onClose={() => setShowProfileBlocker(false)} />
+      )}
     </div>
   );
 }
