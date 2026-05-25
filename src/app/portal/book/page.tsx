@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import GlobalHeader from "@/components/GlobalHeader";
@@ -13,7 +13,7 @@ const DOCTORS = [
   { id: "dr-05", name: "Dr. Prateek Mishra", specialty: "Orthopedic Surgeon", experience: "18 Years", hospital: "AMRI Hospitals, Bhubaneswar", fee: 1000 }
 ];
 
-export default function BookAppointment() {
+function BookAppointmentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const docId = searchParams.get("doctor") || "dr-01";
@@ -167,7 +167,19 @@ export default function BookAppointment() {
         )}
 
       </main>
-
     </div>
   );
 }
+
+export default function BookAppointment() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#020610] text-[#f8fafc] font-sans flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#06b6d4]/20 border-t-[#06b6d4] rounded-full animate-spin" />
+      </div>
+    }>
+      <BookAppointmentForm />
+    </Suspense>
+  );
+}
+
