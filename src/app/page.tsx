@@ -1,33 +1,40 @@
+"use client";
+
 import Image from "next/image";
 import EcosystemSwitcher from "../components/EcosystemSwitcher";
 import Link from "next/link";
+import { useTenant } from "@/components/TenantContext";
 
 export default function Home() {
+  const { activeTenant, isLoaded } = useTenant();
+
   return (
-    <main className="relative min-h-screen bg-[#020610] text-[#f8fafc] overflow-hidden font-sans selection:bg-[#06b6d4]/30">
+    <main className="relative min-h-screen bg-[#020610] text-[#f8fafc] overflow-hidden font-sans selection:bg-tenant-accent/30">
       
       {/* Dark Theme Ambient Background */}
-      <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-[#06b6d4]/10 blur-[150px] rounded-full z-0 pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#0d9488]/10 blur-[150px] rounded-full z-0 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-tenant-accent/5 blur-[150px] rounded-full z-0 pointer-events-none transition-colors duration-500" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-tenant-accent/5 blur-[150px] rounded-full z-0 pointer-events-none transition-colors duration-500" />
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none z-0"></div>
 
-      {/* Global Header */}
-      <header className="relative z-50 h-[80px] border-b border-[#06b6d4]/20 bg-[#020610]/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12">
+      {/* Global Header (Optional local inner navbar, header is in layout, but this matches the index page styling) */}
+      <header className="relative z-50 h-[80px] border-b border-tenant-accent/20 bg-[#020610]/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#06b6d4] to-[#0d9488] flex items-center justify-center text-white font-bold text-xl shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tenant-gradient-from to-tenant-gradient-to flex items-center justify-center text-white font-bold text-xl shadow-[0_0_20px_var(--tenant-accent-glow)] transition-all">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-widest text-white uppercase font-serif">DehaPa <span className="text-[#06b6d4]">Health</span></span>
-            <span className="text-[9px] text-[#0d9488] tracking-[0.2em] uppercase font-mono">Sovereign Medical Network</span>
+            <span className="text-xl font-bold tracking-widest text-white uppercase font-serif">
+              {activeTenant.logoText} <span className="text-tenant-accent">{activeTenant.id === "general" ? "Health" : "Care"}</span>
+            </span>
+            <span className="text-[9px] text-tenant-accent/80 tracking-[0.2em] uppercase font-mono transition-all">{activeTenant.logoSubText}</span>
           </div>
         </div>
 
         <nav className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest font-mono text-[#94a3b8]">
-          <Link href="/doctors" className="hover:text-[#06b6d4] transition-colors">Find Specialists</Link>
-          <Link href="/portal" className="hover:text-[#06b6d4] transition-colors">Patient Portal</Link>
-          <a href="#" className="hover:text-[#06b6d4] transition-colors flex items-center gap-2">
-            Medplum Cloud <span className="w-2 h-2 rounded-full bg-[#06b6d4] animate-pulse"></span>
+          <Link href="/doctors" className="hover:text-tenant-accent transition-colors">Find Specialists</Link>
+          <Link href="/portal" className="hover:text-tenant-accent transition-colors">Patient Portal</Link>
+          <a href="#" className="hover:text-tenant-accent transition-colors flex items-center gap-2">
+            Medplum Cloud <span className="w-2 h-2 rounded-full bg-tenant-accent animate-pulse"></span>
           </a>
         </nav>
 
@@ -42,25 +49,34 @@ export default function Home() {
           
           {/* Left Content */}
           <div className="flex flex-col items-start z-20">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#06b6d4]/10 border border-[#06b6d4]/30 text-[#06b6d4] text-[10px] uppercase font-bold tracking-widest font-mono mb-8 backdrop-blur-sm shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-tenant-accent/10 border border-tenant-accent/30 text-tenant-accent text-[10px] uppercase font-bold tracking-widest font-mono mb-8 backdrop-blur-sm shadow-[0_0_15px_var(--tenant-accent-glow)] transition-all">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#06b6d4] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#06b6d4]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tenant-accent opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-tenant-accent"></span>
               </span>
               FHIR-Compliant Telemedicine OS
             </div>
             
             <h1 className="text-5xl md:text-7xl font-serif text-white font-bold leading-[1.1] mb-6">
-              Healthcare <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#06b6d4] to-[#0d9488]">
-                Without Boundaries.
-              </span>
+              {activeTenant.id === "general" ? (
+                <>
+                  Healthcare <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-tenant-gradient-from to-tenant-gradient-to">
+                    Without Boundaries.
+                  </span>
+                </>
+              ) : (
+                <>
+                  {activeTenant.name} <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-tenant-gradient-from to-tenant-gradient-to">
+                    Telemedicine Hub.
+                  </span>
+                </>
+              )}
             </h1>
             
             <p className="text-base md:text-lg text-[#94a3b8] mb-10 max-w-xl leading-relaxed font-light">
-              The next-generation health operating system for the SD Ecosystem. 
-              Secure patient records, real-time video consultations, and 
-              AI-driven diagnostics—powered securely by Medplum.
+              {activeTenant.description}
             </p>
             
             {/* Search Bar / Action Area */}
@@ -69,11 +85,11 @@ export default function Home() {
                 <svg className="w-5 h-5 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input 
                   type="text" 
-                  placeholder="Search doctors, specialties, or symptoms..." 
+                  placeholder={activeTenant.id === "general" ? "Search doctors, specialties, or symptoms..." : `Search ${activeTenant.name} specialists...`}
                   className="w-full bg-transparent border-none outline-none text-white text-sm placeholder-[#64748b] font-sans"
                 />
               </div>
-              <Link href="/doctors" className="bg-[#06b6d4] hover:bg-[#0891b2] text-[#020610] px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] whitespace-nowrap">
+              <Link href="/doctors" className="bg-tenant-accent hover:opacity-90 text-[#020610] px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-[0_0_20px_var(--tenant-accent-glow)] whitespace-nowrap">
                 Find Care
               </Link>
             </div>
@@ -87,7 +103,9 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-xs text-[#94a3b8] font-mono uppercase tracking-widest">
-                <strong className="text-white">2,400+</strong> Specialists Online
+                <strong className="text-white">
+                  {activeTenant.id === "general" ? "2,400+" : "120+"}
+                </strong> Specialists Online
               </p>
             </div>
           </div>
@@ -95,26 +113,26 @@ export default function Home() {
           {/* Right Content - Floating UI Cards */}
           <div className="relative h-[600px] hidden lg:block z-20">
             {/* Main Doctor Image / Abstract */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#06b6d4]/20 to-[#0d9488]/5 rounded-[3rem] border border-[#06b6d4]/20 backdrop-blur-sm overflow-hidden flex items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.1)]">
-               <svg className="w-64 h-64 text-[#06b6d4]/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <div className="absolute inset-0 bg-gradient-to-br from-tenant-accent/20 to-tenant-accent/5 rounded-[3rem] border border-tenant-accent/20 backdrop-blur-sm overflow-hidden flex items-center justify-center shadow-[0_0_50px_var(--tenant-accent-glow)]">
+               <svg className="w-64 h-64 text-tenant-accent/10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
             </div>
 
             {/* Floating Card 1: Video Consultation */}
             <div className="absolute top-12 -left-12 bg-[#0f172a]/90 backdrop-blur-xl border border-[#1e293b] p-6 rounded-2xl shadow-2xl animate-[bounce_8s_ease-in-out_infinite] w-72">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-[#06b6d4]/20 flex items-center justify-center text-[#06b6d4]">
+                <div className="w-12 h-12 rounded-full bg-tenant-accent/20 flex items-center justify-center text-tenant-accent">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                 </div>
                 <div>
                   <h4 className="text-white font-bold text-sm">Video Consult</h4>
-                  <p className="text-[10px] text-[#06b6d4] font-mono tracking-widest uppercase">Live Session</p>
+                  <p className="text-[10px] text-tenant-accent font-mono tracking-widest uppercase">Live Session</p>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="h-2 bg-[#1e293b] rounded-full w-full"></div>
                 <div className="h-2 bg-[#1e293b] rounded-full w-4/5"></div>
               </div>
-              <Link href="/portal" className="mt-4 w-full block text-center py-2 bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/30 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#06b6d4]/20 transition-colors">
+              <Link href="/portal" className="mt-4 w-full block text-center py-2 bg-tenant-accent/10 text-tenant-accent border border-tenant-accent/30 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-tenant-accent/20 transition-all">
                 Join Waiting Room
               </Link>
             </div>
@@ -137,7 +155,7 @@ export default function Home() {
                       <p className="text-[10px] text-[#64748b]">Dr. S. Mohanty • 2h ago</p>
                     </div>
                   </div>
-                  <button className="text-[#06b6d4] text-[10px] uppercase font-bold tracking-wider hover:underline">View</button>
+                  <button className="text-tenant-accent text-[10px] uppercase font-bold tracking-wider hover:underline">View</button>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -147,10 +165,10 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-xs text-white font-medium">Active Prescription</p>
-                      <p className="text-[10px] text-[#64748b]">Azithromycin 500mg</p>
+                      <p className="text-[10px] text-tenant-accent">Azithromycin 500mg</p>
                     </div>
                   </div>
-                  <button className="text-[#06b6d4] text-[10px] uppercase font-bold tracking-wider hover:underline">Refill</button>
+                  <button className="text-tenant-accent text-[10px] uppercase font-bold tracking-wider hover:underline">Refill</button>
                 </div>
               </div>
             </div>
