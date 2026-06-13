@@ -272,5 +272,76 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
     return url.toString();
   };
 
-  return null;
-}
+  return (
+    <header className="sticky top-0 z-[100] bg-white border-b border-slate-200 shadow-sm flex items-center justify-between px-6 lg:px-12 h-20">
+      {/* 1. Web Name / Logo */}
+      <div className="flex items-center gap-4">
+        <a href="/" className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-xl shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold tracking-widest text-slate-900 uppercase font-serif">
+              DehaPa <span className="text-teal-600">Health</span>
+            </span>
+            <span className="text-[9px] text-teal-600/80 tracking-[0.2em] uppercase font-mono">Sovereign Medical Network</span>
+          </div>
+        </a>
+      </div>
+
+      {/* 2. Menu */}
+      <nav className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest font-mono text-slate-600">
+        <a href="/doctors" className="hover:text-teal-600 transition-colors">Find Specialists</a>
+        <a href="/portal" className="hover:text-teal-600 transition-colors">Patient Portal</a>
+        <a href="https://medplum.com" target="_blank" rel="noreferrer" className="hover:text-teal-600 transition-colors flex items-center gap-2">
+          Medplum Cloud <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+        </a>
+      </nav>
+
+      {/* 3. User Menu / Auth */}
+      <div className="flex items-center gap-4 relative" ref={dropdownRef}>
+        {userEmail ? (
+          <div className="relative">
+            <button 
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="flex items-center gap-2 focus:outline-none cursor-pointer"
+            >
+              {userAvatar ? (
+                <img src={userAvatar} alt="" className="w-8 h-8 rounded-full object-cover border-2 border-teal-500 hover:scale-105 transition-transform" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold text-xs border-2 border-teal-600 hover:scale-105 transition-transform">
+                  {userName ? userName.charAt(0).toUpperCase() : userEmail.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <svg className={`w-4 h-4 text-slate-500 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-200 rounded-xl shadow-xl py-2 z-[110] text-left">
+                <div className="px-4 py-3 border-b border-slate-100">
+                  <p className="text-sm font-bold text-slate-900 truncate">{userName || userEmail.split("@")[0]}</p>
+                  <p className="text-xs text-slate-500 truncate mt-0.5">{userEmail}</p>
+                  {userRole && (
+                    <span className="inline-block text-[10px] font-mono font-bold bg-teal-50 text-teal-700 px-2 py-1 rounded mt-2 uppercase tracking-widest border border-teal-100">
+                      {userRole.replace("_", " ")}
+                    </span>
+                  )}
+                </div>
+                <a href="https://sd-auth-center.vercel.app/launcher" className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                  <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                  <span>Ecosystem Launcher</span>
+                </a>
+                <button onClick={handleSignOut} className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors text-left font-bold border-t border-slate-100">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1" /></svg>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <a href={getAuthCenterUrl()} className="text-[10px] font-bold uppercase tracking-widest bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-lg transition-colors shadow-sm">
+            Sign In
+          </a>
+        )}
+      </div>
+    </header>
+  );

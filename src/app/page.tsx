@@ -20,35 +20,11 @@ export default function Home() {
       <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-tenant-accent/5 blur-[150px] rounded-full z-0 pointer-events-none transition-colors duration-500" />
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none z-0"></div>
 
-      {/* Global Header */}
-      <header className="relative z-50 h-[80px] border-b border-tenant-accent/20 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tenant-gradient-from to-tenant-gradient-to flex items-center justify-center text-slate-900 font-bold text-xl shadow-[0_0_20px_var(--tenant-accent-glow)] transition-all">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-widest text-slate-900 uppercase font-serif">
-              {activeTenant.logoText} <span className="text-tenant-accent">{activeTenant.id === "general" ? "Health" : "Care"}</span>
-            </span>
-            <span className="text-[9px] text-tenant-accent/80 tracking-[0.2em] uppercase font-mono transition-all">{activeTenant.logoSubText}</span>
-          </div>
-        </div>
-
-        <nav className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest font-mono text-slate-600">
-          <Link href="/doctors" className="hover:text-tenant-accent transition-colors">Find Specialists</Link>
-          <Link href="/portal" className="hover:text-tenant-accent transition-colors">Patient Portal</Link>
-          <a href="#" className="hover:text-tenant-accent transition-colors flex items-center gap-2">
-            Medplum Cloud <span className="w-2 h-2 rounded-full bg-tenant-accent animate-pulse"></span>
-          </a>
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <EcosystemSwitcher />
-        </div>
-      </header>
+      {/* Global Header is handled by layout.tsx -> GlobalHeader.tsx */}
 
       {/* Hero Section - DehaPa Web Marketplace Redesign */}
-      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-20 pb-24 overflow-hidden">
+      {/* Dark Teal Background Area */}
+      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-20 pb-32 overflow-hidden">
         {/* Background Accents */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#0f766e]/50 rounded-full blur-3xl" />
@@ -57,10 +33,14 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold font-serif mb-4 leading-tight">
             Your Gateway to Integrated Healthcare.
           </h1>
-          <p className="text-lg md:text-xl text-teal-100 mb-12 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-teal-100 max-w-2xl mx-auto">
             Explore services or Claim Your Listing.
           </p>
-          
+        </div>
+      </div>
+
+      {/* Overlapping Content: Cards & Search Bar */}
+      <div className="relative z-20 container mx-auto px-6 lg:px-12 -mt-16">
           {/* 5 Category Cards */}
           <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
             {[
@@ -70,7 +50,7 @@ export default function Home() {
               { name: "Medicine", icon: "💊", link: "/pharmacies" },
               { name: "Ambulances", icon: "🚑", link: "/ambulances" }
             ].map((cat) => (
-              <Link href={cat.link} key={cat.name} className="bg-white text-slate-900 rounded-2xl p-4 md:p-6 shadow-xl w-28 md:w-36 flex flex-col items-center gap-3 hover:-translate-y-2 transition-transform duration-300">
+              <Link href={cat.link} key={cat.name} className="bg-white text-slate-900 rounded-2xl p-4 md:p-6 shadow-[0_10px_40px_rgba(0,0,0,0.1)] w-28 md:w-36 flex flex-col items-center gap-3 hover:-translate-y-2 transition-transform duration-300">
                 <div className="text-3xl md:text-4xl">{cat.icon}</div>
                 <span className="text-xs md:text-sm font-bold text-center">{cat.name}</span>
               </Link>
@@ -78,7 +58,7 @@ export default function Home() {
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto bg-white p-2 md:p-3 rounded-full flex items-center shadow-2xl">
+          <div className="max-w-2xl mx-auto bg-white p-2 md:p-3 rounded-full flex items-center shadow-[0_10px_40px_rgba(0,0,0,0.08)] mb-8 border border-slate-100">
             <div className="flex-1 px-4 flex items-center gap-3 text-slate-500">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
               <input type="text" placeholder="Find Doctors, Hospitals, Labs near you" className="w-full bg-transparent border-none outline-none text-slate-900 text-sm md:text-base font-sans" />
@@ -87,7 +67,6 @@ export default function Home() {
               Search
             </button>
           </div>
-        </div>
       </div>
 
       <div className="container mx-auto px-6 lg:px-12 py-16 bg-white relative z-10">
