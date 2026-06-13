@@ -16,9 +16,9 @@ export default function AmbulanceProfilePage({ params }: { params: { id: string 
     reviews: 1432,
     logo: "https://ui-avatars.com/api/?name=Sanjivani+Fleet&background=fee2e2&color=b91c1c&size=200&font-size=0.33",
     gallery: [
-      "https://images.unsplash.com/photo-1587556930799-8dca6a1f0dce?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89404bb8a0e?auto=format&fit=crop&w=800&q=80",
+      "https://loremflickr.com/800/600/ambulance",
+      "https://loremflickr.com/800/600/paramedic",
+      "https://loremflickr.com/800/600/defibrillator",
     ],
     about: "Sanjivani Emergency Fleet operates the largest and fastest network of Advanced Life Support (ALS) ambulances in the city. Our vehicles are essentially ICUs on wheels, staffed by highly trained paramedics capable of managing critical cardiac, trauma, and respiratory emergencies en route to the hospital.",
     capabilities: [
