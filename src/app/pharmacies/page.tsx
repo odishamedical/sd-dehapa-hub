@@ -8,13 +8,13 @@ import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
 
-const DOCTORS: any[] = [
+const PHARMACIES: any[] = [
   // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
 ];
 
 export const dynamic = 'force-dynamic';
 
-export default function DoctorsDirectory() {
+export default function PharmaciesDirectory() {
   const router = useRouter();
   const { activeTenant } = useTenant();
   const [search, setSearch] = useState("");
@@ -42,7 +42,7 @@ export default function DoctorsDirectory() {
     router.push(`/portal/book?doctor=${docId}`);
   };
 
-  const filteredDoctors = DOCTORS.filter(doc => {
+  const filteredPharmacies = PHARMACIES.filter(doc => {
     const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.hospital.toLowerCase().includes(search.toLowerCase());
     
     // Filter by tenant hospital unless the tenant is "general" (DehaPa general network)
@@ -74,7 +74,7 @@ export default function DoctorsDirectory() {
       <main className="max-w-6xl mx-auto px-6 py-12 relative z-10">
         <div className="mb-10">
           <h1 className="text-4xl font-serif font-bold text-slate-900 mb-2">
-            Find a <span className="text-tenant-accent">Specialist</span>
+            Find a <span className="text-tenant-accent">Pharmacy</span>
           </h1>
           <p className="text-slate-600">
             {activeTenant.id === "general" 
@@ -88,8 +88,8 @@ export default function DoctorsDirectory() {
           {/* Left Sidebar Filters - 25% */}
           <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto lg:h-[calc(100vh-120px)]">
             <DirectorySidebarFilter 
-              categoryName="Doctors" 
-              specialtyOptions={["Cardiologist", "Pediatrician", "Neurologist", "Dermatologist", "Orthopedic Surgeon"]} 
+              categoryName="Pharmacies" 
+              specialtyOptions={["24/7 Pharmacy", "Ayurvedic", "Allopathic", "Homeopathic"]} 
             />
           </div>
 
@@ -112,8 +112,8 @@ export default function DoctorsDirectory() {
 
             {/* Directory Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredDoctors.length > 0 ? (
-                filteredDoctors.map(doc => (
+              {filteredPharmacies.length > 0 ? (
+                filteredPharmacies.map(doc => (
                   <div key={doc.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-tenant-accent/50 transition-colors shadow-lg group">
                     <div>
                       <div className="flex justify-between items-start mb-4">
@@ -161,7 +161,7 @@ export default function DoctorsDirectory() {
                   <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                   </div>
-                  <p className="text-slate-600 font-mono text-sm uppercase tracking-widest font-bold">No specialists found</p>
+                  <p className="text-slate-600 font-mono text-sm uppercase tracking-widest font-bold">No pharmacies found</p>
                   <p className="text-xs text-slate-500 mt-2">Try adjusting your sidebar filters or search term.</p>
                 </div>
               )}

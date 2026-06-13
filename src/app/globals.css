@@ -3,17 +3,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 :root {
-  --background: #020610; /* Very dark midnight blue */
-  --foreground: #f8fafc;
+  --background: #ffffff; /* Clean white */
+  --foreground: #0f172a; /* Slate 900 for text */
   --sd-cyan: #06b6d4;
   --sd-teal: #0d9488;
   --sd-gold: #D4AF37;
 
   /* Tenant Dynamic Variables - default to General Teal/Cyan */
-  --tenant-accent: #06b6d4;
-  --tenant-accent-glow: rgba(6, 182, 212, 0.2);
-  --tenant-gradient-from: #06b6d4;
-  --tenant-gradient-to: #0d9488;
+  --tenant-accent: #0d9488;
+  --tenant-accent-glow: rgba(13, 148, 136, 0.15);
+  --tenant-gradient-from: #0d9488;
+  --tenant-gradient-to: #0f766e;
 }
 
 @theme inline {
@@ -35,6 +35,6 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   background-image: radial-gradient(circle at top right, var(--tenant-accent-glow), transparent 45%),
-                    radial-gradient(circle at bottom left, rgba(13, 148, 136, 0.05), transparent 45%);
+                    radial-gradient(circle at bottom left, rgba(6, 182, 212, 0.05), transparent 45%);
   min-height: 100vh;
 }
