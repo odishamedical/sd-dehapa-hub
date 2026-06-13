@@ -177,11 +177,11 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
                   {/* State Selection */}
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">State</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-2">State</label>
                     <select 
                       value={crawlerState} 
                       onChange={(e) => { setCrawlerState(e.target.value); setCrawlerDistrict(""); setCustomDistrict(""); }}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       {indianStates.map(st => <option key={st} value={st}>{st}</option>)}
                     </select>
@@ -189,28 +189,28 @@ export default function AdminDashboard() {
 
                   {/* District Selection */}
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">District / Area</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-2">District / Area</label>
                     <select 
                       value={crawlerDistrict} 
                       onChange={(e) => setCrawlerDistrict(e.target.value)}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       <option value="">Select District</option>
                       {districtsByState[crawlerState]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
                       <option value="Other">Other (Add Custom)</option>
                     </select>
                     {crawlerDistrict === "Other" && (
-                      <input type="text" value={customDistrict} onChange={(e) => setCustomDistrict(e.target.value)} placeholder="Type custom area..." className="w-full bg-white border border-teal-300 rounded-xl px-4 py-3 text-sm mt-2 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm transition-all" />
+                      <input type="text" value={customDistrict} onChange={(e) => setCustomDistrict(e.target.value)} placeholder="Type custom area..." className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 mt-2 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500 shadow-sm transition-all" />
                     )}
                   </div>
 
                   {/* Category Selection */}
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Category</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-2">Category</label>
                     <select 
                       value={crawlerCategory} 
                       onChange={(e) => { setCrawlerCategory(e.target.value); setCrawlerSubCategory(""); setCustomSubCategory(""); }}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       {platformCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
@@ -218,57 +218,57 @@ export default function AdminDashboard() {
 
                   {/* Sub-Category Selection */}
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Sub-category</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-2">Sub-category</label>
                     <select 
                       value={crawlerSubCategory} 
                       onChange={(e) => setCrawlerSubCategory(e.target.value)}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       <option value="">Any {crawlerCategory}</option>
                       {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
                       <option value="Other">Other (Add Custom)</option>
                     </select>
                     {crawlerSubCategory === "Other" && (
-                      <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-white border border-teal-300 rounded-xl px-4 py-3 text-sm mt-2 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm transition-all" />
+                      <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 mt-2 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500 shadow-sm transition-all" />
                     )}
                   </div>
 
                   {/* Specific Search Modifiers */}
                   <div className="md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Locality / Village / Street</label>
+                      <label className="text-sm font-semibold text-slate-800 block mb-2">Locality / Village / Street</label>
                       <input 
                         type="text" 
                         value={crawlerLocality} 
                         onChange={(e) => setCrawlerLocality(e.target.value)} 
                         placeholder="e.g. Sahidnagar" 
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all" 
+                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all" 
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">PIN Code</label>
+                      <label className="text-sm font-semibold text-slate-800 block mb-2">PIN Code</label>
                       <input 
                         type="text" 
                         value={crawlerPin} 
                         onChange={(e) => setCrawlerPin(e.target.value)} 
                         placeholder="e.g. 751007" 
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all" 
+                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all" 
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Custom Query Name</label>
+                      <label className="text-sm font-semibold text-slate-800 block mb-2">Custom Query Name</label>
                       <input 
                         type="text" 
                         value={crawlerQuery} 
                         onChange={(e) => setCrawlerQuery(e.target.value)} 
                         placeholder="e.g. Top Doctors, Apollo..." 
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all" 
+                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all" 
                       />
                     </div>
                   </div>
 
-                  <div className="md:col-span-2 lg:col-span-4 mt-4">
-                    <button className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-sm font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto">
+                  <div className="md:col-span-2 lg:col-span-4 mt-6">
+                    <button className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-base font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                       Extract {crawlerQuery ? `"${crawlerQuery}"` : (customSubCategory || crawlerSubCategory || crawlerCategory)} in {[crawlerLocality, customDistrict || crawlerDistrict, crawlerState, crawlerPin].filter(Boolean).join(", ")}
                     </button>
