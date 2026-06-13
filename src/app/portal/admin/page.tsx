@@ -70,6 +70,13 @@ export default function AdminDashboard() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
             Vault Audit Logs
           </button>
+          <div className="pt-4 mt-4 border-t border-slate-800">
+            <p className="px-4 text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-2">Automations</p>
+            <button onClick={() => setActiveTab("crawler")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left ${activeTab === 'crawler' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+              Google Data Crawler
+            </button>
+          </div>
         </nav>
       </aside>
 
@@ -134,6 +141,53 @@ export default function AdminDashboard() {
                <div className="text-center py-16 border border-slate-200 rounded-xl bg-slate-50">
                  <p className="font-mono text-xs uppercase tracking-widest text-slate-500">No Logs Generated Yet</p>
                </div>
+            </div>
+          )}
+
+          {activeTab === "crawler" && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h3 className="text-lg font-bold">Google Maps Data Crawler</h3>
+                  <p className="text-sm text-slate-500">Automatically fetch and publish Hospitals, Labs, and Clinics from Google Places API.</p>
+                </div>
+                <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-blue-200">
+                  API Connected
+                </div>
+              </div>
+              
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                  <div className="md:col-span-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Search Query</label>
+                    <input type="text" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="e.g. Cardiologists in Bhubaneswar" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Category Mapping</label>
+                    <select className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none">
+                      <option>Doctors</option>
+                      <option>Hospitals</option>
+                      <option>Labs</option>
+                      <option>Pharmacies</option>
+                    </select>
+                  </div>
+                  <div>
+                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-sm font-bold shadow-md transition-colors flex items-center justify-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                      Crawl Maps
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-xl">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                  <svg className="w-8 h-8 text-blue-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <p className="font-bold text-slate-900 mb-1">Ready to Crawl</p>
+                <p className="text-sm text-slate-500 max-w-sm mx-auto">Enter a search query above to fetch data. You can review and publish items directly to Firebase.</p>
+              </div>
+
             </div>
           )}
         </div>
