@@ -72,7 +72,7 @@ export default function AdminDashboard() {
           phone: "+91 98765 43210",
           rating: 4.8,
           reviews: 124,
-          image: "https://images.unsplash.com/photo-1612349317150-e410f624c427?auto=format&fit=crop&w=300&q=80",
+          image: "https://ui-avatars.com/api/?name=Dr+Sandeep+Sharma&background=0f766e&color=fff&size=150",
           hasWarning: false
         },
         {
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
           phone: "0674-2554321",
           rating: 4.9,
           reviews: 89,
-          image: "https://images.unsplash.com/photo-1594824436951-7f12bc8dc124?auto=format&fit=crop&w=300&q=80",
+          image: "https://ui-avatars.com/api/?name=Dr+Ananya+Das&background=0f766e&color=fff&size=150",
           hasWarning: false
         }
       ];
