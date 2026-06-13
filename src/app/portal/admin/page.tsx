@@ -208,35 +208,35 @@ export default function AdminDashboard() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                <Link href="/portal/os" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
+                <Link target="_blank" href="/portal/os" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform border border-indigo-200">👨‍⚕️</div>
                    <h4 className="font-bold text-slate-900 mb-1">Telemedicine OS</h4>
                    <p className="text-xs text-slate-500 mb-6">Test the Doctor workspace, Rx Pad, and Video waiting room.</p>
                    <span className="text-indigo-600 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-auto group-hover:underline">Launch Portal <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></span>
                 </Link>
                 
-                <Link href="/portal/hospital" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
+                <Link target="_blank" href="/portal/hospital" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform border border-indigo-200">🏥</div>
                    <h4 className="font-bold text-slate-900 mb-1">Hospital Portal</h4>
                    <p className="text-xs text-slate-500 mb-6">Test bed management, department listings, and hospital admin.</p>
                    <span className="text-indigo-600 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-auto group-hover:underline">Launch Portal <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></span>
                 </Link>
 
-                <Link href="/portal/lab" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
+                <Link target="_blank" href="/portal/lab" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform border border-indigo-200">🔬</div>
                    <h4 className="font-bold text-slate-900 mb-1">Lab Portal</h4>
                    <p className="text-xs text-slate-500 mb-6">Test home collection schedules and report uploads.</p>
                    <span className="text-indigo-600 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-auto group-hover:underline">Launch Portal <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></span>
                 </Link>
 
-                <Link href="/portal/pharmacy" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
+                <Link target="_blank" href="/portal/pharmacy" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform border border-indigo-200">💊</div>
                    <h4 className="font-bold text-slate-900 mb-1">Pharmacy Portal</h4>
                    <p className="text-xs text-slate-500 mb-6">Test prescription fulfillment and delivery dispatch.</p>
                    <span className="text-indigo-600 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-auto group-hover:underline">Launch Portal <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></span>
                 </Link>
 
-                <Link href="/portal/ambulance" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group relative overflow-hidden">
+                <Link target="_blank" href="/portal/ambulance" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group relative overflow-hidden">
                    <div className="absolute -right-6 top-4 bg-red-500 text-white text-[8px] font-bold uppercase tracking-widest px-8 py-1 rotate-45 shadow-sm">NEW</div>
                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform border border-indigo-200">🚑</div>
                    <h4 className="font-bold text-slate-900 mb-1">Ambulance Hub</h4>
@@ -244,7 +244,7 @@ export default function AdminDashboard() {
                    <span className="text-indigo-600 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-auto group-hover:underline">Launch Prototype <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></span>
                 </Link>
                 
-                <Link href="/portal" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
+                <Link target="_blank" href="/portal" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform border border-indigo-200">🧑‍🤝‍🧑</div>
                    <h4 className="font-bold text-slate-900 mb-1">Patient Portal</h4>
                    <p className="text-xs text-slate-500 mb-6">Test the default patient experience and Vault.</p>
