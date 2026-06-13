@@ -13,13 +13,15 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("users");
 
   // Crawler State
-  const [crawlerKeyword, setCrawlerKeyword] = useState("");
   const [crawlerState, setCrawlerState] = useState("Odisha");
   const [crawlerDistrict, setCrawlerDistrict] = useState("");
   const [customDistrict, setCustomDistrict] = useState("");
+  const [crawlerLocality, setCrawlerLocality] = useState("");
+  const [crawlerPin, setCrawlerPin] = useState("");
   const [crawlerCategory, setCrawlerCategory] = useState("Doctor");
   const [crawlerSubCategory, setCrawlerSubCategory] = useState("");
   const [customSubCategory, setCustomSubCategory] = useState("");
+  const [crawlerQuery, setCrawlerQuery] = useState("");
 
   useEffect(() => {
     const role = localStorage.getItem("sd_current_user_role");
@@ -231,21 +233,44 @@ export default function AdminDashboard() {
                     )}
                   </div>
 
-                  <div className="md:col-span-2 lg:col-span-4 mt-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Exact Match / Narrow Down (Optional)</label>
-                    <input 
-                      type="text" 
-                      value={crawlerKeyword} 
-                      onChange={(e) => setCrawlerKeyword(e.target.value)} 
-                      placeholder="e.g. Dr. Smith, Patia, 751024, Apollo Hospital..." 
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all" 
-                    />
+                  {/* Specific Search Modifiers */}
+                  <div className="md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Locality / Village / Street</label>
+                      <input 
+                        type="text" 
+                        value={crawlerLocality} 
+                        onChange={(e) => setCrawlerLocality(e.target.value)} 
+                        placeholder="e.g. Sahidnagar" 
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">PIN Code</label>
+                      <input 
+                        type="text" 
+                        value={crawlerPin} 
+                        onChange={(e) => setCrawlerPin(e.target.value)} 
+                        placeholder="e.g. 751007" 
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Custom Query Name</label>
+                      <input 
+                        type="text" 
+                        value={crawlerQuery} 
+                        onChange={(e) => setCrawlerQuery(e.target.value)} 
+                        placeholder="e.g. Top Doctors, Apollo..." 
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all" 
+                      />
+                    </div>
                   </div>
 
                   <div className="md:col-span-2 lg:col-span-4 mt-4">
                     <button className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-sm font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                      Extract {crawlerKeyword ? `"${crawlerKeyword}"` : (customSubCategory || crawlerSubCategory || crawlerCategory)} in {customDistrict || crawlerDistrict || crawlerState}
+                      Extract {crawlerQuery ? `"${crawlerQuery}"` : (customSubCategory || crawlerSubCategory || crawlerCategory)} in {[crawlerLocality, customDistrict || crawlerDistrict, crawlerState, crawlerPin].filter(Boolean).join(", ")}
                     </button>
                   </div>
                 </div>
