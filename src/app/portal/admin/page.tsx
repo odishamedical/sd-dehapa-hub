@@ -53,9 +53,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-tenant-accent/30 flex">
+    <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30 flex">
       
-      {/* Sidebar Navigation */}
+      {/* Sidebar Navigation - Premium Dark */}
       <aside className="w-64 bg-slate-900 text-white shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-y-auto">
         <div className="p-6 border-b border-slate-800">
           <Link href="/" className="flex items-center gap-3">
@@ -67,26 +67,26 @@ export default function AdminDashboard() {
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
-          <button onClick={() => setActiveTab("users")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left ${activeTab === 'users' ? 'bg-tenant-accent text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+          <button onClick={() => setActiveTab("users")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'users' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
             User & Patient Directory
           </button>
-          <button onClick={() => setActiveTab("verification")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left ${activeTab === 'verification' ? 'bg-tenant-accent text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+          <button onClick={() => setActiveTab("verification")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'verification' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             Verification Queue
             <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
           </button>
-          <button onClick={() => setActiveTab("audit")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left ${activeTab === 'audit' ? 'bg-tenant-accent text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+          <button onClick={() => setActiveTab("audit")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'audit' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
             Vault Audit Logs
           </button>
           <div className="pt-4 mt-4 border-t border-slate-800">
             <p className="px-4 text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-2">Automations & God Mode</p>
-            <button onClick={() => setActiveTab("god-mode")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left mb-2 ${activeTab === 'god-mode' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+            <button onClick={() => setActiveTab("god-mode")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left mb-2 ${activeTab === 'god-mode' ? 'border-l-4 border-indigo-500 bg-indigo-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
               Portal Testing Hub
             </button>
-            <button onClick={() => setActiveTab("crawler")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors text-left ${activeTab === 'crawler' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+            <button onClick={() => setActiveTab("crawler")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'crawler' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
               Google Data Crawler
             </button>
@@ -159,18 +159,18 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === "crawler" && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+            <div className="bg-white border-0 rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h3 className="text-lg font-bold">Google Maps Data Crawler</h3>
                   <p className="text-sm text-slate-500">Automatically fetch and publish Hospitals, Labs, and Clinics from Google Places API.</p>
                 </div>
-                <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-blue-200">
+                <div className="bg-teal-50 text-teal-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-teal-100">
                   API Connected
                 </div>
               </div>
               
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+              <div className="bg-[#F9FAFB] border-0 rounded-xl p-6 mb-8 shadow-inner">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
                   {/* State Selection */}
                   <div>
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
                     <select 
                       value={crawlerState} 
                       onChange={(e) => { setCrawlerState(e.target.value); setCrawlerDistrict(""); setCustomDistrict(""); }}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       {indianStates.map(st => <option key={st} value={st}>{st}</option>)}
                     </select>
@@ -190,14 +190,14 @@ export default function AdminDashboard() {
                     <select 
                       value={crawlerDistrict} 
                       onChange={(e) => setCrawlerDistrict(e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       <option value="">Select District</option>
                       {districtsByState[crawlerState]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
                       <option value="Other">Other (Add Custom)</option>
                     </select>
                     {crawlerDistrict === "Other" && (
-                      <input type="text" value={customDistrict} onChange={(e) => setCustomDistrict(e.target.value)} placeholder="Type custom area..." className="w-full bg-white border border-blue-300 rounded-xl px-4 py-3 text-sm mt-2 outline-none focus:border-blue-500" />
+                      <input type="text" value={customDistrict} onChange={(e) => setCustomDistrict(e.target.value)} placeholder="Type custom area..." className="w-full bg-white border border-teal-300 rounded-xl px-4 py-3 text-sm mt-2 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm transition-all" />
                     )}
                   </div>
 
@@ -207,7 +207,7 @@ export default function AdminDashboard() {
                     <select 
                       value={crawlerCategory} 
                       onChange={(e) => { setCrawlerCategory(e.target.value); setCrawlerSubCategory(""); setCustomSubCategory(""); }}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       {platformCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
@@ -219,19 +219,19 @@ export default function AdminDashboard() {
                     <select 
                       value={crawlerSubCategory} 
                       onChange={(e) => setCrawlerSubCategory(e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none shadow-sm transition-all"
                     >
                       <option value="">Any {crawlerCategory}</option>
                       {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
                       <option value="Other">Other (Add Custom)</option>
                     </select>
                     {crawlerSubCategory === "Other" && (
-                      <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-white border border-blue-300 rounded-xl px-4 py-3 text-sm mt-2 outline-none focus:border-blue-500" />
+                      <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-white border border-teal-300 rounded-xl px-4 py-3 text-sm mt-2 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 shadow-sm transition-all" />
                     )}
                   </div>
 
                   <div className="md:col-span-2 lg:col-span-4 mt-4">
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-4 rounded-xl text-sm font-bold shadow-md transition-colors flex items-center justify-center gap-2">
+                    <button className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-sm font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                       Extract {customSubCategory || crawlerSubCategory || crawlerCategory} in {customDistrict || crawlerDistrict || crawlerState}
                     </button>
