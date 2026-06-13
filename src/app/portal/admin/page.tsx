@@ -23,6 +23,11 @@ export default function AdminDashboard() {
   const [customSubCategory, setCustomSubCategory] = useState("");
   const [crawlerQuery, setCrawlerQuery] = useState("");
 
+  // Staging Grid State
+  const [stagedListings, setStagedListings] = useState<any[]>([]);
+  const [selectedListingIds, setSelectedListingIds] = useState<string[]>([]);
+  const [isExtracting, setIsExtracting] = useState(false);
+
   useEffect(() => {
     const role = localStorage.getItem("sd_current_user_role");
     
@@ -54,6 +59,67 @@ export default function AdminDashboard() {
       </div>
     );
   }
+
+  const handleExtractMock = () => {
+    setIsExtracting(true);
+    // Simulate API delay
+    setTimeout(() => {
+      const mockData = [
+        {
+          id: "google_1",
+          name: "Dr. Sandeep Sharma - Cardiologist",
+          address: "Apollo Hospitals, Unit 15, Bhubaneswar, Odisha 751005",
+          phone: "+91 98765 43210",
+          rating: 4.8,
+          reviews: 124,
+          image: "https://images.unsplash.com/photo-1612349317150-e410f624c427?auto=format&fit=crop&w=300&q=80",
+          hasWarning: false
+        },
+        {
+          id: "google_2",
+          name: "City Heart Care Clinic",
+          address: "Sahidnagar, Bhubaneswar, Odisha 751007",
+          phone: "", // Missing phone
+          rating: 4.1,
+          reviews: 12,
+          image: "", // Missing image
+          hasWarning: true
+        },
+        {
+          id: "google_3",
+          name: "Dr. Ananya Das Cardiology Center",
+          address: "Patia Main Road, Bhubaneswar, Odisha 751024",
+          phone: "0674-2554321",
+          rating: 4.9,
+          reviews: 89,
+          image: "https://images.unsplash.com/photo-1594824436951-7f12bc8dc124?auto=format&fit=crop&w=300&q=80",
+          hasWarning: false
+        }
+      ];
+      setStagedListings(mockData);
+      setSelectedListingIds(mockData.map(d => d.id)); // Select all by default
+      setIsExtracting(false);
+    }, 1500);
+  };
+
+  const handleToggleSelection = (id: string) => {
+    if (selectedListingIds.includes(id)) {
+      setSelectedListingIds(selectedListingIds.filter(itemId => itemId !== id));
+    } else {
+      setSelectedListingIds([...selectedListingIds, id]);
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    const remaining = stagedListings.filter(item => !selectedListingIds.includes(item.id));
+    setStagedListings(remaining);
+    setSelectedListingIds([]);
+  };
+
+  const handleInjectSelected = () => {
+    alert(`Successfully injected ${selectedListingIds.length} listings into the database! (Mocked)`);
+    handleDeleteSelected(); // Clear them from staging after injection
+  };
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30 flex">
@@ -268,22 +334,96 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="md:col-span-2 lg:col-span-4 mt-6">
-                    <button className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-base font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                      Extract {crawlerQuery ? `"${crawlerQuery}"` : (customSubCategory || crawlerSubCategory || crawlerCategory)} in {[crawlerLocality, customDistrict || crawlerDistrict, crawlerState, crawlerPin].filter(Boolean).join(", ")}
+                    <button 
+                      onClick={handleExtractMock}
+                      disabled={isExtracting}
+                      className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-base font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                      {isExtracting ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                      )}
+                      {isExtracting ? "Extracting Data..." : `Extract ${crawlerQuery ? `"${crawlerQuery}"` : (customSubCategory || crawlerSubCategory || crawlerCategory)} in ${[crawlerLocality, customDistrict || crawlerDistrict, crawlerState, crawlerPin].filter(Boolean).join(", ")}`}
                     </button>
                   </div>
                 </div>
               </div>
 
-              <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-xl">
-                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                  <svg className="w-8 h-8 text-blue-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                </div>
-                <p className="font-bold text-slate-900 mb-1">Ready to Crawl</p>
-                <p className="text-sm text-slate-500 max-w-sm mx-auto">Enter a search query above to fetch data. You can review and publish items directly to Firebase.</p>
-              </div>
+              {/* Staging Grid UI */}
+              {stagedListings.length > 0 && (
+                <div className="mt-12 border-t border-slate-200 pt-8">
+                  <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-900">Data Staging Pipeline</h3>
+                      <p className="text-sm text-slate-500">Review {stagedListings.length} extracted results before injecting into the live database.</p>
+                    </div>
+                    <div className="flex gap-3 w-full md:w-auto">
+                      <button onClick={handleDeleteSelected} disabled={selectedListingIds.length === 0} className="flex-1 md:flex-none px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg text-sm border border-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        Delete Selected ({selectedListingIds.length})
+                      </button>
+                      <button onClick={handleInjectSelected} disabled={selectedListingIds.length === 0} className="flex-1 md:flex-none px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
+                        Inject {selectedListingIds.length} to Database
+                      </button>
+                    </div>
+                  </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                    {stagedListings.map((listing) => (
+                      <div key={listing.id} className={`relative bg-white border ${selectedListingIds.includes(listing.id) ? 'border-teal-500 ring-1 ring-teal-500' : 'border-slate-200'} rounded-xl p-4 shadow-sm transition-all flex gap-4`}>
+                        <div className="absolute top-4 right-4 z-10">
+                          <input 
+                            type="checkbox" 
+                            checked={selectedListingIds.includes(listing.id)}
+                            onChange={() => handleToggleSelection(listing.id)}
+                            className="w-5 h-5 text-teal-600 rounded border-slate-300 focus:ring-teal-500 cursor-pointer"
+                          />
+                        </div>
+                        
+                        <div className="w-20 h-20 rounded-lg bg-slate-100 shrink-0 overflow-hidden border border-slate-200 flex items-center justify-center">
+                          {listing.image ? (
+                            <img src={listing.image} alt={listing.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <svg className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                          )}
+                        </div>
+                        
+                        <div className="flex-1 min-w-0 pr-8">
+                          <h4 className="font-bold text-slate-900 truncate" title={listing.name}>{listing.name}</h4>
+                          <p className="text-xs text-slate-500 mt-1 line-clamp-2" title={listing.address}>{listing.address}</p>
+                          
+                          <div className="mt-2 flex items-center gap-2">
+                            {listing.phone ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-teal-700 bg-teal-50 px-2 py-1 rounded-md border border-teal-100">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                {listing.phone}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-red-700 bg-red-50 px-2 py-1 rounded-md border border-red-200">
+                                No Phone Number
+                              </span>
+                            )}
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
+                              ⭐ {listing.rating} ({listing.reviews})
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {stagedListings.length > 5 && (
+                    <div className="flex justify-center gap-3 pt-6 border-t border-slate-200">
+                      <button onClick={handleDeleteSelected} disabled={selectedListingIds.length === 0} className="px-6 py-3 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-xl text-sm border border-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        Delete Selected ({selectedListingIds.length})
+                      </button>
+                      <button onClick={handleInjectSelected} disabled={selectedListingIds.length === 0} className="px-6 py-3 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
+                        Inject {selectedListingIds.length} to Database
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
