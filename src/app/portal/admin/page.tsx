@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { indianStates, districtsByState } from '@/lib/locations';
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
+import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -121,60 +122,44 @@ export default function AdminDashboard() {
     handleDeleteSelected(); // Clear them from staging after injection
   };
 
+  const adminTabs: DashboardTab[] = [
+    {
+      id: "users",
+      label: "User & Patient Directory",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+    },
+    {
+      id: "verification",
+      label: "Verification Queue",
+      badge: 0,
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    },
+    {
+      id: "audit",
+      label: "Vault Audit Logs",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+    },
+    {
+      id: "god-mode",
+      label: "Portal Testing Hub",
+      section: "Automations & God Mode",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+    },
+    {
+      id: "crawler",
+      label: "Google Data Crawler",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30 flex">
-      
-      {/* Sidebar Navigation - Premium Dark */}
-      <aside className="w-64 bg-slate-900 text-white shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-y-auto">
-        <div className="p-6 border-b border-slate-800">
-          <Link href="/" className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-[0_0_15px_var(--tenant-accent-glow)]">
-               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-             </div>
-             <span className="font-serif font-bold tracking-widest uppercase">DehaPa <span className="text-tenant-accent">Admin</span></span>
-          </Link>
-        </div>
-        
-        <nav className="flex-1 p-4 space-y-2">
-          <button onClick={() => setActiveTab("users")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'users' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-            User & Patient Directory
-          </button>
-          <button onClick={() => setActiveTab("verification")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'verification' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Verification Queue
-            <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
-          </button>
-          <button onClick={() => setActiveTab("audit")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'audit' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-            Vault Audit Logs
-          </button>
-          <div className="pt-4 mt-4 border-t border-slate-800">
-            <p className="px-4 text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-2">Automations & God Mode</p>
-            <button onClick={() => setActiveTab("god-mode")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left mb-2 ${activeTab === 'god-mode' ? 'border-l-4 border-indigo-500 bg-indigo-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-              Portal Testing Hub
-            </button>
-            <button onClick={() => setActiveTab("crawler")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left ${activeTab === 'crawler' ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
-              Google Data Crawler
-            </button>
-          </div>
-        </nav>
-      </aside>
+    <DashboardLayout 
+      roleName="Admin" 
+      tabs={adminTabs} 
+      activeTab={activeTab} 
+      onTabChange={setActiveTab}
+    >
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header className="bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between sticky top-0 z-10">
-          <h2 className="text-2xl font-serif font-bold text-slate-900 capitalize">
-            {activeTab.replace("-", " ")}
-          </h2>
-          <div className="flex items-center gap-4">
-            <Link href="/portal" className="text-sm font-bold text-tenant-accent hover:underline">Exit to Portal</Link>
-          </div>
-        </header>
-
-        <div className="p-8 flex-1">
           {activeTab === "users" && (
             <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
               <div className="flex justify-between items-center mb-6">
@@ -485,9 +470,6 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
-        </div>
-      </main>
-
-    </div>
+    </DashboardLayout>
   );
 }
