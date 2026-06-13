@@ -47,138 +47,69 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <div className="relative z-10 container mx-auto px-6 lg:px-12 pt-16 pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* Hero Section - DehaPa Web Marketplace Redesign */}
+      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-20 pb-24 overflow-hidden">
+        {/* Background Accents */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#0f766e]/50 rounded-full blur-3xl" />
+        
+        <div className="container mx-auto px-6 lg:px-12 text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold font-serif mb-4 leading-tight">
+            Your Gateway to Integrated Healthcare.
+          </h1>
+          <p className="text-lg md:text-xl text-teal-100 mb-12 max-w-2xl mx-auto">
+            Explore services or Claim Your Listing.
+          </p>
           
-          {/* Left Content */}
-          <div className="flex flex-col items-start z-20">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-tenant-accent/10 border border-tenant-accent/30 text-tenant-accent text-[10px] uppercase font-bold tracking-widest font-mono mb-8 backdrop-blur-sm shadow-[0_0_15px_var(--tenant-accent-glow)] transition-all">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tenant-accent opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-tenant-accent"></span>
-              </span>
-              FHIR-Compliant Telemedicine OS
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-serif text-slate-900 font-bold leading-[1.1] mb-6 text-left">
-              {activeTenant.id === "general" ? (
-                <>
-                  Healthcare <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-tenant-gradient-from to-tenant-gradient-to">
-                    Without Boundaries.
-                  </span>
-                </>
-              ) : (
-                <>
-                  {activeTenant.name} <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-tenant-gradient-from to-tenant-gradient-to">
-                    Telemedicine Hub.
-                  </span>
-                </>
-              )}
-            </h1>
-            
-            <p className="text-base md:text-lg text-slate-600 mb-10 max-w-xl leading-relaxed font-light text-left">
-              {activeTenant.description}
-            </p>
-            
-            {/* Search Bar / Action Area */}
-            <div className="w-full max-w-xl bg-slate-50/80 backdrop-blur-xl border border-slate-200 rounded-2xl p-2 flex items-center gap-2 mb-12 shadow-2xl">
-              <div className="flex-1 flex items-center gap-3 px-4">
-                <svg className="w-5 h-5 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input 
-                  type="text" 
-                  placeholder={activeTenant.id === "general" ? "Search doctors, specialties, or symptoms..." : `Search ${activeTenant.name} specialists...`}
-                  className="w-full bg-transparent border-none outline-none text-slate-900 text-sm placeholder-[#64748b] font-sans"
-                />
-              </div>
-              <Link href="/doctors" className="bg-tenant-accent hover:opacity-90 text-slate-800 px-6 py-3.5 rounded-xl font-bold text-sm transition-all shadow-[0_0_20px_var(--tenant-accent-glow)] whitespace-nowrap">
-                Find Care
+          {/* 5 Category Cards */}
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
+            {[
+              { name: "Book Doctors", icon: "👨‍⚕️", link: "/doctors" },
+              { name: "Hospitals", icon: "🏥", link: "/hospitals" },
+              { name: "Labs", icon: "🔬", link: "/labs" },
+              { name: "Medicine", icon: "💊", link: "/pharmacies" },
+              { name: "Ambulances", icon: "🚑", link: "/ambulances" }
+            ].map((cat) => (
+              <Link href={cat.link} key={cat.name} className="bg-white text-slate-900 rounded-2xl p-4 md:p-6 shadow-xl w-28 md:w-36 flex flex-col items-center gap-3 hover:-translate-y-2 transition-transform duration-300">
+                <div className="text-3xl md:text-4xl">{cat.icon}</div>
+                <span className="text-xs md:text-sm font-bold text-center">{cat.name}</span>
               </Link>
-            </div>
-            
-            <div className="flex items-center gap-6 pt-6 border-t border-slate-200/50">
-              <div className="flex -space-x-3">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-[#020610] bg-slate-100 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#475569]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-slate-600 font-mono uppercase tracking-widest">
-                <strong className="text-slate-900">
-                  {activeTenant.id === "general" ? "2,400+" : "120+"}
-                </strong> Specialists Online
-              </p>
-            </div>
+            ))}
           </div>
 
-          {/* Right Content - Floating UI Cards */}
-          <div className="relative h-[600px] hidden lg:block z-20">
-            {/* Main Doctor Image / Abstract */}
-            <div className="absolute inset-0 bg-gradient-to-br from-tenant-accent/20 to-tenant-accent/5 rounded-[3rem] border border-tenant-accent/20 backdrop-blur-sm overflow-hidden flex items-center justify-center shadow-[0_0_50px_var(--tenant-accent-glow)]">
-               <svg className="w-64 h-64 text-tenant-accent/10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto bg-white p-2 md:p-3 rounded-full flex items-center shadow-2xl">
+            <div className="flex-1 px-4 flex items-center gap-3 text-slate-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <input type="text" placeholder="Find Doctors, Hospitals, Labs near you" className="w-full bg-transparent border-none outline-none text-slate-900 text-sm md:text-base font-sans" />
             </div>
+            <button className="bg-[#0d9488] hover:bg-[#0f766e] text-white px-6 py-2 md:py-3 rounded-full font-bold text-sm transition-colors whitespace-nowrap">
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
 
-            {/* Floating Card 1: Video Consultation */}
-            <div className="absolute top-12 -left-12 bg-white/90 backdrop-blur-xl border border-slate-200 p-6 rounded-2xl shadow-2xl animate-[bounce_8s_ease-in-out_infinite] w-72">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-tenant-accent/20 flex items-center justify-center text-tenant-accent">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                </div>
-                <div>
-                  <h4 className="text-slate-900 font-bold text-sm">Video Consult</h4>
-                  <p className="text-[10px] text-tenant-accent font-mono tracking-widest uppercase">Live Session</p>
-                </div>
+      <div className="container mx-auto px-6 lg:px-12 py-16 bg-white relative z-10">
+        <h3 className="text-2xl font-bold font-serif text-slate-900 mb-8">Claim Your Business</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { title: "Doctors & Clinics", desc: "Build trust and attract new patients in your area.", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+            { title: "Hospitals", desc: "Showcase your facilities, beds, and specialists.", icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
+            { title: "Diagnostic Labs", desc: "Publish test pricing and home collection services.", icon: "M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" },
+            { title: "Pharmacies", desc: "Highlight your fast delivery and medicine stock.", icon: "M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" },
+          ].map((item, i) => (
+            <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-start text-left">
+              <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center mb-4 border border-teal-100">
+                 <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon}></path></svg>
               </div>
-              <div className="space-y-2">
-                <div className="h-2 bg-slate-100 rounded-full w-full"></div>
-                <div className="h-2 bg-slate-100 rounded-full w-4/5"></div>
-              </div>
-              <Link href="/portal" className="mt-4 w-full block text-center py-2 bg-tenant-accent/10 text-tenant-accent border border-tenant-accent/30 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-tenant-accent/20 transition-all">
-                Join Waiting Room
+              <h4 className="text-slate-900 font-bold mb-1">{item.title}</h4>
+              <p className="text-xs text-slate-500 mb-6 flex-1">{item.desc}</p>
+              <Link href="/portal/claim" className="mt-auto text-teal-600 font-bold text-xs uppercase tracking-widest border border-teal-200 hover:bg-teal-50 px-4 py-2 rounded-lg w-full text-center transition-colors">
+                Claim Now
               </Link>
             </div>
-
-            {/* Floating Card 2: Patient Portal */}
-            <div className="absolute bottom-12 -right-8 bg-white/90 backdrop-blur-xl border border-slate-200 p-6 rounded-2xl shadow-2xl animate-[bounce_10s_ease-in-out_infinite_reverse] w-80">
-              <div className="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
-                <h4 className="text-slate-900 font-bold text-sm">Patient Portal</h4>
-                <span className="text-[9px] bg-green-500/20 text-green-400 px-2 py-1 rounded border border-green-500/30 uppercase tracking-widest font-mono">Secured</span>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-                    </div>
-                    <div>
-                      <p className="text-xs text-slate-900 font-medium">Recent Lab Results</p>
-                      <p className="text-[10px] text-[#64748b]">Dr. S. Mohanty • 2h ago</p>
-                    </div>
-                  </div>
-                  <button className="text-tenant-accent text-[10px] uppercase font-bold tracking-wider hover:underline">View</button>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    </div>
-                    <div>
-                      <p className="text-xs text-slate-900 font-medium">Active Prescription</p>
-                      <p className="text-[10px] text-tenant-accent">Azithromycin 500mg</p>
-                    </div>
-                  </div>
-                  <button className="text-tenant-accent text-[10px] uppercase font-bold tracking-wider hover:underline">Refill</button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          
+          ))}
         </div>
       </div>
 
