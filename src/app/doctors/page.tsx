@@ -77,6 +77,7 @@ export default function DoctorsDirectory() {
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
   const [doctors, setDoctors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -92,23 +93,24 @@ export default function DoctorsDirectory() {
         // Map the backend schema to what PremiumDoctorTicket expects
         const mappedData = docsData.map((d: any) => ({
           id: d.id,
-          name: d.name,
+          name: d.name || "Unknown Doctor",
           specialty: d.subCategory || d.category || "Specialist",
           experience: "Google Verified", 
           rating: d.rating || 0,
           reviews: d.reviews || 0,
           hospital: d.city || d.district || "Odisha", // Give location context
-          address: d.address,
+          address: d.address || "No Address Provided",
           fee: 500, // Placeholder
-          image: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name)}&background=0f766e&color=fff&size=150`,
+          image: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Doc")}&background=0f766e&color=fff&size=150`,
           verified: d.verified || false,
           available: true,
           phone: d.phone
         }));
 
         setDoctors(mappedData);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching directory:", err);
+        setFetchError(err.message || "Unknown Firebase Error");
       } finally {
         setLoading(false);
       }
@@ -118,8 +120,9 @@ export default function DoctorsDirectory() {
   }, []);
 
   const filteredDoctors = doctors.filter(doc => {
-    const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.specialty.toLowerCase().includes(search.toLowerCase());
-    return matchSearch;
+    const nameMatch = doc.name ? doc.name.toLowerCase().includes(search.toLowerCase()) : false;
+    const specMatch = doc.specialty ? doc.specialty.toLowerCase().includes(search.toLowerCase()) : false;
+    return nameMatch || specMatch;
   });
 
   return (
@@ -201,6 +204,15 @@ export default function DoctorsDirectory() {
             {loading ? (
               <div className="flex justify-center items-center py-20">
                 <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : fetchError ? (
+              <div className="text-center py-20 bg-red-50 border-2 border-dashed border-red-200 rounded-2xl shadow-sm">
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </div>
+                  <p className="text-red-900 font-bold text-lg mb-1">Database Read Error</p>
+                  <p className="text-sm text-red-600 max-w-lg mx-auto font-mono bg-white p-4 rounded-lg mt-4 border border-red-200 text-left">{fetchError}</p>
+                  <p className="text-xs text-slate-500 mt-4">Screenshot this error to the agent so they can fix Firebase Rules.</p>
               </div>
             ) : filteredDoctors.length === 0 ? (
               <>
