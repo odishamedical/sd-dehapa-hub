@@ -4,8 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 // Mock Data for Ambulance Fleet
-export default function AmbulanceProfilePage({ params }: { params: { id: string } }) {
-  
+export default function AmbulanceProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const mockAmbulance = {
     name: "Sanjivani Emergency Fleet",
     type: "24/7 Advanced Life Support Network",

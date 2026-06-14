@@ -16,6 +16,11 @@ export default function DoctorsRoute({ params }: { params: Promise<{ locationSlu
     return <DoctorProfileView id={id} />;
   }
 
+  if (slug.length === 1 && !["india", "usa", "uae", "australia", "england"].includes(slug[0].toLowerCase())) {
+    // Premium Custom Slug detected! (e.g., /doctors/dr-milan)
+    return <DoctorProfileView customSlug={slug[0]} />;
+  }
+
   // It's a listing
   const country = slug[0] || "";
   const state = slug[1] || "";

@@ -4,8 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 // Mock Data for Lab
-export default function LabProfilePage({ params }: { params: { id: string } }) {
-  
+export default function LabProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const mockLab = {
     name: "Nidan Diagnostics & Imaging Center",
     type: "Advanced Diagnostic Lab",

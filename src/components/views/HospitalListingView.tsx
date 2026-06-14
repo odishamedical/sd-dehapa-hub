@@ -7,14 +7,26 @@ import EcosystemSwitcher from '@/components/EcosystemSwitcher';
 import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
+import CategoryNav from '@/components/CategoryNav';
+import Breadcrumb from '@/components/Breadcrumb';
 
-const PHARMACIES: any[] = [
+const HOSPITALS: any[] = [
   // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
 ];
 
+import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
+
 export const dynamic = 'force-dynamic';
 
-export default function PharmaciesDirectory() {
+export default function HospitalsDirectory({ 
+  initialCountry = "", 
+  initialState = "", 
+  initialDistrict = "" 
+}: { 
+  initialCountry?: string;
+  initialState?: string;
+  initialDistrict?: string;
+}) {
   const router = useRouter();
   const { activeTenant } = useTenant();
   const [search, setSearch] = useState("");
@@ -42,7 +54,7 @@ export default function PharmaciesDirectory() {
     router.push(`/portal/book?doctor=${docId}`);
   };
 
-  const filteredPharmacies = PHARMACIES.filter(doc => {
+  const filteredHospitals = HOSPITALS.filter(doc => {
     const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.hospital.toLowerCase().includes(search.toLowerCase());
     
     // Filter by tenant hospital unless the tenant is "general" (DehaPa general network)
@@ -71,10 +83,24 @@ export default function PharmaciesDirectory() {
         </div>
       </header>
 
+      <CategoryNav />
+      
+      <div className="bg-white border-b border-slate-200 px-6 py-3">
+        <div className="w-full max-w-[1920px] mx-auto">
+          <Breadcrumb paths={[
+            { name: "Home", href: "/" },
+            { name: "Hospitals", href: "/hospitals" },
+            ...(initialCountry ? [{ name: initialCountry.charAt(0).toUpperCase() + initialCountry.slice(1), href: `/hospitals/${initialCountry}` }] : []),
+            ...(initialState ? [{ name: initialState.charAt(0).toUpperCase() + initialState.slice(1), href: `/hospitals/${initialCountry}/${initialState}` }] : []),
+            ...(initialDistrict ? [{ name: initialDistrict.charAt(0).toUpperCase() + initialDistrict.slice(1) }] : [])
+          ]} />
+        </div>
+      </div>
+
       <main className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-12 relative z-10">
         <div className="mb-10">
           <h1 className="text-4xl font-serif font-bold text-slate-900 mb-2">
-            Find a <span className="text-tenant-accent">Pharmacy</span>
+            Find a <span className="text-tenant-accent">Hospital</span>
           </h1>
           <p className="text-slate-600">
             {activeTenant.id === "general" 
@@ -88,8 +114,8 @@ export default function PharmaciesDirectory() {
           {/* Left Sidebar Filters - 25% */}
           <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto lg:h-[calc(100vh-120px)]">
             <DirectorySidebarFilter 
-              categoryName="Pharmacies" 
-              specialtyOptions={["24/7 Pharmacy", "Ayurvedic", "Allopathic", "Homeopathic"]} 
+              categoryName="Hospitals" 
+              specialtyOptions={["Multispecialty", "General", "Maternity", "Trauma Care"]} 
             />
           </div>
 
@@ -112,9 +138,9 @@ export default function PharmaciesDirectory() {
 
             {/* Directory Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredPharmacies.length > 0 ? (
-                filteredPharmacies.map(doc => (
-                  <div key={doc.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-tenant-accent/50 transition-colors shadow-lg group">
+              {filteredHospitals.length > 0 ? (
+                filteredHospitals.map(doc => (
+                  <Link href={generateUniversalSeoUrl(doc, 'hospitals')} key={doc.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-tenant-accent/50 transition-colors shadow-lg group block">
                     <div>
                       <div className="flex justify-between items-start mb-4">
                         <img src={doc.img} alt={doc.name} className="w-16 h-16 rounded-full object-cover border-2 border-slate-200 group-hover:border-tenant-accent transition-colors" />
@@ -154,14 +180,14 @@ export default function PharmaciesDirectory() {
                         </button>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <div className="col-span-full text-center py-20 bg-slate-50 border border-slate-200 rounded-2xl">
                   <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                   </div>
-                  <p className="text-slate-600 font-mono text-sm uppercase tracking-widest font-bold">No pharmacies found</p>
+                  <p className="text-slate-600 font-mono text-sm uppercase tracking-widest font-bold">No hospitals found</p>
                   <p className="text-xs text-slate-500 mt-2">Try adjusting your sidebar filters or search term.</p>
                 </div>
               )}

@@ -11,17 +11,27 @@ export function slugify(text: string | undefined | null): string {
     .replace(/-+$/, '');         // Trim - from end of text
 }
 
-export function generateDoctorSeoUrl(doctor: {
-  id: string;
-  name?: string;
-  country?: string;
-  state?: string;
-  district?: string;
-}): string {
-  const countrySlug = slugify(doctor.country || 'india');
-  const stateSlug = slugify(doctor.state || 'odisha');
-  const districtSlug = slugify(doctor.district || 'all');
-  const nameSlug = slugify(doctor.name || 'doctor');
+export function generateUniversalSeoUrl(
+  data: {
+    id: string;
+    name?: string;
+    country?: string;
+    state?: string;
+    district?: string;
+    customSlug?: string;
+  },
+  type: 'doctors' | 'hospitals' | 'labs' | 'pharmacies' | 'ambulances'
+): string {
+  // 1. Premium Custom Slug (Vanity URL)
+  if (data.customSlug) {
+    return `/${type}/${slugify(data.customSlug)}`;
+  }
 
-  return `/doctors/${countrySlug}/${stateSlug}/${districtSlug}/${nameSlug}-${doctor.id}`;
+  // 2. Standard SEO Cascading URL
+  const countrySlug = slugify(data.country || 'india');
+  const stateSlug = slugify(data.state || 'odisha');
+  const districtSlug = slugify(data.district || 'all');
+  const nameSlug = slugify(data.name || type);
+
+  return `/${type}/${countrySlug}/${stateSlug}/${districtSlug}/${nameSlug}-${data.id}`;
 }

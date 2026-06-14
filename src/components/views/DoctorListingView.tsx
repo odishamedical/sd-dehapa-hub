@@ -12,11 +12,11 @@ import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
 import CustomDropdown from '@/components/CustomDropdown';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { generateDoctorSeoUrl } from '@/lib/urlHelpers';
+import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
 const PremiumDoctorTicket = ({ data }: { data: any }) => {
   return (
-    <Link href={generateDoctorSeoUrl(data)} className="relative h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
+    <Link href={generateUniversalSeoUrl(data, 'doctors')} className="relative h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
       {/* Background Metal Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#ffffff] via-[#e2e8f0] to-[#94a3b8] opacity-90 transition-colors"></div>
       

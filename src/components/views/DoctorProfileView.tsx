@@ -10,9 +10,9 @@ import { useState, useEffect, use } from 'react';
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
 import UnverifiedBanner from '@/components/UnverifiedBanner';
-import { generateDoctorSeoUrl } from '@/lib/urlHelpers';
+import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
-export default function DoctorProfileView({ id }: { id: string }) {
+export default function DoctorProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [doctor, setDoctor] = useState<any>(null);
   const [similarDoctors, setSimilarDoctors] = useState<any[]>([]);
   const [topHospitals, setTopHospitals] = useState<any[]>([]);
@@ -22,14 +22,26 @@ export default function DoctorProfileView({ id }: { id: string }) {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const docRef = doc(db, 'directory', id);
-        const docSnap = await getDoc(docRef);
+        let docSnap: any;
+        let docId = id;
         
-        if (docSnap.exists()) {
+        if (customSlug) {
+          const q = query(collection(db, 'directory'), where('customSlug', '==', customSlug), limit(1));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            docSnap = querySnapshot.docs[0];
+            docId = docSnap.id;
+          }
+        } else if (id) {
+          const docRef = doc(db, 'directory', id);
+          docSnap = await getDoc(docRef);
+        }
+        
+        if (docSnap && docSnap.exists && docSnap.exists() || (docSnap && docSnap.data)) {
           const rawData = docSnap.data();
           const notVerified = "Not available (Not verified)";
           const docData = {
-            id: docSnap.id,
+            id: docId,
             name: rawData.name || "Unknown Doctor",
             specialty: rawData.subCategory || rawData.category || "Specialist",
             experience: rawData.experience || notVerified,
@@ -73,7 +85,7 @@ export default function DoctorProfileView({ id }: { id: string }) {
               limit(30)
             );
             const citySnap = await getDocs(cityQuery);
-            const allCityDocs = citySnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docSnap.id);
+            const allCityDocs = citySnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId);
             
             setSimilarDoctors(allCityDocs.filter(d => d.subCategory === rawData.subCategory).slice(0, 3));
             setTopHospitals(allCityDocs.filter(d => d.category === "Hospital").slice(0, 3));
@@ -89,7 +101,7 @@ export default function DoctorProfileView({ id }: { id: string }) {
       }
     };
     fetchDoctor();
-  }, [id]);
+  }, [id, customSlug]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]"><div className="animate-spin w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full"></div></div>;
@@ -383,7 +395,7 @@ export default function DoctorProfileView({ id }: { id: string }) {
                 </h3>
                 <div className="flex flex-col gap-4">
                   {similarDoctors.map((sim, idx) => (
-                    <Link key={idx} href={generateDoctorSeoUrl(sim)} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
+                    <Link key={idx} href={generateUniversalSeoUrl(sim, 'doctors')} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
                       <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Doc")}&background=0f766e&color=fff`} alt={sim.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
                       <div className="min-w-0 flex-1">
                         <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{sim.name}</h4>

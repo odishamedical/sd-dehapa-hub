@@ -4,8 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 // Mock Data for Hospital
-export default function HospitalProfilePage({ params }: { params: { id: string } }) {
-  
+export default function HospitalProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const mockHospital = {
     name: "Apollo City Hospital & Research Center",
     type: "Multi-Specialty Hospital",

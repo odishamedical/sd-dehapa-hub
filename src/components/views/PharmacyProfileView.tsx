@@ -4,8 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 // Mock Data for Pharmacy
-export default function PharmacyProfilePage({ params }: { params: { id: string } }) {
-  
+export default function PharmacyProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const mockPharmacy = {
     name: "Apollo Pharmacy",
     type: "24/7 Medical Store & Pharmacy",

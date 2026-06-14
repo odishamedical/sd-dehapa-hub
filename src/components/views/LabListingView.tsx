@@ -12,9 +12,19 @@ const LABS: any[] = [
   // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
 ];
 
+import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
+
 export const dynamic = 'force-dynamic';
 
-export default function LabsDirectory() {
+export default function LabsDirectory({ 
+  initialCountry = "", 
+  initialState = "", 
+  initialDistrict = "" 
+}: { 
+  initialCountry?: string;
+  initialState?: string;
+  initialDistrict?: string;
+}) {
   const router = useRouter();
   const { activeTenant } = useTenant();
   const [search, setSearch] = useState("");
@@ -114,7 +124,7 @@ export default function LabsDirectory() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredLabs.length > 0 ? (
                 filteredLabs.map(doc => (
-                  <div key={doc.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-tenant-accent/50 transition-colors shadow-lg group">
+                  <Link href={generateUniversalSeoUrl(doc, 'labs')} key={doc.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-tenant-accent/50 transition-colors shadow-lg group block">
                     <div>
                       <div className="flex justify-between items-start mb-4">
                         <img src={doc.img} alt={doc.name} className="w-16 h-16 rounded-full object-cover border-2 border-slate-200 group-hover:border-tenant-accent transition-colors" />
@@ -154,7 +164,7 @@ export default function LabsDirectory() {
                         </button>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <div className="col-span-full text-center py-20 bg-slate-50 border border-slate-200 rounded-2xl">
