@@ -6,6 +6,7 @@ import PremiumSlugModal from '@/components/PremiumSlugModal';
 import EntitySearchInput from '@/components/EntitySearchInput';
 import { useAutosave } from '@/hooks/useAutosave';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
+import AddressBlock, { AddressData } from '@/components/AddressBlock';
 
 function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void }) {
   return (
@@ -93,6 +94,25 @@ export default function DoctorDashboard() {
     collegeName: "SCB Medical College"
   });
   const qualificationsSaveStatus = useAutosave(qualificationsData, 1000);
+
+  // Identity State
+  const [identityData, setIdentityData] = useState({
+    specialityId: "",
+    specialityName: ""
+  });
+  const identitySaveStatus = useAutosave(identityData, 1000);
+
+  // Practice Location State
+  const [locationAddress, setLocationAddress] = useState<AddressData>({
+    country: "India",
+    state: "Odisha",
+    district: "Khordha",
+    block: "",
+    city: "Bhubaneswar",
+    pincode: "751001",
+    localAddress: "Unit 15, Near Sainik School"
+  });
+  const locationSaveStatus = useAutosave(locationAddress, 1000);
 
   const doctorTabs: DashboardTab[] = [
     {
@@ -223,12 +243,14 @@ export default function DoctorDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Primary Speciality</label>
-                  <select className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all">
-                    <option>Select Speciality</option>
-                    <option>Cardiologist</option>
-                    <option>Neurologist</option>
-                    <option>Orthopedic Surgeon</option>
-                  </select>
+                  <EntitySearchInput 
+                    category="speciality"
+                    placeholder="Search your specialty..."
+                    valueId={identityData.specialityId}
+                    valueName={identityData.specialityName}
+                    onChange={(id, name) => setIdentityData(prev => ({...prev, specialityId: id, specialityName: name}))}
+                  />
+                  <p className="text-xs text-slate-500 mt-2">If your specialty is not listed, you can add it to the global directory.</p>
                 </div>
               </div>
 
@@ -410,9 +432,12 @@ export default function DoctorDashboard() {
                   />
                 </div>
 
-                <div className="mb-4">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Full Address</label>
-                  <input type="text" defaultValue="Unit 15, Near Sainik School, Bhubaneswar" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                <div className="mb-4 mt-8">
+                  <h4 className="text-sm font-bold text-slate-800 border-b border-slate-200 pb-2 mb-4">Location Details</h4>
+                  <AddressBlock 
+                    data={locationAddress}
+                    onChange={setLocationAddress}
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
@@ -428,10 +453,7 @@ export default function DoctorDashboard() {
               </div>
 
               <div className="flex items-center justify-between pt-6 border-t border-slate-100">
-                <span className="text-sm text-green-600 font-bold flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                  Autosaved
-                </span>
+                <AutosaveIndicator status={locationSaveStatus} />
                 <button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg transition-all">Save Locations</button>
               </div>
             </div>
