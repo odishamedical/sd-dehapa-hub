@@ -141,7 +141,9 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                   )}
                 </div>
                 <p className="text-lg text-teal-700 font-semibold mb-2">{doctor.specialty}</p>
-                <p className="text-sm text-slate-500 mb-4">{doctor.qualification} • {doctor.experience}</p>
+                <p className="text-sm text-slate-500 mb-4">
+                  <span className="font-semibold text-slate-700">Qualification:</span> {doctor.qualification} <span className="mx-2">•</span> <span className="font-semibold text-slate-700">Experience:</span> {doctor.experience}
+                </p>
                 <div className="flex items-center justify-center md:justify-start gap-2">
                   <span className="flex items-center text-amber-400">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
@@ -257,11 +259,13 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
           {/* Right Sidebar: Ecosystem (25% Width) */}
           <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-[100px]">
             
-            {/* Advertisement Placeholder */}
-            <div className="w-full h-64 bg-slate-100 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 text-center shadow-inner">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Advertisement</span>
-              <p className="text-sm text-slate-500 font-medium">Google AdSense / Internal Promo Block</p>
-            </div>
+            {/* Advertisement Placeholder (Hidden until ads are injected) */}
+            {false && (
+              <div className="w-full h-64 bg-slate-100 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 text-center shadow-inner">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Advertisement</span>
+                <p className="text-sm text-slate-500 font-medium">Google AdSense / Internal Promo Block</p>
+              </div>
+            )}
 
             {/* Similar Doctors */}
             {similarDoctors.length > 0 && (
