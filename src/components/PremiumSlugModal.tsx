@@ -33,6 +33,12 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
   const [cart, setCart] = useState<CartItem[]>([]);
   const [term, setTerm] = useState<Term>('1yr');
 
+  // Custom Location Builder State
+  const [customLocations, setCustomLocations] = useState<CartItem[]>([]);
+  const [isBuildingLocation, setIsBuildingLocation] = useState(false);
+  const [locState, setLocState] = useState('westbengal');
+  const [locCategory, setLocCategory] = useState('none');
+
   // Reset state when modal opens/closes
   useEffect(() => {
     if (!isOpen) {
@@ -40,6 +46,8 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
       setHasSearched(false);
       setCart([]);
       setTerm('1yr');
+      setCustomLocations([]);
+      setIsBuildingLocation(false);
     }
   }, [isOpen]);
 
@@ -128,7 +136,27 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
     { id: `pharm-${searchTerm}`, slug: searchTerm, type: 'Category', category: 'Pharmacy', basePrice: 2000, urlPreview: `dehapa.com/pharmacies/${searchTerm}` },
     { id: `global-${searchTerm}`, slug: searchTerm, type: 'Global Elite', basePrice: 10000, urlPreview: `dehapa.com/${searchTerm}` },
     { id: `loc-${searchTerm}`, slug: searchTerm, type: 'Location', basePrice: 500, urlPreview: `dehapa.com/india/odisha/${searchTerm}` },
+    ...customLocations
   ] : [];
+
+  const handleAddCustomLocation = () => {
+    let preview = `dehapa.com/india/${locState}`;
+    if (locCategory !== 'none') preview += `/${locCategory}`;
+    preview += `/${searchTerm}`;
+
+    const newLoc: CartItem = {
+      id: `custom-loc-${Date.now()}`,
+      slug: searchTerm,
+      type: 'Location',
+      category: 'Custom',
+      basePrice: 500,
+      urlPreview: preview
+    };
+    
+    setCustomLocations(prev => [...prev, newLoc]);
+    setCart(prev => [...prev, newLoc]); // auto add to cart
+    setIsBuildingLocation(false);
+  };
 
   return (
     <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
@@ -251,6 +279,59 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                         </label>
                       );
                     })}
+                  </div>
+
+                  {/* Location Builder */}
+                  <div className="bg-slate-50 border-t border-slate-200 p-4 sm:p-6 flex flex-col justify-center">
+                    {!isBuildingLocation ? (
+                      <button 
+                        onClick={() => setIsBuildingLocation(true)}
+                        className="text-sm font-bold text-teal-600 hover:text-teal-700 flex items-center justify-center gap-2 py-2 px-4 border border-dashed border-teal-300 hover:border-teal-400 rounded-xl bg-white hover:bg-teal-50 transition-colors self-center mx-auto"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                        Add another Location URL
+                      </button>
+                    ) : (
+                      <div className="bg-white p-4 rounded-xl border border-teal-200 shadow-sm animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Build Location URL</h4>
+                          <button onClick={() => setIsBuildingLocation(false)} className="text-slate-400 hover:text-red-500">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                          </button>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3 items-end">
+                          <div className="flex-1 w-full">
+                            <label className="block text-xs font-bold text-slate-600 mb-1">State / Region</label>
+                            <select value={locState} onChange={e => setLocState(e.target.value)} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none">
+                              <option value="westbengal">West Bengal</option>
+                              <option value="bihar">Bihar</option>
+                              <option value="jharkhand">Jharkhand</option>
+                              <option value="chhattisgarh">Chhattisgarh</option>
+                              <option value="andhrapradesh">Andhra Pradesh</option>
+                              <option value="telangana">Telangana</option>
+                              <option value="maharashtra">Maharashtra</option>
+                              <option value="delhi">Delhi</option>
+                            </select>
+                          </div>
+                          <div className="flex-1 w-full">
+                            <label className="block text-xs font-bold text-slate-600 mb-1">Category (Optional)</label>
+                            <select value={locCategory} onChange={e => setLocCategory(e.target.value)} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none">
+                              <option value="none">None (Root Location)</option>
+                              <option value="doctor">Doctor</option>
+                              <option value="hospitals">Hospital</option>
+                              <option value="labs">Lab</option>
+                              <option value="pharmacies">Pharmacy</option>
+                            </select>
+                          </div>
+                          <button onClick={handleAddCustomLocation} className="w-full sm:w-auto px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg transition-colors whitespace-nowrap">
+                            Add URL
+                          </button>
+                        </div>
+                        <p className="font-mono text-xs text-slate-500 mt-3 bg-slate-50 p-2 rounded border border-slate-100">
+                          Preview: dehapa.com/india/{locState}{locCategory !== 'none' ? `/${locCategory}` : ''}/{searchTerm}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
