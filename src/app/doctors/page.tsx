@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import EcosystemSwitcher from '@/components/EcosystemSwitcher';
 import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
-
-const DOCTORS: any[] = [
-  // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
-];
+import { db } from '@/lib/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 const PremiumDoctorTicket = ({ data }: { data: any }) => {
   return (
@@ -77,11 +75,50 @@ export default function DoctorsDirectory() {
   const { activeTenant } = useTenant();
   const [search, setSearch] = useState("");
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
+  const [doctors, setDoctors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredDoctors = DOCTORS.filter(doc => {
-    const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.hospital.toLowerCase().includes(search.toLowerCase());
-    const matchTenant = activeTenant.hospitalName === "All" || doc.hospital === activeTenant.hospitalName;
-    return matchSearch && matchTenant;
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const q = query(collection(db, 'directory'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const docsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Map the backend schema to what PremiumDoctorTicket expects
+        const mappedData = docsData.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          specialty: d.subCategory || d.category || "Specialist",
+          experience: "Google Verified", 
+          rating: d.rating || 0,
+          reviews: d.reviews || 0,
+          hospital: d.city || d.district || "Odisha", // Give location context
+          address: d.address,
+          fee: 500, // Placeholder
+          image: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name)}&background=0f766e&color=fff&size=150`,
+          verified: d.verified || false,
+          available: true,
+          phone: d.phone
+        }));
+
+        setDoctors(mappedData);
+      } catch (err) {
+        console.error("Error fetching directory:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDoctors();
+  }, []);
+
+  const filteredDoctors = doctors.filter(doc => {
+    const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.specialty.toLowerCase().includes(search.toLowerCase());
+    return matchSearch;
   });
 
   return (
@@ -160,34 +197,32 @@ export default function DoctorsDirectory() {
           <div className="w-full lg:w-3/4 flex flex-col gap-6">
             
             {/* Design Preview Section - Shows strictly ONE ticket as a template to avoid blank screen */}
-            <div className="mb-4 border-2 border-dashed border-teal-200 bg-teal-50/30 p-6 rounded-2xl relative shadow-sm">
-              <div className="absolute -top-3 left-6 bg-teal-500 text-white text-[10px] px-4 py-1 font-bold uppercase rounded-full shadow-md flex items-center gap-2">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                Design Template Preview (Waiting for Real Data)
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
-              <PremiumDoctorTicket data={{
-                  id: "mock123",
-                  name: "Dr. Sandeep Sharma",
-                  specialty: "Cardiology & Internal Medicine",
-                  experience: "15+ Years",
-                  rating: 4.8,
-                  reviews: 124,
-                  hospital: "Apollo Hospitals",
-                  address: "Unit 15, Near Sainik School, Bhubaneswar",
-                  fee: 800,
-                  image: "https://ui-avatars.com/api/?name=Dr+Sandeep+Sharma&background=0f766e&color=fff&size=150",
-                  verified: false,
-                  available: true
-              }} />
-            </div>
-
-            {/* Actual Directory Grid (Currently Empty based on Zero Mock Data Protocol) */}
-            <div className="flex flex-col gap-4">
-              {filteredDoctors.length > 0 ? (
-                filteredDoctors.map(doc => (
-                  <PremiumDoctorTicket key={doc.id} data={doc} />
-                ))
-              ) : (
+            ) : filteredDoctors.length === 0 ? (
+              <>
+                <div className="mb-4 border-2 border-dashed border-teal-200 bg-teal-50/30 p-6 rounded-2xl relative shadow-sm">
+                  <div className="absolute -top-3 left-6 bg-teal-500 text-white text-[10px] px-4 py-1 font-bold uppercase rounded-full shadow-md flex items-center gap-2">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    Design Template Preview (Waiting for Real Data)
+                  </div>
+                  <PremiumDoctorTicket data={{
+                      id: "mock123",
+                      name: "Dr. Sandeep Sharma",
+                      specialty: "Cardiology & Internal Medicine",
+                      experience: "15+ Years",
+                      rating: 4.8,
+                      reviews: 124,
+                      hospital: "Apollo Hospitals",
+                      address: "Unit 15, Near Sainik School, Bhubaneswar",
+                      fee: 800,
+                      image: "https://ui-avatars.com/api/?name=Dr+Sandeep+Sharma&background=0f766e&color=fff&size=150",
+                      verified: false,
+                      available: true
+                  }} />
+                </div>
                 <div className="text-center py-20 bg-white border border-slate-200 rounded-2xl shadow-sm">
                   <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -195,8 +230,16 @@ export default function DoctorsDirectory() {
                   <p className="text-slate-900 font-bold text-lg mb-1">Database Empty</p>
                   <p className="text-sm text-slate-500 max-w-sm mx-auto">The crawler has not injected any live data yet. Once injected, listings will appear here in the premium ticket format.</p>
                 </div>
-              )}
-            </div>
+              </>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {filteredDoctors.map(doc => (
+                  <PremiumDoctorTicket key={doc.id} data={doc} />
+                ))}
+              </div>
+            )}
+
+
 
           </div>
         </div>
