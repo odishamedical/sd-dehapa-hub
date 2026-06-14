@@ -16,6 +16,11 @@ interface DashboardLayoutProps {
   onTabChange: (tabId: string) => void;
   children: ReactNode;
   headerTitle?: string;
+  userProfile?: {
+    image?: string;
+    name: string;
+    subtitle: string;
+  };
 }
 
 export default function DashboardLayout({
@@ -24,7 +29,8 @@ export default function DashboardLayout({
   activeTab,
   onTabChange,
   children,
-  headerTitle
+  headerTitle,
+  userProfile
 }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30 flex">
@@ -36,9 +42,29 @@ export default function DashboardLayout({
              <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-[0_0_15px_var(--tenant-accent-glow)]">
                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
              </div>
-             <span className="font-serif font-bold tracking-widest uppercase">DehaPa <span className="text-tenant-accent">{roleName}</span></span>
+             <span className="font-serif font-bold tracking-widest uppercase text-sm leading-tight">
+               DehaPa <br/><span className="text-tenant-accent">{roleName}</span>
+             </span>
           </button>
         </div>
+
+        {userProfile && (
+          <div className="p-6 border-b border-slate-800 bg-slate-900/50">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full border-2 border-teal-500 p-1 mb-3">
+                {userProfile.image ? (
+                  <img src={userProfile.image} alt={userProfile.name} className="w-full h-full rounded-full object-cover" />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                  </div>
+                )}
+              </div>
+              <h3 className="font-bold text-white text-base">{userProfile.name}</h3>
+              <p className="text-teal-400 text-xs font-medium mt-1">{userProfile.subtitle}</p>
+            </div>
+          </div>
+        )}
         
         <nav className="flex-1 p-4 space-y-2">
           {tabs.map((tab, index) => {

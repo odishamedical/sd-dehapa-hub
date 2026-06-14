@@ -32,6 +32,11 @@ export default function DoctorDashboard() {
       tabs={doctorTabs} 
       activeTab={activeTab} 
       onTabChange={setActiveTab}
+      userProfile={{
+        name: "Dr. Sandeep Sharma",
+        subtitle: "MBBS, MD - Cardiology",
+        image: "https://i.pravatar.cc/150?u=a042581f4e29026704d" // Mock image
+      }}
     >
       <div className="max-w-4xl mx-auto">
         {/* Header Alert */}
