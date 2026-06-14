@@ -122,7 +122,7 @@ export default function EntitySearchInput({
             if (searchTerm && searchTerm !== valueName) setShowDropdown(true);
           }}
           placeholder={placeholder}
-          className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all pr-10"
+          className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all pr-10"
         />
         {isSearching && (
           <div className="absolute right-3 top-3.5">

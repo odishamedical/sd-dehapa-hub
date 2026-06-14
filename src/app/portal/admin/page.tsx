@@ -74,7 +74,7 @@ export default function AdminDashboard() {
         <div className="w-20 h-20 bg-red-100 border border-red-200 rounded-full flex items-center justify-center mb-6">
           <svg className="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
         </div>
-        <h1 className="text-3xl font-serif font-bold mb-2">Restricted Area</h1>
+        <h1 className="text-3xl font-serif font-bold mb-1.5">Restricted Area</h1>
         <p className="text-slate-600 mb-8 max-w-md text-center">This dashboard is exclusively for DehaPa Super Administrators.</p>
         <Link href="/portal" className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest transition-colors">Return to Portal</Link>
       </div>
@@ -320,7 +320,7 @@ export default function AdminDashboard() {
               <div className="bg-[#F9FAFB] border-0 rounded-xl p-6 mb-8 shadow-inner">
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start">
                   <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-2">Country</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">Country</label>
                     <select 
                       value={["India", "USA", "UAE", "Australia", "England"].includes(crawlerCountry) ? crawlerCountry : "Other"}
                       onChange={(e) => {
@@ -331,7 +331,7 @@ export default function AdminDashboard() {
                           if (e.target.value === "India") { setCrawlerState("Odisha"); setCrawlerDistrict("Khordha"); setCrawlerCity(""); }
                         }
                       }}
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-2"
+                      className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-1.5"
                     >
                       <option value="India">India</option>
                       <option value="USA">USA</option>
@@ -346,13 +346,13 @@ export default function AdminDashboard() {
                         value={crawlerCountry} 
                         onChange={(e) => setCrawlerCountry(e.target.value)}
                         placeholder="Type custom country..."
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
+                        className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
                       />
                     )}
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-2">State / Region</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">State / Region</label>
                     {crawlerCountry === "India" ? (
                       <>
                         <select 
@@ -366,7 +366,7 @@ export default function AdminDashboard() {
                               setCrawlerCity("");
                             }
                           }}
-                          className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-2"
+                          className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-1.5"
                         >
                           <option value="">Select State</option>
                           {indianStates.map(st => <option key={st} value={st}>{st}</option>)}
@@ -378,7 +378,7 @@ export default function AdminDashboard() {
                             value={crawlerState} 
                             onChange={(e) => setCrawlerState(e.target.value)}
                             placeholder="Type state name..."
-                            className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
+                            className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
                           />
                         )}
                       </>
@@ -388,13 +388,13 @@ export default function AdminDashboard() {
                         value={crawlerState} 
                         onChange={(e) => setCrawlerState(e.target.value)}
                         placeholder="e.g. New York, Karnataka"
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
+                        className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
                       />
                     )}
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-2">District / Area</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">District / Area</label>
                     {crawlerCountry === "India" && crawlerState === "Odisha" ? (
                       <>
                         <select 
@@ -406,7 +406,7 @@ export default function AdminDashboard() {
                               setCrawlerCity("");
                             }
                           }}
-                          className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-2"
+                          className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-1.5"
                         >
                           <option value="">Select District</option>
                           {districtsByState["Odisha"]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
                             value={crawlerDistrict} 
                             onChange={(e) => setCrawlerDistrict(e.target.value)}
                             placeholder="Type district name..."
-                            className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
+                            className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
                           />
                         )}
                       </>
@@ -428,28 +428,28 @@ export default function AdminDashboard() {
                         value={crawlerDistrict} 
                         onChange={(e) => setCrawlerDistrict(e.target.value)}
                         placeholder="e.g. Manhattan, Bangalore"
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
+                        className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
                       />
                     )}
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-2">Category</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">Category</label>
                     <select 
                       value={crawlerCategory} 
                       onChange={(e) => { setCrawlerCategory(e.target.value); setCrawlerSubCategory(""); setCustomSubCategory(""); }}
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
+                      className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
                     >
                       {platformCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-2">Sub-category</label>
+                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">Sub-category</label>
                     <select 
                       value={crawlerSubCategory} 
                       onChange={(e) => setCrawlerSubCategory(e.target.value)}
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
+                      className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
                     >
                       <option value="">Any {crawlerCategory}</option>
                       {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
@@ -462,7 +462,7 @@ export default function AdminDashboard() {
 
                   <div className="md:col-span-3 lg:col-span-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                     <div>
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Block / City</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Block / City</label>
                       {blocksByDistrict[crawlerDistrict] ? (
                         <>
                           <select 
@@ -471,7 +471,7 @@ export default function AdminDashboard() {
                               if (e.target.value === "Other") setCrawlerCity("");
                               else setCrawlerCity(e.target.value);
                             }}
-                            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:outline-none focus:border-teal-500 transition-colors mb-2"
+                            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:outline-none focus:border-teal-500 transition-colors mb-1.5"
                           >
                             <option value="">Select Block/City</option>
                             {blocksByDistrict[crawlerDistrict].map((b: string) => <option key={b} value={b}>{b}</option>)}
@@ -499,7 +499,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Locality / Village / Street</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Locality / Village / Street</label>
                       <input 
                         type="text" 
                         placeholder="e.g. Sahidnagar"
@@ -509,7 +509,7 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-slate-800 block mb-2">PIN Code</label>
+                      <label className="text-sm font-semibold text-slate-800 block mb-1.5">PIN Code</label>
                       <input 
                         type="text" 
                         value={crawlerPin} 
@@ -519,7 +519,7 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-slate-800 block mb-2">Custom Query Name</label>
+                      <label className="text-sm font-semibold text-slate-800 block mb-1.5">Custom Query Name</label>
                       <input 
                         type="text" 
                         value={crawlerQuery} 
