@@ -213,44 +213,201 @@ export default function DoctorDashboard() {
           </div>
         )}
 
-        {/* Tab 3: Practice Locations */}
-        {activeTab === "locations" && (
+        {/* Tab: Experience & Positions */}
+        {activeTab === "experience" && (
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
-              <h3 className="text-xl font-bold text-slate-900">Practice Locations</h3>
-              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors">+ Add Clinic</button>
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Experience & Positions</h3>
+                <p className="text-sm text-slate-500 mt-1">List your past and current professional roles and hospital affiliations.</p>
+              </div>
+              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Experience</button>
             </div>
             
             <div className="space-y-6">
-              {/* Location Card */}
-              <div className="border border-slate-200 rounded-xl p-6 relative">
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <button className="text-slate-400 hover:text-sky-600"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+                <div className="absolute top-4 right-4 flex gap-3 items-center">
+                  <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors" title="Toggle Public Visibility">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    Public
+                  </button>
+                  <div className="w-px h-4 bg-slate-300"></div>
                   <button className="text-slate-400 hover:text-red-600"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                 </div>
                 
+                <div className="mb-4 mt-2">
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Hospital or Institution</label>
+                  <EntitySearchInput 
+                    category="hospital"
+                    placeholder="Search or add hospital name..."
+                    valueId=""
+                    valueName="Apollo Hospitals"
+                    onChange={(id, name) => console.log(id, name)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Title / Position</label>
+                    <input type="text" defaultValue="Head of Cardiology" placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Years (e.g. 2015-2020)</label>
+                    <input type="text" defaultValue="2018 - Present" placeholder="e.g. 2015 - Present" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                <span className="text-sm text-green-600 font-bold flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  Autosaved
+                </span>
+                <button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg transition-all">Save Experience</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Practice Locations */}
+        {activeTab === "locations" && (
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Practice Locations</h3>
+                <p className="text-sm text-slate-500 mt-1">Manage the clinics and hospitals where you currently practice.</p>
+              </div>
+              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Clinic</button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+                <div className="absolute top-4 right-4 flex gap-3 items-center">
+                  <span className="bg-teal-100 text-teal-800 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Mandatory Public</span>
+                </div>
+                
+                <div className="mb-4 mt-2">
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Clinic or Hospital Name</label>
+                  <EntitySearchInput 
+                    category="clinic"
+                    placeholder="Search or add clinic name..."
+                    valueId=""
+                    valueName="Shyam Care Clinic"
+                    onChange={(id, name) => console.log(id, name)}
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Full Address</label>
+                  <input type="text" defaultValue="Unit 15, Near Sainik School, Bhubaneswar" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Clinic/Hospital Name</label>
-                    <p className="font-bold text-slate-900">Apollo Hospitals</p>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Timings</label>
+                    <input type="text" defaultValue="Mon-Sat, 10 AM - 2 PM" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Consultation Fee</label>
-                    <p className="font-bold text-slate-900">₹800</p>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Consultation Fee (₹)</label>
+                    <input type="number" defaultValue="800" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
-                
-                <div className="mb-4">
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Address</label>
-                  <p className="text-sm text-slate-700">Unit 15, Near Sainik School, Bhubaneswar, Odisha 751005</p>
+              </div>
+
+              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                <span className="text-sm text-green-600 font-bold flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  Autosaved
+                </span>
+                <button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg transition-all">Save Locations</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Research & Publications */}
+        {activeTab === "research" && (
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+              <h3 className="text-xl font-bold text-slate-900">Research & Publications</h3>
+              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Publication</button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+                <div className="absolute top-4 right-4 flex gap-3 items-center">
+                  <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Public</button>
                 </div>
                 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Operating Hours</label>
-                  <p className="text-sm text-slate-700">Mon-Fri: 10:00 AM - 02:00 PM</p>
+                <div className="mb-4 mt-2">
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Paper Title</label>
+                  <input type="text" placeholder="Title of your research paper" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Journal Name</label>
+                    <EntitySearchInput 
+                      category="journal"
+                      placeholder="Search or add journal..."
+                      valueId=""
+                      valueName=""
+                      onChange={(id, name) => console.log(id, name)}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Publication Year</label>
+                    <input type="number" placeholder="e.g. 2021" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Tab: Memberships */}
+        {activeTab === "memberships" && (
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+              <h3 className="text-xl font-bold text-slate-900">Memberships</h3>
+              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Membership</button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+                <div className="absolute top-4 right-4 flex gap-3 items-center">
+                  <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Public</button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Association / Organization</label>
+                    <EntitySearchInput 
+                      category="association"
+                      placeholder="e.g. IMA, API..."
+                      valueId=""
+                      valueName=""
+                      onChange={(id, name) => console.log(id, name)}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Role / Status</label>
+                    <input type="text" placeholder="e.g. Life Member, Secretary" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Catch-all for remaining tabs */}
+        {["awards", "techniques", "hobbies"].includes(activeTab) && (
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4 text-center py-20">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            </div>
+            <h3 className="font-bold text-slate-900 mb-1 capitalize">{activeTab} Modulue Skeleton</h3>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto">This section uses the exact same UI structure as the other tabs. You can easily duplicate the array field components here.</p>
           </div>
         )}
       </div>
