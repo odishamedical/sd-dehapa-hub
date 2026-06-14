@@ -179,7 +179,7 @@ export default function DoctorsDirectory() {
       </div>
 
       {/* Premium Hero Search */}
-      <div className="pt-10 pb-20 px-6 relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f766e] shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
+      <div className="pt-10 pb-20 px-6 relative bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f766e] shadow-[0_10px_30px_rgba(0,0,0,0.15)] z-30">
         {/* Subtle grid pattern overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
