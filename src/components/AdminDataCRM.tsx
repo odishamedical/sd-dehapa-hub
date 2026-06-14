@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -17,6 +18,7 @@ export default function AdminDataCRM() {
   const [selectedListing, setSelectedListing] = useState<any | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -58,6 +60,27 @@ export default function AdminDataCRM() {
     setIsDrawerOpen(true);
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedListing) return;
+    setIsUploadingImage(true);
+    try {
+      const fileRef = ref(storage, `directory/${selectedListing.id}/${file.name}`);
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      setSelectedListing({ ...selectedListing, image: url });
+      
+      // Auto-save just the image so it's not lost
+      const docRef = doc(db, 'directory', selectedListing.id);
+      await updateDoc(docRef, { image: url });
+      setData(data.map(d => d.id === selectedListing.id ? { ...d, image: url } : d));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload image.");
+    }
+    setIsUploadingImage(false);
+  };
+
   const handleSave = async () => {
     if (!selectedListing) return;
     setIsSaving(true);
@@ -71,7 +94,12 @@ export default function AdminDataCRM() {
         subCategory: selectedListing.subCategory || "",
         city: selectedListing.city || "",
         district: selectedListing.district || "",
-        verified: selectedListing.verified || false
+        verified: selectedListing.verified || false,
+        clinicName: selectedListing.clinicName || "",
+        experience: selectedListing.experience || "",
+        qualification: selectedListing.qualification || "",
+        about: selectedListing.about || "",
+        website: selectedListing.website || ""
       });
       // update local
       setData(data.map(d => d.id === selectedListing.id ? selectedListing : d));
@@ -225,8 +253,16 @@ export default function AdminDataCRM() {
             <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-slate-50/50">
               
               <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200">
-                <div className="w-16 h-16 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
+                <div className="relative group w-16 h-16 rounded-lg bg-slate-100 overflow-hidden border border-slate-200 shrink-0">
                    {selectedListing.image ? <img src={selectedListing.image} alt="Avatar" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-300">No Img</div>}
+                   <label className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                     {isUploadingImage ? (
+                       <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                     ) : (
+                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                     )}
+                     <input type="file" accept="image/*" onChange={handleImageUpload} disabled={isUploadingImage} className="hidden" />
+                   </label>
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900">{selectedListing.name}</h4>
@@ -262,6 +298,27 @@ export default function AdminDataCRM() {
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Address</label>
                   <textarea value={selectedListing.address} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} rows={3} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white resize-none"></textarea>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Clinic / Hospital Name</label>
+                  <input type="text" value={selectedListing.clinicName || ""} onChange={e => setSelectedListing({...selectedListing, clinicName: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Experience</label>
+                  <input type="text" value={selectedListing.experience || ""} onChange={e => setSelectedListing({...selectedListing, experience: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="e.g. 15 Years" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Qualification</label>
+                  <input type="text" value={selectedListing.qualification || ""} onChange={e => setSelectedListing({...selectedListing, qualification: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="e.g. MBBS, MD" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">About</label>
+                  <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} rows={3} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white resize-none"></textarea>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Website</label>
+                  <input type="text" value={selectedListing.website || ""} onChange={e => setSelectedListing({...selectedListing, website: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="https://" />
                 </div>
 
                 <div className="pt-2">
