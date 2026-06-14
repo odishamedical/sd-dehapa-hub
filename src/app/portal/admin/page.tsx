@@ -8,6 +8,7 @@ import { collection, writeBatch, doc, serverTimestamp } from 'firebase/firestore
 import { useTenant } from '@/components/TenantContext';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
+import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import AdminDataCRM from '@/components/AdminDataCRM';
 import AdminSlugRegistry from '@/components/AdminSlugRegistry';
@@ -31,12 +32,15 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("home");
 
   // Crawler State
-  const [crawlerCountry, setCrawlerCountry] = useState("India");
-  const [crawlerState, setCrawlerState] = useState("Odisha");
-  const [crawlerDistrict, setCrawlerDistrict] = useState("Khordha");
-  const [crawlerCity, setCrawlerCity] = useState("Bhubaneswar");
-  const [crawlerLocality, setCrawlerLocality] = useState("");
-  const [crawlerPin, setCrawlerPin] = useState("");
+  const [crawlerAddress, setCrawlerAddress] = useState<AddressData>({
+    country: "India",
+    state: "Odisha",
+    district: "Khordha",
+    block: "",
+    city: "Bhubaneswar",
+    pincode: "",
+    localAddress: ""
+  });
   const [crawlerCategory, setCrawlerCategory] = useState("Doctor");
   const [crawlerSubCategory, setCrawlerSubCategory] = useState("");
   const [customSubCategory, setCustomSubCategory] = useState("");
@@ -90,12 +94,12 @@ export default function AdminDashboard() {
     
     try {
       const payload: any = {
-        country: crawlerCountry,
-        state: crawlerState,
-        district: crawlerDistrict,
-        city: crawlerCity,
-        locality: crawlerLocality,
-        pin: crawlerPin,
+        country: crawlerAddress.country,
+        state: crawlerAddress.state,
+        district: crawlerAddress.district,
+        city: crawlerAddress.city,
+        locality: crawlerAddress.localAddress,
+        pin: crawlerAddress.pincode,
         category: crawlerCategory,
         subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
         query: crawlerQuery
@@ -175,12 +179,12 @@ export default function AdminDashboard() {
           image: listing.image || "",
           category: crawlerCategory,
           subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
-          country: crawlerCountry,
-          state: crawlerState,
-          district: crawlerDistrict,
-          city: crawlerCity,
-          locality: crawlerLocality,
-          pin: crawlerPin,
+          country: crawlerAddress.country,
+          state: crawlerAddress.state,
+          district: crawlerAddress.district,
+          city: crawlerAddress.city,
+          locality: crawlerAddress.localAddress,
+          pin: crawlerAddress.pincode,
           verified: false,
           source: "google_crawler",
           tenantId: activeTenant?.id || "default",
@@ -319,216 +323,50 @@ export default function AdminDashboard() {
               
               <div className="bg-[#F9FAFB] border-0 rounded-xl p-6 mb-8 shadow-inner">
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start">
-                  <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">Country</label>
-                    <select 
-                      value={["India", "USA", "UAE", "Australia", "England"].includes(crawlerCountry) ? crawlerCountry : "Other"}
-                      onChange={(e) => {
-                        if (e.target.value === "Other") {
-                          setCrawlerCountry("");
-                        } else {
-                          setCrawlerCountry(e.target.value);
-                          if (e.target.value === "India") { setCrawlerState("Odisha"); setCrawlerDistrict("Khordha"); setCrawlerCity(""); }
-                        }
-                      }}
-                      className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-1.5"
-                    >
-                      <option value="India">India</option>
-                      <option value="USA">USA</option>
-                      <option value="UAE">UAE</option>
-                      <option value="Australia">Australia</option>
-                      <option value="England">England</option>
-                      <option value="Other">Other (Custom)</option>
-                    </select>
-                    {!["India", "USA", "UAE", "Australia", "England"].includes(crawlerCountry) && (
-                      <input 
-                        type="text" 
-                        value={crawlerCountry} 
-                        onChange={(e) => setCrawlerCountry(e.target.value)}
-                        placeholder="Type custom country..."
-                        className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
-                      />
-                    )}
+                  <div className="md:col-span-3 lg:col-span-5">
+                    <AddressBlock data={crawlerAddress} onChange={setCrawlerAddress} />
                   </div>
-
-                  <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">State / Region</label>
-                    {crawlerCountry === "India" ? (
-                      <>
-                        <select 
-                          value={indianStates.includes(crawlerState) ? crawlerState : "Other"}
-                          onChange={(e) => {
-                            if (e.target.value === "Other") setCrawlerState("");
-                            else {
-                              setCrawlerState(e.target.value);
-                              if (e.target.value === "Odisha") setCrawlerDistrict("Khordha");
-                              else setCrawlerDistrict("");
-                              setCrawlerCity("");
-                            }
-                          }}
-                          className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-1.5"
-                        >
-                          <option value="">Select State</option>
-                          {indianStates.map(st => <option key={st} value={st}>{st}</option>)}
-                          <option value="Other">Other (Custom)</option>
-                        </select>
-                        {!indianStates.includes(crawlerState) && (
-                          <input 
-                            type="text" 
-                            value={crawlerState} 
-                            onChange={(e) => setCrawlerState(e.target.value)}
-                            placeholder="Type state name..."
-                            className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <input 
-                        type="text" 
-                        value={crawlerState} 
-                        onChange={(e) => setCrawlerState(e.target.value)}
-                        placeholder="e.g. New York, Karnataka"
-                        className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">District / Area</label>
-                    {crawlerCountry === "India" && crawlerState === "Odisha" ? (
-                      <>
-                        <select 
-                          value={districtsByState["Odisha"]?.includes(crawlerDistrict) ? crawlerDistrict : "Other"}
-                          onChange={(e) => {
-                            if (e.target.value === "Other") setCrawlerDistrict("");
-                            else {
-                              setCrawlerDistrict(e.target.value);
-                              setCrawlerCity("");
-                            }
-                          }}
-                          className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all mb-1.5"
-                        >
-                          <option value="">Select District</option>
-                          {districtsByState["Odisha"]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
-                          <option value="Other">Other (Custom)</option>
-                        </select>
-                        {!districtsByState["Odisha"]?.includes(crawlerDistrict) && (
-                          <input 
-                            type="text" 
-                            value={crawlerDistrict} 
-                            onChange={(e) => setCrawlerDistrict(e.target.value)}
-                            placeholder="Type district name..."
-                            className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <input 
-                        type="text" 
-                        value={crawlerDistrict} 
-                        onChange={(e) => setCrawlerDistrict(e.target.value)}
-                        placeholder="e.g. Manhattan, Bangalore"
-                        className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">Category</label>
-                    <select 
-                      value={crawlerCategory} 
-                      onChange={(e) => { setCrawlerCategory(e.target.value); setCrawlerSubCategory(""); setCustomSubCategory(""); }}
-                      className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
-                    >
-                      {platformCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-1.5">Sub-category</label>
-                    <select 
-                      value={crawlerSubCategory} 
-                      onChange={(e) => setCrawlerSubCategory(e.target.value)}
-                      className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-base focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none shadow-sm transition-all"
-                    >
-                      <option value="">Any {crawlerCategory}</option>
-                      {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
-                      <option value="Other">Other (Add Custom)</option>
-                    </select>
-                    {crawlerSubCategory === "Other" && (
-                      <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 placeholder:text-slate-400 mt-2 outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 shadow-sm transition-all" />
-                    )}
-                  </div>
-
-                  <div className="md:col-span-3 lg:col-span-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
+                  
+                  <div className="md:col-span-3 lg:col-span-5 grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-slate-200">
                     <div>
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Block / City</label>
-                      {blocksByDistrict[crawlerDistrict] ? (
-                        <>
-                          <select 
-                            value={blocksByDistrict[crawlerDistrict].includes(crawlerCity) ? crawlerCity : "Other"}
-                            onChange={(e) => {
-                              if (e.target.value === "Other") setCrawlerCity("");
-                              else setCrawlerCity(e.target.value);
-                            }}
-                            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:outline-none focus:border-teal-500 transition-colors mb-1.5"
-                          >
-                            <option value="">Select Block/City</option>
-                            {blocksByDistrict[crawlerDistrict].map((b: string) => <option key={b} value={b}>{b}</option>)}
-                            <option value="Other">Other (Custom)</option>
-                          </select>
-                          {!blocksByDistrict[crawlerDistrict].includes(crawlerCity) && (
-                            <input 
-                              type="text" 
-                              placeholder="Type block/city..."
-                              value={crawlerCity}
-                              onChange={(e) => setCrawlerCity(e.target.value)}
-                              className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:outline-none focus:border-teal-500 transition-colors"
-                            />
-                          )}
-                        </>
-                      ) : (
-                        <input 
-                          type="text" 
-                          placeholder="e.g. Bhubaneswar"
-                          value={crawlerCity}
-                          onChange={(e) => setCrawlerCity(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:outline-none focus:border-teal-500 transition-colors"
-                        />
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Category</label>
+                      <select 
+                        value={crawlerCategory} 
+                        onChange={(e) => { setCrawlerCategory(e.target.value); setCrawlerSubCategory(""); setCustomSubCategory(""); }}
+                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-teal-500 outline-none transition-all"
+                      >
+                        {platformCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Sub-category</label>
+                      <select 
+                        value={crawlerSubCategory} 
+                        onChange={(e) => setCrawlerSubCategory(e.target.value)}
+                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-teal-500 outline-none transition-all"
+                      >
+                        <option value="">Any {crawlerCategory}</option>
+                        {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
+                        <option value="Other">Other (Add Custom)</option>
+                      </select>
+                      {crawlerSubCategory === "Other" && (
+                        <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm mt-2 outline-none focus:border-teal-500 transition-all" />
                       )}
                     </div>
 
                     <div>
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Locality / Village / Street</label>
-                      <input 
-                        type="text" 
-                        placeholder="e.g. Sahidnagar"
-                        value={crawlerLocality}
-                        onChange={(e) => setCrawlerLocality(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:outline-none focus:border-teal-500 transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-semibold text-slate-800 block mb-1.5">PIN Code</label>
-                      <input 
-                        type="text" 
-                        value={crawlerPin} 
-                        onChange={(e) => setCrawlerPin(e.target.value)} 
-                        placeholder="e.g. 751007" 
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all" 
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-semibold text-slate-800 block mb-1.5">Custom Query Name</label>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Custom Query Name</label>
                       <input 
                         type="text" 
                         value={crawlerQuery} 
                         onChange={(e) => setCrawlerQuery(e.target.value)} 
                         placeholder="e.g. Top Doctors, Apollo..." 
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-base text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none shadow-sm transition-all" 
+                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
                       />
                     </div>
                   </div>
+
 
                   <div className="md:col-span-3 lg:col-span-5 mt-6">
                     <button 
@@ -541,7 +379,7 @@ export default function AdminDashboard() {
                       ) : (
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                       )}
-                      {isExtracting ? "Extracting..." : crawlerQuery ? `Extract "${crawlerQuery}"` : `Extract ${customSubCategory || crawlerSubCategory || crawlerCategory} in ${[crawlerLocality, crawlerDistrict, crawlerState, crawlerCountry, crawlerPin].filter(Boolean).join(", ")}`}
+                      {isExtracting ? "Extracting..." : crawlerQuery ? `Extract "${crawlerQuery}"` : `Extract ${customSubCategory || crawlerSubCategory || crawlerCategory} in ${[crawlerAddress.localAddress, crawlerAddress.district, crawlerAddress.state, crawlerAddress.country, crawlerAddress.pincode].filter(Boolean).join(", ")}`}
                     </button>
                     
                     {nextPageToken && (
