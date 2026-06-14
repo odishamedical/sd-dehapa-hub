@@ -14,88 +14,99 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 const PremiumDoctorTicket = ({ data }: { data: any }) => {
   return (
-    <Link href={`/doctors/${data.id}`} className="relative h-[220px] rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/50">
-      {/* Background Metal Gradient (Right Side Base) */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#e2e8f0] via-[#f1f5f9] to-[#cbd5e1] group-hover:to-[#94a3b8] transition-colors"></div>
+    <Link href={`/doctors/${data.id}`} className="relative h-[220px] rounded-[24px] shadow-2xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
+      {/* Background Metal Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#ffffff] via-[#e2e8f0] to-[#94a3b8] opacity-90 transition-colors"></div>
       
-      {/* Optional: Faint Map Watermark */}
-      <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+      {/* Subtle brushed texture */}
+      <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
 
       <div className="flex h-full relative z-10">
-        {/* Left Side: Image (32% width) */}
-        <div className="w-[32%] relative shrink-0 h-full bg-slate-200">
-          <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
+        
+        {/* Left Side: Image with S-Curve Mask and 3D Bevel (38% width) */}
+        <div className="w-[38%] h-full relative shrink-0">
           
-          {/* Thick Metallic Swoosh Frame */}
-          <svg className="absolute top-0 -right-[2px] h-full drop-shadow-[-6px_0_10px_rgba(0,0,0,0.3)] z-20" preserveAspectRatio="none" viewBox="0 0 100 100" style={{ width: '60px' }}>
+          {/* The Image inside an SVG with clipPath */}
+          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" className="absolute inset-0">
             <defs>
-              <linearGradient id="metalEdge" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#475569" /> {/* dark edge shadow */}
-                <stop offset="25%" stopColor="#f8fafc" /> {/* bright highlight */}
-                <stop offset="60%" stopColor="#94a3b8" /> {/* mid metal */}
-                <stop offset="100%" stopColor="#e2e8f0" /> {/* blends into right side */}
+              <clipPath id={`curve-mask-${data.id}`} clipPathUnits="userSpaceOnUse">
+                <path d="M0,0 H82 C98,30 58,70 82,100 H0 Z" />
+              </clipPath>
+            </defs>
+            {/* Fallback gray background for missing images */}
+            <rect width="100" height="100" fill="#cbd5e1" clipPath={`url(#curve-mask-${data.id})`} />
+            <image href={data.image} width="100" height="100" preserveAspectRatio="xMidYMid slice" clipPath={`url(#curve-mask-${data.id})`} />
+          </svg>
+          
+          {/* The Thick 3D Metallic Bevel */}
+          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" className="absolute inset-0 pointer-events-none drop-shadow-[5px_0_8px_rgba(0,0,0,0.4)]">
+            <defs>
+              <linearGradient id={`bevel-grad-${data.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#475569" />  {/* Dark inner shadow */}
+                <stop offset="30%" stopColor="#ffffff" /> {/* Bright specular highlight */}
+                <stop offset="70%" stopColor="#94a3b8" /> {/* Mid silver */}
+                <stop offset="100%" stopColor="#1e293b" /> {/* Dark outer edge */}
               </linearGradient>
             </defs>
-            <path d="M100,0 H40 C-10,30 -10,70 40,100 H100 Z" fill="url(#metalEdge)" />
+            {/* Bevel path: sweeps down the image edge, moves right by 6 units, sweeps back up parallel */}
+            <path d="M82,0 C98,30 58,70 82,100 L88,100 C64,70 104,30 88,0 Z" fill={`url(#bevel-grad-${data.id})`} />
           </svg>
+          
         </div>
         
-        {/* Right Side: Data (68% width) */}
-        <div className="flex-1 py-4 pr-4 pl-6 flex flex-col min-w-0 relative z-30">
+        {/* Right Side: Data Content (62% width) */}
+        <div className="flex-1 py-4 pr-5 pl-2 flex flex-col min-w-0 relative z-30">
           
-          <div className="min-w-0 mb-1">
-            <h3 className="text-base md:text-lg font-extrabold text-slate-800 truncate">{data.name}</h3>
-            <p className="text-slate-600 text-[11px] md:text-xs font-semibold truncate">{data.specialty}</p>
+          {/* Top Row: Name and Icon */}
+          <div className="flex justify-between items-start mb-0.5">
+            <h3 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight truncate drop-shadow-sm">{data.name}</h3>
+            <svg className="w-5 h-5 text-slate-400 drop-shadow-sm shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14h-2v-4H5v-2h4V7h2v4h4v2h-4v4z"/></svg>
           </div>
           
-          <div className="flex flex-col gap-1.5 mb-auto mt-2">
-            <span className="text-slate-700 text-[11px] font-bold flex items-center gap-1.5 truncate">
-              <svg className="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-              {data.hospital || "Independent Practitioner"}
-            </span>
-            <span className="text-slate-500 text-[11px] font-medium flex items-center gap-1.5 truncate">
-              <svg className="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <p className="text-slate-600 text-xs font-semibold mb-2 truncate">{data.specialty}</p>
+          
+          {/* Board Certifications (Medals) */}
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="text-[10px] font-bold text-slate-700">Board Certifications</span>
+            <div className="flex gap-1">
+               <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 border border-yellow-200 shadow-sm flex items-center justify-center">
+                 <span className="text-[8px] text-white font-bold">★</span>
+               </div>
+               {data.verified && (
+                 <div className="w-5 h-5 rounded-full bg-gradient-to-br from-slate-300 to-slate-500 border border-slate-200 shadow-sm flex items-center justify-center">
+                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                 </div>
+               )}
+            </div>
+          </div>
+          
+          {/* Clinic & Location */}
+          <div className="mb-2.5">
+            <p className="text-slate-800 text-xs font-bold truncate drop-shadow-sm">{data.hospital || "Independent Practitioner"}</p>
+            <p className="text-slate-600 text-[10px] flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
               {data.district || "Angul"}
-            </span>
-            <div className="flex items-center gap-4 text-[11px] mt-0.5">
-               <span className="text-amber-500 font-bold flex items-center gap-0.5">
-                 ⭐ {data.rating}
-               </span>
-               <span className="text-slate-500 flex items-center gap-1">
-                 💬 {data.reviews} Ratings
-               </span>
-            </div>
+            </p>
           </div>
           
-          {/* Verification Badge */}
-          <div className="mt-1 mb-3">
-            {data.verified ? (
-              <span className="inline-flex bg-emerald-100 text-emerald-800 text-[9px] font-bold px-2 py-0.5 rounded border border-emerald-200">
-                ✓ Verified Partner
-              </span>
-            ) : (
-              <span className="inline-flex bg-slate-200/80 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded border border-slate-300">
-                Verification Pending
-              </span>
-            )}
+          {/* Ratings */}
+          <div className="flex items-center gap-4 text-[10px] font-bold text-slate-600 mb-auto drop-shadow-sm">
+             <span className="flex items-center gap-1 text-amber-500">
+               ⭐⭐⭐⭐⭐ <span className="text-slate-700 ml-1">{data.rating}</span>
+             </span>
+             <span className="flex items-center gap-1">
+               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+               {data.reviews} Ratings
+             </span>
           </div>
           
-          {/* Bottom Controls */}
-          <div className="flex items-center justify-between pt-2.5 border-t border-slate-300/50 mt-auto">
-            <div className="shrink-0 mr-2">
-              <p className="text-[8px] uppercase tracking-widest text-slate-500">Fee</p>
-              <p className="text-sm font-bold text-slate-800">{typeof data.fee === 'number' || !isNaN(Number(data.fee)) ? `₹${data.fee}` : data.fee}</p>
+          {/* Bottom Buttons */}
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-400/30">
+            <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-4 rounded-md border border-slate-400 text-[10px] transition-colors whitespace-nowrap shadow-sm text-center flex-1">
+              Contact
             </div>
-            
-            <div className="flex items-center gap-2 shrink-0">
-              {!data.verified && (
-                <div className="bg-transparent hover:bg-slate-200 text-slate-700 font-bold py-1.5 px-2 md:px-3 rounded border border-slate-400 text-[10px] transition-colors whitespace-nowrap hidden sm:block">
-                  Verify Now
-                </div>
-              )}
-              <div className="bg-[#1e293b] hover:bg-black text-white font-bold py-1.5 px-3 md:px-4 rounded text-[10px] transition-all shadow-md whitespace-nowrap">
-                Book Consult
-              </div>
+            <div className="bg-[#1e293b] hover:bg-black text-white font-bold py-1.5 px-4 rounded-md text-[10px] transition-all shadow-lg shadow-black/20 whitespace-nowrap text-center flex-[1.5]">
+              Book Appointment
             </div>
           </div>
           
