@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { state, district, locality, pin, category, subCategory, query } = body;
+    const { state, district, locality, city, pin, category, subCategory, query } = body;
 
     // Construct the text search query
     const searchTerms = [];
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
 
     const locationTerms = [];
     if (locality) locationTerms.push(locality);
+    if (city) locationTerms.push(city);
     if (district && district !== 'Other') locationTerms.push(district);
     if (state) locationTerms.push(state);
     if (pin) locationTerms.push(pin);

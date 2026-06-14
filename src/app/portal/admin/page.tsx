@@ -15,8 +15,9 @@ export default function AdminDashboard() {
 
   // Crawler State
   const [crawlerState, setCrawlerState] = useState("Odisha");
-  const [crawlerDistrict, setCrawlerDistrict] = useState("");
+  const [crawlerDistrict, setCrawlerDistrict] = useState("Khordha");
   const [customDistrict, setCustomDistrict] = useState("");
+  const [crawlerCity, setCrawlerCity] = useState("Bhubaneswar");
   const [crawlerLocality, setCrawlerLocality] = useState("");
   const [crawlerPin, setCrawlerPin] = useState("");
   const [crawlerCategory, setCrawlerCategory] = useState("Doctor");
@@ -70,6 +71,7 @@ export default function AdminDashboard() {
       const payload = {
         state: crawlerState,
         district: crawlerDistrict === "Other" ? customDistrict : crawlerDistrict,
+        city: crawlerCity,
         locality: crawlerLocality,
         pin: crawlerPin,
         category: crawlerCategory,
@@ -288,14 +290,27 @@ export default function AdminDashboard() {
 
                   {/* Specific Search Modifiers */}
                   <div className="md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                    {/* City / Town */}
                     <div>
-                      <label className="text-sm font-semibold text-slate-800 block mb-2">Locality / Village / Street</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">City / Town</label>
                       <input 
                         type="text" 
-                        value={crawlerLocality} 
-                        onChange={(e) => setCrawlerLocality(e.target.value)} 
-                        placeholder="e.g. Sahidnagar" 
-                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all" 
+                        placeholder="e.g. Bhubaneswar"
+                        value={crawlerCity}
+                        onChange={(e) => setCrawlerCity(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition-colors"
+                      />
+                    </div>
+
+                    {/* Locality */}
+                    <div>
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Locality / Village / Street</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Sahidnagar"
+                        value={crawlerLocality}
+                        onChange={(e) => setCrawlerLocality(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition-colors"
                       />
                     </div>
                     <div>
