@@ -62,8 +62,8 @@ export default function Home() {
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/doctor.png" alt="Doctor" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-[#0d9488]/80 backdrop-blur-md rounded-lg px-3 py-1.5 shadow-lg border border-teal-300/30">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">BOOK DOCTOR<br/>CONSULTATION</h3>
+                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
+                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Book Doctor<br/>Consultation</h3>
                 </div>
               </div>
               
@@ -118,8 +118,8 @@ export default function Home() {
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/hospital.png" alt="Hospital" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-[#0d9488]/80 backdrop-blur-md rounded-lg px-3 py-1.5 shadow-lg border border-teal-300/30">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">HOSPITAL<br/>& FACILITY<br/>NETWORK</h3>
+                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
+                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Hospital<br/>& Facility<br/>Network</h3>
                 </div>
               </div>
               
@@ -166,8 +166,8 @@ export default function Home() {
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/lab.png" alt="Lab" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-[#0d9488]/80 backdrop-blur-md rounded-lg px-3 py-1.5 shadow-lg border border-teal-300/30">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">LAB SERVICES<br/>& TEST PANELS</h3>
+                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
+                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Lab Services<br/>& Test Panels</h3>
                 </div>
               </div>
               
@@ -231,8 +231,8 @@ export default function Home() {
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/medicine.png" alt="Medicine" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-[#0d9488]/80 backdrop-blur-md rounded-lg px-3 py-1.5 shadow-lg border border-teal-300/30">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">PRESCRIPTION<br/>& MEDICATION</h3>
+                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
+                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Prescription<br/>& Medication</h3>
                 </div>
               </div>
               
@@ -282,8 +282,8 @@ export default function Home() {
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/ambulance.png" alt="Ambulance" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-[#0d9488]/80 backdrop-blur-md rounded-lg px-3 py-1.5 shadow-lg border border-teal-400/30">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">EMERGENCY<br/>SERVICES</h3>
+                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
+                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Emergency<br/>Services</h3>
                 </div>
               </div>
               
