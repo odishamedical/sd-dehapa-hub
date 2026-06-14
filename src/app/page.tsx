@@ -51,128 +51,261 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Overlapping Content: Cards & Search Bar */}
+      {/* Overlapping Content: Hyper-Realistic Service Cards */}
       <div className="relative z-20 container mx-auto px-6 lg:px-12 -mt-16">
-          {/* 5 Category Cards - Ultra Glassmorphism UI */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-12 w-full">
-            {/* Card 1: Doctors */}
-            <Link href="/doctors" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-3 w-full mb-4">
-                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">👨‍⚕️</div>
-                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Book Doctors</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12 w-full">
+            
+            {/* Card 1: Book Doctor Consultation */}
+            <Link href="/doctors" className="bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+              {/* Top Image Section */}
+              <div className="h-44 relative w-full flex-shrink-0">
+                <img src="/images/doctor.png" alt="Doctor" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-200/90 via-slate-100/20 to-black/40"></div>
+                <h3 className="absolute top-6 left-6 text-white font-serif text-lg font-bold leading-tight drop-shadow-md">BOOK DOCTOR<br/>CONSULTATION</h3>
               </div>
-              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
-                <div className="flex justify-between items-start">
+              
+              {/* Bottom Data Section */}
+              <div className="flex-1 px-5 pb-5 pt-2 flex flex-col gap-3 relative z-20">
+                {/* Rating */}
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-slate-600 uppercase">Rating</span>
+                  <div className="text-amber-400 text-[10px] tracking-widest drop-shadow-sm">⭐⭐⭐⭐⭐</div>
+                </div>
+                
+                {/* Verified Ratings Box */}
+                <div className="bg-gradient-to-r from-teal-50 to-white border border-teal-100/50 rounded-xl p-3 flex justify-between items-center shadow-sm">
                   <div>
-                    <span className="text-xs text-slate-600 font-bold block mb-1.5">Top Speciality</span>
-                    <div className="text-amber-500 text-xs tracking-widest drop-shadow-sm">⭐⭐⭐⭐⭐</div>
+                    <span className="text-[10px] font-bold text-teal-900 block mb-0.5">VERIFIED EXPERT RATINGS:</span>
+                    <span className="text-[10px] text-slate-600 font-medium">4.9 Stars from 230 Reviews</span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-1">&lt; Availability &gt;</span>
-                    <div className="grid grid-cols-7 gap-1 text-[9px] text-slate-400 font-mono text-center">
-                      <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-                      <span></span><span></span><span>1</span><span>2</span><span className="bg-teal-600 text-white rounded">3</span><span>4</span><span>5</span>
+                  <div className="text-2xl text-teal-600 drop-shadow-md">🎖️</div>
+                </div>
+
+                {/* Availability Section */}
+                <div className="bg-gradient-to-b from-slate-50 to-slate-200 border border-white rounded-xl p-3 shadow-inner">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-[10px] font-bold text-slate-800 uppercase">Availability</span>
+                    <div className="text-[9px] text-slate-500 font-mono tracking-widest font-bold">S M <span className="text-teal-600 border-b-2 border-teal-600 pb-0.5">T</span> W T F S</div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-slate-800 text-white text-[8px] px-2 py-1 rounded-full font-bold">NEXT SLOT: Today, 3:15 PM</span>
+                  </div>
+                  <div className="flex gap-1 justify-between mt-2">
+                    {['030', '9A3', '1:00', '1:00', 'PM', '2:M', 'AM'].map((time, i) => (
+                      <span key={i} className={`text-[8px] px-1.5 py-1 rounded-md font-bold ${time === 'PM' ? 'bg-teal-600 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-200 shadow-sm'}`}>{time}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bottom Action */}
+                <div className="mt-auto flex justify-between items-end">
+                  <div className="flex items-center gap-1">
+                    <span className="text-[8px] font-bold text-slate-500 uppercase">Specialty Tags:</span>
+                    <span className="text-[8px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">Primary Care</span>
+                  </div>
+                  <button className="bg-teal-800 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-teal-700 transition-colors uppercase">Full Availability</button>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 2: Hospital & Facility Network */}
+            <Link href="/hospitals" className="bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+              {/* Top Image Section */}
+              <div className="h-44 relative w-full flex-shrink-0">
+                <img src="/images/hospital.png" alt="Hospital" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-200/90 via-slate-100/20 to-black/40"></div>
+                <h3 className="absolute top-6 left-6 text-white font-serif text-lg font-bold leading-tight drop-shadow-md">HOSPITAL<br/>& FACILITY<br/>NETWORK</h3>
+              </div>
+              
+              {/* Bottom Data Section */}
+              <div className="flex-1 px-5 pb-5 pt-0 flex flex-col gap-4 relative z-20">
+                {/* Map Box */}
+                <div className="bg-white rounded-2xl p-3 shadow-md border border-slate-200 relative overflow-hidden flex items-center justify-between -mt-6">
+                  <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')]"></div>
+                  <div className="relative z-10">
+                     <span className="text-teal-700 text-2xl drop-shadow-md">📍</span>
+                     <span className="text-[10px] font-bold text-slate-800 block mt-1">DehaPa Health</span>
+                  </div>
+                  <div className="relative z-10 flex flex-col gap-2">
+                     <span className="bg-white text-slate-700 text-[8px] font-bold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 border border-slate-100"><span className="text-[10px]">📍</span> 2 Nearby facilities</span>
+                     <span className="bg-white text-slate-700 text-[8px] font-bold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 border border-slate-100"><span className="text-[10px]">📍</span> 2 Nearby facilities</span>
+                  </div>
+                </div>
+
+                {/* Live Status */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold text-slate-800 uppercase">Live Status:</span>
+                  <div className="bg-teal-700 text-white text-[10px] font-medium px-3 py-1.5 rounded-lg shadow-sm">
+                    Live Capacity: ICU 12/20, General <span className="font-bold">45/60</span>
+                  </div>
+                </div>
+
+                {/* Bed Availability */}
+                <div className="mt-2 border-t border-slate-300/50 pt-3">
+                  <span className="text-[10px] font-bold text-slate-800 uppercase block mb-1">Real-Time Bed Availability Range:</span>
+                  <span className="text-lg font-bold text-slate-900">1 to 24 Beds</span>
+                </div>
+
+                {/* Bottom Action */}
+                <div className="mt-auto text-center">
+                  <button className="bg-teal-800 text-white text-[10px] font-bold px-6 py-2.5 rounded-full shadow-md hover:bg-teal-700 transition-colors uppercase w-[80%]">View Live Capacity</button>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 3: Lab Services */}
+            <Link href="/labs" className="bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+              {/* Top Image Section */}
+              <div className="h-44 relative w-full flex-shrink-0">
+                <img src="/images/lab.png" alt="Lab" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-200/90 via-slate-100/20 to-black/40"></div>
+                <h3 className="absolute top-6 left-6 text-white font-serif text-lg font-bold leading-tight drop-shadow-md">LAB SERVICES<br/>& TEST PANELS</h3>
+              </div>
+              
+              {/* Bottom Data Section */}
+              <div className="flex-1 px-5 pb-5 pt-3 flex flex-col gap-3 relative z-20">
+                {/* Available Tests Title */}
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-bold text-slate-800 uppercase">Available Test Types</span>
+                  <span className="text-xl drop-shadow-sm transform -rotate-45 text-teal-600">💉</span>
+                </div>
+
+                {/* Test List */}
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <div className="w-1 h-10 bg-teal-500 rounded-full mt-0.5"></div>
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-800 block leading-none">Wellness</span>
+                      <span className="text-[8px] text-slate-500 leading-tight block mt-0.5">Categorize define ideologies, wellness, preparation and wellness.</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-1 h-8 bg-sky-500 rounded-full mt-0.5"></div>
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-800 block leading-none">Diagnostic</span>
+                      <span className="text-[8px] text-slate-500 leading-tight block mt-0.5">Diagnostic class, diagnostic, and rewards modellanel spectromonis.</span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-1 h-6 bg-red-500 rounded-full mt-0.5"></div>
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-800 block leading-none">Blood Panels</span>
+                      <span className="text-[8px] text-slate-500 leading-tight block mt-0.5">Cateroper, vaystabite, Diagnostic, mancct and blood panels.</span>
                     </div>
                   </div>
                 </div>
-                <div className="pt-2 border-t border-white/40 mt-1">
-                  <span className="text-sm font-bold text-slate-800">Specialist ratings</span>
-                </div>
-              </div>
-            </Link>
 
-            {/* Card 2: Hospitals */}
-            <Link href="/hospitals" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-3 w-full mb-4">
-                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">🏥</div>
-                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Hospitals</span>
-              </div>
-              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
-                <div className="flex justify-between items-start border-b border-white/50 pb-3">
-                  <div>
-                    <span className="text-xs text-slate-600 font-bold block mb-1">Nearby facilities</span>
-                    <span className="text-sm font-bold text-slate-800">DehaPa Health</span>
+                {/* Buttons */}
+                <div className="mt-auto space-y-2">
+                  <div className="bg-gradient-to-r from-white to-slate-100 border border-slate-300 rounded-xl p-2.5 shadow-sm flex items-center gap-3">
+                    <span className="text-2xl text-teal-700 drop-shadow-sm">📋</span>
+                    <div>
+                      <span className="text-[9px] font-bold text-slate-800 uppercase block leading-tight">Integrated Results Portal</span>
+                      <span className="text-[8px] text-slate-500 block">Reach Filtered Results Portal</span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-500 font-bold block mb-1">Live status</span>
-                    <span className="text-xs text-emerald-600 font-bold flex items-center justify-end gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live
-                    </span>
-                  </div>
-                </div>
-                <div className="flex justify-between items-end mt-1">
-                  <span className="text-xs font-bold text-slate-800 leading-snug">Real-time bed<br/>Availability</span>
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-500 block">Sample</span>
-                    <span className="text-sm font-bold text-slate-800">1 to 24</span>
+                  <div className="bg-transparent p-1 flex items-center gap-3 border-t border-slate-300/50 pt-2">
+                    <span className="text-2xl text-teal-700 drop-shadow-sm">🛵</span>
+                    <div>
+                      <span className="text-[9px] font-bold text-slate-800 uppercase block leading-tight">Home Pickup Service</span>
+                      <span className="text-[8px] text-slate-500 block">New ocr on home pickup service</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </Link>
 
-            {/* Card 3: Labs */}
-            <Link href="/labs" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-3 w-full mb-4">
-                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">🔬</div>
-                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Labs</span>
+            {/* Card 4: Prescription & Medication */}
+            <Link href="/pharmacies" className="bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+              {/* Top Image Section */}
+              <div className="h-44 relative w-full flex-shrink-0">
+                <img src="/images/medicine.png" alt="Medicine" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-200/90 via-slate-100/20 to-black/40"></div>
+                <h3 className="absolute top-6 left-6 text-slate-800 font-serif text-lg font-bold leading-tight drop-shadow-md text-shadow-white">PRESCRIPTION<br/>& MEDICATION</h3>
               </div>
-              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
-                <div className="flex justify-between items-center border-b border-white/50 pb-3">
-                  <span className="text-xs text-slate-400 font-bold">&lt;</span>
-                  <div className="text-center">
-                    <span className="text-xs text-slate-800 font-bold block">Available Test types 🧪</span>
-                    <span className="text-[10px] text-slate-600 mt-1 block">Reach Test Results</span>
+              
+              {/* Bottom Data Section */}
+              <div className="flex-1 px-5 pb-5 pt-3 flex flex-col gap-4 relative z-20">
+                
+                {/* Shopping List Box */}
+                <div className="bg-gradient-to-b from-white to-slate-50 border border-slate-200 rounded-xl p-3 shadow-sm">
+                  <span className="text-[10px] font-bold text-slate-800 uppercase block mb-2 border-b border-slate-200 pb-1">Basic Shopping List</span>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-slate-700 font-medium">Basic shopping list</span>
+                      <div className="w-3.5 h-3.5 border border-slate-400 bg-white rounded-sm shadow-inner"></div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-slate-700 font-medium">Medication</span>
+                      <div className="w-3.5 h-3.5 border border-slate-400 bg-white rounded-sm shadow-inner"></div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-slate-700 font-medium">Medication list</span>
+                      <div className="w-3.5 h-3.5 border border-slate-400 bg-white rounded-sm shadow-inner"></div>
+                    </div>
                   </div>
-                  <span className="text-xs text-slate-400 font-bold">&gt;</span>
                 </div>
-                <div className="text-center mt-2">
-                  <span className="text-sm font-bold text-slate-800">Integrated results access</span>
+
+                {/* Recent Prescriptions */}
+                <div>
+                  <span className="text-[10px] font-bold text-slate-800 uppercase block mb-2 border-b border-slate-300/50 pb-1">Recent Prescriptions</span>
+                  <div className="space-y-1.5 text-[9px] text-slate-700 font-medium">
+                    <div className="flex justify-between"><span>1. <strong className="text-slate-900">Metformin</strong> 500mg</span><span className="text-slate-500">Rx12345</span></div>
+                    <div className="flex justify-between"><span>2. <strong className="text-slate-900">Atorvastatin</strong> 20mg</span><span className="text-slate-500">Rx67890</span></div>
+                    <div className="flex justify-between"><span>3. <strong className="text-slate-900">Atorvastatin</strong> 20mg</span><span className="text-slate-500">Rx67890</span></div>
+                  </div>
+                </div>
+
+                {/* Bottom Action */}
+                <div className="mt-auto text-center">
+                  <button className="bg-teal-800 text-white text-[10px] font-bold px-6 py-2.5 rounded-full shadow-md hover:bg-teal-700 transition-colors uppercase w-[90%]">Refill Prescriptions</button>
                 </div>
               </div>
             </Link>
 
-            {/* Card 4: Medicine */}
-            <Link href="/pharmacies" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-3 w-full mb-4">
-                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">💊</div>
-                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Medicine</span>
+            {/* Card 5: Emergency Services */}
+            <Link href="/ambulances" className="bg-gradient-to-b from-slate-900 via-slate-800 to-black rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(220,38,38,0.2)] transition-all duration-300 group flex flex-col h-[480px] border border-slate-700 relative">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
+              {/* Top Image Section */}
+              <div className="h-44 relative w-full flex-shrink-0">
+                <img src="/images/ambulance.png" alt="Ambulance" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-black/40 to-black/80"></div>
+                <h3 className="absolute top-6 left-6 text-white font-serif text-lg font-bold leading-tight drop-shadow-md">EMERGENCY<br/>SERVICES</h3>
               </div>
-              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors shadow-inner">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center border-b border-white/50 pb-3">
-                    <span className="text-xs text-slate-800 font-bold">Basic shopping list</span>
-                    <div className="w-3.5 h-3.5 border border-slate-400 rounded bg-white/50"></div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-slate-800 font-bold">Recent prescriptions</span>
-                    <div className="w-3.5 h-3.5 border border-slate-400 rounded bg-white/50"></div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 5: Ambulances */}
-            <Link href="/ambulances" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-3 w-full mb-4">
-                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">🚑</div>
-                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Ambulances</span>
-              </div>
-              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
-                <button className="w-full bg-white/90 border border-white text-xs font-bold text-slate-800 py-2 rounded-xl shadow-sm hover:bg-white transition-colors">
+              
+              {/* Bottom Data Section */}
+              <div className="flex-1 px-5 pb-5 pt-4 flex flex-col gap-4 relative z-20">
+                
+                {/* Huge Red Button */}
+                <button className="w-full bg-gradient-to-b from-red-600 to-red-800 border border-red-500/50 text-white text-xs font-bold py-3.5 rounded-2xl shadow-[0_0_20px_rgba(220,38,38,0.4),inset_0_2px_5px_rgba(255,255,255,0.3)] hover:brightness-110 transition-all uppercase tracking-wide">
                   Request Immediate Help
                 </button>
-                <div className="flex justify-between items-center mt-2">
+
+                {/* Live ETA Box */}
+                <div className="bg-black/40 border border-slate-700 rounded-2xl p-4 flex justify-between items-center backdrop-blur-md shadow-inner mt-4">
                   <div>
-                    <span className="text-[10px] text-slate-600 font-bold block mb-0.5">ETA</span>
-                    <span className="text-sm font-bold text-slate-800">4:04 Min</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Live ETA:</span>
+                    <span className="text-2xl font-bold text-white leading-none block mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">3:55 Min</span>
+                    <span className="text-[9px] text-teal-400 border-b border-teal-400/50 hover:text-teal-300 cursor-pointer">Track Ambulance Live</span>
                   </div>
-                  <div className="w-16 h-10 bg-white/60 rounded-xl overflow-hidden border border-white/80 relative shadow-inner">
+                  <div className="w-16 h-16 bg-slate-800 rounded-xl overflow-hidden border border-slate-600 relative shadow-inner">
                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-30"></div>
-                     <svg className="w-5 h-5 text-slate-800 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-md" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path></svg>
+                     <span className="text-sky-400 text-xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]">📍</span>
                   </div>
+                </div>
+
+                {/* Bottom Action */}
+                <div className="mt-auto flex justify-between items-end border-t border-slate-700/50 pt-3">
+                  <span className="text-[9px] text-slate-400">Dispatch type: <strong className="text-white">Advanced Life Support</strong></span>
+                  <span className="text-slate-500 text-lg">✨</span>
                 </div>
               </div>
             </Link>
+
           </div>
 
           {/* Search Bar */}
