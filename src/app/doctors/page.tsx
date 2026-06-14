@@ -9,6 +9,7 @@ import { useTenant } from '@/components/TenantContext';
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
+import CustomDropdown from '@/components/CustomDropdown';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
@@ -194,53 +195,51 @@ export default function DoctorsDirectory() {
           <div className="bg-white/95 backdrop-blur-xl border-4 border-white/40 rounded-2xl p-2 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col md:flex-row gap-2 max-w-6xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
              
              {/* Country */}
-             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 hidden lg:block text-left shrink-0">
-               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Country</label>
-               <select className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8">
-                 <option>India</option>
-               </select>
-               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-             </div>
+             <CustomDropdown 
+               label="Country"
+               options={[{ label: "India", value: "India" }]}
+               value="India"
+               onChange={() => {}}
+               className="hidden lg:block"
+             />
 
              {/* State */}
-             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 hidden lg:block text-left shrink-0">
-               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">State</label>
-               <select className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8">
-                 <option>Odisha</option>
-               </select>
-               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-             </div>
+             <CustomDropdown 
+               label="State"
+               options={[{ label: "Odisha", value: "Odisha" }]}
+               value="Odisha"
+               onChange={() => {}}
+               className="hidden lg:block"
+             />
 
              {/* District */}
-             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 md:w-40 shrink-0 text-left">
-               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">District</label>
-               <select 
-                 className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8 truncate"
-                 value={searchDistrict}
-                 onChange={(e) => setSearchDistrict(e.target.value)}
-               >
-                 <option value="">All Districts</option>
-                 {uniqueDistricts.map(d => <option key={d as string} value={d as string}>{d}</option>)}
-               </select>
-               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-             </div>
+             <CustomDropdown 
+               label="District"
+               placeholder="All Districts"
+               options={[
+                 { label: "All Districts", value: "" },
+                 ...uniqueDistricts.map(d => ({ label: d as string, value: d as string }))
+               ]}
+               value={searchDistrict}
+               onChange={(val) => setSearchDistrict(val)}
+               className="md:w-40"
+             />
 
              {/* Type */}
-             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 md:w-36 shrink-0 text-left">
-               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Type</label>
-               <select 
-                 className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8"
-                 value={searchType}
-                 onChange={(e) => setSearchType(e.target.value)}
-               >
-                 <option value="">All Types</option>
-                 <option value="doctors">Doctors</option>
-                 <option value="hospitals">Hospitals</option>
-                 <option value="clinics">Clinics</option>
-                 <option value="labs">Labs</option>
-               </select>
-               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-             </div>
+             <CustomDropdown 
+               label="Type"
+               placeholder="All Types"
+               options={[
+                 { label: "All Types", value: "" },
+                 { label: "Doctors", value: "doctors" },
+                 { label: "Hospitals", value: "hospitals" },
+                 { label: "Clinics", value: "clinics" },
+                 { label: "Labs", value: "labs" }
+               ]}
+               value={searchType}
+               onChange={(val) => setSearchType(val)}
+               className="md:w-36"
+             />
 
              {/* Free Text Search */}
              <div className="flex-1 relative px-2 py-1 flex flex-col justify-center">
