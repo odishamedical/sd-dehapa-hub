@@ -18,7 +18,7 @@ export default function CategoryNav() {
   return (
     <div className="bg-white border-b border-slate-200">
       <div className="max-w-6xl mx-auto px-6">
-        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar py-2">
+        <nav className="flex items-center md:justify-center gap-1 overflow-x-auto no-scrollbar py-2">
           {categories.map((cat) => {
             const isActive = pathname.startsWith(cat.href);
             return (

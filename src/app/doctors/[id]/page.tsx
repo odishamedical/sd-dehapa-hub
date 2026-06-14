@@ -116,58 +116,30 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
         />
         
         {/* Main Content */}
-        <div className="max-w-6xl mx-auto px-6 -mt-16 relative z-20">
-        </div>
       </div>
 
       {/* Main Content Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-24 z-20">
         
-        {/* Header Card (Profile Pic & High Level Info) */}
-        <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 flex flex-col md:flex-row items-start md:items-center gap-6 border border-slate-100">
-          {/* Profile Photo */}
-          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg overflow-hidden shrink-0 bg-slate-100 mt-[-4rem] md:mt-0">
-            <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
-          {/* Main Info */}
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{doctor.name}</h1>
-              <span className="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
-                Verified
-              </span>
-            </div>
-            <p className="text-lg text-teal-700 font-semibold mb-2">{doctor.specialty}</p>
-            <p className="text-sm text-slate-500 mb-3">{doctor.qualification} • {doctor.experience}</p>
-            
-            <div className="flex items-center gap-2">
-              <span className="flex items-center text-amber-400">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <span className="ml-1 text-sm font-bold text-slate-700">{doctor.rating}</span>
-              </span>
-              <span className="text-sm text-slate-400">({doctor.reviews} Google Reviews)</span>
+          {/* Left: Sticky Profile Card (25%) */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+              <div className="w-32 h-32 rounded-full mx-auto border-4 border-white shadow-lg overflow-hidden shrink-0 bg-slate-100 mb-4">
+                <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover" />
+              </div>
+              <h1 className="text-center text-xl font-bold text-slate-900">{doctor.name}</h1>
+              <p className="text-center text-teal-700 font-semibold text-sm">{doctor.specialty}</p>
+              <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+                 <button className="w-full px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 transition-all">Book Appointment</button>
+                 <button className="w-full px-4 py-3 bg-white border border-slate-200 hover:border-teal-500 text-slate-700 hover:text-teal-600 font-bold rounded-xl transition-all">Call Clinic</button>
+              </div>
             </div>
           </div>
-          
-          {/* Actions */}
-          <div className="w-full md:w-auto flex flex-col gap-3 shrink-0">
-            <button className="w-full md:w-auto px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2">
-              Book Appointment
-            </button>
-            <button className="w-full md:w-auto px-8 py-3 bg-white border border-slate-200 hover:border-teal-500 text-slate-700 hover:text-teal-600 font-bold rounded-xl transition-all flex items-center justify-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-              Call Clinic
-            </button>
-          </div>
-        </div>
 
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Left Column: Details */}
-          <div className="lg:col-span-2 space-y-8">
+          {/* Center: Main Content (50%) */}
+          <div className="lg:col-span-1 space-y-8">
             {/* About */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
               <h2 className="text-xl font-bold text-slate-900 mb-4">About the Doctor</h2>
@@ -185,7 +157,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                 ))}
               </div>
             </div>
-
+            
             {/* Education */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
               <h2 className="text-xl font-bold text-slate-900 mb-6">Education & Training</h2>
@@ -198,7 +170,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                     </div>
                     <div>
                       <h4 className="font-bold text-slate-900">{edu.degree}</h4>
-                      <p className="text-sm text-slate-500">{edu.institute}</p>
+                      <p className="text-sm text-slate-500">{edu.institution}</p>
                       <span className="text-xs font-bold text-slate-400 mt-1 block">{edu.year}</span>
                     </div>
                   </div>
@@ -207,91 +179,83 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
-          {/* Right Column: Sticky Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6 space-y-6">
-              
-              {/* Location Card */}
-              <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
-                {/* Map Box */}
-                <div className="w-full h-48 bg-slate-100 relative">
-                  <iframe 
-                    src={doctor.clinic.mapUrl} 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="font-bold text-lg text-slate-900 mb-2">{doctor.clinic.name}</h3>
-                  
-                  <div className="space-y-4 mt-4">
-                    <div className="flex items-start gap-3">
-                      <svg className="w-5 h-5 text-teal-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                      <p className="text-sm text-slate-600 leading-relaxed">{doctor.clinic.address}</p>
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                      <p className="text-sm text-slate-900 font-semibold">{doctor.clinic.phone}</p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                      <p className="text-sm text-teal-600 hover:underline cursor-pointer">{doctor.clinic.website}</p>
-                    </div>
+          {/* Right Column: Sticky Sidebar (25%) */}
+          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-[100px]">
+            
+            {/* Location Card */}
+            <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
+              <div className="w-full h-48 bg-slate-100 relative">
+                <iframe 
+                  src={doctor.clinic.mapUrl} 
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 0 }} 
+                  allowFullScreen 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+              <div className="p-6">
+                <h3 className="font-bold text-lg text-slate-900 mb-2">{doctor.clinic.name}</h3>
+                <div className="space-y-4 mt-4">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-teal-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <p className="text-sm text-slate-600 leading-relaxed">{doctor.clinic.address}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                    <p className="text-sm text-slate-900 font-semibold">{doctor.clinic.phone}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    <p className="text-sm text-teal-600 hover:underline cursor-pointer">{doctor.clinic.website}</p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Operating Hours */}
+            {/* Operating Hours */}
+            <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+              <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Operating Hours
+              </h3>
+              <div className="space-y-3">
+                {doctor.hours.map((h: any, idx: number) => (
+                  <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-50 pb-2 last:border-0 last:pb-0">
+                    <span className="text-slate-500 font-medium">{h.day}</span>
+                    <span className={`font-semibold ${h.time === 'Closed' ? 'text-red-500' : 'text-slate-900'}`}>{h.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Similar Doctors */}
+            {similarDoctors.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
                 <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  Operating Hours
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                  Similar {doctor.specialty}s
                 </h3>
-                <div className="space-y-3">
-                  {doctor.hours.map((h: any, idx: number) => (
-                    <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-50 pb-2 last:border-0 last:pb-0">
-                      <span className="text-slate-500 font-medium">{h.day}</span>
-                      <span className={`font-semibold ${h.time === 'Closed' ? 'text-red-500' : 'text-slate-900'}`}>{h.time}</span>
-                    </div>
+                <div className="flex flex-col gap-4">
+                  {similarDoctors.map((sim, idx) => (
+                    <Link key={idx} href={`/doctors/${sim.id}`} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
+                      <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Doc")}&background=0f766e&color=fff`} alt={sim.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{sim.name}</h4>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-[10px] font-bold text-yellow-600">⭐ {sim.rating || 4.5}</span>
+                          <span className="text-[10px] font-bold text-slate-400">({sim.reviews || 0})</span>
+                        </div>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>
-
-            </div>
+            )}
+            
           </div>
 
-        </div>
-        
-        {/* Similar Doctors */}
-        {similarDoctors.length > 0 && (
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-              <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-              Similar {doctor.specialty}s in {doctor.city}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {similarDoctors.map((sim, idx) => (
-                <Link key={idx} href={`/doctors/${sim.id}`} className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 p-5 flex items-center gap-4 group">
-                  <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Doc")}&background=0f766e&color=fff`} alt={sim.name} className="w-16 h-16 rounded-xl object-cover border-2 border-slate-100 group-hover:border-teal-100 transition-colors shrink-0" />
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-slate-900 truncate group-hover:text-teal-700 transition-colors">{sim.name}</h3>
-                    <p className="text-xs text-teal-600 font-semibold truncate mb-1">{sim.subCategory || sim.category}</p>
-                    <div className="flex items-center gap-1 text-[10px] font-bold text-yellow-600">
-                      ⭐ {sim.rating || 4.5} <span className="text-slate-400 font-normal">({sim.reviews || 0})</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
