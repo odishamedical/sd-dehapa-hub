@@ -206,7 +206,7 @@ export default function DoctorDashboard() {
             
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Profile Photo</label>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">Profile Photo</label>
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-full bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -218,11 +218,11 @@ export default function DoctorDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Full Name</label>
                   <input type="text" placeholder="e.g. Dr. Sandeep Sharma" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Primary Speciality</label>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Primary Speciality</label>
                   <select className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all">
                     <option>Select Speciality</option>
                     <option>Cardiologist</option>
@@ -234,11 +234,11 @@ export default function DoctorDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Degrees</label>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Degrees</label>
                   <input type="text" placeholder="e.g. MBBS, MD (Medicine)" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Medical Registration No.</label>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Medical Registration No.</label>
                   <input type="text" placeholder="e.g. MCI-12345" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all" />
                 </div>
               </div>
@@ -262,7 +262,7 @@ export default function DoctorDashboard() {
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+              <div className="border-2 border-slate-200 rounded-2xl p-6 relative bg-slate-50 hover:border-teal-400 hover:shadow-md transition-all duration-300">
                 <div className="absolute top-4 right-4 flex gap-3 items-center">
                   <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors" title="Toggle Public Visibility">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -274,7 +274,7 @@ export default function DoctorDashboard() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Degree Name</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Degree Name</label>
                     <input 
                       type="text" 
                       value={qualificationsData.degreeName}
@@ -284,7 +284,7 @@ export default function DoctorDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Passing Year</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Passing Year</label>
                     <input 
                       type="number" 
                       value={qualificationsData.passingYear}
@@ -296,7 +296,7 @@ export default function DoctorDashboard() {
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Medical College / University</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Medical College / University</label>
                   <EntitySearchInput 
                     category="college"
                     placeholder="Search or add college name..."
@@ -338,7 +338,7 @@ export default function DoctorDashboard() {
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+              <div className="border-2 border-slate-200 rounded-2xl p-6 relative bg-slate-50 hover:border-teal-400 hover:shadow-md transition-all duration-300">
                 <div className="absolute top-4 right-4 flex gap-3 items-center">
                   <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors" title="Toggle Public Visibility">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -349,7 +349,7 @@ export default function DoctorDashboard() {
                 </div>
                 
                 <div className="mb-4 mt-2">
-                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Hospital or Institution</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Hospital or Institution</label>
                   <EntitySearchInput 
                     category="hospital"
                     placeholder="Search or add hospital name..."
@@ -361,11 +361,11 @@ export default function DoctorDashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Title / Position</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Title / Position</label>
                     <input type="text" defaultValue="Head of Cardiology" placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Years (e.g. 2015-2020)</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Years (e.g. 2015-2020)</label>
                     <input type="text" defaultValue="2018 - Present" placeholder="e.g. 2015 - Present" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
@@ -394,13 +394,13 @@ export default function DoctorDashboard() {
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+              <div className="border-2 border-slate-200 rounded-2xl p-6 relative bg-slate-50 hover:border-teal-400 hover:shadow-md transition-all duration-300">
                 <div className="absolute top-4 right-4 flex gap-3 items-center">
                   <span className="bg-teal-100 text-teal-800 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Mandatory Public</span>
                 </div>
                 
                 <div className="mb-4 mt-2">
-                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Clinic or Hospital Name</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Clinic or Hospital Name</label>
                   <EntitySearchInput 
                     category="clinic"
                     placeholder="Search or add clinic name..."
@@ -411,17 +411,17 @@ export default function DoctorDashboard() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Full Address</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Full Address</label>
                   <input type="text" defaultValue="Unit 15, Near Sainik School, Bhubaneswar" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Timings</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Timings</label>
                     <input type="text" defaultValue="Mon-Sat, 10 AM - 2 PM" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Consultation Fee (₹)</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Consultation Fee (₹)</label>
                     <input type="number" defaultValue="800" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
@@ -447,19 +447,19 @@ export default function DoctorDashboard() {
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+              <div className="border-2 border-slate-200 rounded-2xl p-6 relative bg-slate-50 hover:border-teal-400 hover:shadow-md transition-all duration-300">
                 <div className="absolute top-4 right-4 flex gap-3 items-center">
                   <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Public</button>
                 </div>
                 
                 <div className="mb-4 mt-2">
-                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Paper Title</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Paper Title</label>
                   <input type="text" placeholder="Title of your research paper" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Journal Name</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Journal Name</label>
                     <EntitySearchInput 
                       category="journal"
                       placeholder="Search or add journal..."
@@ -469,7 +469,7 @@ export default function DoctorDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Publication Year</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Publication Year</label>
                     <input type="number" placeholder="e.g. 2021" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
@@ -487,14 +487,14 @@ export default function DoctorDashboard() {
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-200 rounded-xl p-6 relative bg-slate-50/50 hover:border-teal-300 transition-colors">
+              <div className="border-2 border-slate-200 rounded-2xl p-6 relative bg-slate-50 hover:border-teal-400 hover:shadow-md transition-all duration-300">
                 <div className="absolute top-4 right-4 flex gap-3 items-center">
                   <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Public</button>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Association / Organization</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Association / Organization</label>
                     <EntitySearchInput 
                       category="association"
                       placeholder="e.g. IMA, API..."
@@ -504,7 +504,7 @@ export default function DoctorDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Role / Status</label>
+                    <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Role / Status</label>
                     <input type="text" placeholder="e.g. Life Member, Secretary" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
