@@ -101,6 +101,8 @@ export default function DoctorsDirectory() {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
+  const [searchDistrict, setSearchDistrict] = useState("");
+  const [searchType, setSearchType] = useState("");
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -151,6 +153,11 @@ export default function DoctorsDirectory() {
     if (selectedDistricts.length > 0) {
       if (!selectedDistricts.includes(doc.district)) return false;
     }
+    
+    if (searchDistrict && doc.district !== searchDistrict) {
+      return false;
+    }
+
     return searchMatch;
   });
   
@@ -183,19 +190,72 @@ export default function DoctorsDirectory() {
             Connect with renowned specialists through secure video consultations or physical appointments.
           </p>
           
-          {/* Floating Search Bar */}
-          <div className="bg-white/95 backdrop-blur-xl border-4 border-white/40 rounded-2xl p-2 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col md:flex-row gap-2 max-w-3xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
-             <div className="flex-1 relative">
-                <svg className="w-6 h-6 text-slate-400 absolute left-5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          {/* Floating Expanded Search Bar */}
+          <div className="bg-white/95 backdrop-blur-xl border-4 border-white/40 rounded-2xl p-2 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col md:flex-row gap-2 max-w-6xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
+             
+             {/* Country */}
+             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 hidden lg:block text-left shrink-0">
+               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Country</label>
+               <select className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8">
+                 <option>India</option>
+               </select>
+               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+             </div>
+
+             {/* State */}
+             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 hidden lg:block text-left shrink-0">
+               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">State</label>
+               <select className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8">
+                 <option>Odisha</option>
+               </select>
+               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+             </div>
+
+             {/* District */}
+             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 md:w-40 shrink-0 text-left">
+               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">District</label>
+               <select 
+                 className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8 truncate"
+                 value={searchDistrict}
+                 onChange={(e) => setSearchDistrict(e.target.value)}
+               >
+                 <option value="">All Districts</option>
+                 {uniqueDistricts.map(d => <option key={d as string} value={d as string}>{d}</option>)}
+               </select>
+               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+             </div>
+
+             {/* Type */}
+             <div className="relative border-b md:border-b-0 md:border-r border-slate-200 px-4 py-2 md:w-36 shrink-0 text-left">
+               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Type</label>
+               <select 
+                 className="w-full bg-transparent border-none text-sm font-bold text-slate-800 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-8"
+                 value={searchType}
+                 onChange={(e) => setSearchType(e.target.value)}
+               >
+                 <option value="">All Types</option>
+                 <option value="doctors">Doctors</option>
+                 <option value="hospitals">Hospitals</option>
+                 <option value="clinics">Clinics</option>
+                 <option value="labs">Labs</option>
+               </select>
+               <svg className="w-4 h-4 text-slate-400 absolute right-3 top-8 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+             </div>
+
+             {/* Free Text Search */}
+             <div className="flex-1 relative px-2 py-1 flex flex-col justify-center">
+                <svg className="w-6 h-6 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input 
                   type="text" 
-                  placeholder="Search by doctor name, specialty, or symptoms..."
+                  placeholder="e.g. Dr Abhishek, Kalinga Hospital..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-transparent border-none pl-14 pr-4 py-4 text-lg text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-500 font-bold"
+                  className="w-full bg-transparent border-none pl-12 pr-4 py-3 text-lg text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-400 font-bold"
                 />
              </div>
-             <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold px-10 py-4 rounded-xl text-base transition-all shadow-lg hidden md:block border border-teal-600">
+
+             {/* Search Button */}
+             <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold px-10 py-4 rounded-xl text-base transition-all shadow-lg hidden md:block border border-teal-600 shrink-0">
                Search
              </button>
           </div>
