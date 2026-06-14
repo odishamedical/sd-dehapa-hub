@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
 import EntitySearchInput from '@/components/EntitySearchInput';
+import { useAutosave } from '@/hooks/useAutosave';
+import AutosaveIndicator from '@/components/AutosaveIndicator';
 
 function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void }) {
   return (
@@ -82,6 +84,15 @@ function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void 
 export default function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
+
+  // Autosave State for Qualifications Tab
+  const [qualificationsData, setQualificationsData] = useState({
+    degreeName: "MBBS",
+    passingYear: "2010",
+    collegeId: "",
+    collegeName: "SCB Medical College"
+  });
+  const qualificationsSaveStatus = useAutosave(qualificationsData, 1000);
 
   const doctorTabs: DashboardTab[] = [
     {
@@ -256,11 +267,23 @@ export default function DoctorDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Degree Name</label>
-                    <input type="text" defaultValue="MBBS" placeholder="e.g. MBBS, MD" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input 
+                      type="text" 
+                      value={qualificationsData.degreeName}
+                      onChange={(e) => setQualificationsData(prev => ({...prev, degreeName: e.target.value}))}
+                      placeholder="e.g. MBBS, MD" 
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" 
+                    />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Passing Year</label>
-                    <input type="number" defaultValue="2010" placeholder="e.g. 2010" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input 
+                      type="number" 
+                      value={qualificationsData.passingYear}
+                      onChange={(e) => setQualificationsData(prev => ({...prev, passingYear: e.target.value}))}
+                      placeholder="e.g. 2010" 
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" 
+                    />
                   </div>
                 </div>
                 
@@ -269,20 +292,27 @@ export default function DoctorDashboard() {
                   <EntitySearchInput 
                     category="college"
                     placeholder="Search or add college name..."
-                    valueId=""
-                    valueName="SCB Medical College"
-                    onChange={(id, name) => console.log(id, name)}
+                    valueId={qualificationsData.collegeId}
+                    valueName={qualificationsData.collegeName}
+                    onChange={(id, name) => setQualificationsData(prev => ({...prev, collegeId: id, collegeName: name}))}
                   />
                   <p className="text-xs text-slate-500 mt-2">Type to search the DehaPa network. If it doesn't exist, you can add it as a new entry.</p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
-                <span className="text-sm text-green-600 font-bold flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                  Autosaved
-                </span>
-                <button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg transition-all">Save Qualifications</button>
+              <div className="flex items-center justify-between pt-6 border-t border-slate-100 h-12">
+                <AutosaveIndicator status={qualificationsSaveStatus} />
+                {/* Save button becomes optional but kept for reassurance */}
+                <button 
+                  className={`px-6 py-2.5 font-bold rounded-xl shadow-sm transition-all text-sm ${
+                    qualificationsSaveStatus === 'saving' 
+                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
+                      : 'bg-teal-600 hover:bg-teal-700 text-white'
+                  }`}
+                  disabled={qualificationsSaveStatus === 'saving'}
+                >
+                  {qualificationsSaveStatus === 'saving' ? 'Saving...' : 'Save Qualifications'}
+                </button>
               </div>
             </div>
           </div>
