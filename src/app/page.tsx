@@ -23,17 +23,32 @@ export default function Home() {
       {/* Global Header is handled by layout.tsx -> GlobalHeader.tsx */}
 
       {/* Hero Section - DehaPa Web Marketplace Redesign */}
-      {/* Dark Teal Background Area */}
-      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-20 pb-32 overflow-hidden">
-        {/* Background Accents */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#0f766e]/50 rounded-full blur-3xl" />
+      {/* Dark Teal Background Area with Glassmorphism floating panels */}
+      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-24 pb-36 overflow-hidden">
+        {/* Deep Glowing Background Accents */}
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-teal-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-teal-900/50 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
         
-        <div className="container mx-auto px-6 lg:px-12 text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold font-serif mb-4 leading-tight">
+        {/* Abstract Floating 3D Panels (Right Side) */}
+        <div className="absolute top-[10%] right-[5%] lg:right-[15%] w-64 h-48 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl transform rotate-12 shadow-[0_0_40px_rgba(255,255,255,0.1)] pointer-events-none hidden md:block">
+           <div className="absolute top-4 left-4 w-12 h-12 rounded-full border-4 border-teal-300/30 border-t-teal-300"></div>
+           <div className="absolute bottom-4 right-4 w-32 h-1 bg-white/20 rounded-full"></div>
+           <div className="absolute bottom-8 right-4 w-24 h-1 bg-white/20 rounded-full"></div>
+        </div>
+        <div className="absolute top-[30%] right-[2%] lg:right-[5%] w-56 h-40 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl transform -rotate-6 shadow-[0_0_30px_rgba(0,0,0,0.1)] pointer-events-none hidden lg:block">
+           <div className="flex gap-2 items-end h-16 absolute bottom-4 left-4">
+              <div className="w-4 h-8 bg-teal-300/40 rounded-sm"></div>
+              <div className="w-4 h-12 bg-teal-300/60 rounded-sm"></div>
+              <div className="w-4 h-16 bg-white/80 rounded-sm"></div>
+           </div>
+        </div>
+        <div className="absolute top-[5%] left-[5%] lg:left-[10%] w-72 h-72 bg-gradient-to-br from-white/10 to-transparent rounded-3xl transform -rotate-12 border border-white/10 pointer-events-none hidden md:block"></div>
+
+        <div className="container mx-auto px-6 lg:px-12 text-center relative z-20">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif mb-6 leading-tight drop-shadow-md">
             Your Gateway to Integrated Healthcare.
           </h1>
-          <p className="text-lg md:text-xl text-teal-100 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-teal-50 max-w-2xl mx-auto font-medium drop-shadow-sm">
             Explore services or Claim Your Listing.
           </p>
         </div>
