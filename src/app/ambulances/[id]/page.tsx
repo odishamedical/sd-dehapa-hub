@@ -85,7 +85,7 @@ export default function AmbulanceProfilePage({ params }: { params: { id: string 
 
       {/* Trust Metrics Bar (Emergency Focused) */}
       <div className="w-full bg-red-700 border-t border-red-800 shadow-inner">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap justify-center md:justify-end gap-6 md:gap-12 text-sm font-bold tracking-widest uppercase text-white">
+        <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-4 flex flex-wrap justify-center md:justify-end gap-6 md:gap-12 text-sm font-bold tracking-widest uppercase text-white">
           <span className="flex items-center gap-2"><span className="text-red-200 text-lg">🚨</span> {mockAmbulance.dispatch}</span>
           <span className="flex items-center gap-2"><span className="text-red-200 text-lg">⏱️</span> {mockAmbulance.response}</span>
           <span className="flex items-center gap-2"><span className="text-red-200 text-lg">🩺</span> {mockAmbulance.support}</span>
@@ -93,7 +93,7 @@ export default function AmbulanceProfilePage({ params }: { params: { id: string 
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 md:-mt-24 z-20">
+      <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 relative -mt-16 md:-mt-24 z-20">
         
         {/* Header Card (Logo & High Level Info) */}
         <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] mb-8 flex flex-col md:flex-row items-start md:items-center gap-6 border border-slate-100">

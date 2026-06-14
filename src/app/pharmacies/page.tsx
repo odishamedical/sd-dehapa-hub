@@ -71,7 +71,7 @@ export default function PharmaciesDirectory() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12 relative z-10">
+      <main className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-12 relative z-10">
         <div className="mb-10">
           <h1 className="text-4xl font-serif font-bold text-slate-900 mb-2">
             Find a <span className="text-tenant-accent">Pharmacy</span>

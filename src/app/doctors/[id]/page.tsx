@@ -104,7 +104,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
       <CategoryNav />
       
       <div className="bg-white border-b border-slate-200 px-6 py-3">
-        <div className="max-w-6xl mx-auto">
+        <div className="w-full max-w-[1920px] mx-auto">
           <Breadcrumb paths={[
             { name: "Home", href: "/" },
             { name: doctor.city || "Odisha", href: "/doctors" },
@@ -127,7 +127,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-24 z-20">
+      <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 relative -mt-24 z-20">
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           

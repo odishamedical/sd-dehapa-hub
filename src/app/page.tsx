@@ -466,7 +466,7 @@ export default function Home() {
 
       {/* Simple Footer */}
       <footer className="relative z-10 border-t border-slate-200 bg-white py-8 px-6 text-center w-full">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+        <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
           <p>© 2026 Shyam Dash Creation. All rights reserved.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-tenant-accent transition-colors">Privacy Policy</a>

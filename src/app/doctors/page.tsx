@@ -141,7 +141,7 @@ export default function DoctorsDirectory() {
       <CategoryNav />
       
       <div className="bg-white border-b border-slate-200 px-6 py-3">
-        <div className="max-w-6xl mx-auto">
+        <div className="w-full max-w-[1920px] mx-auto">
           <Breadcrumb paths={[
             { name: "Home", href: "/" },
             { name: "Odisha" },
@@ -183,7 +183,7 @@ export default function DoctorsDirectory() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-6 py-12 relative z-10 -mt-12">
+      <main className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-12 relative z-10 -mt-12">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}

@@ -86,7 +86,7 @@ export default function HospitalProfilePage({ params }: { params: { id: string }
 
       {/* Trust Metrics Bar */}
       <div className="w-full bg-slate-900 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap justify-center md:justify-end gap-6 md:gap-12 text-sm font-bold tracking-widest uppercase text-slate-300">
+        <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-4 flex flex-wrap justify-center md:justify-end gap-6 md:gap-12 text-sm font-bold tracking-widest uppercase text-slate-300">
           <span className="flex items-center gap-2"><span className="text-teal-400 text-lg">🏥</span> {mockHospital.beds} Beds</span>
           <span className="flex items-center gap-2"><span className="text-red-400 text-lg">🚑</span> 24/7 Emergency</span>
           <span className="flex items-center gap-2"><span className="text-blue-400 text-lg">🏅</span> {mockHospital.accreditation}</span>
@@ -94,7 +94,7 @@ export default function HospitalProfilePage({ params }: { params: { id: string }
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 md:-mt-24 z-20">
+      <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 relative -mt-16 md:-mt-24 z-20">
         
         {/* Header Card (Logo & High Level Info) */}
         <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] mb-8 flex flex-col md:flex-row items-start md:items-center gap-6 border border-slate-100">
