@@ -306,7 +306,7 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                         <div className="flex flex-col sm:flex-row gap-3 items-end">
                           <div className="flex-1 w-full">
                             <label className="block text-xs font-bold text-slate-600 mb-1">State / Region</label>
-                            <select value={locState} onChange={e => setLocState(e.target.value)} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none">
+                            <select value={locState} onChange={e => setLocState(e.target.value)} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 text-sm focus:border-teal-500 outline-none transition-all shadow-sm">
                               <option value="westbengal">West Bengal</option>
                               <option value="bihar">Bihar</option>
                               <option value="jharkhand">Jharkhand</option>
@@ -319,7 +319,7 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                           </div>
                           <div className="flex-1 w-full">
                             <label className="block text-xs font-bold text-slate-600 mb-1">Category (Optional)</label>
-                            <select value={locCategory} onChange={e => setLocCategory(e.target.value)} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none">
+                            <select value={locCategory} onChange={e => setLocCategory(e.target.value)} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 text-sm focus:border-teal-500 outline-none transition-all shadow-sm">
                               <option value="none">None (Root Location)</option>
                               <option value="doctor">Doctor</option>
                               <option value="hospitals">Hospital</option>
@@ -352,7 +352,7 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                           setSearchTerm(sug);
                           setTimeout(() => document.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })), 10);
                         }}
-                        className="px-4 py-1.5 bg-white border border-slate-300 hover:border-teal-500 text-slate-600 hover:text-teal-700 rounded-full text-sm font-medium transition-all shadow-sm"
+                        className="px-5 py-2 bg-white border-2 border-slate-200 hover:border-teal-500 text-slate-600 hover:text-teal-700 rounded-full text-sm font-bold transition-all shadow-sm"
                       >
                         {sug}
                       </button>
@@ -378,7 +378,7 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                   <select 
                     value={term}
                     onChange={(e) => setTerm(e.target.value as Term)}
-                    className="mt-1 text-sm bg-slate-50 border border-slate-300 rounded px-2 py-1 outline-none focus:border-teal-500 w-full sm:w-auto"
+                    className="mt-2 text-sm bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-4 py-2 outline-none focus:border-teal-500 w-full sm:w-auto shadow-sm transition-all"
                   >
                     <option value="monthly">Monthly Subscription</option>
                     <option value="1yr">1 Year Plan</option>
@@ -408,7 +408,7 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                       placeholder="User Email or WhatsApp" 
                       value={ownerContact}
                       onChange={e => setOwnerContact(e.target.value)}
-                      className="w-full sm:w-64 border border-slate-300 rounded-lg px-4 py-3 text-sm outline-none focus:border-teal-500 shadow-inner"
+                      className="w-full sm:w-64 bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 text-sm outline-none focus:border-teal-500 shadow-sm transition-all"
                     />
                     <button 
                       onClick={() => {

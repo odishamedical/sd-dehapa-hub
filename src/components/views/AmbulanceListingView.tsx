@@ -163,7 +163,7 @@ export default function AmbulancesDirectory({
                   placeholder={activeTenant.id === "general" ? "Search by doctor name or hospital..." : `Search by doctor name...`}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-tenant-accent transition-colors shadow-sm"
+                  className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl pl-12 pr-5 py-3.5 text-sm text-slate-900 focus:outline-none focus:border-tenant-accent transition-all shadow-sm"
                 />
               </div>
             </div>

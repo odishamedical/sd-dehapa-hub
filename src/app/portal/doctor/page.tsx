@@ -281,7 +281,7 @@ export default function DoctorDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Full Name</label>
-                  <input type="text" placeholder="e.g. Dr. Sandeep Sharma" className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. Dr. Sandeep Sharma" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Primary Speciality</label>
@@ -299,11 +299,11 @@ export default function DoctorDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Degrees</label>
-                  <input type="text" placeholder="e.g. MBBS, MD (Medicine)" className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. MBBS, MD (Medicine)" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Medical Registration No.</label>
-                  <input type="text" placeholder="e.g. MCI-12345" className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. MCI-12345" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
               </div>
 

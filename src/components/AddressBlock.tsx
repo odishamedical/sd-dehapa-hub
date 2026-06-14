@@ -61,7 +61,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
                 updateField('country', e.target.value);
               }
             }}
-            className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all mb-2"
+            className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all mb-2"
           >
             <option value="">Select Country</option>
             {defaultCountries.map(c => <option key={c} value={c}>{c}</option>)}
@@ -73,7 +73,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               value={data.country}
               onChange={(e) => updateField('country', e.target.value)}
               placeholder="Type Country Name..."
-              className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all animate-in fade-in"
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all animate-in fade-in"
             />
           )}
         </div>
@@ -85,7 +85,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
             <select 
               value={data.state}
               onChange={(e) => updateField('state', e.target.value)}
-              className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
             >
               <option value="">Select State</option>
               {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
@@ -96,7 +96,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               value={data.state}
               onChange={(e) => updateField('state', e.target.value)}
               placeholder="e.g. California, London"
-              className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
             />
           )}
         </div>
@@ -110,7 +110,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
             <select 
               value={data.district}
               onChange={(e) => updateField('district', e.target.value)}
-              className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
             >
               <option value="">Select District</option>
               {districtsByState["Odisha"]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
@@ -121,7 +121,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               value={data.district}
               onChange={(e) => updateField('district', e.target.value)}
               placeholder="Type District..."
-              className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
             />
           )}
         </div>
@@ -133,7 +133,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
             <select 
               value={data.block}
               onChange={(e) => updateField('block', e.target.value)}
-              className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
             >
               <option value="">Select Block</option>
               {blocksByDistrict[data.district]?.map((b: string) => <option key={b} value={b}>{b}</option>)}
@@ -144,7 +144,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               value={data.block}
               onChange={(e) => updateField('block', e.target.value)}
               placeholder="Type Block (Optional)"
-              className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
             />
           )}
         </div>
@@ -159,7 +159,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
             value={data.city}
             onChange={(e) => updateField('city', e.target.value)}
             placeholder="e.g. Bhubaneswar, Sahid Nagar"
-            className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+            className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
           />
         </div>
 
@@ -175,7 +175,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               updateField('pincode', val);
             }}
             placeholder="e.g. 751001"
-            className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+            className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
           />
         </div>
       </div>
@@ -188,7 +188,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
           value={data.localAddress}
           onChange={(e) => updateField('localAddress', e.target.value)}
           placeholder="Specific landmarks, street names, or building/room numbers..."
-          className="w-full bg-white border border-slate-300 hover:border-slate-400 rounded-lg px-4 py-3 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-900 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+          className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
         />
       </div>
     </div>

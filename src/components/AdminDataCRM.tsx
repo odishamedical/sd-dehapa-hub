@@ -299,7 +299,7 @@ export default function AdminDataCRM() {
             placeholder="Search name or phone..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 border border-slate-300 rounded-lg text-sm flex-1 md:w-64 focus:outline-none focus:border-teal-500"
+            className="px-5 py-3.5 border-2 border-slate-200 hover:border-slate-300 rounded-xl text-sm flex-1 md:w-64 focus:outline-none focus:border-teal-500 shadow-sm transition-all"
           />
           <button onClick={handleCreateNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap transition-colors">
             Create Record
@@ -352,16 +352,16 @@ export default function AdminDataCRM() {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Name</label>
-                  <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="w-full p-2 border rounded-lg" />
+                  <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
                 <div>
                   <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Assigned Owner Email</label>
-                  <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="w-full p-2 border rounded-lg" placeholder="e.g. user@example.com" />
+                  <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" placeholder="e.g. user@example.com" />
                 </div>
                 <div className="relative">
                   <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Custom Slug</label>
                   <div className="flex gap-2">
-                    <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="w-full p-2 border rounded-lg" />
+                    <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                     <button onClick={checkSlugAvailability} className="bg-slate-800 text-white px-3 py-1 rounded text-xs">Check</button>
                     <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-3 py-1 rounded text-xs whitespace-nowrap">Super Search</button>
                   </div>
