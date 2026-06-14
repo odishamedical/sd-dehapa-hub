@@ -86,23 +86,6 @@ export default function DoctorsDirectory() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30">
-      {/* Global Header */}
-      <header className="relative z-50 h-[80px] border-b border-slate-200 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12 sticky top-0 shadow-sm">
-        <Link href="/" className="flex items-center gap-4">
-           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tenant-gradient-from to-tenant-gradient-to flex items-center justify-center text-slate-900 font-bold text-xl shadow-[0_0_20px_var(--tenant-accent-glow)]">
-             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-           </div>
-           <div className="flex flex-col">
-             <span className="text-xl font-bold tracking-widest text-slate-900 uppercase font-serif">
-               {activeTenant.logoText} <span className="text-tenant-accent">{activeTenant.id === "general" ? "Health" : "Care"}</span>
-             </span>
-             <span className="text-[9px] text-tenant-accent/80 tracking-[0.2em] uppercase font-mono">{activeTenant.logoSubText}</span>
-           </div>
-        </Link>
-        <div className="flex items-center gap-4">
-          <EcosystemSwitcher />
-        </div>
-      </header>
 
       {/* Premium Hero Search */}
       <div className="bg-slate-900 pt-16 pb-24 px-6 relative overflow-hidden">
