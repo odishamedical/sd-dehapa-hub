@@ -61,46 +61,48 @@ export default function AdminDashboard() {
     );
   }
 
-  const handleExtractMock = () => {
+  const handleExtractLive = async () => {
     setIsExtracting(true);
-    // Simulate API delay
-    setTimeout(() => {
-      const mockData = [
-        {
-          id: "google_1",
-          name: "Dr. Sandeep Sharma - Cardiologist",
-          address: "Apollo Hospitals, Unit 15, Bhubaneswar, Odisha 751005",
-          phone: "+91 98765 43210",
-          rating: 4.8,
-          reviews: 124,
-          image: "https://ui-avatars.com/api/?name=Dr+Sandeep+Sharma&background=0f766e&color=fff&size=150",
-          hasWarning: false
-        },
-        {
-          id: "google_2",
-          name: "City Heart Care Clinic",
-          address: "Sahidnagar, Bhubaneswar, Odisha 751007",
-          phone: "", // Missing phone
-          rating: 4.1,
-          reviews: 12,
-          image: "", // Missing image
-          hasWarning: true
-        },
-        {
-          id: "google_3",
-          name: "Dr. Ananya Das Cardiology Center",
-          address: "Patia Main Road, Bhubaneswar, Odisha 751024",
-          phone: "0674-2554321",
-          rating: 4.9,
-          reviews: 89,
-          image: "https://ui-avatars.com/api/?name=Dr+Ananya+Das&background=0f766e&color=fff&size=150",
-          hasWarning: false
-        }
-      ];
-      setStagedListings(mockData);
-      setSelectedListingIds(mockData.map(d => d.id)); // Select all by default
+    setStagedListings([]);
+    setSelectedListingIds([]);
+    
+    try {
+      const payload = {
+        state: crawlerState,
+        district: crawlerDistrict === "Other" ? customDistrict : crawlerDistrict,
+        locality: crawlerLocality,
+        pin: crawlerPin,
+        category: crawlerCategory,
+        subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
+        query: crawlerQuery
+      };
+
+      const res = await fetch('/api/crawler', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        alert(`Error: ${data.error}`);
+        setIsExtracting(false);
+        return;
+      }
+
+      if (data.results && data.results.length > 0) {
+        setStagedListings(data.results);
+        setSelectedListingIds(data.results.map((d: any) => d.id)); // Select all by default
+      } else {
+        alert(`No results found for: ${data.query}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to connect to the crawler backend.");
+    } finally {
       setIsExtracting(false);
-    }, 1500);
+    }
   };
 
   const handleToggleSelection = (id: string) => {
@@ -320,7 +322,7 @@ export default function AdminDashboard() {
 
                   <div className="md:col-span-2 lg:col-span-4 mt-6">
                     <button 
-                      onClick={handleExtractMock}
+                      onClick={handleExtractLive}
                       disabled={isExtracting}
                       className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-base font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto disabled:opacity-70 disabled:cursor-not-allowed"
                     >
