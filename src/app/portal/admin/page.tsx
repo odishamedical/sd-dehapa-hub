@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { db } from '@/lib/firebase';
 import { collection, writeBatch, doc, serverTimestamp } from 'firebase/firestore';
 import { useTenant } from '@/components/TenantContext';
-import { indianStates, districtsByState } from '@/lib/locations';
+import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import AdminDataCRM from '@/components/AdminDataCRM';
@@ -309,35 +309,116 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start">
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">Country</label>
-                    <input 
-                      type="text" 
-                      value={crawlerCountry} 
-                      onChange={(e) => setCrawlerCountry(e.target.value)}
-                      placeholder="e.g. USA, India"
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
-                    />
+                    <select 
+                      value={["India", "USA", "UAE", "Australia", "England"].includes(crawlerCountry) ? crawlerCountry : "Other"}
+                      onChange={(e) => {
+                        if (e.target.value === "Other") {
+                          setCrawlerCountry("");
+                        } else {
+                          setCrawlerCountry(e.target.value);
+                          if (e.target.value === "India") { setCrawlerState("Odisha"); setCrawlerDistrict("Khordha"); setCrawlerCity(""); }
+                        }
+                      }}
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all mb-2"
+                    >
+                      <option value="India">India</option>
+                      <option value="USA">USA</option>
+                      <option value="UAE">UAE</option>
+                      <option value="Australia">Australia</option>
+                      <option value="England">England</option>
+                      <option value="Other">Other (Custom)</option>
+                    </select>
+                    {!["India", "USA", "UAE", "Australia", "England"].includes(crawlerCountry) && (
+                      <input 
+                        type="text" 
+                        value={crawlerCountry} 
+                        onChange={(e) => setCrawlerCountry(e.target.value)}
+                        placeholder="Type custom country..."
+                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                      />
+                    )}
                   </div>
 
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">State / Region</label>
-                    <input 
-                      type="text" 
-                      value={crawlerState} 
-                      onChange={(e) => setCrawlerState(e.target.value)}
-                      placeholder="e.g. New York, Karnataka"
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
-                    />
+                    {crawlerCountry === "India" ? (
+                      <>
+                        <select 
+                          value={indianStates.includes(crawlerState) ? crawlerState : "Other"}
+                          onChange={(e) => {
+                            if (e.target.value === "Other") setCrawlerState("");
+                            else {
+                              setCrawlerState(e.target.value);
+                              if (e.target.value === "Odisha") setCrawlerDistrict("Khordha");
+                              else setCrawlerDistrict("");
+                              setCrawlerCity("");
+                            }
+                          }}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all mb-2"
+                        >
+                          <option value="">Select State</option>
+                          {indianStates.map(st => <option key={st} value={st}>{st}</option>)}
+                          <option value="Other">Other (Custom)</option>
+                        </select>
+                        {!indianStates.includes(crawlerState) && (
+                          <input 
+                            type="text" 
+                            value={crawlerState} 
+                            onChange={(e) => setCrawlerState(e.target.value)}
+                            placeholder="Type state name..."
+                            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <input 
+                        type="text" 
+                        value={crawlerState} 
+                        onChange={(e) => setCrawlerState(e.target.value)}
+                        placeholder="e.g. New York, Karnataka"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                      />
+                    )}
                   </div>
 
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">District / Area</label>
-                    <input 
-                      type="text" 
-                      value={crawlerDistrict} 
-                      onChange={(e) => setCrawlerDistrict(e.target.value)}
-                      placeholder="e.g. Manhattan, Bangalore"
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
-                    />
+                    {crawlerCountry === "India" && crawlerState === "Odisha" ? (
+                      <>
+                        <select 
+                          value={districtsByState["Odisha"]?.includes(crawlerDistrict) ? crawlerDistrict : "Other"}
+                          onChange={(e) => {
+                            if (e.target.value === "Other") setCrawlerDistrict("");
+                            else {
+                              setCrawlerDistrict(e.target.value);
+                              setCrawlerCity("");
+                            }
+                          }}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all mb-2"
+                        >
+                          <option value="">Select District</option>
+                          {districtsByState["Odisha"]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
+                          <option value="Other">Other (Custom)</option>
+                        </select>
+                        {!districtsByState["Odisha"]?.includes(crawlerDistrict) && (
+                          <input 
+                            type="text" 
+                            value={crawlerDistrict} 
+                            onChange={(e) => setCrawlerDistrict(e.target.value)}
+                            placeholder="Type district name..."
+                            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <input 
+                        type="text" 
+                        value={crawlerDistrict} 
+                        onChange={(e) => setCrawlerDistrict(e.target.value)}
+                        placeholder="e.g. Manhattan, Bangalore"
+                        className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                      />
+                    )}
                   </div>
 
                   <div>
@@ -369,14 +450,40 @@ export default function AdminDashboard() {
 
                   <div className="md:col-span-3 lg:col-span-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                     <div>
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">City / Town</label>
-                      <input 
-                        type="text" 
-                        placeholder="e.g. Bhubaneswar"
-                        value={crawlerCity}
-                        onChange={(e) => setCrawlerCity(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition-colors"
-                      />
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Block / City</label>
+                      {blocksByDistrict[crawlerDistrict] ? (
+                        <>
+                          <select 
+                            value={blocksByDistrict[crawlerDistrict].includes(crawlerCity) ? crawlerCity : "Other"}
+                            onChange={(e) => {
+                              if (e.target.value === "Other") setCrawlerCity("");
+                              else setCrawlerCity(e.target.value);
+                            }}
+                            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition-colors mb-2"
+                          >
+                            <option value="">Select Block/City</option>
+                            {blocksByDistrict[crawlerDistrict].map((b: string) => <option key={b} value={b}>{b}</option>)}
+                            <option value="Other">Other (Custom)</option>
+                          </select>
+                          {!blocksByDistrict[crawlerDistrict].includes(crawlerCity) && (
+                            <input 
+                              type="text" 
+                              placeholder="Type block/city..."
+                              value={crawlerCity}
+                              onChange={(e) => setCrawlerCity(e.target.value)}
+                              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition-colors"
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <input 
+                          type="text" 
+                          placeholder="e.g. Bhubaneswar"
+                          value={crawlerCity}
+                          onChange={(e) => setCrawlerCity(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500 transition-colors"
+                        />
+                      )}
                     </div>
 
                     <div>
