@@ -14,57 +14,86 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 const PremiumDoctorTicket = ({ data }: { data: any }) => {
   return (
-    <Link href={`/doctors/${data.id}`} className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 p-6 flex flex-col md:flex-row gap-6 items-center md:items-start group relative overflow-hidden block">
-      {/* Availability Accent Bar */}
-      <div className={`absolute left-0 top-0 bottom-0 w-1 ${data.available ? 'bg-teal-500' : 'bg-slate-300'}`}></div>
+    <Link href={`/doctors/${data.id}`} className="relative h-[220px] rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-200/50">
+      {/* Background Metal Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 group-hover:to-slate-300 transition-colors"></div>
+      
+      {/* Optional: Faint Map Watermark */}
+      <div className="absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
 
-      {/* Left: Avatar */}
-      <div className="relative shrink-0 pl-2">
-        <img src={data.image} alt={data.name} className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-sm group-hover:border-teal-50 transition-colors" />
-        {data.verified && (
-          <div className="absolute -bottom-2 -right-2 bg-blue-500 text-white w-8 h-8 rounded-full border-2 border-white flex items-center justify-center shadow-sm" title="Verified Professional">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+      <div className="flex h-full relative z-10">
+        {/* Left Side: Image (40% width) */}
+        <div className="w-[40%] relative shrink-0 h-full">
+          <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
+          {/* Overlapping SVG S-Curve matching the metal gradient */}
+          <svg className="absolute top-0 -right-[1px] h-full drop-shadow-[-6px_0_12px_rgba(0,0,0,0.15)]" preserveAspectRatio="none" viewBox="0 0 100 100" style={{ width: '50px' }}>
+            <defs>
+              <linearGradient id="curveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#f1f5f9" /> {/* slate-100 */}
+                <stop offset="50%" stopColor="#e2e8f0" /> {/* slate-200 */}
+                <stop offset="100%" stopColor="#cbd5e1" /> {/* slate-300 */}
+              </linearGradient>
+            </defs>
+            <path d="M100,0 H0 C80,20 20,80 100,100 Z" fill="url(#curveGrad)" />
+          </svg>
+        </div>
+        
+        {/* Right Side: Data (60% width) */}
+        <div className="flex-1 py-4 pr-5 pl-4 flex flex-col min-w-0">
+          
+          <div className="flex justify-between items-start gap-2 mb-1">
+            <div className="min-w-0">
+              <h3 className="text-lg md:text-xl font-bold text-slate-900 truncate tracking-tight">{data.name}</h3>
+              <p className="text-slate-600 text-xs md:text-sm font-medium truncate">{data.specialty}</p>
+            </div>
+            {/* Short Location */}
+            <div className="flex flex-col items-end shrink-0 hidden sm:flex">
+              <span className="text-[9px] uppercase font-bold tracking-widest text-slate-400">Location</span>
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-0.5">
+                <svg className="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                {data.district || "Angul"}
+              </span>
+            </div>
           </div>
-        )}
-      </div>
-      
-      {/* Center: Info */}
-      <div className="flex-1 text-center md:text-left min-w-0">
-        <h3 className="text-xl font-bold text-slate-900 truncate mb-1 group-hover:text-teal-700 transition-colors">{data.name}</h3>
-        <p className="text-teal-600 font-bold text-sm mb-3 truncate">{data.specialty}</p>
-        
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
-          <span className="bg-slate-50 text-slate-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-slate-200">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            {data.experience} Experience
-          </span>
-          <span className="bg-yellow-50 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-yellow-100">
-            ⭐ {data.rating} <span className="text-yellow-600/70 ml-1">({data.reviews})</span>
-          </span>
-        </div>
-        
-        <p className="text-slate-500 text-sm flex items-start justify-center md:justify-start gap-1">
-          <svg className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          <span className="truncate"><strong className="text-slate-700">{data.hospital}</strong> • {data.address}</span>
-        </p>
-      </div>
-      
-      {/* Right: Actions */}
-      <div className="w-full md:w-auto flex flex-col justify-center gap-3 shrink-0 md:border-l md:border-slate-100 md:pl-8 md:py-2">
-        <div className="text-center md:text-right mb-1">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Consultation Fee</p>
-          <p className="text-2xl font-bold text-slate-900">{typeof data.fee === 'number' || !isNaN(Number(data.fee)) ? `₹${data.fee}` : data.fee}</p>
-        </div>
-        
-        <div className="w-full bg-teal-600 group-hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all text-center shadow-lg shadow-teal-500/30">
-          Book Consultation
-        </div>
-        
-        {!data.verified && (
-          <div className="w-full bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-600 font-bold py-2.5 px-6 rounded-xl text-xs transition-all text-center group-hover/claim:text-teal-600">
-            Verify Your Service
+
+          {/* Ratings & Verification */}
+          <div className="flex flex-wrap items-center gap-2 mb-auto mt-2">
+            <span className="text-yellow-600 text-[10px] md:text-xs font-bold flex items-center gap-1">
+              ⭐ {data.rating} <span className="text-slate-500 font-normal">({data.reviews} Reviews)</span>
+            </span>
+            {data.verified ? (
+              <span className="bg-emerald-100/80 text-emerald-700 text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Verified Partner
+              </span>
+            ) : (
+              <span className="bg-slate-200/80 text-slate-600 text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border border-slate-300">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Verification Pending
+              </span>
+            )}
           </div>
-        )}
+          
+          {/* Bottom Controls */}
+          <div className="flex items-end justify-between mt-2 pt-3 border-t border-slate-300/30">
+            <div>
+              <p className="text-[9px] font-mono uppercase tracking-widest text-slate-500">Consultation Fee</p>
+              <p className="text-base md:text-lg font-bold text-slate-900">{typeof data.fee === 'number' || !isNaN(Number(data.fee)) ? `₹${data.fee}` : data.fee}</p>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              {!data.verified && (
+                <div className="bg-white/50 hover:bg-white text-slate-700 font-bold py-1.5 md:py-2 px-3 md:px-4 rounded-full text-[10px] md:text-xs transition-colors border border-slate-300 shadow-sm hidden sm:block">
+                  Verify Now
+                </div>
+              )}
+              <div className="bg-slate-900 hover:bg-black text-white font-bold py-1.5 md:py-2 px-3 md:px-5 rounded-full text-[10px] md:text-xs transition-all shadow-md">
+                Book Consultation
+              </div>
+            </div>
+          </div>
+          
+        </div>
       </div>
     </Link>
   );
@@ -137,10 +166,10 @@ export default function DoctorsDirectory() {
   const uniqueDistricts = Array.from(new Set(doctors.map(d => d.district).filter(d => d !== "Unknown"))).sort();
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-sky-100 to-blue-200 text-slate-900 font-sans selection:bg-teal-500/30">
       <CategoryNav />
       
-      <div className="bg-white border-b border-slate-200 px-6 py-3">
+      <div className="bg-white/60 backdrop-blur-md border-b border-white/50 px-6 py-3 shadow-sm">
         <div className="w-full max-w-[1920px] mx-auto">
           <Breadcrumb paths={[
             { name: "Home", href: "/" },
@@ -151,21 +180,17 @@ export default function DoctorsDirectory() {
       </div>
 
       {/* Premium Hero Search */}
-      <div className="bg-slate-900 pt-16 pb-24 px-6 relative overflow-hidden">
-        {/* Abstract Background Design */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-teal-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/4"></div>
-
+      <div className="pt-16 pb-24 px-6 relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
-            Find the Best <span className="text-teal-400">Specialists</span> in Odisha
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-6 drop-shadow-sm">
+            Find the Best <span className="text-teal-600">Specialists</span> in Odisha
           </h1>
-          <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">
+          <p className="text-slate-600 text-lg mb-10 max-w-2xl mx-auto">
             Book a secure FHIR-compliant video consultation or in-clinic visit with verified medical experts.
           </p>
           
           {/* Floating Search Bar */}
-          <div className="bg-white rounded-2xl p-2 shadow-2xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto">
+          <div className="bg-white/80 backdrop-blur-xl border border-white/50 rounded-2xl p-2 shadow-xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto">
              <div className="flex-1 relative">
                 <svg className="w-6 h-6 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input 
@@ -173,7 +198,7 @@ export default function DoctorsDirectory() {
                   placeholder="Search by doctor name, specialty, or symptoms..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-transparent border-none pl-14 pr-4 py-4 text-base text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-400"
+                  className="w-full bg-transparent border-none pl-14 pr-4 py-4 text-base text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-500 font-medium"
                 />
              </div>
              <button className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-8 py-4 rounded-xl text-sm transition-all shadow-lg hidden md:block">
@@ -187,7 +212,7 @@ export default function DoctorsDirectory() {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}
-          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white/60 backdrop-blur-xl border border-white/50 rounded-3xl p-6 shadow-[0_8px_32px_rgba(0,0,0,0.05)]">
             <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-widest text-xs">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
               Smart Filters
@@ -290,7 +315,7 @@ export default function DoctorsDirectory() {
                 </div>
               </>
             ) : (
-              <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
                 {filteredDoctors.map(doc => (
                   <PremiumDoctorTicket key={doc.id} data={doc} />
                 ))}
