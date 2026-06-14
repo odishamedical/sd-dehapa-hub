@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import Link from 'next/link';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -19,6 +20,9 @@ export default function AdminDataCRM() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  
+  // Advanced features state
+  const [dynamicFields, setDynamicFields] = useState<{label: string, value: string}[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -57,6 +61,7 @@ export default function AdminDataCRM() {
 
   const openDrawer = (listing: any) => {
     setSelectedListing({ ...listing });
+    setDynamicFields(listing.customFields || []);
     setIsDrawerOpen(true);
   };
 
@@ -81,11 +86,29 @@ export default function AdminDataCRM() {
     setIsUploadingImage(false);
   };
 
+  const addDynamicField = () => {
+    setDynamicFields([...dynamicFields, { label: "", value: "" }]);
+  };
+
+  const updateDynamicField = (index: number, key: 'label' | 'value', val: string) => {
+    const newFields = [...dynamicFields];
+    newFields[index][key] = val;
+    setDynamicFields(newFields);
+  };
+
+  const removeDynamicField = (index: number) => {
+    setDynamicFields(dynamicFields.filter((_, i) => i !== index));
+  };
+
   const handleSave = async () => {
     if (!selectedListing) return;
     setIsSaving(true);
     try {
       const ref = doc(db, 'directory', selectedListing.id);
+      
+      // Clean dynamic fields (remove empty ones)
+      const cleanDynamicFields = dynamicFields.filter(f => f.label.trim() !== "" && f.value.trim() !== "");
+      
       await updateDoc(ref, {
         name: selectedListing.name || "",
         phone: selectedListing.phone || "",
@@ -100,10 +123,13 @@ export default function AdminDataCRM() {
         qualification: selectedListing.qualification || "",
         about: selectedListing.about || "",
         website: selectedListing.website || "",
-        fee: selectedListing.fee || ""
+        fee: selectedListing.fee || "",
+        internalNotes: selectedListing.internalNotes || "",
+        featured: selectedListing.featured || false,
+        customFields: cleanDynamicFields
       });
       // update local
-      setData(data.map(d => d.id === selectedListing.id ? selectedListing : d));
+      setData(data.map(d => d.id === selectedListing.id ? { ...selectedListing, customFields: cleanDynamicFields } : d));
       setIsDrawerOpen(false);
     } catch (e) {
       console.error(e);
@@ -195,7 +221,10 @@ export default function AdminDataCRM() {
                         {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <span className="text-slate-400 text-xs">No Img</span>}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 text-sm">{item.name}</p>
+                        <p className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                          {item.name}
+                          {item.featured && <span className="bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">Featured</span>}
+                        </p>
                         <p className="text-xs text-slate-500">{item.category} • {item.subCategory}</p>
                       </div>
                     </div>
@@ -234,127 +263,213 @@ export default function AdminDataCRM() {
         )}
       </div>
 
-      {/* Slide-out Drawer */}
+      {/* Centered Modal (Bhulia Style UX) */}
       {isDrawerOpen && selectedListing && (
-        <div className="fixed inset-0 bg-slate-900/50 z-50 flex justify-end">
-          <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col animate-slide-in-right">
+        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex justify-center items-center p-4 sm:p-6 md:p-12 backdrop-blur-sm transition-opacity">
+          <div className="bg-white w-full max-w-5xl max-h-full rounded-2xl shadow-2xl flex flex-col animate-scale-in overflow-hidden border border-slate-200">
             
             {/* Sticky Header */}
-            <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex justify-between items-center z-10 shadow-sm">
-              <div>
-                <h3 className="font-bold text-lg text-slate-900">Edit Listing</h3>
-                <p className="text-xs text-slate-500 font-mono mt-1">ID: {selectedListing.id}</p>
-              </div>
-              <button onClick={() => setIsDrawerOpen(false)} className="text-slate-400 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-              </button>
-            </div>
-            
-            {/* Scrollable Form Content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-5 bg-slate-50/50">
-              
-              <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200">
-                <div className="relative group w-16 h-16 rounded-lg bg-slate-100 overflow-hidden border border-slate-200 shrink-0">
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center z-20 shadow-sm">
+              <div className="flex items-center gap-4">
+                 <div className="relative group w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200 shrink-0">
                    {selectedListing.image ? <img src={selectedListing.image} alt="Avatar" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-300">No Img</div>}
                    <label className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                      {isUploadingImage ? (
-                       <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                       <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                      ) : (
-                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                      )}
                      <input type="file" accept="image/*" onChange={handleImageUpload} disabled={isUploadingImage} className="hidden" />
                    </label>
-                </div>
+                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900">{selectedListing.name}</h4>
-                  <p className="text-xs text-slate-500">{selectedListing.source === 'google_crawler' ? 'Sourced from Google Places' : 'Manual Entry'}</p>
+                  <h3 className="font-bold text-xl text-slate-900">{selectedListing.name}</h3>
+                  <p className="text-xs text-slate-500 font-mono mt-0.5">ID: {selectedListing.id} • {selectedListing.source === 'google_crawler' ? 'Google Sourced' : 'Manual Entry'}</p>
                 </div>
               </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name / Title</label>
-                  <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number</label>
-                  <input type="text" value={selectedListing.phone} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Category</label>
-                  <input type="text" value={selectedListing.category} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Sub Category / Specialty</label>
-                  <input type="text" value={selectedListing.subCategory} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">City</label>
-                  <input type="text" value={selectedListing.city} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">District</label>
-                  <input type="text" value={selectedListing.district} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Address</label>
-                  <textarea value={selectedListing.address} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} rows={3} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white resize-none"></textarea>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Clinic / Hospital Name</label>
-                  <input type="text" value={selectedListing.clinicName || ""} onChange={e => setSelectedListing({...selectedListing, clinicName: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Experience</label>
-                  <input type="text" value={selectedListing.experience || ""} onChange={e => setSelectedListing({...selectedListing, experience: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="e.g. 15 Years" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Qualification</label>
-                  <input type="text" value={selectedListing.qualification || ""} onChange={e => setSelectedListing({...selectedListing, qualification: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="e.g. MBBS, MD" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">About</label>
-                  <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} rows={3} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white resize-none"></textarea>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Website</label>
-                  <input type="text" value={selectedListing.website || ""} onChange={e => setSelectedListing({...selectedListing, website: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="https://" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Consultation Fee (₹)</label>
-                  <input type="number" value={selectedListing.fee || ""} onChange={e => setSelectedListing({...selectedListing, fee: parseInt(e.target.value) || ""})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="e.g. 500" />
-                </div>
-
-                <div className="pt-2">
-                  <label className="flex items-center gap-3 p-4 border border-blue-200 bg-blue-50/50 rounded-xl cursor-pointer hover:bg-blue-50 transition-colors">
-                    <input type="checkbox" checked={selectedListing.verified} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500" />
+              <div className="flex items-center gap-3">
+                {selectedListing.ownerId && (
+                  <button className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-lg transition-colors border border-slate-200">
+                    <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Owner Dashboard
+                  </button>
+                )}
+                <button onClick={() => setIsDrawerOpen(false)} className="text-slate-400 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+            </div>
+            
+            {/* Scrollable Form Content */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50/50">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* Column 1: Basic & Location Info */}
+                <div className="space-y-5">
+                  <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-4">Basic Information</h4>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name / Title</label>
+                    <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number</label>
+                    <input type="text" value={selectedListing.phone} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="font-bold text-blue-900 text-sm">Mark as Verified</p>
-                      <p className="text-xs text-blue-700/70">Activates the blue verified badge on their public profile.</p>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Category</label>
+                      <input type="text" value={selectedListing.category} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Specialty</label>
+                      <input type="text" value={selectedListing.subCategory} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">City</label>
+                      <input type="text" value={selectedListing.city} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">District</label>
+                      <input type="text" value={selectedListing.district} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Address</label>
+                    <textarea value={selectedListing.address} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} rows={3} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white resize-none shadow-sm"></textarea>
+                  </div>
+                </div>
+
+                {/* Column 2: Professional Details */}
+                <div className="space-y-5">
+                  <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-4">Professional Details</h4>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Clinic / Hospital Name</label>
+                    <input type="text" value={selectedListing.clinicName || ""} onChange={e => setSelectedListing({...selectedListing, clinicName: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Experience</label>
+                      <input type="text" value={selectedListing.experience || ""} onChange={e => setSelectedListing({...selectedListing, experience: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" placeholder="e.g. 15 Years" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Consultation Fee</label>
+                      <input type="text" value={selectedListing.fee || ""} onChange={e => setSelectedListing({...selectedListing, fee: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" placeholder="e.g. 500" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Qualification</label>
+                    <input type="text" value={selectedListing.qualification || ""} onChange={e => setSelectedListing({...selectedListing, qualification: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" placeholder="e.g. MBBS, MD" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">About / Bio</label>
+                    <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} rows={3} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white resize-none shadow-sm"></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Website URL</label>
+                    <input type="text" value={selectedListing.website || ""} onChange={e => setSelectedListing({...selectedListing, website: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" placeholder="https://" />
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Status & Toggles Section */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <h4 className="text-sm font-bold text-slate-900 mb-6">Listing Status & Controls</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <label className="flex items-start gap-4 p-5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-colors shadow-sm">
+                    <input type="checkbox" checked={selectedListing.verified} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-5 h-5 mt-0.5 text-blue-600 rounded focus:ring-blue-500" />
+                    <div>
+                      <p className="font-bold text-slate-900 text-base">Verified Listing</p>
+                      <p className="text-sm text-slate-500 mt-1">Activates the blue verified badge on their public profile, signaling trust to patients.</p>
+                    </div>
+                  </label>
+
+                  <label className="flex items-start gap-4 p-5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-amber-300 hover:bg-amber-50/30 transition-colors shadow-sm">
+                    <input type="checkbox" checked={selectedListing.featured} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-5 h-5 mt-0.5 text-amber-500 rounded focus:ring-amber-500" />
+                    <div>
+                      <p className="font-bold text-slate-900 text-base">Featured Placement</p>
+                      <p className="text-sm text-slate-500 mt-1">Pins this listing to the top of directory searches and highlights it with a gold border.</p>
                     </div>
                   </label>
                 </div>
               </div>
 
+              {/* Dynamic Custom Fields */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-bold text-slate-900">Dynamic Custom Fields</h4>
+                  <button onClick={addDynamicField} className="text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Field
+                  </button>
+                </div>
+                
+                {dynamicFields.length === 0 ? (
+                  <div className="text-center p-6 bg-white border border-dashed border-slate-300 rounded-xl text-slate-500 text-sm">
+                    No custom fields added. Use this for specific data like "Awards", "Languages Spoken", etc.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {dynamicFields.map((field, idx) => (
+                      <div key={idx} className="flex gap-3 items-start bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
+                        <div className="w-1/3">
+                          <input type="text" placeholder="Label (e.g. Awards)" value={field.label} onChange={e => updateDynamicField(idx, 'label', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 outline-none bg-slate-50" />
+                        </div>
+                        <div className="flex-1">
+                          <input type="text" placeholder="Value (e.g. Best Doctor 2025)" value={field.value} onChange={e => updateDynamicField(idx, 'value', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 outline-none bg-slate-50" />
+                        </div>
+                        <button onClick={() => removeDynamicField(idx)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-0.5">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Internal Notes */}
+              <div className="mt-8 pt-8 border-t border-slate-200 mb-8">
+                <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                  Internal Admin Notes <span className="text-xs font-normal text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full ml-2">Private</span>
+                </h4>
+                <textarea 
+                  value={selectedListing.internalNotes || ""} 
+                  onChange={e => setSelectedListing({...selectedListing, internalNotes: e.target.value})} 
+                  rows={4} 
+                  placeholder="Leave hidden notes here (e.g. Follow up on Monday, wants premium plan...)"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-amber-50/30 resize-none shadow-sm"
+                ></textarea>
+              </div>
+
             </div>
 
             {/* Sticky Footer */}
-            <div className="sticky bottom-0 bg-white border-t border-slate-200 p-6 flex items-center gap-3 z-10 shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.05)]">
-              <button onClick={handleDelete} disabled={isSaving} className="px-4 py-3 text-red-600 hover:bg-red-50 hover:border-red-200 rounded-xl font-bold text-sm border border-transparent transition-colors mr-auto disabled:opacity-50 flex items-center gap-2">
+            <div className="sticky bottom-0 bg-white border-t border-slate-200 px-6 py-4 flex items-center justify-between z-20 shadow-[0_-10px_15px_-3px_rgb(0,0,0,0.05)]">
+              <button onClick={handleDelete} disabled={isSaving} className="px-5 py-2.5 text-red-600 hover:bg-red-50 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 flex items-center gap-2 border border-transparent hover:border-red-200">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 Delete
               </button>
-              <button onClick={() => setIsDrawerOpen(false)} disabled={isSaving} className="px-6 py-3 text-slate-600 hover:bg-slate-100 rounded-xl font-bold text-sm bg-slate-50 border border-slate-200 transition-colors disabled:opacity-50">
-                Cancel
-              </button>
-              <button onClick={handleSave} disabled={isSaving} className="px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-sm transition-colors shadow-md shadow-teal-500/20 disabled:opacity-50 flex items-center gap-2">
-                {isSaving ? (
-                  <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...</>
-                ) : (
-                  <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Save Changes</>
-                )}
-              </button>
+              
+              <div className="flex items-center gap-3">
+                <Link href={`/${selectedListing.category === 'Hospital' ? 'hospitals' : 'doctors'}/${selectedListing.id}`} target="_blank" className="hidden md:flex px-5 py-2.5 text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-xl font-bold text-sm transition-colors border border-slate-200 hover:border-teal-200 items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                  Public Profile
+                </Link>
+                <button onClick={() => setIsDrawerOpen(false)} disabled={isSaving} className="px-6 py-2.5 text-slate-600 hover:bg-slate-100 rounded-xl font-bold text-sm bg-slate-50 border border-slate-200 transition-colors disabled:opacity-50">
+                  Cancel
+                </button>
+                <button onClick={handleSave} disabled={isSaving} className="px-8 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-teal-500/20 hover:shadow-lg disabled:opacity-50 flex items-center gap-2">
+                  {isSaving ? (
+                    <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...</>
+                  ) : (
+                    <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Save Changes</>
+                  )}
+                </button>
+              </div>
             </div>
 
           </div>
@@ -363,3 +478,4 @@ export default function AdminDataCRM() {
     </div>
   );
 }
+
