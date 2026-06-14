@@ -23,6 +23,11 @@ export default function AdminDataCRM() {
   
   // Advanced features state
   const [dynamicFields, setDynamicFields] = useState<{label: string, value: string}[]>([]);
+  const [locations, setLocations] = useState<any[]>([]);
+  const [experiences, setExperiences] = useState<any[]>([]);
+  const [qualificationsList, setQualificationsList] = useState<any[]>([]);
+  const [research, setResearch] = useState<any[]>([]);
+  const [awards, setAwards] = useState<any[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -34,7 +39,6 @@ export default function AdminDataCRM() {
       const q = collection(db, 'directory');
       const snap = await getDocs(q);
       const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      // Sort by newest first safely
       docs.sort((a: any, b: any) => {
         const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
         const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
@@ -62,6 +66,11 @@ export default function AdminDataCRM() {
   const openDrawer = (listing: any) => {
     setSelectedListing({ ...listing });
     setDynamicFields(listing.customFields || []);
+    setLocations(listing.locations || []);
+    setExperiences(listing.experiences || []);
+    setQualificationsList(listing.qualificationsList || []);
+    setResearch(listing.research || []);
+    setAwards(listing.awards || []);
     setIsDrawerOpen(true);
   };
 
@@ -75,7 +84,6 @@ export default function AdminDataCRM() {
       const url = await getDownloadURL(fileRef);
       setSelectedListing({ ...selectedListing, image: url });
       
-      // Auto-save just the image so it's not lost
       const docRef = doc(db, 'directory', selectedListing.id);
       await updateDoc(docRef, { image: url });
       setData(data.map(d => d.id === selectedListing.id ? { ...d, image: url } : d));
@@ -86,19 +94,19 @@ export default function AdminDataCRM() {
     setIsUploadingImage(false);
   };
 
-  const addDynamicField = () => {
-    setDynamicFields([...dynamicFields, { label: "", value: "" }]);
+  const handleArrayChange = (setter: any, array: any[], index: number, key: string, val: string) => {
+    const newArr = [...array];
+    newArr[index][key] = val;
+    setter(newArr);
   };
 
+  const addDynamicField = () => setDynamicFields([...dynamicFields, { label: "", value: "" }]);
   const updateDynamicField = (index: number, key: 'label' | 'value', val: string) => {
     const newFields = [...dynamicFields];
     newFields[index][key] = val;
     setDynamicFields(newFields);
   };
-
-  const removeDynamicField = (index: number) => {
-    setDynamicFields(dynamicFields.filter((_, i) => i !== index));
-  };
+  const removeDynamicField = (index: number) => setDynamicFields(dynamicFields.filter((_, i) => i !== index));
 
   const handleSave = async () => {
     if (!selectedListing) return;
@@ -106,10 +114,14 @@ export default function AdminDataCRM() {
     try {
       const ref = doc(db, 'directory', selectedListing.id);
       
-      // Clean dynamic fields (remove empty ones)
       const cleanDynamicFields = dynamicFields.filter(f => f.label.trim() !== "" && f.value.trim() !== "");
+      const cleanLocations = locations.filter(l => l.name?.trim() !== "");
+      const cleanExperiences = experiences.filter(e => e.role?.trim() !== "" || e.hospital?.trim() !== "");
+      const cleanQualifications = qualificationsList.filter(q => q.degree?.trim() !== "");
+      const cleanResearch = research.filter(r => r.title?.trim() !== "");
+      const cleanAwards = awards.filter(a => a.name?.trim() !== "");
       
-      await updateDoc(ref, {
+      const updatedData = {
         name: selectedListing.name || "",
         phone: selectedListing.phone || "",
         address: selectedListing.address || "",
@@ -126,10 +138,16 @@ export default function AdminDataCRM() {
         fee: selectedListing.fee || "",
         internalNotes: selectedListing.internalNotes || "",
         featured: selectedListing.featured || false,
-        customFields: cleanDynamicFields
-      });
-      // update local
-      setData(data.map(d => d.id === selectedListing.id ? { ...selectedListing, customFields: cleanDynamicFields } : d));
+        customFields: cleanDynamicFields,
+        locations: cleanLocations,
+        experiences: cleanExperiences,
+        qualificationsList: cleanQualifications,
+        research: cleanResearch,
+        awards: cleanAwards
+      };
+
+      await updateDoc(ref, updatedData);
+      setData(data.map(d => d.id === selectedListing.id ? { ...d, ...updatedData } : d));
       setIsDrawerOpen(false);
     } catch (e) {
       console.error(e);
@@ -263,7 +281,7 @@ export default function AdminDataCRM() {
         )}
       </div>
 
-      {/* Centered Modal (Bhulia Style UX) */}
+      {/* Centered Modal */}
       {isDrawerOpen && selectedListing && (
         <div className="fixed inset-0 bg-slate-900/60 z-[100] flex justify-center items-center p-4 sm:p-6 md:p-12 backdrop-blur-sm transition-opacity">
           <div className="bg-white w-full max-w-5xl max-h-full rounded-2xl shadow-2xl flex flex-col animate-scale-in overflow-hidden border border-slate-200">
@@ -303,7 +321,7 @@ export default function AdminDataCRM() {
             {/* Scrollable Form Content */}
             <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50/50">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 
                 {/* Column 1: Basic & Location Info */}
                 <div className="space-y-5">
@@ -337,7 +355,7 @@ export default function AdminDataCRM() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Address</label>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Primary Full Address</label>
                     <textarea value={selectedListing.address} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} rows={3} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white resize-none shadow-sm"></textarea>
                   </div>
                 </div>
@@ -346,21 +364,21 @@ export default function AdminDataCRM() {
                 <div className="space-y-5">
                   <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-2 mb-4">Professional Details</h4>
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Clinic / Hospital Name</label>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Primary Clinic Name</label>
                     <input type="text" value={selectedListing.clinicName || ""} onChange={e => setSelectedListing({...selectedListing, clinicName: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Experience</label>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Experience</label>
                       <input type="text" value={selectedListing.experience || ""} onChange={e => setSelectedListing({...selectedListing, experience: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" placeholder="e.g. 15 Years" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Consultation Fee</label>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Primary Fee</label>
                       <input type="text" value={selectedListing.fee || ""} onChange={e => setSelectedListing({...selectedListing, fee: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" placeholder="e.g. 500" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Qualification</label>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Short Qualification (e.g. MBBS)</label>
                     <input type="text" value={selectedListing.qualification || ""} onChange={e => setSelectedListing({...selectedListing, qualification: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" placeholder="e.g. MBBS, MD" />
                   </div>
                   <div>
@@ -375,6 +393,136 @@ export default function AdminDataCRM() {
 
               </div>
 
+              {/* Advanced Elite Fields */}
+              
+              {/* 1. Visiting Locations */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-bold text-slate-900">Multiple Visiting Locations</h4>
+                  <button onClick={() => setLocations([...locations, {name:'', address:'', city:'', days:'', timings:'', fee:''}])} className="text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Location
+                  </button>
+                </div>
+                {locations.length === 0 && <p className="text-xs text-slate-500 italic">No additional locations added.</p>}
+                <div className="space-y-3">
+                  {locations.map((loc, idx) => (
+                    <div key={idx} className="bg-white p-4 border border-slate-200 rounded-xl shadow-sm relative pr-12">
+                      <button onClick={() => setLocations(locations.filter((_, i) => i !== idx))} className="absolute right-3 top-3 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <input type="text" placeholder="Clinic/Hospital Name" value={loc.name} onChange={e => handleArrayChange(setLocations, locations, idx, 'name', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                        <input type="text" placeholder="City" value={loc.city} onChange={e => handleArrayChange(setLocations, locations, idx, 'city', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      </div>
+                      <input type="text" placeholder="Full Address" value={loc.address} onChange={e => handleArrayChange(setLocations, locations, idx, 'address', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none mb-3" />
+                      <div className="grid grid-cols-3 gap-3">
+                        <input type="text" placeholder="Days (e.g. Mon, Wed)" value={loc.days} onChange={e => handleArrayChange(setLocations, locations, idx, 'days', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                        <input type="text" placeholder="Timings (e.g. 5 PM - 8 PM)" value={loc.timings} onChange={e => handleArrayChange(setLocations, locations, idx, 'timings', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                        <input type="text" placeholder="Fee (₹)" value={loc.fee} onChange={e => handleArrayChange(setLocations, locations, idx, 'fee', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Chronological Experience */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-bold text-slate-900">Chronological Experience</h4>
+                  <button onClick={() => setExperiences([...experiences, {role:'', hospital:'', duration:''}])} className="text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Experience
+                  </button>
+                </div>
+                {experiences.length === 0 && <p className="text-xs text-slate-500 italic">No experiences added.</p>}
+                <div className="space-y-3">
+                  {experiences.map((exp, idx) => (
+                    <div key={idx} className="flex gap-3 items-center bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
+                      <input type="text" placeholder="Role (e.g. Senior Surgeon)" value={exp.role} onChange={e => handleArrayChange(setExperiences, experiences, idx, 'role', e.target.value)} className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Hospital/Institution" value={exp.hospital} onChange={e => handleArrayChange(setExperiences, experiences, idx, 'hospital', e.target.value)} className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Duration (2015 - 2020)" value={exp.duration} onChange={e => handleArrayChange(setExperiences, experiences, idx, 'duration', e.target.value)} className="w-32 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <button onClick={() => setExperiences(experiences.filter((_, i) => i !== idx))} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. Qualifications & Fellowships */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-bold text-slate-900">Qualifications & Fellowships</h4>
+                  <button onClick={() => setQualificationsList([...qualificationsList, {degree:'', institution:'', year:''}])} className="text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Qualification
+                  </button>
+                </div>
+                {qualificationsList.length === 0 && <p className="text-xs text-slate-500 italic">No structured qualifications added.</p>}
+                <div className="space-y-3">
+                  {qualificationsList.map((qual, idx) => (
+                    <div key={idx} className="flex gap-3 items-center bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
+                      <input type="text" placeholder="Degree (e.g. MD)" value={qual.degree} onChange={e => handleArrayChange(setQualificationsList, qualificationsList, idx, 'degree', e.target.value)} className="w-1/4 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Institution Name" value={qual.institution} onChange={e => handleArrayChange(setQualificationsList, qualificationsList, idx, 'institution', e.target.value)} className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Year" value={qual.year} onChange={e => handleArrayChange(setQualificationsList, qualificationsList, idx, 'year', e.target.value)} className="w-24 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <button onClick={() => setQualificationsList(qualificationsList.filter((_, i) => i !== idx))} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. Research & Publications */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-bold text-slate-900">Research & Publications</h4>
+                  <button onClick={() => setResearch([...research, {title:'', journal:'', year:''}])} className="text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Publication
+                  </button>
+                </div>
+                {research.length === 0 && <p className="text-xs text-slate-500 italic">No publications added.</p>}
+                <div className="space-y-3">
+                  {research.map((res, idx) => (
+                    <div key={idx} className="flex gap-3 items-center bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
+                      <input type="text" placeholder="Paper Title" value={res.title} onChange={e => handleArrayChange(setResearch, research, idx, 'title', e.target.value)} className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Journal/Conference" value={res.journal} onChange={e => handleArrayChange(setResearch, research, idx, 'journal', e.target.value)} className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Year" value={res.year} onChange={e => handleArrayChange(setResearch, research, idx, 'year', e.target.value)} className="w-24 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <button onClick={() => setResearch(research.filter((_, i) => i !== idx))} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5. Awards */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-sm font-bold text-slate-900">Awards & Recognitions</h4>
+                  <button onClick={() => setAwards([...awards, {name:'', organization:'', year:''}])} className="text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Award
+                  </button>
+                </div>
+                {awards.length === 0 && <p className="text-xs text-slate-500 italic">No awards added.</p>}
+                <div className="space-y-3">
+                  {awards.map((awa, idx) => (
+                    <div key={idx} className="flex gap-3 items-center bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
+                      <input type="text" placeholder="Award Name" value={awa.name} onChange={e => handleArrayChange(setAwards, awards, idx, 'name', e.target.value)} className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Issuing Organization" value={awa.organization} onChange={e => handleArrayChange(setAwards, awards, idx, 'organization', e.target.value)} className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <input type="text" placeholder="Year" value={awa.year} onChange={e => handleArrayChange(setAwards, awards, idx, 'year', e.target.value)} className="w-24 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 outline-none" />
+                      <button onClick={() => setAwards(awards.filter((_, i) => i !== idx))} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+
               {/* Status & Toggles Section */}
               <div className="mt-8 pt-8 border-t border-slate-200">
                 <h4 className="text-sm font-bold text-slate-900 mb-6">Listing Status & Controls</h4>
@@ -383,7 +531,7 @@ export default function AdminDataCRM() {
                     <input type="checkbox" checked={selectedListing.verified} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-5 h-5 mt-0.5 text-blue-600 rounded focus:ring-blue-500" />
                     <div>
                       <p className="font-bold text-slate-900 text-base">Verified Listing</p>
-                      <p className="text-sm text-slate-500 mt-1">Activates the blue verified badge on their public profile, signaling trust to patients.</p>
+                      <p className="text-sm text-slate-500 mt-1">Activates the blue verified badge on their public profile.</p>
                     </div>
                   </label>
 
@@ -391,7 +539,7 @@ export default function AdminDataCRM() {
                     <input type="checkbox" checked={selectedListing.featured} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-5 h-5 mt-0.5 text-amber-500 rounded focus:ring-amber-500" />
                     <div>
                       <p className="font-bold text-slate-900 text-base">Featured Placement</p>
-                      <p className="text-sm text-slate-500 mt-1">Pins this listing to the top of directory searches and highlights it with a gold border.</p>
+                      <p className="text-sm text-slate-500 mt-1">Pins this listing to the top of directory searches.</p>
                     </div>
                   </label>
                 </div>
@@ -409,17 +557,17 @@ export default function AdminDataCRM() {
                 
                 {dynamicFields.length === 0 ? (
                   <div className="text-center p-6 bg-white border border-dashed border-slate-300 rounded-xl text-slate-500 text-sm">
-                    No custom fields added. Use this for specific data like "Awards", "Languages Spoken", etc.
+                    No custom fields added.
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {dynamicFields.map((field, idx) => (
                       <div key={idx} className="flex gap-3 items-start bg-white p-3 border border-slate-200 rounded-xl shadow-sm">
                         <div className="w-1/3">
-                          <input type="text" placeholder="Label (e.g. Awards)" value={field.label} onChange={e => updateDynamicField(idx, 'label', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 outline-none bg-slate-50" />
+                          <input type="text" placeholder="Label" value={field.label} onChange={e => updateDynamicField(idx, 'label', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 outline-none bg-slate-50" />
                         </div>
                         <div className="flex-1">
-                          <input type="text" placeholder="Value (e.g. Best Doctor 2025)" value={field.value} onChange={e => updateDynamicField(idx, 'value', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 outline-none bg-slate-50" />
+                          <input type="text" placeholder="Value" value={field.value} onChange={e => updateDynamicField(idx, 'value', e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 outline-none bg-slate-50" />
                         </div>
                         <button onClick={() => removeDynamicField(idx)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-0.5">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -440,7 +588,7 @@ export default function AdminDataCRM() {
                   value={selectedListing.internalNotes || ""} 
                   onChange={e => setSelectedListing({...selectedListing, internalNotes: e.target.value})} 
                   rows={4} 
-                  placeholder="Leave hidden notes here (e.g. Follow up on Monday, wants premium plan...)"
+                  placeholder="Leave hidden notes here..."
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-amber-50/30 resize-none shadow-sm"
                 ></textarea>
               </div>
@@ -478,4 +626,3 @@ export default function AdminDataCRM() {
     </div>
   );
 }
-

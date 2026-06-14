@@ -54,7 +54,14 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
             hours: rawData.hours || [
               { day: "Operating Hours", time: notVerified }
             ],
-            city: rawData.city || rawData.district || "Odisha"
+            city: rawData.city || rawData.district || "Odisha",
+            
+            // New Advanced Array Fields
+            locations: rawData.locations || [],
+            experiences: rawData.experiences || [],
+            qualificationsList: rawData.qualificationsList || [],
+            research: rawData.research || [],
+            awards: rawData.awards || []
           };
           setDoctor(docData);
           
@@ -189,30 +196,98 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                     ))}
                   </div>
                 </div>
-                
-                {/* Education */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                  <h2 className="text-xl font-bold text-slate-900 mb-6">Education & Training</h2>
-                  <div className="space-y-6">
-                    {doctor.education.map((edu: any, idx: number) => (
-                      <div key={idx} className="flex gap-4">
-                        <div className="flex flex-col items-center">
-                          <div className="w-3 h-3 bg-teal-500 rounded-full mt-1.5"></div>
-                          {idx !== doctor.education.length - 1 && <div className="w-0.5 h-full bg-slate-200 mt-2"></div>}
+
+                {/* Detailed Qualifications */}
+                {doctor.qualificationsList?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                      Qualifications & Fellowships
+                    </h2>
+                    <div className="space-y-4">
+                      {doctor.qualificationsList.map((qual: any, idx: number) => (
+                        <div key={idx} className="flex flex-col bg-slate-50 border border-slate-100 p-4 rounded-xl">
+                          <h4 className="font-bold text-slate-900 text-sm">{qual.degree}</h4>
+                          <p className="text-xs text-slate-600 mt-1">{qual.institution}</p>
+                          {qual.year && <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider mt-2">{qual.year}</span>}
                         </div>
-                        <div>
-                          <h4 className="font-bold text-slate-900 text-sm">{edu.degree}</h4>
-                          <p className="text-xs text-slate-500 mt-1">{edu.institution}</p>
-                          {edu.year && <span className="text-xs font-bold text-slate-400 mt-1 block">{edu.year}</span>}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+                
+                {/* Fallback Legacy Education */}
+                {!doctor.qualificationsList?.length && doctor.education.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6">Education & Training</h2>
+                    <div className="space-y-6">
+                      {doctor.education.map((edu: any, idx: number) => (
+                        <div key={idx} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <div className="w-3 h-3 bg-teal-500 rounded-full mt-1.5"></div>
+                            {idx !== doctor.education.length - 1 && <div className="w-0.5 h-full bg-slate-200 mt-2"></div>}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 text-sm">{edu.degree}</h4>
+                            <p className="text-xs text-slate-500 mt-1">{edu.institution}</p>
+                            {edu.year && <span className="text-xs font-bold text-slate-400 mt-1 block">{edu.year}</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Awards & Recognitions */}
+                {doctor.awards?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                      Awards & Recognitions
+                    </h2>
+                    <div className="space-y-4">
+                      {doctor.awards.map((award: any, idx: number) => (
+                        <div key={idx} className="flex gap-3 items-start">
+                          <div className="w-2 h-2 bg-amber-400 rounded-full mt-1.5 shrink-0"></div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 text-sm">{award.name}</h4>
+                            <p className="text-xs text-slate-600 mt-1">{award.organization} {award.year && `• ${award.year}`}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
 
               <div className="space-y-8">
-                {/* Location Card */}
+                
+                {/* Advanced Experience Timeline */}
+                {doctor.experiences?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                      Professional Experience
+                    </h2>
+                    <div className="space-y-0 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                      {doctor.experiences.map((exp: any, idx: number) => (
+                        <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active py-4">
+                          <div className="flex items-center justify-center w-6 h-6 rounded-full border border-white bg-slate-200 text-slate-500 group-[.is-active]:bg-teal-600 group-[.is-active]:text-emerald-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
+                          </div>
+                          <div className="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                            <h4 className="font-bold text-slate-900 text-sm">{exp.role}</h4>
+                            <p className="text-xs text-slate-600 mt-1">{exp.hospital}</p>
+                            {exp.duration && <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider mt-2 block">{exp.duration}</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Legacy Location Card (Primary) */}
                 <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
                   <div className="w-full h-48 bg-slate-100 relative">
                     <iframe 
@@ -227,7 +302,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                   </div>
                   <div className="p-6">
                     <h3 className="font-bold text-lg text-slate-900 mb-2">
-                    <span className="text-sm font-semibold text-slate-500 block mb-1">Clinic / Hospital Name</span>
+                    <span className="text-sm font-semibold text-slate-500 block mb-1">Primary Clinic</span>
                     {doctor.clinic.name}
                   </h3>
                     <div className="space-y-4 mt-4">
@@ -239,29 +314,51 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                         <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                         <p className="text-sm text-slate-900 font-semibold">{doctor.clinic.phone}</p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                        <p className="text-sm text-teal-600 hover:underline cursor-pointer">{doctor.clinic.website}</p>
-                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Operating Hours */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                  <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Operating Hours
-                  </h3>
-                  <div className="space-y-3">
-                    {doctor.hours.map((h: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-50 pb-2 last:border-0 last:pb-0">
-                        <span className="text-slate-500 font-medium">{h.day}</span>
-                        <span className={`font-semibold ${h.time === 'Closed' ? 'text-red-500' : 'text-slate-900'}`}>{h.time}</span>
-                      </div>
-                    ))}
+                {/* Multiple Visiting Locations */}
+                {doctor.locations?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                      Also Visits
+                    </h2>
+                    <div className="grid grid-cols-1 gap-4">
+                      {doctor.locations.map((loc: any, idx: number) => (
+                        <div key={idx} className="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-white transition-colors">
+                          <h4 className="font-bold text-slate-900 text-sm mb-1">{loc.name}</h4>
+                          <p className="text-xs text-slate-500 mb-3">{loc.address}, {loc.city}</p>
+                          <div className="flex items-center justify-between text-xs font-semibold">
+                            <span className="text-teal-700 bg-teal-50 px-2 py-1 rounded">{loc.days}</span>
+                            <span className="text-slate-600">{loc.timings}</span>
+                          </div>
+                          {loc.fee && <div className="mt-3 pt-3 border-t border-slate-200 text-xs text-slate-600">Consultation Fee: <span className="font-bold text-slate-900">₹{loc.fee}</span></div>}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {/* Research & Publications */}
+                {doctor.research?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                      Research & Publications
+                    </h2>
+                    <div className="space-y-4">
+                      {doctor.research.map((res: any, idx: number) => (
+                        <div key={idx} className="border-l-2 border-teal-500 pl-4 py-1">
+                          <h4 className="font-bold text-slate-900 text-sm leading-snug">{res.title}</h4>
+                          <p className="text-xs text-slate-600 mt-2 font-serif italic">{res.journal} {res.year && `(${res.year})`}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
