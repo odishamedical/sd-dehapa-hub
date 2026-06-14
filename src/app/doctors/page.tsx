@@ -12,6 +12,64 @@ const DOCTORS: any[] = [
   // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
 ];
 
+const PremiumDoctorTicket = ({ data }: { data: any }) => {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 p-6 flex flex-col md:flex-row gap-6 items-center md:items-start group relative overflow-hidden">
+      {/* Availability Accent Bar */}
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${data.available ? 'bg-teal-500' : 'bg-slate-300'}`}></div>
+
+      {/* Left: Avatar */}
+      <div className="relative shrink-0 pl-2">
+        <img src={data.image} alt={data.name} className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-sm group-hover:border-teal-50 transition-colors" />
+        {data.verified && (
+          <div className="absolute -bottom-2 -right-2 bg-blue-500 text-white w-8 h-8 rounded-full border-2 border-white flex items-center justify-center shadow-sm" title="Verified Professional">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+        )}
+      </div>
+      
+      {/* Center: Info */}
+      <div className="flex-1 text-center md:text-left min-w-0">
+        <h3 className="text-xl font-bold text-slate-900 truncate mb-1">{data.name}</h3>
+        <p className="text-teal-600 font-bold text-sm mb-3 truncate">{data.specialty}</p>
+        
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
+          <span className="bg-slate-50 text-slate-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-slate-200">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            {data.experience} Experience
+          </span>
+          <span className="bg-yellow-50 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-yellow-100">
+            ⭐ {data.rating} <span className="text-yellow-600/70 ml-1">({data.reviews})</span>
+          </span>
+        </div>
+        
+        <p className="text-slate-500 text-sm flex items-start justify-center md:justify-start gap-1">
+          <svg className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <span className="truncate"><strong className="text-slate-700">{data.hospital}</strong> • {data.address}</span>
+        </p>
+      </div>
+      
+      {/* Right: Actions */}
+      <div className="w-full md:w-auto flex flex-col justify-center gap-3 shrink-0 md:border-l md:border-slate-100 md:pl-8 md:py-2">
+        <div className="text-center md:text-right mb-1">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Consultation Fee</p>
+          <p className="text-2xl font-bold text-slate-900">₹{data.fee}</p>
+        </div>
+        
+        <Link href={`/doctors/${data.id}`} className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all text-center shadow-lg shadow-teal-500/30">
+          Book Consultation
+        </Link>
+        
+        {!data.verified && (
+          <Link href="/portal/claim" className="w-full bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-600 font-bold py-2.5 px-6 rounded-xl text-xs transition-all text-center group">
+            <span className="group-hover:text-teal-600 transition-colors">Verify Your Service</span>
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const dynamic = 'force-dynamic';
 
 export default function DoctorsDirectory() {
@@ -20,152 +78,143 @@ export default function DoctorsDirectory() {
   const [search, setSearch] = useState("");
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
 
-  const handleBookClick = (e: React.MouseEvent, docId: string) => {
-    e.preventDefault();
-    const userEmail = localStorage.getItem("sd_current_user_email");
-    const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
-
-    if (!userEmail) {
-      const currentUrl = window.location.href;
-      const authCenterBase = window.location.hostname === "localhost" 
-        ? "http://localhost:3000" 
-        : "https://sd-auth-center.vercel.app";
-      window.location.href = `${authCenterBase}?redirect_uri=${encodeURIComponent(currentUrl)}`;
-      return;
-    }
-
-    if (!isProfileComplete) {
-      setShowProfileBlocker(true);
-      return;
-    }
-
-    router.push(`/portal/book?doctor=${docId}`);
-  };
-
   const filteredDoctors = DOCTORS.filter(doc => {
     const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.hospital.toLowerCase().includes(search.toLowerCase());
-    
-    // Filter by tenant hospital unless the tenant is "general" (DehaPa general network)
     const matchTenant = activeTenant.hospitalName === "All" || doc.hospital === activeTenant.hospitalName;
-    
     return matchSearch && matchTenant;
   });
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-tenant-accent/30">
+    <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30">
       {/* Global Header */}
-      <header className="relative z-50 h-[80px] border-b border-tenant-accent/20 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12 sticky top-0">
+      <header className="relative z-50 h-[80px] border-b border-slate-200 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12 sticky top-0 shadow-sm">
         <Link href="/" className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tenant-gradient-from to-tenant-gradient-to flex items-center justify-center text-slate-900 font-bold text-xl shadow-[0_0_20px_var(--tenant-accent-glow)]">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-widest text-slate-900 uppercase font-serif">
-              {activeTenant.logoText} <span className="text-tenant-accent">{activeTenant.id === "general" ? "Health" : "Care"}</span>
-            </span>
-            <span className="text-[9px] text-tenant-accent/80 tracking-[0.2em] uppercase font-mono">{activeTenant.logoSubText}</span>
-          </div>
+           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tenant-gradient-from to-tenant-gradient-to flex items-center justify-center text-slate-900 font-bold text-xl shadow-[0_0_20px_var(--tenant-accent-glow)]">
+             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+           </div>
+           <div className="flex flex-col">
+             <span className="text-xl font-bold tracking-widest text-slate-900 uppercase font-serif">
+               {activeTenant.logoText} <span className="text-tenant-accent">{activeTenant.id === "general" ? "Health" : "Care"}</span>
+             </span>
+             <span className="text-[9px] text-tenant-accent/80 tracking-[0.2em] uppercase font-mono">{activeTenant.logoSubText}</span>
+           </div>
         </Link>
         <div className="flex items-center gap-4">
           <EcosystemSwitcher />
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12 relative z-10">
-        <div className="mb-10">
-          <h1 className="text-4xl font-serif font-bold text-slate-900 mb-2">
-            Find a <span className="text-tenant-accent">Specialist</span>
-          </h1>
-          <p className="text-slate-600">
-            {activeTenant.id === "general" 
-              ? "Book a secure FHIR-compliant video consultation with top medical experts across Odisha."
-              : `Book a secure FHIR-compliant video consultation with top medical experts at ${activeTenant.name}.`}
-          </p>
-        </div>
+      {/* Premium Hero Search */}
+      <div className="bg-slate-900 pt-16 pb-24 px-6 relative overflow-hidden">
+        {/* Abstract Background Design */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-teal-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/4"></div>
 
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+            Find the Best <span className="text-teal-400">Specialists</span> in Odisha
+          </h1>
+          <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">
+            Book a secure FHIR-compliant video consultation or in-clinic visit with verified medical experts.
+          </p>
+          
+          {/* Floating Search Bar */}
+          <div className="bg-white rounded-2xl p-2 shadow-2xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto">
+             <div className="flex-1 relative">
+                <svg className="w-6 h-6 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input 
+                  type="text" 
+                  placeholder="Search by doctor name, specialty, or symptoms..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full bg-transparent border-none pl-14 pr-4 py-4 text-base text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-400"
+                />
+             </div>
+             <button className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-8 py-4 rounded-xl text-sm transition-all shadow-lg hidden md:block">
+               Search
+             </button>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-6 py-12 relative z-10 -mt-12">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}
-          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto lg:h-[calc(100vh-120px)]">
-            <DirectorySidebarFilter 
-              categoryName="Doctors" 
-              specialtyOptions={["Cardiologist", "Pediatrician", "Neurologist", "Dermatologist", "Orthopedic Surgeon"]} 
-            />
+          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-widest text-xs">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+              Smart Filters
+            </h3>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Popular Specialties</label>
+                <div className="flex flex-wrap gap-2">
+                  {["❤️ Cardiology", "🧠 Neurology", "🦴 Orthopedics", "👶 Pediatrics", "🦷 Dentistry"].map(spec => (
+                    <button key={spec} className="bg-slate-50 hover:bg-teal-50 text-slate-700 hover:text-teal-700 border border-slate-200 hover:border-teal-200 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
+                      {spec}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-slate-100">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Availability</label>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="w-5 h-5 rounded border-2 border-slate-300 group-hover:border-teal-500 flex items-center justify-center transition-colors"></div>
+                  <span className="text-sm font-semibold text-slate-700">Available Today</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer group mt-3">
+                  <div className="w-5 h-5 rounded border-2 border-slate-300 group-hover:border-teal-500 flex items-center justify-center transition-colors"></div>
+                  <span className="text-sm font-semibold text-slate-700">Video Consult</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* Right Content - 75% */}
           <div className="w-full lg:w-3/4 flex flex-col gap-6">
             
-            {/* Search Bar Top */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex gap-4 items-center shadow-md">
-              <div className="flex-1 w-full relative">
-                <svg className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input 
-                  type="text" 
-                  placeholder={activeTenant.id === "general" ? "Search by doctor name or hospital..." : `Search by doctor name...`}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-tenant-accent transition-colors shadow-sm"
-                />
+            {/* Design Preview Section - Shows strictly ONE ticket as a template to avoid blank screen */}
+            <div className="mb-4 border-2 border-dashed border-teal-200 bg-teal-50/30 p-6 rounded-2xl relative shadow-sm">
+              <div className="absolute -top-3 left-6 bg-teal-500 text-white text-[10px] px-4 py-1 font-bold uppercase rounded-full shadow-md flex items-center gap-2">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                Design Template Preview (Waiting for Real Data)
               </div>
+              <PremiumDoctorTicket data={{
+                  id: "mock123",
+                  name: "Dr. Sandeep Sharma",
+                  specialty: "Cardiology & Internal Medicine",
+                  experience: "15+ Years",
+                  rating: 4.8,
+                  reviews: 124,
+                  hospital: "Apollo Hospitals",
+                  address: "Unit 15, Near Sainik School, Bhubaneswar",
+                  fee: 800,
+                  image: "https://ui-avatars.com/api/?name=Dr+Sandeep+Sharma&background=0f766e&color=fff&size=150",
+                  verified: false,
+                  available: true
+              }} />
             </div>
 
-            {/* Directory Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Actual Directory Grid (Currently Empty based on Zero Mock Data Protocol) */}
+            <div className="flex flex-col gap-4">
               {filteredDoctors.length > 0 ? (
                 filteredDoctors.map(doc => (
-                  <div key={doc.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between hover:border-tenant-accent/50 transition-colors shadow-lg group">
-                    <div>
-                      <div className="flex justify-between items-start mb-4">
-                        <img src={doc.img} alt={doc.name} className="w-16 h-16 rounded-full object-cover border-2 border-slate-200 group-hover:border-tenant-accent transition-colors" />
-                        <div className="flex items-center gap-1 bg-[#1e293b] px-2 py-1 rounded text-xs font-bold text-yellow-400">
-                          <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                          {doc.rating}
-                        </div>
-                      </div>
-                      <h3 className="text-lg font-bold text-slate-900 mb-1">{doc.name}</h3>
-                      <p className="text-tenant-accent text-xs uppercase tracking-widest font-mono mb-3">{doc.specialty}</p>
-                      <div className="space-y-1 mb-6">
-                        <p className="text-sm text-slate-600 flex items-center gap-2">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                          {doc.hospital}
-                        </p>
-                        <p className="text-sm text-slate-600 flex items-center gap-2">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                          {doc.experience} Experience
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-[#64748b] uppercase tracking-widest font-mono">Consultation Fee</span>
-                        <span className="text-slate-900 font-bold text-lg">₹{doc.fee}</span>
-                      </div>
-                      {doc.available ? (
-                        <button 
-                          onClick={(e) => handleBookClick(e, doc.id)}
-                          className="bg-tenant-accent/10 hover:bg-tenant-accent text-tenant-accent hover:text-slate-800 border border-tenant-accent/30 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
-                        >
-                          Book Now
-                        </button>
-                      ) : (
-                        <button disabled className="bg-[#1e293b] text-[#64748b] px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider cursor-not-allowed">
-                          Waitlist
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                  <PremiumDoctorTicket key={doc.id} data={doc} />
                 ))
               ) : (
-                <div className="col-span-full text-center py-20 bg-slate-50 border border-slate-200 rounded-2xl">
-                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <div className="text-center py-20 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                   </div>
-                  <p className="text-slate-600 font-mono text-sm uppercase tracking-widest font-bold">No specialists found</p>
-                  <p className="text-xs text-slate-500 mt-2">Try adjusting your sidebar filters or search term.</p>
+                  <p className="text-slate-900 font-bold text-lg mb-1">Database Empty</p>
+                  <p className="text-sm text-slate-500 max-w-sm mx-auto">The crawler has not injected any live data yet. Once injected, listings will appear here in the premium ticket format.</p>
                 </div>
               )}
             </div>
+
           </div>
         </div>
       </main>
