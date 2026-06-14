@@ -46,7 +46,7 @@ export default function Home() {
             Your Gateway to Integrated Healthcare.
           </h1>
           <p className="text-lg md:text-xl text-teal-50 max-w-2xl mx-auto font-medium drop-shadow-sm">
-            Explore services or Claim Your Listing.
+            Your Health Our Mission
           </p>
         </div>
       </div>
@@ -54,121 +54,121 @@ export default function Home() {
       {/* Overlapping Content: Cards & Search Bar */}
       <div className="relative z-20 container mx-auto px-6 lg:px-12 -mt-16">
           {/* 5 Category Cards - Ultra Glassmorphism UI */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5 mb-12 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-12 w-full">
             {/* Card 1: Doctors */}
-            <Link href="/doctors" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-4 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-2 w-full mb-3">
-                <div className="text-2xl w-8 h-8 flex items-center justify-center drop-shadow-md">👨‍⚕️</div>
-                <span className="text-[13px] font-bold text-slate-900 drop-shadow-sm">Book Doctors</span>
+            <Link href="/doctors" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
+              <div className="flex items-center justify-center gap-3 w-full mb-4">
+                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">👨‍⚕️</div>
+                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Book Doctors</span>
               </div>
-              <div className="w-full bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl p-3 flex flex-col gap-2 relative overflow-hidden transition-colors shadow-inner">
+              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="text-[10px] text-slate-600 font-bold block mb-1">Top Speciality</span>
-                    <div className="text-amber-500 text-[10px] tracking-widest drop-shadow-sm">⭐⭐⭐⭐⭐</div>
+                    <span className="text-xs text-slate-600 font-bold block mb-1.5">Top Speciality</span>
+                    <div className="text-amber-500 text-xs tracking-widest drop-shadow-sm">⭐⭐⭐⭐⭐</div>
                   </div>
                   <div className="text-right">
-                    <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest block mb-1">&lt; Availability &gt;</span>
-                    <div className="grid grid-cols-7 gap-0.5 text-[7px] text-slate-400 font-mono text-center">
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-1">&lt; Availability &gt;</span>
+                    <div className="grid grid-cols-7 gap-1 text-[9px] text-slate-400 font-mono text-center">
                       <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
                       <span></span><span></span><span>1</span><span>2</span><span className="bg-teal-600 text-white rounded">3</span><span>4</span><span>5</span>
                     </div>
                   </div>
                 </div>
-                <div>
-                  <span className="text-[11px] font-bold text-slate-800">Specialist ratings</span>
+                <div className="pt-2 border-t border-white/40 mt-1">
+                  <span className="text-sm font-bold text-slate-800">Specialist ratings</span>
                 </div>
               </div>
             </Link>
 
             {/* Card 2: Hospitals */}
-            <Link href="/hospitals" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-4 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-2 w-full mb-3">
-                <div className="text-2xl w-8 h-8 flex items-center justify-center drop-shadow-md">🏥</div>
-                <span className="text-[13px] font-bold text-slate-900 drop-shadow-sm">Hospitals</span>
+            <Link href="/hospitals" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
+              <div className="flex items-center justify-center gap-3 w-full mb-4">
+                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">🏥</div>
+                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Hospitals</span>
               </div>
-              <div className="w-full bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl p-3 flex flex-col gap-2 relative overflow-hidden transition-colors shadow-inner">
-                <div className="flex justify-between items-start border-b border-white/50 pb-2">
+              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
+                <div className="flex justify-between items-start border-b border-white/50 pb-3">
                   <div>
-                    <span className="text-[10px] text-slate-600 font-bold block mb-0.5">Nearby facilities</span>
-                    <span className="text-[11px] font-bold text-slate-800">DehaPa Health</span>
+                    <span className="text-xs text-slate-600 font-bold block mb-1">Nearby facilities</span>
+                    <span className="text-sm font-bold text-slate-800">DehaPa Health</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[9px] text-slate-500 font-bold block mb-0.5">Live status</span>
-                    <span className="text-[10px] text-emerald-600 font-bold flex items-center justify-end gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live
+                    <span className="text-[10px] text-slate-500 font-bold block mb-1">Live status</span>
+                    <span className="text-xs text-emerald-600 font-bold flex items-center justify-end gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live
                     </span>
                   </div>
                 </div>
                 <div className="flex justify-between items-end mt-1">
-                  <span className="text-[10px] font-bold text-slate-800 leading-tight">Real-time bed<br/>Availability</span>
+                  <span className="text-xs font-bold text-slate-800 leading-snug">Real-time bed<br/>Availability</span>
                   <div className="text-right">
-                    <span className="text-[9px] text-slate-500 block">Sample</span>
-                    <span className="text-[11px] font-bold text-slate-800">1 to 24</span>
+                    <span className="text-[10px] text-slate-500 block">Sample</span>
+                    <span className="text-sm font-bold text-slate-800">1 to 24</span>
                   </div>
                 </div>
               </div>
             </Link>
 
             {/* Card 3: Labs */}
-            <Link href="/labs" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-4 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-2 w-full mb-3">
-                <div className="text-2xl w-8 h-8 flex items-center justify-center drop-shadow-md">🔬</div>
-                <span className="text-[13px] font-bold text-slate-900 drop-shadow-sm">Labs</span>
+            <Link href="/labs" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
+              <div className="flex items-center justify-center gap-3 w-full mb-4">
+                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">🔬</div>
+                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Labs</span>
               </div>
-              <div className="w-full bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl p-3 flex flex-col gap-2 relative overflow-hidden transition-colors shadow-inner">
-                <div className="flex justify-between items-center border-b border-white/50 pb-2">
-                  <span className="text-[10px] text-slate-400 font-bold">&lt;</span>
+              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
+                <div className="flex justify-between items-center border-b border-white/50 pb-3">
+                  <span className="text-xs text-slate-400 font-bold">&lt;</span>
                   <div className="text-center">
-                    <span className="text-[10px] text-slate-800 font-bold block">Available Test types 🧪</span>
-                    <span className="text-[9px] text-slate-600">Reach Test Results</span>
+                    <span className="text-xs text-slate-800 font-bold block">Available Test types 🧪</span>
+                    <span className="text-[10px] text-slate-600 mt-1 block">Reach Test Results</span>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-bold">&gt;</span>
+                  <span className="text-xs text-slate-400 font-bold">&gt;</span>
                 </div>
-                <div className="text-center mt-1">
-                  <span className="text-[10px] font-bold text-slate-800">Integrated results access</span>
+                <div className="text-center mt-2">
+                  <span className="text-sm font-bold text-slate-800">Integrated results access</span>
                 </div>
               </div>
             </Link>
 
             {/* Card 4: Medicine */}
-            <Link href="/pharmacies" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-4 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-2 w-full mb-3">
-                <div className="text-2xl w-8 h-8 flex items-center justify-center drop-shadow-md">💊</div>
-                <span className="text-[13px] font-bold text-slate-900 drop-shadow-sm">Medicine</span>
+            <Link href="/pharmacies" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
+              <div className="flex items-center justify-center gap-3 w-full mb-4">
+                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">💊</div>
+                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Medicine</span>
               </div>
-              <div className="w-full bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl p-3 flex flex-col gap-2 relative overflow-hidden transition-colors shadow-inner">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center border-b border-white/50 pb-2">
-                    <span className="text-[10px] text-slate-800 font-bold">Basic shopping list</span>
-                    <div className="w-2.5 h-2.5 border border-slate-400 rounded-sm bg-white/50"></div>
+              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden transition-colors shadow-inner">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center border-b border-white/50 pb-3">
+                    <span className="text-xs text-slate-800 font-bold">Basic shopping list</span>
+                    <div className="w-3.5 h-3.5 border border-slate-400 rounded bg-white/50"></div>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-slate-800 font-bold">Recent prescriptions</span>
-                    <div className="w-2.5 h-2.5 border border-slate-400 rounded-sm bg-white/50"></div>
+                    <span className="text-xs text-slate-800 font-bold">Recent prescriptions</span>
+                    <div className="w-3.5 h-3.5 border border-slate-400 rounded bg-white/50"></div>
                   </div>
                 </div>
               </div>
             </Link>
 
             {/* Card 5: Ambulances */}
-            <Link href="/ambulances" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-4 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
-              <div className="flex items-center justify-center gap-2 w-full mb-3">
-                <div className="text-2xl w-8 h-8 flex items-center justify-center drop-shadow-md">🚑</div>
-                <span className="text-[13px] font-bold text-slate-900 drop-shadow-sm">Ambulances</span>
+            <Link href="/ambulances" className="bg-white/30 backdrop-blur-md border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.15)] transition-all duration-300 group">
+              <div className="flex items-center justify-center gap-3 w-full mb-4">
+                <div className="text-3xl w-10 h-10 flex items-center justify-center drop-shadow-md">🚑</div>
+                <span className="text-base font-bold text-slate-900 drop-shadow-sm">Ambulances</span>
               </div>
-              <div className="w-full bg-white/60 backdrop-blur-sm border border-white/60 rounded-2xl p-3 flex flex-col gap-2 relative overflow-hidden transition-colors shadow-inner">
-                <button className="w-full bg-white/80 border border-white text-[9px] font-bold text-slate-800 py-1.5 rounded-lg shadow-sm hover:bg-white transition-colors">
+              <div className="w-full bg-white/70 backdrop-blur-sm border border-white/80 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden transition-colors shadow-inner">
+                <button className="w-full bg-white/90 border border-white text-xs font-bold text-slate-800 py-2 rounded-xl shadow-sm hover:bg-white transition-colors">
                   Request Immediate Help
                 </button>
-                <div className="flex justify-between items-center mt-1">
+                <div className="flex justify-between items-center mt-2">
                   <div>
-                    <span className="text-[9px] text-slate-600 font-bold block">ETA</span>
-                    <span className="text-[11px] font-bold text-slate-800">4:04 Min</span>
+                    <span className="text-[10px] text-slate-600 font-bold block mb-0.5">ETA</span>
+                    <span className="text-sm font-bold text-slate-800">4:04 Min</span>
                   </div>
-                  <div className="w-12 h-8 bg-white/50 rounded-lg overflow-hidden border border-white/80 relative shadow-inner">
+                  <div className="w-16 h-10 bg-white/60 rounded-xl overflow-hidden border border-white/80 relative shadow-inner">
                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-30"></div>
-                     <svg className="w-4 h-4 text-slate-800 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-md" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path></svg>
+                     <svg className="w-5 h-5 text-slate-800 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-md" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path></svg>
                   </div>
                 </div>
               </div>
