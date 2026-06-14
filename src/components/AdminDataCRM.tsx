@@ -99,7 +99,8 @@ export default function AdminDataCRM() {
         experience: selectedListing.experience || "",
         qualification: selectedListing.qualification || "",
         about: selectedListing.about || "",
-        website: selectedListing.website || ""
+        website: selectedListing.website || "",
+        fee: selectedListing.fee || ""
       });
       // update local
       setData(data.map(d => d.id === selectedListing.id ? selectedListing : d));
@@ -319,6 +320,10 @@ export default function AdminDataCRM() {
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Website</label>
                   <input type="text" value={selectedListing.website || ""} onChange={e => setSelectedListing({...selectedListing, website: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="https://" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Consultation Fee (₹)</label>
+                  <input type="number" value={selectedListing.fee || ""} onChange={e => setSelectedListing({...selectedListing, fee: parseInt(e.target.value) || ""})} className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white" placeholder="e.g. 500" />
                 </div>
 
                 <div className="pt-2">

@@ -53,7 +53,7 @@ const PremiumDoctorTicket = ({ data }: { data: any }) => {
       <div className="w-full md:w-auto flex flex-col justify-center gap-3 shrink-0 md:border-l md:border-slate-100 md:pl-8 md:py-2">
         <div className="text-center md:text-right mb-1">
           <p className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Consultation Fee</p>
-          <p className="text-2xl font-bold text-slate-900">₹{data.fee}</p>
+          <p className="text-2xl font-bold text-slate-900">{typeof data.fee === 'number' || !isNaN(Number(data.fee)) ? `₹${data.fee}` : data.fee}</p>
         </div>
         
         <div className="w-full bg-teal-600 group-hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all text-center shadow-lg shadow-teal-500/30">
@@ -80,6 +80,7 @@ export default function DoctorsDirectory() {
   const [doctors, setDoctors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -97,16 +98,17 @@ export default function DoctorsDirectory() {
           id: d.id,
           name: d.name || "Unknown Doctor",
           specialty: d.subCategory || d.category || "Specialist",
-          experience: "Google Verified", 
+          experience: d.experience || "Google Verified", 
           rating: d.rating || 0,
           reviews: d.reviews || 0,
-          hospital: d.city || d.district || "Odisha", // Give location context
+          hospital: d.clinicName || d.city || d.district || "Odisha",
           address: d.address || "No Address Provided",
-          fee: 500, // Placeholder
+          fee: d.fee || "Contact Clinic", 
           image: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Doc")}&background=0f766e&color=fff&size=150`,
           verified: d.verified || false,
           available: true,
-          phone: d.phone
+          phone: d.phone,
+          district: d.district || "Unknown"
         }));
 
         setDoctors(mappedData);
@@ -124,8 +126,15 @@ export default function DoctorsDirectory() {
   const filteredDoctors = doctors.filter(doc => {
     const nameMatch = doc.name ? doc.name.toLowerCase().includes(search.toLowerCase()) : false;
     const specMatch = doc.specialty ? doc.specialty.toLowerCase().includes(search.toLowerCase()) : false;
-    return nameMatch || specMatch;
+    const searchMatch = nameMatch || specMatch;
+    
+    if (selectedDistricts.length > 0) {
+      if (!selectedDistricts.includes(doc.district)) return false;
+    }
+    return searchMatch;
   });
+  
+  const uniqueDistricts = Array.from(new Set(doctors.map(d => d.district).filter(d => d !== "Unknown"))).sort();
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30">
@@ -193,6 +202,29 @@ export default function DoctorsDirectory() {
                       {spec}
                     </button>
                   ))}
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-slate-100">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Locality / District</label>
+                <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                  {uniqueDistricts.map((dist: any) => (
+                    <label key={dist} className="flex items-center gap-3 cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer" 
+                        checked={selectedDistricts.includes(dist)}
+                        onChange={(e) => {
+                          if (e.target.checked) setSelectedDistricts([...selectedDistricts, dist]);
+                          else setSelectedDistricts(selectedDistricts.filter(d => d !== dist));
+                        }}
+                      />
+                      <span className="text-sm font-semibold text-slate-700">{dist}</span>
+                    </label>
+                  ))}
+                  {uniqueDistricts.length === 0 && (
+                    <p className="text-xs text-slate-400 italic">No locations available.</p>
+                  )}
                 </div>
               </div>
               

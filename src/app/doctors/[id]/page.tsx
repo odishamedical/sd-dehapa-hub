@@ -15,6 +15,8 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
   const resolvedParams = use(params);
   const [doctor, setDoctor] = useState<any>(null);
   const [similarDoctors, setSimilarDoctors] = useState<any[]>([]);
+  const [topHospitals, setTopHospitals] = useState<any[]>([]);
+  const [nearbyCenters, setNearbyCenters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
             qualification: rawData.qualification || notVerified,
             rating: rawData.rating || 4.5,
             reviews: rawData.reviews || 0,
-            fee: rawData.fee || 500,
+            fee: rawData.fee || "Contact Clinic",
             image: rawData.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Doc")}&background=0f766e&color=fff&size=150`,
             verified: rawData.verified || false,
             about: rawData.about || notVerified,
@@ -56,22 +58,21 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
           };
           setDoctor(docData);
           
-          // Fetch similar doctors
+          // Fetch sidebar widgets safely without needing complex indexes
           try {
-            const simQuery = query(
+            const cityQuery = query(
               collection(db, 'directory'),
-              where("subCategory", "==", rawData.subCategory || ""),
               where("city", "==", rawData.city || ""),
-              limit(4)
+              limit(30)
             );
-            const simSnap = await getDocs(simQuery);
-            const simDocs = simSnap.docs
-              .map(d => ({ id: d.id, ...d.data() }))
-              .filter(d => d.id !== docSnap.id)
-              .slice(0, 3);
-            setSimilarDoctors(simDocs);
+            const citySnap = await getDocs(cityQuery);
+            const allCityDocs = citySnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docSnap.id);
+            
+            setSimilarDoctors(allCityDocs.filter(d => d.subCategory === rawData.subCategory).slice(0, 3));
+            setTopHospitals(allCityDocs.filter(d => d.category === "Hospital").slice(0, 3));
+            setNearbyCenters(allCityDocs.filter(d => d.category !== "Doctor" && d.category !== "Hospital").slice(0, 3));
           } catch (e) {
-            console.error("Failed to fetch similar doctors", e);
+            console.error("Failed to fetch sidebar widgets", e);
           }
         }
       } catch (err) {
@@ -281,7 +282,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
               <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
                 <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                  Similar {doctor.specialty}s
+                  Recommended Specialists in {doctor.city}
                 </h3>
                 <div className="flex flex-col gap-4">
                   {similarDoctors.map((sim, idx) => (
@@ -300,17 +301,43 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
               </div>
             )}
 
-            {/* Top Hospitals Placeholder */}
-            <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-              <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-                <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                Top Hospitals in {doctor.city}
-              </h3>
-              <div className="space-y-3">
-                 <div className="h-16 bg-slate-50 rounded-xl border border-slate-100 flex items-center px-4"><div className="w-8 h-8 rounded-full bg-slate-200 mr-3"></div><div className="h-2 w-24 bg-slate-200 rounded"></div></div>
-                 <div className="h-16 bg-slate-50 rounded-xl border border-slate-100 flex items-center px-4"><div className="w-8 h-8 rounded-full bg-slate-200 mr-3"></div><div className="h-2 w-20 bg-slate-200 rounded"></div></div>
+            {/* Top Hospitals */}
+            {topHospitals.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                  Top Hospitals in {doctor.city}
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {topHospitals.map((hosp, idx) => (
+                    <Link key={idx} href={`/hospitals/${hosp.id}`} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{hosp.name}</h4>
+                        <p className="text-xs text-slate-500 truncate mt-1">{hosp.address || hosp.district}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Nearby Care Centers */}
+            {nearbyCenters.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                  Nearby Care Centers
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {nearbyCenters.map((center, idx) => (
+                    <div key={idx} className="bg-slate-50 rounded-xl p-3 flex flex-col gap-1 border border-slate-100">
+                      <h4 className="font-bold text-sm text-slate-900 truncate">{center.name}</h4>
+                      <p className="text-xs text-slate-500 truncate">{center.category} • {center.address || center.district}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
 
