@@ -114,6 +114,48 @@ export default function DoctorDashboard() {
   });
   const locationSaveStatus = useAutosave(locationAddress, 1000);
 
+  // Experience State
+  const [experienceData, setExperienceData] = useState({
+    hospitalId: "",
+    hospitalName: "Apollo Hospitals",
+    position: "Head of Cardiology",
+    duration: "2015-2020"
+  });
+  const experienceSaveStatus = useAutosave(experienceData, 1000);
+
+  // Research State
+  const [researchData, setResearchData] = useState({
+    paperTitle: "",
+    journalId: "",
+    journalName: "",
+    publicationYear: ""
+  });
+  const researchSaveStatus = useAutosave(researchData, 1000);
+
+  // Memberships State
+  const [membershipsData, setMembershipsData] = useState({
+    associationId: "",
+    associationName: "",
+    role: ""
+  });
+  const membershipsSaveStatus = useAutosave(membershipsData, 1000);
+
+  // Awards State
+  const [awardsData, setAwardsData] = useState({
+    awardName: "",
+    awardingBody: "",
+    year: ""
+  });
+  const awardsSaveStatus = useAutosave(awardsData, 1000);
+
+  // Bookings State
+  const [bookingsData, setBookingsData] = useState({
+    appointmentType: "Video Consultation",
+    duration: "15 Mins",
+    noticePeriod: "1 Hour"
+  });
+  const bookingsSaveStatus = useAutosave(bookingsData, 1000);
+
   const doctorTabs: DashboardTab[] = [
     {
       id: "identity",
@@ -375,16 +417,16 @@ export default function DoctorDashboard() {
                   <EntitySearchInput 
                     category="hospital"
                     placeholder="Search or add hospital name..."
-                    valueId=""
-                    valueName="Apollo Hospitals"
-                    onChange={(id, name) => console.log(id, name)}
+                    valueId={experienceData.hospitalId}
+                    valueName={experienceData.hospitalName}
+                    onChange={(id, name) => setExperienceData(prev => ({...prev, hospitalId: id, hospitalName: name}))}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Title / Position</label>
-                    <input type="text" defaultValue="Head of Cardiology" placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" value={experienceData.position} onChange={(e) => setExperienceData(prev => ({...prev, position: e.target.value}))} placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Years (e.g. 2015-2020)</label>
@@ -394,11 +436,7 @@ export default function DoctorDashboard() {
               </div>
 
               <div className="flex items-center justify-between pt-6 border-t border-slate-100">
-                <span className="text-sm text-green-600 font-bold flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                  Autosaved
-                </span>
-                <button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg transition-all">Save Experience</button>
+                <AutosaveIndicator status={experienceSaveStatus} />
               </div>
             </div>
           </div>
@@ -454,7 +492,6 @@ export default function DoctorDashboard() {
 
               <div className="flex items-center justify-between pt-6 border-t border-slate-100">
                 <AutosaveIndicator status={locationSaveStatus} />
-                <button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg transition-all">Save Locations</button>
               </div>
             </div>
           </div>
@@ -476,7 +513,7 @@ export default function DoctorDashboard() {
                 
                 <div className="mb-4 mt-2">
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Paper Title</label>
-                  <input type="text" placeholder="Title of your research paper" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  <input type="text" value={researchData.paperTitle} onChange={(e) => setResearchData(prev => ({...prev, paperTitle: e.target.value}))} placeholder="Title of your research paper" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
@@ -485,16 +522,19 @@ export default function DoctorDashboard() {
                     <EntitySearchInput 
                       category="journal"
                       placeholder="Search or add journal..."
-                      valueId=""
-                      valueName=""
-                      onChange={(id, name) => console.log(id, name)}
+                      valueId={researchData.journalId}
+                      valueName={researchData.journalName}
+                      onChange={(id, name) => setResearchData(prev => ({...prev, journalId: id, journalName: name}))}
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Publication Year</label>
-                    <input type="number" placeholder="e.g. 2021" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="number" value={researchData.publicationYear} onChange={(e) => setResearchData(prev => ({...prev, publicationYear: e.target.value}))} placeholder="e.g. 2021" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
+                </div>
+              <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
+                <AutosaveIndicator status={researchSaveStatus} />
               </div>
             </div>
           </div>
@@ -520,16 +560,19 @@ export default function DoctorDashboard() {
                     <EntitySearchInput 
                       category="association"
                       placeholder="e.g. IMA, API..."
-                      valueId=""
-                      valueName=""
-                      onChange={(id, name) => console.log(id, name)}
+                      valueId={membershipsData.associationId}
+                      valueName={membershipsData.associationName}
+                      onChange={(id, name) => setMembershipsData(prev => ({...prev, associationId: id, associationName: name}))}
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Role / Status</label>
-                    <input type="text" placeholder="e.g. Life Member, Secretary" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" value={membershipsData.role} onChange={(e) => setMembershipsData(prev => ({...prev, role: e.target.value}))} placeholder="e.g. Life Member, Secretary" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
+                </div>
+              <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
+                <AutosaveIndicator status={membershipsSaveStatus} />
               </div>
             </div>
           </div>
