@@ -147,7 +147,9 @@ export default function AdminDashboard() {
       const toInject = stagedListings.filter(l => selectedListingIds.includes(l.id));
 
       for (const listing of toInject) {
-        const newDocRef = doc(directoryRef);
+        // Use the unique Google Place ID as the Firebase Document ID to prevent duplicates
+        const newDocRef = doc(directoryRef, listing.id);
+        
         batch.set(newDocRef, {
           googlePlaceId: listing.id,
           name: listing.name,
@@ -167,9 +169,10 @@ export default function AdminDashboard() {
           verified: false,
           source: "google_crawler",
           tenantId: activeTenant?.id || "default",
-          createdAt: serverTimestamp()
-        });
+          updatedAt: serverTimestamp() // Use updatedAt so we don't overwrite createdAt if it exists
+        }, { merge: true }); // Merge ensures we update existing docs instead of throwing errors or duplicating
       }
+
 
       await batch.commit();
 
