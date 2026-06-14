@@ -32,12 +32,12 @@ export default function DashboardLayout({
       {/* Sidebar Navigation - Premium Dark */}
       <aside className="w-64 bg-slate-900 text-white shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-y-auto">
         <div className="p-6 border-b border-slate-800">
-          <Link href="/" className="flex items-center gap-3">
+          <button onClick={() => onTabChange("home")} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity">
              <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-[0_0_15px_var(--tenant-accent-glow)]">
                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
              </div>
              <span className="font-serif font-bold tracking-widest uppercase">DehaPa <span className="text-tenant-accent">{roleName}</span></span>
-          </Link>
+          </button>
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
@@ -82,7 +82,34 @@ export default function DashboardLayout({
         </header>
 
         <div className="p-8 flex-1">
-          {children}
+          {activeTab === "home" ? (
+            <div className="max-w-6xl mx-auto">
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">Welcome to {roleName}</h3>
+                <p className="text-slate-500">Select a module below to get started.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {tabs.map(tab => (
+                  <button 
+                    key={tab.id} 
+                    onClick={() => onTabChange(tab.id)} 
+                    className="bg-white p-6 border border-slate-200 hover:border-teal-500 rounded-2xl shadow-sm hover:shadow-xl transition-all text-left group flex flex-col items-start h-full"
+                  >
+                    <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      {tab.icon}
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-lg mb-2">{tab.label}</h3>
+                    <p className="text-sm text-slate-500 flex-1">Access the {tab.label} module to manage your settings and data.</p>
+                    <div className="mt-6 flex items-center gap-2 text-teal-600 text-[10px] font-bold uppercase tracking-widest group-hover:translate-x-1 transition-transform">
+                      Open Module <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </div>
       </main>
 

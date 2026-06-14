@@ -28,7 +28,7 @@ export default function AdminDashboard() {
   const { activeTenant } = useTenant();
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
-  const [activeTab, setActiveTab] = useState("users");
+  const [activeTab, setActiveTab] = useState("home");
 
   // Crawler State
   const [crawlerCountry, setCrawlerCountry] = useState("India");
@@ -243,7 +243,7 @@ export default function AdminDashboard() {
 
   return (
     <DashboardLayout 
-      roleName="Admin" 
+      roleName="Super Admin" 
       tabs={adminTabs} 
       activeTab={activeTab} 
       onTabChange={setActiveTab}

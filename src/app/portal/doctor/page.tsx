@@ -5,7 +5,7 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
 
 export default function DoctorDashboard() {
-  const [activeTab, setActiveTab] = useState("identity");
+  const [activeTab, setActiveTab] = useState("home");
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
 
   const doctorTabs: DashboardTab[] = [
@@ -28,7 +28,7 @@ export default function DoctorDashboard() {
 
   return (
     <DashboardLayout 
-      roleName="Doctor" 
+      roleName="Doctor Dashboard" 
       tabs={doctorTabs} 
       activeTab={activeTab} 
       onTabChange={setActiveTab}
