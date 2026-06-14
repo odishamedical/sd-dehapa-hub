@@ -28,10 +28,11 @@ export default function AdminDataCRM() {
       const q = collection(db, 'directory');
       const snap = await getDocs(q);
       const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      // Sort by newest first (assuming updatedAt exists, otherwise just reverse)
+      // Sort by newest first safely
       docs.sort((a: any, b: any) => {
-        if (b.updatedAt && a.updatedAt) return b.updatedAt.toMillis() - a.updatedAt.toMillis();
-        return 0;
+        const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
+        const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
+        return timeB - timeA;
       });
       setData(docs);
     } catch (e) {
