@@ -24,7 +24,7 @@ export default function Home() {
 
       {/* Hero Section - DehaPa Web Marketplace Redesign */}
       {/* Dark Teal Background Area with Glassmorphism floating panels */}
-      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-16 pb-24 overflow-hidden">
+      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-8 pb-24 overflow-hidden">
         {/* Deep Glowing Background Accents */}
         <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-teal-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
         <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-teal-900/50 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
@@ -56,7 +56,7 @@ export default function Home() {
           <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 pb-8 px-6 md:px-0 md:grid-cols-2 lg:grid-cols-5 mb-4 w-full [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
             {/* Card 1: Book Doctor Consultation */}
-            <Link href="/doctors" className="w-[85vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+            <Link href="/doctors" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
               <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
@@ -112,7 +112,7 @@ export default function Home() {
             </Link>
 
             {/* Card 2: Hospital & Facility Network */}
-            <Link href="/hospitals" className="w-[85vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+            <Link href="/hospitals" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
               <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
@@ -160,7 +160,7 @@ export default function Home() {
             </Link>
 
             {/* Card 3: Lab Services */}
-            <Link href="/labs" className="w-[85vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+            <Link href="/labs" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
               <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
@@ -225,7 +225,7 @@ export default function Home() {
             </Link>
 
             {/* Card 4: Prescription & Medication */}
-            <Link href="/pharmacies" className="w-[85vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
+            <Link href="/pharmacies" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
               <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
@@ -276,7 +276,7 @@ export default function Home() {
             </Link>
 
             {/* Card 5: Emergency Services */}
-            <Link href="/ambulances" className="w-[85vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-900 via-slate-800 to-black rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(220,38,38,0.2)] transition-all duration-300 group flex flex-col h-[480px] border border-slate-700 relative">
+            <Link href="/ambulances" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-900 via-slate-800 to-black rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(220,38,38,0.2)] transition-all duration-300 group flex flex-col h-[480px] border border-slate-700 relative">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
