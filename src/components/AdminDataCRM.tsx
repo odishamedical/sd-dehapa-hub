@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
-import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 
@@ -21,6 +21,10 @@ export default function AdminDataCRM() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isNewListing, setIsNewListing] = useState(false);
+  
+  // Custom Slug Check
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
+  const [slugAvailability, setSlugAvailability] = useState<{status: 'idle' | 'checking' | 'available' | 'taken', message: string}>({status: 'idle', message: ''});
   
   // Selection and bulk operations
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -77,6 +81,7 @@ export default function AdminDataCRM() {
     setQualificationsList(listing.qualificationsList || []);
     setResearch(listing.research || []);
     setAwards(listing.awards || []);
+    setSlugAvailability({status: 'idle', message: ''});
     setIsDrawerOpen(true);
   };
 
@@ -102,6 +107,7 @@ export default function AdminDataCRM() {
     setQualificationsList([]);
     setResearch([]);
     setAwards([]);
+    setSlugAvailability({status: 'idle', message: ''});
     setIsDrawerOpen(true);
   };
 
@@ -123,6 +129,29 @@ export default function AdminDataCRM() {
       alert("Failed to upload image.");
     }
     setIsUploadingImage(false);
+  };
+
+  const checkSlugAvailability = async () => {
+    if (!selectedListing?.customSlug) return;
+    setIsCheckingSlug(true);
+    setSlugAvailability({status: 'checking', message: 'Checking availability...'});
+    try {
+      const q = query(collection(db, 'directory'), where("customSlug", "==", selectedListing.customSlug.toLowerCase()));
+      const snap = await getDocs(q);
+      
+      // Filter out the current listing if we are editing it
+      const takenByOthers = snap.docs.filter(doc => doc.id !== selectedListing.id);
+      
+      if (takenByOthers.length === 0) {
+        setSlugAvailability({status: 'available', message: 'Available! You can use this slug.'});
+      } else {
+        setSlugAvailability({status: 'taken', message: 'Taken! This slug is already in use.'});
+      }
+    } catch (err) {
+      console.error(err);
+      setSlugAvailability({status: 'idle', message: 'Error checking slug.'});
+    }
+    setIsCheckingSlug(false);
   };
 
   const handleArrayChange = (setter: any, array: any[], index: number, key: string, val: string) => {
@@ -475,9 +504,34 @@ export default function AdminDataCRM() {
                       <input type="text" value={selectedListing.district} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Premium Custom Slug (Vanity URL)</label>
-                    <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="w-full px-4 py-2.5 border border-amber-300 rounded-lg text-sm focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none bg-amber-50 shadow-sm" placeholder="e.g. apollo-city (creates dehapa.com/hospitals/apollo-city)" />
+                  <div className="relative">
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 flex justify-between">
+                      <span>Premium Custom Slug (Vanity URL)</span>
+                      {slugAvailability.status === 'available' && <span className="text-green-600 font-bold">{slugAvailability.message}</span>}
+                      {slugAvailability.status === 'taken' && <span className="text-red-600 font-bold">{slugAvailability.message}</span>}
+                    </label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={selectedListing.customSlug || ""} 
+                        onChange={e => {
+                          setSelectedListing({...selectedListing, customSlug: e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()});
+                          setSlugAvailability({status: 'idle', message: ''});
+                        }} 
+                        className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none shadow-sm transition-colors ${slugAvailability.status === 'available' ? 'border-green-400 focus:border-green-500 bg-green-50' : slugAvailability.status === 'taken' ? 'border-red-400 focus:border-red-500 bg-red-50' : 'border-amber-300 focus:border-amber-500 bg-amber-50'}`}
+                        placeholder="e.g. apollo-city" 
+                      />
+                      <button 
+                        onClick={checkSlugAvailability}
+                        disabled={isCheckingSlug || !selectedListing.customSlug}
+                        className="px-4 py-2 bg-slate-800 hover:bg-slate-900 disabled:bg-slate-300 text-white font-bold rounded-lg text-xs whitespace-nowrap transition-colors"
+                      >
+                        {isCheckingSlug ? "Checking..." : "Check Availability"}
+                      </button>
+                    </div>
+                    {selectedListing.customSlug && slugAvailability.status !== 'taken' && (
+                      <p className="text-[10px] text-slate-500 mt-1 font-mono">Will route to: dehapa.com/category/{selectedListing.customSlug}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Primary Full Address</label>
