@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import Link from 'next/link';
 
 export type DashboardTab = {
@@ -32,6 +32,34 @@ export default function DashboardLayout({
   headerTitle,
   userProfile
 }: DashboardLayoutProps) {
+  // Find which section the active tab belongs to
+  const activeTabDetails = tabs.find(t => t.id === activeTab);
+  const activeSection = activeTabDetails?.section;
+
+  // Track expanded state for sections (auto-expand the active section)
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    if (activeSection) {
+      initial[activeSection] = true;
+    }
+    return initial;
+  });
+
+  const toggleSection = (sectionName: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionName]: !prev[sectionName]
+    }));
+  };
+
+  // Group tabs by section
+  const sectionedTabs = tabs.reduce((acc, tab) => {
+    const section = tab.section || "DEFAULT";
+    if (!acc[section]) acc[section] = [];
+    acc[section].push(tab);
+    return acc;
+  }, {} as Record<string, DashboardTab[]>);
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30 flex">
       
@@ -66,30 +94,51 @@ export default function DashboardLayout({
           </div>
         )}
         
-        <nav className="flex-1 p-4 space-y-2">
-          {tabs.map((tab, index) => {
-            const isActive = activeTab === tab.id;
+        <nav className="flex-1 p-4 space-y-1">
+          {Object.entries(sectionedTabs).map(([sectionName, sectionTabs], index) => {
+            const isDefault = sectionName === "DEFAULT";
+            const isExpanded = isDefault || expandedSections[sectionName];
+
             return (
-              <React.Fragment key={tab.id}>
-                {tab.section && (
+              <React.Fragment key={sectionName}>
+                {!isDefault && (
                   <div className={`pt-4 mt-4 border-t border-slate-800 ${index === 0 ? 'border-t-0 mt-0 pt-0' : ''}`}>
-                    <p className="px-4 text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-2">{tab.section}</p>
+                    <button 
+                      onClick={() => toggleSection(sectionName)}
+                      className="w-full flex items-center justify-between px-4 py-2 text-slate-400 hover:text-white group transition-colors"
+                    >
+                      <span className="text-[11px] font-bold tracking-widest uppercase flex items-center gap-2">
+                        <svg className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90 text-teal-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
+                        {sectionName}
+                      </span>
+                    </button>
                   </div>
                 )}
-                <button 
-                  onClick={() => onTabChange(tab.id)} 
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm font-medium transition-all text-left mb-1 ${
-                    isActive 
-                      ? 'border-l-4 border-teal-500 bg-teal-500/10 text-white' 
-                      : 'border-l-4 border-transparent text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`}
-                >
-                  {tab.icon}
-                  {tab.label}
-                  {tab.badge !== undefined && (
-                    <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{tab.badge}</span>
-                  )}
-                </button>
+                
+                {isExpanded && (
+                  <div className={!isDefault ? "mt-1 pl-2 border-l border-slate-800 ml-5 space-y-1" : "space-y-1"}>
+                    {sectionTabs.map(tab => {
+                      const isActive = activeTab === tab.id;
+                      return (
+                        <button 
+                          key={tab.id}
+                          onClick={() => onTabChange(tab.id)} 
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+                            isActive 
+                              ? 'bg-teal-500/10 text-teal-400' 
+                              : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                          }`}
+                        >
+                          {tab.icon}
+                          <span className="truncate">{tab.label}</span>
+                          {tab.badge !== undefined && (
+                            <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{tab.badge}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </React.Fragment>
             );
           })}
@@ -106,6 +155,28 @@ export default function DashboardLayout({
             <Link href="/portal" className="text-sm font-bold text-tenant-accent hover:underline">Exit to Portal</Link>
           </div>
         </header>
+
+        {/* Horizontal Top Menu for Active Section */}
+        {activeSection && activeTab !== "home" && (
+          <div className="bg-white border-b border-slate-200 sticky top-[73px] z-40 px-4 sm:px-8">
+            <div className="flex overflow-x-auto hide-scrollbar gap-1 py-3">
+              {sectionedTabs[activeSection].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => onTabChange(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
+                    activeTab === tab.id
+                      ? 'bg-slate-900 text-white shadow-md'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                  }`}
+                >
+                  {tab.icon}
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="p-8 flex-1">
           {activeTab === "home" ? (
