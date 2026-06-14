@@ -6,11 +6,12 @@ import { useRouter } from 'next/navigation';
 import EcosystemSwitcher from '@/components/EcosystemSwitcher';
 import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
-import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
-
+import CategoryNav from '@/components/CategoryNav';
+import Breadcrumb from '@/components/Breadcrumb';
+import CustomDropdown from '@/components/CustomDropdown';
+import PremiumHeroSearch from '@/components/PremiumHeroSearch';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
-
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
 export const dynamic = 'force-dynamic';
@@ -30,6 +31,9 @@ export default function LabsDirectory({
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
   const [labs, setLabs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
+  const [searchDistrict, setSearchDistrict] = useState(initialDistrict);
+  const [searchType, setSearchType] = useState("");
 
   useEffect(() => {
     const fetchLabs = async () => {
@@ -42,18 +46,18 @@ export default function LabsDirectory({
         }));
         
         const mappedData = docsData
-          .filter((d: any) => d.category?.toLowerCase() === "lab" || d.category?.toLowerCase() === "diagnostic center")
+          .filter((d: any) => d.category?.toLowerCase() === "hospital")
           .map((d: any) => ({
             id: d.id,
             name: d.name || "Unknown Lab",
-            specialty: d.subCategory || d.category || "Diagnostic Center",
+            specialty: d.subCategory || d.category || "Lab",
             experience: d.experience || "Google Verified", 
             rating: d.rating || 0,
             reviews: d.reviews || 0,
             hospital: d.clinicName || d.city || d.district || "Odisha",
             address: d.address || "No Address Provided",
             fee: d.fee || "Contact Admin", 
-            img: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Lab")}&background=e0f2fe&color=0369a1&size=150`,
+            img: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Lab")}&background=f0fdf4&color=166534&size=150`,
             verified: d.verified || false,
             available: true,
             phone: d.phone,
@@ -102,6 +106,14 @@ export default function LabsDirectory({
     
     const matchTenant = activeTenant.hospitalName === "All" || doc.hospital === activeTenant.hospitalName;
     
+    if (selectedDistricts.length > 0) {
+      if (!selectedDistricts.includes(doc.district)) return false;
+    }
+    
+    if (searchDistrict && doc.district !== searchDistrict) {
+      return false;
+    }
+
     if (initialCountry && doc.country?.toLowerCase() !== initialCountry.toLowerCase()) return false;
     if (initialState && doc.state?.toLowerCase() !== initialState.toLowerCase()) return false;
     if (initialDistrict && doc.district?.toLowerCase() !== initialDistrict.toLowerCase()) return false;
@@ -109,66 +121,102 @@ export default function LabsDirectory({
     return searchMatch && matchTenant;
   });
 
+  const uniqueDistricts = Array.from(new Set(labs.map(d => d.district).filter(d => d !== "Unknown"))).sort();
+
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-tenant-accent/30">
-      {/* Global Header */}
-      <header className="relative z-50 h-[80px] border-b border-tenant-accent/20 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-12 sticky top-0">
-        <Link href="/" className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-tenant-gradient-from to-tenant-gradient-to flex items-center justify-center text-slate-900 font-bold text-xl shadow-[0_0_20px_var(--tenant-accent-glow)]">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-widest text-slate-900 uppercase font-serif">
-              {activeTenant.logoText} <span className="text-tenant-accent">{activeTenant.id === "general" ? "Health" : "Care"}</span>
-            </span>
-            <span className="text-[9px] text-tenant-accent/80 tracking-[0.2em] uppercase font-mono">{activeTenant.logoSubText}</span>
-          </div>
-        </Link>
-        <div className="flex items-center gap-4">
-          <EcosystemSwitcher />
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-teal-500/30">
+      <CategoryNav />
+      
+      <div className="bg-white border-b border-slate-200 px-6 py-3 shadow-sm relative z-20">
+        <div className="w-full max-w-[1920px] mx-auto">
+          <Breadcrumb paths={[
+            { name: "Home", href: "/" },
+            { name: "Labs", href: "/labs" },
+            ...(initialCountry ? [{ name: initialCountry.charAt(0).toUpperCase() + initialCountry.slice(1), href: `/labs/${initialCountry}` }] : []),
+            ...(initialState ? [{ name: initialState.charAt(0).toUpperCase() + initialState.slice(1), href: `/labs/${initialCountry}/${initialState}` }] : []),
+            ...(initialDistrict ? [{ name: initialDistrict.charAt(0).toUpperCase() + initialDistrict.slice(1) }] : [])
+          ]} />
         </div>
-      </header>
+      </div>
 
-      <main className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-12 relative z-10">
-        <div className="mb-10">
-          <h1 className="text-4xl font-serif font-bold text-slate-900 mb-2">
-            Find a <span className="text-tenant-accent">Diagnostic Center</span>
-          </h1>
-          <p className="text-slate-600">
-            {activeTenant.id === "general" 
-              ? "Book a secure FHIR-compliant video consultation with top medical experts across Odisha."
-              : `Book a secure FHIR-compliant video consultation with top medical experts at ${activeTenant.name}.`}
-          </p>
-        </div>
+      <PremiumHeroSearch 
+        titlePrefix="Find a"
+        titleHighlight="Lab"
+        description="Find accredited diagnostic centers and pathology labs near you."
+        searchPlaceholder="e.g. Dr Lal PathLabs..."
+        search={search}
+        setSearch={setSearch}
+        searchDistrict={searchDistrict}
+        setSearchDistrict={setSearchDistrict}
+        searchType={searchType}
+        setSearchType={setSearchType}
+        uniqueDistricts={uniqueDistricts as string[]}
+      />
 
+      <main className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-12 relative z-10 -mt-12">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}
-          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto lg:h-[calc(100vh-120px)]">
-            <DirectorySidebarFilter 
-              categoryName="Labs" 
-              specialtyOptions={["Pathology", "Radiology", "MRI", "Blood Bank"]} 
-            />
+          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white border border-slate-200 rounded-[24px] p-6 shadow-xl relative overflow-hidden">
+            {/* Metallic top accent line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-slate-400"></div>
+
+            <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-widest text-xs border-b border-slate-100 pb-4">
+              <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+              Smart Filters
+            </h3>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Popular Specialties</label>
+                <div className="flex flex-wrap gap-2">
+                  {["Pathology", "Radiology", "MRI & CT Scan", "Blood Bank"].map(spec => (
+                    <button key={spec} className="bg-slate-100 hover:bg-white text-slate-700 hover:text-teal-700 border border-slate-200 hover:border-teal-300 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm hover:shadow-md">
+                      {spec}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-slate-100">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Locality / District</label>
+                <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                  {uniqueDistricts.map((dist: any) => (
+                    <label key={dist} className="flex items-center gap-3 cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-slate-300 text-teal-700 focus:ring-teal-700 cursor-pointer shadow-sm" 
+                        checked={selectedDistricts.includes(dist)}
+                        onChange={(e) => {
+                          if (e.target.checked) setSelectedDistricts([...selectedDistricts, dist]);
+                          else setSelectedDistricts(selectedDistricts.filter(d => d !== dist));
+                        }}
+                      />
+                      <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">{dist}</span>
+                    </label>
+                  ))}
+                  {uniqueDistricts.length === 0 && (
+                    <p className="text-xs text-slate-400 italic">No locations available.</p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-slate-100">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Availability</label>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="w-5 h-5 rounded border-2 border-slate-300 bg-slate-50 group-hover:border-teal-600 group-hover:bg-white flex items-center justify-center transition-all shadow-inner"></div>
+                  <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">Available Today</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer group mt-3">
+                  <div className="w-5 h-5 rounded border-2 border-slate-300 bg-slate-50 group-hover:border-teal-600 group-hover:bg-white flex items-center justify-center transition-all shadow-inner"></div>
+                  <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">Video Consult</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* Right Content - 75% */}
           <div className="w-full lg:w-3/4 flex flex-col gap-6">
-            
-            {/* Search Bar Top */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex gap-4 items-center shadow-md">
-              <div className="flex-1 w-full relative">
-                <svg className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input 
-                  type="text" 
-                  placeholder={activeTenant.id === "general" ? "Search by doctor name or hospital..." : `Search by doctor name...`}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl pl-12 pr-5 py-3.5 text-sm text-slate-900 focus:outline-none focus:border-tenant-accent transition-all shadow-sm"
-                />
-              </div>
-            </div>
-
-            {/* Directory Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredLabs.length > 0 ? (
                 filteredLabs.map(doc => (
