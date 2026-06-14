@@ -256,6 +256,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
             
           </div>
 
+        </div>
       </div>
     </div>
   );
