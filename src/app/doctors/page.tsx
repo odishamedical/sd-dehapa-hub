@@ -81,7 +81,7 @@ export default function DoctorsDirectory() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const q = query(collection(db, 'directory'), orderBy('createdAt', 'desc'));
+        const q = query(collection(db, 'directory'), orderBy('updatedAt', 'desc'));
         const querySnapshot = await getDocs(q);
         const docsData = querySnapshot.docs.map(doc => ({
           id: doc.id,
