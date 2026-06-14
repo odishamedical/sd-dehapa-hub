@@ -14,48 +14,22 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 const PremiumDoctorTicket = ({ data }: { data: any }) => {
   return (
-    <Link href={`/doctors/${data.id}`} className="relative h-[220px] rounded-[24px] shadow-2xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
+    <Link href={`/doctors/${data.id}`} className="relative h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
       {/* Background Metal Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#ffffff] via-[#e2e8f0] to-[#94a3b8] opacity-90 transition-colors"></div>
       
       {/* Subtle brushed texture */}
       <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
 
-      <div className="flex h-full relative z-10">
+      <div className="flex items-center h-full relative z-10 pr-3">
         
-        {/* Left Side: Image with S-Curve Mask and 3D Bevel (38% width) */}
-        <div className="w-[38%] h-full relative shrink-0">
-          
-          {/* The Image inside an SVG with clipPath */}
-          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" className="absolute inset-0">
-            <defs>
-              <clipPath id={`curve-mask-${data.id}`} clipPathUnits="userSpaceOnUse">
-                <path d="M0,0 H82 C98,30 58,70 82,100 H0 Z" />
-              </clipPath>
-            </defs>
-            {/* Fallback gray background for missing images */}
-            <rect width="100" height="100" fill="#cbd5e1" clipPath={`url(#curve-mask-${data.id})`} />
-            <image href={data.image} width="100" height="100" preserveAspectRatio="xMidYMid slice" clipPath={`url(#curve-mask-${data.id})`} />
-          </svg>
-          
-          {/* The Thick 3D Metallic Bevel */}
-          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" className="absolute inset-0 pointer-events-none drop-shadow-[5px_0_8px_rgba(0,0,0,0.4)]">
-            <defs>
-              <linearGradient id={`bevel-grad-${data.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#475569" />  {/* Dark inner shadow */}
-                <stop offset="30%" stopColor="#ffffff" /> {/* Bright specular highlight */}
-                <stop offset="70%" stopColor="#94a3b8" /> {/* Mid silver */}
-                <stop offset="100%" stopColor="#1e293b" /> {/* Dark outer edge */}
-              </linearGradient>
-            </defs>
-            {/* Bevel path: sweeps down the image edge, moves right by 6 units, sweeps back up parallel */}
-            <path d="M82,0 C98,30 58,70 82,100 L88,100 C64,70 104,30 88,0 Z" fill={`url(#bevel-grad-${data.id})`} />
-          </svg>
-          
+        {/* Left Side: Floating Vertical Image */}
+        <div className="w-[32%] h-[86%] ml-3 relative shrink-0 rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-4 border-[#f8fafc] bg-slate-200 group-hover:scale-[1.03] transition-transform duration-300 z-40">
+           <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
         </div>
         
-        {/* Right Side: Data Content (62% width) */}
-        <div className="flex-1 py-4 pr-5 pl-2 flex flex-col min-w-0 relative z-30">
+        {/* Right Side: Data Content */}
+        <div className="flex-1 h-full py-4 pl-5 flex flex-col min-w-0 relative z-30">
           
           {/* Top Row: Name and Icon */}
           <div className="flex justify-between items-start mb-0.5">
