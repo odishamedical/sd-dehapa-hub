@@ -9,6 +9,7 @@ import { useState, useEffect, use } from 'react';
 
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
+import UnverifiedBanner from '@/components/UnverifiedBanner';
 
 export default function DoctorProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -160,6 +161,11 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                  </button>
               </div>
             </div>
+
+            {/* Unverified Banner */}
+            {!doctor.verified && (
+              <UnverifiedBanner entityType="doctor" claimUrl={`/portal/claim?id=${doctor.id}`} />
+            )}
 
             {/* 2-Column Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
