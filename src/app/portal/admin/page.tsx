@@ -10,6 +10,7 @@ import { indianStates, districtsByState, blocksByDistrict } from '@/lib/location
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import AdminDataCRM from '@/components/AdminDataCRM';
+import AdminSlugRegistry from '@/components/AdminSlugRegistry';
 
 interface StagedListing {
   id: string;
@@ -232,6 +233,11 @@ export default function AdminDashboard() {
       id: "data-crm",
       label: "Directory Data CRM",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+    },
+    {
+      id: "slug-registry",
+      label: "Premium Slug Registry",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
     }
   ];
 
@@ -636,10 +642,10 @@ export default function AdminDashboard() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                <Link target="_blank" href="/portal/os" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
+                <Link target="_blank" href="/portal/doctor" className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-400 p-6 rounded-2xl transition-all shadow-sm hover:shadow-lg hover:shadow-indigo-500/10 flex flex-col items-start group">
                    <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform border border-indigo-200">👨‍⚕️</div>
-                   <h4 className="font-bold text-slate-900 mb-1">Telemedicine OS</h4>
-                   <p className="text-xs text-slate-500 mb-6">Test the Doctor workspace, Rx Pad, and Video waiting room.</p>
+                   <h4 className="font-bold text-slate-900 mb-1">Doctor Portal</h4>
+                   <p className="text-xs text-slate-500 mb-6">Test the Premium Slug UI, Doctor workspace, Rx Pad, and Video waiting room.</p>
                    <span className="text-indigo-600 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-auto group-hover:underline">Launch Portal <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg></span>
                 </Link>
                 
@@ -684,6 +690,10 @@ export default function AdminDashboard() {
 
           {activeTab === "data-crm" && (
             <AdminDataCRM />
+          )}
+
+          {activeTab === "slug-registry" && (
+            <AdminSlugRegistry />
           )}
     </DashboardLayout>
   );
