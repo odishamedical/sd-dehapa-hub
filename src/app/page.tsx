@@ -41,7 +41,7 @@ export default function Home() {
            <div className="absolute top-[25%] left-[10%] text-white/5 text-6xl animate-[pulse_7s_ease-in-out_infinite] transform -rotate-6 blur-[2px]">🚑</div>
         </div>
 
-        <div className="container mx-auto px-6 lg:px-12 text-center relative z-20">
+        <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 text-center relative z-20">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif mb-4 leading-tight drop-shadow-md">
             Your Gateway to Integrated Healthcare.
           </h1>
@@ -52,7 +52,7 @@ export default function Home() {
       </div>
 
       {/* Overlapping Content: Hyper-Realistic Service Cards */}
-      <div className="relative z-20 container mx-auto px-0 md:px-6 lg:px-12 -mt-16">
+      <div className="relative z-20 w-full max-w-[1920px] mx-auto px-0 md:px-6 lg:px-12 xl:px-16 -mt-16">
           <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 pb-8 px-6 md:px-0 md:grid-cols-2 lg:grid-cols-5 mb-4 w-full [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
             {/* Card 1: Book Doctor Consultation */}
@@ -330,7 +330,7 @@ export default function Home() {
           </div>
       </div>
 
-      <div className="container mx-auto px-6 lg:px-12 py-16 bg-white relative z-10">
+      <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-16 bg-white relative z-10">
         <h3 className="text-2xl font-bold font-serif text-slate-900 mb-8">Claim Your Business</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {[
@@ -354,7 +354,7 @@ export default function Home() {
       </div>
 
       {/* NEW SECTION 1: Advanced Medical Grid Departments */}
-      <section className="relative z-10 container mx-auto px-6 lg:px-12 py-16 border-t border-slate-200 bg-slate-50/50 rounded-3xl mb-16 backdrop-blur-sm">
+      <section className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-16 border-t border-slate-200 bg-slate-50/50 rounded-3xl mb-16 backdrop-blur-sm">
         <div className="mb-12 text-left">
           <span className="text-[9px] font-mono tracking-widest text-tenant-accent uppercase font-bold block mb-1">Clinical Specialties</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-2">Advanced Medical Grid</h2>
@@ -404,7 +404,7 @@ export default function Home() {
       </section>
 
       {/* NEW SECTION 2: How it Works (1-2-3 Consultation Flow) */}
-      <section className="relative z-10 container mx-auto px-6 lg:px-12 py-16 mb-16">
+      <section className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-16 mb-16">
         <div className="mb-12 text-center">
           <span className="text-[9px] font-mono tracking-widest text-tenant-accent uppercase font-bold block mb-1">Workflow Overview</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-2">HIPAA Secure Video Consults</h2>
@@ -429,7 +429,7 @@ export default function Home() {
       </section>
 
       {/* NEW SECTION 3: Medplum Trust Compliance Plaque */}
-      <section className="relative z-10 container mx-auto px-6 lg:px-12 py-4 mb-24">
+      <section className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-4 mb-24">
         <div className="bg-gradient-to-r from-tenant-accent/10 via-white to-tenant-accent/5 border border-tenant-accent/20 rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group shadow-xl">
           <div className="absolute top-0 right-0 p-4 opacity-5 text-8xl leading-none pointer-events-none">
             🛡️
