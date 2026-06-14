@@ -290,11 +290,11 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       </div>
 
       {/* 2. Menu */}
-      <nav className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest font-mono text-slate-600">
-        <a href="/doctors" className="hover:text-teal-600 transition-colors">Find Specialists</a>
-        <a href="/portal" className="hover:text-teal-600 transition-colors">Patient Portal</a>
-        <a href="https://medplum.com" target="_blank" rel="noreferrer" className="hover:text-teal-600 transition-colors flex items-center gap-2">
-          Medplum Cloud <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+      <nav className="hidden md:flex items-center gap-3">
+        <a href="/doctors" className="bg-teal-600 hover:bg-teal-700 text-white transition-all rounded-full px-5 py-2.5 font-bold text-sm capitalize shadow-sm">Find Specialists</a>
+        <a href="/portal" className="bg-teal-600 hover:bg-teal-700 text-white transition-all rounded-full px-5 py-2.5 font-bold text-sm capitalize shadow-sm">Patient Portal</a>
+        <a href="https://medplum.com" target="_blank" rel="noreferrer" className="bg-teal-600 hover:bg-teal-700 text-white transition-all rounded-full px-5 py-2.5 font-bold text-sm capitalize shadow-sm flex items-center gap-2">
+          Medplum Cloud <span className="w-2 h-2 rounded-full bg-teal-200 animate-pulse"></span>
         </a>
       </nav>
 
