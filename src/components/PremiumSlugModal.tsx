@@ -9,6 +9,8 @@ interface PremiumSlugModalProps {
   onClose: () => void;
   currentName: string;
   currentUglyUrl: string;
+  isAdminMode?: boolean;
+  onAdminBook?: (urls: CartItem[], ownerDetails: string) => void;
 }
 
 type Term = 'monthly' | '1yr' | '2yr' | '3yr';
@@ -22,7 +24,7 @@ interface CartItem {
   urlPreview: string;
 }
 
-export default function PremiumSlugModal({ isOpen, onClose, currentName, currentUglyUrl }: PremiumSlugModalProps) {
+export default function PremiumSlugModal({ isOpen, onClose, currentName, currentUglyUrl, isAdminMode = false, onAdminBook }: PremiumSlugModalProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -38,6 +40,7 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
   const [isBuildingLocation, setIsBuildingLocation] = useState(false);
   const [locState, setLocState] = useState('westbengal');
   const [locCategory, setLocCategory] = useState('none');
+  const [ownerContact, setOwnerContact] = useState("");
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -48,6 +51,7 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
       setTerm('1yr');
       setCustomLocations([]);
       setIsBuildingLocation(false);
+      setOwnerContact("");
     }
   }, [isOpen]);
 
@@ -397,9 +401,33 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                     <span className="text-sm text-slate-500 font-normal ml-1">{term === 'monthly' ? '/mo' : ''}</span>
                   </p>
                 </div>
-                <button className="px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 shrink-0">
-                  Checkout
-                </button>
+                {isAdminMode ? (
+                  <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+                    <input 
+                      type="text" 
+                      placeholder="User Email or WhatsApp" 
+                      value={ownerContact}
+                      onChange={e => setOwnerContact(e.target.value)}
+                      className="w-full sm:w-64 border border-slate-300 rounded-lg px-4 py-3 text-sm outline-none focus:border-teal-500 shadow-inner"
+                    />
+                    <button 
+                      onClick={() => {
+                        if (!ownerContact.trim()) {
+                          alert("Please enter the user's Email or WhatsApp to assign these URLs.");
+                          return;
+                        }
+                        if (onAdminBook) onAdminBook(cart, ownerContact);
+                      }}
+                      className="w-full sm:w-auto px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg transition-colors shrink-0"
+                    >
+                      Book for User
+                    </button>
+                  </div>
+                ) : (
+                  <button className="px-8 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 shrink-0 mt-4 md:mt-0">
+                    Checkout
+                  </button>
+                )}
               </div>
 
             </div>

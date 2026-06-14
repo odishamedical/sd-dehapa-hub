@@ -2,34 +2,67 @@
 
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, writeBatch, serverTimestamp } from 'firebase/firestore';
+import PremiumSlugModal from './PremiumSlugModal';
 
 export default function AdminSlugRegistry() {
   const [slugs, setSlugs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    const fetchSlugs = async () => {
-      try {
-        const q = query(collection(db, 'directory'), where("customSlug", "!=", ""));
-        const snapshot = await getDocs(q);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchSlugs = async () => {
+    setLoading(true);
+    try {
+      const q = query(collection(db, 'directory'), where("customSlug", "!=", ""));
+      const snapshot = await getDocs(q);
+      
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((d: any) => d.customSlug && d.customSlug.trim() !== "");
         
-        // Filter out any documents that don't actually have a customSlug 
-        // (Firestore != query sometimes returns docs without the field depending on indexing)
-        const data = snapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter((d: any) => d.customSlug && d.customSlug.trim() !== "");
-          
-        setSlugs(data);
-      } catch (err) {
-        console.error("Error fetching premium slugs", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setSlugs(data);
+    } catch (err) {
+      console.error("Error fetching premium slugs", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchSlugs();
   }, []);
+
+  const handleAdminBook = async (urls: any[], ownerDetails: string) => {
+    if (urls.length === 0) return;
+    try {
+      const batch = writeBatch(db);
+      const directoryRef = collection(db, 'directory');
+
+      for (const item of urls) {
+        const newDocRef = doc(directoryRef);
+        batch.set(newDocRef, {
+          id: newDocRef.id,
+          name: ownerDetails,
+          assignedOwnerEmail: ownerDetails,
+          customSlug: item.slug,
+          category: item.category || item.type,
+          source: "admin_registry_booking",
+          verified: true,
+          updatedAt: serverTimestamp()
+        });
+      }
+
+      await batch.commit();
+      alert(`Successfully booked ${urls.length} URLs for ${ownerDetails}`);
+      setIsModalOpen(false);
+      fetchSlugs();
+    } catch (err) {
+      console.error("Failed to book URLs:", err);
+      alert("Failed to book URLs. Check console for details.");
+    }
+  };
 
   const filteredSlugs = slugs.filter(s => 
     (s.customSlug?.toLowerCase() || "").includes(search.toLowerCase()) || 
@@ -39,14 +72,18 @@ export default function AdminSlugRegistry() {
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-slate-100 pb-6">
-        <div>
+        <div className="flex-1">
           <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             Premium Slug Registry 
             <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-teal-200">
               {slugs.length} Registered
             </span>
           </h3>
-          <p className="text-sm text-slate-500 mt-1">Track all claimed vanity URLs across the ecosystem.</p>
+          <p className="text-sm text-slate-500 mt-1 mb-4">Track all claimed vanity URLs across the ecosystem.</p>
+          <button onClick={() => setIsModalOpen(true)} className="px-6 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm shadow-md transition-colors flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+            Book New Slug for User
+          </button>
         </div>
         <div className="w-full md:w-72">
           <input 
@@ -140,6 +177,15 @@ export default function AdminSlugRegistry() {
           </table>
         </div>
       )}
+
+      <PremiumSlugModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        currentName=""
+        currentUglyUrl=""
+        isAdminMode={true}
+        onAdminBook={handleAdminBook}
+      />
     </div>
   );
 }
