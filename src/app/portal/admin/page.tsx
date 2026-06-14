@@ -78,13 +78,17 @@ export default function AdminDashboard() {
     );
   }
 
-  const handleExtractLive = async () => {
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+
+  const handleExtractLive = async (isNextPage: boolean = false) => {
     setIsExtracting(true);
-    setStagedListings([]);
-    setSelectedListingIds([]);
+    if (!isNextPage) {
+      setStagedListings([]);
+      setSelectedListingIds([]);
+    }
     
     try {
-      const payload = {
+      const payload: any = {
         state: crawlerState,
         district: crawlerDistrict === "Other" ? customDistrict : crawlerDistrict,
         city: crawlerCity,
@@ -94,6 +98,10 @@ export default function AdminDashboard() {
         subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
         query: crawlerQuery
       };
+
+      if (isNextPage && nextPageToken) {
+        payload.pageToken = nextPageToken;
+      }
 
       const res = await fetch('/api/crawler', {
         method: 'POST',
@@ -392,12 +400,12 @@ export default function AdminDashboard() {
 
                   <div className="md:col-span-2 lg:col-span-4 mt-6">
                     <button 
-                      onClick={() => handleExtract(false)}
+                      onClick={() => handleExtractLive(false)}
                       disabled={isExtracting}
                       className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-base font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {isExtracting ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                       ) : (
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                       )}
@@ -407,7 +415,7 @@ export default function AdminDashboard() {
                     {nextPageToken && (
                       <div className="mt-4 flex justify-center">
                         <button 
-                          onClick={() => handleExtract(true)} 
+                          onClick={() => handleExtractLive(true)} 
                           disabled={isExtracting}
                           className="px-6 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold rounded-lg text-sm disabled:opacity-50 transition-colors border border-slate-300"
                         >

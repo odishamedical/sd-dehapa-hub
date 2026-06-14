@@ -55,7 +55,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
       }
     };
     fetchDoctor();
-  }, [params.id]);
+  }, [resolvedParams.id]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]"><div className="animate-spin w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full"></div></div>;
@@ -144,7 +144,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
               <h2 className="text-xl font-bold text-slate-900 mb-4">Specialties & Services</h2>
               <div className="flex flex-wrap gap-2">
-                {doctor.specialties.map((spec, idx) => (
+                {doctor.specialties.map((spec: string, idx: number) => (
                   <span key={idx} className="bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1.5 rounded-lg text-sm font-semibold">
                     {spec}
                   </span>
@@ -156,7 +156,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
               <h2 className="text-xl font-bold text-slate-900 mb-6">Education & Training</h2>
               <div className="space-y-6">
-                {doctor.education.map((edu, idx) => (
+                {doctor.education.map((edu: any, idx: number) => (
                   <div key={idx} className="flex gap-4">
                     <div className="flex flex-col items-center">
                       <div className="w-3 h-3 bg-teal-500 rounded-full mt-1.5"></div>
@@ -221,7 +221,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
                   Operating Hours
                 </h3>
                 <div className="space-y-3">
-                  {doctor.hours.map((h, idx) => (
+                  {doctor.hours.map((h: any, idx: number) => (
                     <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-50 pb-2 last:border-0 last:pb-0">
                       <span className="text-slate-500 font-medium">{h.day}</span>
                       <span className={`font-semibold ${h.time === 'Closed' ? 'text-red-500' : 'text-slate-900'}`}>{h.time}</span>
