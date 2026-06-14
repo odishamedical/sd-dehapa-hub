@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import EcosystemSwitcher from '@/components/EcosystemSwitcher';
@@ -8,9 +8,8 @@ import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
 
-const LABS: any[] = [
-  // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
-];
+import { db } from '@/lib/firebase';
+import { collection, getDocs, query } from 'firebase/firestore';
 
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
@@ -29,6 +28,50 @@ export default function LabsDirectory({
   const { activeTenant } = useTenant();
   const [search, setSearch] = useState("");
   const [showProfileBlocker, setShowProfileBlocker] = useState(false);
+  const [labs, setLabs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLabs = async () => {
+      try {
+        const q = query(collection(db, 'directory'));
+        const querySnapshot = await getDocs(q);
+        const docsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        const mappedData = docsData
+          .filter((d: any) => d.category?.toLowerCase() === "lab" || d.category?.toLowerCase() === "diagnostic center")
+          .map((d: any) => ({
+            id: d.id,
+            name: d.name || "Unknown Lab",
+            specialty: d.subCategory || d.category || "Diagnostic Center",
+            experience: d.experience || "Google Verified", 
+            rating: d.rating || 0,
+            reviews: d.reviews || 0,
+            hospital: d.clinicName || d.city || d.district || "Odisha",
+            address: d.address || "No Address Provided",
+            fee: d.fee || "Contact Admin", 
+            img: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Lab")}&background=e0f2fe&color=0369a1&size=150`,
+            verified: d.verified || false,
+            available: true,
+            phone: d.phone,
+            district: d.district || "Unknown",
+            state: d.state || "Odisha",
+            country: d.country || "India"
+        }));
+
+        setLabs(mappedData);
+      } catch (err: any) {
+        console.error("Error fetching labs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchLabs();
+  }, []);
 
   const handleBookClick = (e: React.MouseEvent, docId: string) => {
     e.preventDefault();
@@ -52,13 +95,18 @@ export default function LabsDirectory({
     router.push(`/portal/book?doctor=${docId}`);
   };
 
-  const filteredLabs = LABS.filter(doc => {
-    const matchSearch = doc.name.toLowerCase().includes(search.toLowerCase()) || doc.hospital.toLowerCase().includes(search.toLowerCase());
+  const filteredLabs = labs.filter(doc => {
+    const nameMatch = doc.name ? doc.name.toLowerCase().includes(search.toLowerCase()) : false;
+    const specMatch = doc.specialty ? doc.specialty.toLowerCase().includes(search.toLowerCase()) : false;
+    const searchMatch = nameMatch || specMatch;
     
-    // Filter by tenant hospital unless the tenant is "general" (DehaPa general network)
     const matchTenant = activeTenant.hospitalName === "All" || doc.hospital === activeTenant.hospitalName;
     
-    return matchSearch && matchTenant;
+    if (initialCountry && doc.country?.toLowerCase() !== initialCountry.toLowerCase()) return false;
+    if (initialState && doc.state?.toLowerCase() !== initialState.toLowerCase()) return false;
+    if (initialDistrict && doc.district?.toLowerCase() !== initialDistrict.toLowerCase()) return false;
+
+    return searchMatch && matchTenant;
   });
 
   return (

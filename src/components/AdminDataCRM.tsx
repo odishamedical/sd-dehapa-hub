@@ -20,6 +20,7 @@ export default function AdminDataCRM() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isNewListing, setIsNewListing] = useState(false);
   
   // Selection and bulk operations
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -68,6 +69,7 @@ export default function AdminDataCRM() {
   const uniqueCategories = Array.from(new Set(data.map(d => d.category).filter(Boolean)));
 
   const openDrawer = (listing: any) => {
+    setIsNewListing(false);
     setSelectedListing({ ...listing });
     setDynamicFields(listing.customFields || []);
     setLocations(listing.locations || []);
@@ -75,6 +77,31 @@ export default function AdminDataCRM() {
     setQualificationsList(listing.qualificationsList || []);
     setResearch(listing.research || []);
     setAwards(listing.awards || []);
+    setIsDrawerOpen(true);
+  };
+
+  const handleCreateNew = () => {
+    setIsNewListing(true);
+    setSelectedListing({
+      id: "NEW_" + Date.now().toString(),
+      name: "",
+      phone: "",
+      address: "",
+      category: "",
+      subCategory: "",
+      city: "",
+      district: "",
+      verified: false,
+      customSlug: "",
+      source: "manual_entry",
+      tenantId: "default"
+    });
+    setDynamicFields([]);
+    setLocations([]);
+    setExperiences([]);
+    setQualificationsList([]);
+    setResearch([]);
+    setAwards([]);
     setIsDrawerOpen(true);
   };
 
@@ -134,6 +161,7 @@ export default function AdminDataCRM() {
         city: selectedListing.city || "",
         district: selectedListing.district || "",
         verified: selectedListing.verified || false,
+        customSlug: selectedListing.customSlug || "",
         clinicName: selectedListing.clinicName || "",
         experience: selectedListing.experience || "",
         qualification: selectedListing.qualification || "",
@@ -150,12 +178,27 @@ export default function AdminDataCRM() {
         awards: cleanAwards
       };
 
-      await updateDoc(ref, updatedData);
-      setData(data.map(d => d.id === selectedListing.id ? { ...d, ...updatedData } : d));
+      if (isNewListing) {
+        // Create new ID
+        const { collection, doc, setDoc } = await import('firebase/firestore');
+        const newRef = doc(collection(db, 'directory'));
+        const fullData = {
+          ...updatedData,
+          source: 'manual_entry',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        await setDoc(newRef, fullData);
+        setData([{ id: newRef.id, ...fullData }, ...data]);
+      } else {
+        const ref = doc(db, 'directory', selectedListing.id);
+        await updateDoc(ref, updatedData);
+        setData(data.map(d => d.id === selectedListing.id ? { ...d, ...updatedData } : d));
+      }
       setIsDrawerOpen(false);
     } catch (e) {
       console.error(e);
-      alert("Failed to update listing.");
+      alert("Failed to save listing.");
     }
     setIsSaving(false);
   };
@@ -237,6 +280,10 @@ export default function AdminDataCRM() {
             onChange={(e) => setSearch(e.target.value)}
             className="px-4 py-2 border border-slate-300 rounded-lg text-sm flex-1 md:w-64 focus:outline-none focus:border-teal-500"
           />
+          <button onClick={handleCreateNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+            Create Blank Record
+          </button>
           <select 
             value={categoryFilter} 
             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -375,8 +422,8 @@ export default function AdminDataCRM() {
                    </label>
                  </div>
                 <div>
-                  <h3 className="font-bold text-xl text-slate-900">{selectedListing.name}</h3>
-                  <p className="text-xs text-slate-500 font-mono mt-0.5">ID: {selectedListing.id} • {selectedListing.source === 'google_crawler' ? 'Google Sourced' : 'Manual Entry'}</p>
+                  <h3 className="font-bold text-xl text-slate-900">{isNewListing ? "New Directory Record" : selectedListing.name}</h3>
+                  <p className="text-xs text-slate-500 font-mono mt-0.5">ID: {isNewListing ? "Auto-Generated on Save" : selectedListing.id} • {selectedListing.source === 'google_crawler' ? 'Google Sourced' : 'Manual Entry'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -427,6 +474,10 @@ export default function AdminDataCRM() {
                       <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">District</label>
                       <input type="text" value={selectedListing.district} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none bg-white shadow-sm" />
                     </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Premium Custom Slug (Vanity URL)</label>
+                    <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="w-full px-4 py-2.5 border border-amber-300 rounded-lg text-sm focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none bg-amber-50 shadow-sm" placeholder="e.g. apollo-city (creates dehapa.com/hospitals/apollo-city)" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Primary Full Address</label>
