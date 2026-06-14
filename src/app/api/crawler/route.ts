@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { state, district, locality, city, pin, category, subCategory, query } = body;
+    const { state, district, locality, city, pin, category, subCategory, query, pageToken } = body;
 
     // Construct the text search query
     const searchTerms = [];
@@ -40,17 +40,22 @@ export async function POST(req: NextRequest) {
     }
 
     // Call Google Places API (New)
+    const requestBody: any = {
+      textQuery: finalQuery,
+      pageSize: 20
+    };
+    if (pageToken) {
+      requestBody.pageToken = pageToken;
+    }
+
     const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY,
-        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.rating,places.userRatingCount,places.websiteUri,places.photos'
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.rating,places.userRatingCount,places.websiteUri,places.photos,nextPageToken'
       },
-      body: JSON.stringify({
-        textQuery: finalQuery,
-        pageSize: 10 // Max 20 allowed per page, let's keep it tight for the staging grid
-      })
+      body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) {
@@ -65,7 +70,7 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     
     if (!data.places) {
-      return NextResponse.json({ results: [] });
+      return NextResponse.json({ results: [], nextPageToken: null });
     }
 
     // Transform into our StagedListing format

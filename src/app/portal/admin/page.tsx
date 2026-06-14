@@ -110,10 +110,15 @@ export default function AdminDashboard() {
       }
 
       if (data.results && data.results.length > 0) {
-        setStagedListings(data.results);
-        setSelectedListingIds(data.results.map((d: any) => d.id)); // Select all by default
-      } else {
-        alert(`No results found for: ${data.query}`);
+        if (isNextPage) {
+          setStagedListings([...stagedListings, ...data.results]);
+        } else {
+          setStagedListings(data.results);
+          setSelectedListingIds(data.results.map((d: any) => d.id));
+        }
+        setNextPageToken(data.nextPageToken || null);
+      } else if (!isNextPage) {
+        alert(`No results found for: ${data.query || 'your query'}`);
       }
     } catch (err) {
       console.error(err);
@@ -147,7 +152,6 @@ export default function AdminDashboard() {
       const toInject = stagedListings.filter(l => selectedListingIds.includes(l.id));
 
       for (const listing of toInject) {
-        // Use the unique Google Place ID as the Firebase Document ID to prevent duplicates
         const newDocRef = doc(directoryRef, listing.id);
         
         batch.set(newDocRef, {
@@ -169,10 +173,9 @@ export default function AdminDashboard() {
           verified: false,
           source: "google_crawler",
           tenantId: activeTenant?.id || "default",
-          updatedAt: serverTimestamp() // Use updatedAt so we don't overwrite createdAt if it exists
-        }, { merge: true }); // Merge ensures we update existing docs instead of throwing errors or duplicating
+          updatedAt: serverTimestamp()
+        }, { merge: true });
       }
-
 
       await batch.commit();
 
@@ -235,7 +238,6 @@ export default function AdminDashboard() {
                 <button className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider">Export CSV</button>
               </div>
               
-              {/* Zero Mock Data: Empty State */}
               <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-xl">
                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -255,7 +257,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
               
-              {/* Zero Mock Data: Empty State */}
               <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
                 <div className="w-16 h-16 bg-white border border-slate-200 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                   <svg className="w-8 h-8 text-tenant-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -291,7 +292,6 @@ export default function AdminDashboard() {
               
               <div className="bg-[#F9FAFB] border-0 rounded-xl p-6 mb-8 shadow-inner">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
-                  {/* State Selection */}
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">State</label>
                     <select 
@@ -303,7 +303,6 @@ export default function AdminDashboard() {
                     </select>
                   </div>
 
-                  {/* District Selection */}
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">District / Area</label>
                     <select 
@@ -320,7 +319,6 @@ export default function AdminDashboard() {
                     )}
                   </div>
 
-                  {/* Category Selection */}
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">Category</label>
                     <select 
@@ -332,7 +330,6 @@ export default function AdminDashboard() {
                     </select>
                   </div>
 
-                  {/* Sub-Category Selection */}
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">Sub-category</label>
                     <select 
@@ -349,9 +346,7 @@ export default function AdminDashboard() {
                     )}
                   </div>
 
-                  {/* Specific Search Modifiers */}
                   <div className="md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                    {/* City / Town */}
                     <div>
                       <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">City / Town</label>
                       <input 
@@ -363,7 +358,6 @@ export default function AdminDashboard() {
                       />
                     </div>
 
-                    {/* Locality */}
                     <div>
                       <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">Locality / Village / Street</label>
                       <input 
@@ -398,7 +392,7 @@ export default function AdminDashboard() {
 
                   <div className="md:col-span-2 lg:col-span-4 mt-6">
                     <button 
-                      onClick={handleExtractLive}
+                      onClick={() => handleExtract(false)}
                       disabled={isExtracting}
                       className="w-full md:w-auto md:px-12 bg-teal-600 hover:bg-teal-700 text-white py-4 rounded-xl text-base font-bold shadow-lg shadow-teal-500/30 transition-all flex items-center justify-center gap-2 mx-auto disabled:opacity-70 disabled:cursor-not-allowed"
                     >
@@ -407,13 +401,24 @@ export default function AdminDashboard() {
                       ) : (
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                       )}
-                      {isExtracting ? "Extracting Data..." : `Extract ${crawlerQuery ? `"${crawlerQuery}"` : (customSubCategory || crawlerSubCategory || crawlerCategory)} in ${[crawlerLocality, customDistrict || crawlerDistrict, crawlerState, crawlerPin].filter(Boolean).join(", ")}`}
+                      {isExtracting ? "Extracting..." : crawlerQuery ? `Extract "${crawlerQuery}"` : `Extract ${customSubCategory || crawlerSubCategory || crawlerCategory} in ${[crawlerLocality, customDistrict || crawlerDistrict, crawlerState, crawlerPin].filter(Boolean).join(", ")}`}
                     </button>
+                    
+                    {nextPageToken && (
+                      <div className="mt-4 flex justify-center">
+                        <button 
+                          onClick={() => handleExtract(true)} 
+                          disabled={isExtracting}
+                          className="px-6 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold rounded-lg text-sm disabled:opacity-50 transition-colors border border-slate-300"
+                        >
+                          {isExtracting ? "Loading..." : "Load More Results"}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Staging Grid UI */}
               {stagedListings.length > 0 && (
                 <div className="mt-12 border-t border-slate-200 pt-8">
                   <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
