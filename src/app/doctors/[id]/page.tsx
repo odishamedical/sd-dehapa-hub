@@ -5,16 +5,17 @@ import Link from 'next/link';
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 
-export default function DoctorProfilePage({ params }: { params: { id: string } }) {
+export default function DoctorProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const docRef = doc(db, 'directory', params.id);
+        const docRef = doc(db, 'directory', resolvedParams.id);
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {

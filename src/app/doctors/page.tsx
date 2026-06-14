@@ -12,7 +12,7 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 const PremiumDoctorTicket = ({ data }: { data: any }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 p-6 flex flex-col md:flex-row gap-6 items-center md:items-start group relative overflow-hidden">
+    <Link href={`/doctors/${data.id}`} className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 p-6 flex flex-col md:flex-row gap-6 items-center md:items-start group relative overflow-hidden block">
       {/* Availability Accent Bar */}
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${data.available ? 'bg-teal-500' : 'bg-slate-300'}`}></div>
 
@@ -28,7 +28,7 @@ const PremiumDoctorTicket = ({ data }: { data: any }) => {
       
       {/* Center: Info */}
       <div className="flex-1 text-center md:text-left min-w-0">
-        <h3 className="text-xl font-bold text-slate-900 truncate mb-1">{data.name}</h3>
+        <h3 className="text-xl font-bold text-slate-900 truncate mb-1 group-hover:text-teal-700 transition-colors">{data.name}</h3>
         <p className="text-teal-600 font-bold text-sm mb-3 truncate">{data.specialty}</p>
         
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
@@ -54,17 +54,17 @@ const PremiumDoctorTicket = ({ data }: { data: any }) => {
           <p className="text-2xl font-bold text-slate-900">₹{data.fee}</p>
         </div>
         
-        <Link href={`/doctors/${data.id}`} className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all text-center shadow-lg shadow-teal-500/30">
+        <div className="w-full bg-teal-600 group-hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-all text-center shadow-lg shadow-teal-500/30">
           Book Consultation
-        </Link>
+        </div>
         
         {!data.verified && (
-          <Link href="/portal/claim" className="w-full bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-600 font-bold py-2.5 px-6 rounded-xl text-xs transition-all text-center group">
-            <span className="group-hover:text-teal-600 transition-colors">Verify Your Service</span>
-          </Link>
+          <div className="w-full bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-600 font-bold py-2.5 px-6 rounded-xl text-xs transition-all text-center group-hover/claim:text-teal-600">
+            Verify Your Service
+          </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
