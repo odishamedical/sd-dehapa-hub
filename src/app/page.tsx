@@ -41,20 +41,127 @@ export default function Home() {
 
       {/* Overlapping Content: Cards & Search Bar */}
       <div className="relative z-20 container mx-auto px-6 lg:px-12 -mt-16">
-          {/* 5 Category Cards */}
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
-            {[
-              { name: "Book Doctors", icon: "👨‍⚕️", link: "/doctors" },
-              { name: "Hospitals", icon: "🏥", link: "/hospitals" },
-              { name: "Labs", icon: "🔬", link: "/labs" },
-              { name: "Medicine", icon: "💊", link: "/pharmacies" },
-              { name: "Ambulances", icon: "🚑", link: "/ambulances" }
-            ].map((cat) => (
-              <Link href={cat.link} key={cat.name} className="bg-white text-slate-900 rounded-2xl p-4 md:p-6 shadow-[0_10px_40px_rgba(0,0,0,0.1)] w-28 md:w-36 flex flex-col items-center gap-3 hover:-translate-y-2 transition-transform duration-300">
-                <div className="text-3xl md:text-4xl">{cat.icon}</div>
-                <span className="text-xs md:text-sm font-bold text-center">{cat.name}</span>
-              </Link>
-            ))}
+          {/* 5 Category Cards - Glassmorphism UI */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-12 w-full">
+            {/* Card 1: Doctors */}
+            <Link href="/doctors" className="bg-white/90 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-300 group">
+              <div className="flex items-center gap-3 w-full mb-4">
+                <div className="text-2xl bg-teal-50 w-10 h-10 rounded-full flex items-center justify-center border border-teal-100">👨‍⚕️</div>
+                <span className="text-sm font-bold text-slate-800">Book Doctors</span>
+              </div>
+              <div className="w-full bg-gradient-to-br from-slate-50 to-white border border-slate-100 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden group-hover:border-teal-200 transition-colors">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="text-[10px] text-slate-500 font-bold block mb-1">Top Speciality</span>
+                    <div className="text-amber-400 text-xs tracking-widest">⭐⭐⭐⭐⭐</div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block mb-1">&lt; Availability &gt;</span>
+                    <div className="grid grid-cols-7 gap-0.5 text-[7px] text-slate-300 font-mono text-center">
+                      <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                      <span></span><span></span><span>1</span><span>2</span><span className="bg-teal-600 text-white rounded">3</span><span>4</span><span>5</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[11px] font-bold text-slate-700">Specialist ratings</span>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 2: Hospitals */}
+            <Link href="/hospitals" className="bg-white/90 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-300 group">
+              <div className="flex items-center gap-3 w-full mb-4">
+                <div className="text-2xl bg-teal-50 w-10 h-10 rounded-full flex items-center justify-center border border-teal-100">🏥</div>
+                <span className="text-sm font-bold text-slate-800">Hospitals</span>
+              </div>
+              <div className="w-full bg-gradient-to-br from-slate-50 to-white border border-slate-100 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden group-hover:border-teal-200 transition-colors">
+                <div className="flex justify-between items-start border-b border-slate-100 pb-2">
+                  <div>
+                    <span className="text-[10px] text-slate-500 font-bold block mb-0.5">Nearby facilities</span>
+                    <span className="text-[11px] font-bold text-slate-800">DehaPa Health</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] text-slate-400 font-bold block mb-0.5">Live status</span>
+                    <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1 justify-end">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-end">
+                  <span className="text-[11px] font-bold text-slate-700 leading-tight">Real-time bed<br/>Availability</span>
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-500 block">Sample</span>
+                    <span className="text-[11px] font-bold text-slate-800">1 to 24</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 3: Labs */}
+            <Link href="/labs" className="bg-white/90 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-300 group">
+              <div className="flex items-center gap-3 w-full mb-4">
+                <div className="text-2xl bg-teal-50 w-10 h-10 rounded-full flex items-center justify-center border border-teal-100">🔬</div>
+                <span className="text-sm font-bold text-slate-800">Labs</span>
+              </div>
+              <div className="w-full bg-gradient-to-br from-slate-50 to-white border border-slate-100 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden group-hover:border-teal-200 transition-colors">
+                <div className="flex justify-between items-center bg-slate-100 rounded-lg p-2">
+                  <span className="text-[10px] text-slate-400">&lt;</span>
+                  <div className="text-center">
+                    <span className="text-[10px] text-slate-700 font-bold block">Available Test types 🧪</span>
+                    <span className="text-[9px] text-slate-500">Reach Test Results</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400">&gt;</span>
+                </div>
+                <div className="text-center mt-1">
+                  <span className="text-[11px] font-bold text-slate-700">Integrated results access</span>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 4: Medicine */}
+            <Link href="/pharmacies" className="bg-white/90 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-300 group">
+              <div className="flex items-center gap-3 w-full mb-4">
+                <div className="text-2xl bg-teal-50 w-10 h-10 rounded-full flex items-center justify-center border border-teal-100">💊</div>
+                <span className="text-sm font-bold text-slate-800">Medicine</span>
+              </div>
+              <div className="w-full bg-gradient-to-br from-slate-50 to-white border border-slate-100 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden group-hover:border-teal-200 transition-colors">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                    <span className="text-[11px] text-slate-700 font-medium">Basic shopping list</span>
+                    <div className="w-3 h-3 border border-slate-300 rounded-sm"></div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[11px] text-slate-700 font-medium">Recent prescriptions</span>
+                    <div className="w-3 h-3 border border-slate-300 rounded-sm"></div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 5: Ambulances */}
+            <Link href="/ambulances" className="bg-white/90 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl p-5 flex flex-col items-center hover:-translate-y-2 hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] transition-all duration-300 group relative">
+              <div className="flex items-center gap-3 w-full mb-4">
+                <div className="text-2xl bg-red-50 w-10 h-10 rounded-full flex items-center justify-center border border-red-100">🚑</div>
+                <span className="text-sm font-bold text-slate-800">Ambulances</span>
+              </div>
+              <div className="w-full bg-gradient-to-br from-slate-50 to-white border border-slate-100 rounded-2xl p-4 flex flex-col gap-3 relative overflow-hidden group-hover:border-red-200 transition-colors">
+                <button className="w-full bg-white border border-slate-200 text-[10px] font-bold text-slate-700 py-1.5 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-600 transition-colors">
+                  Request Immediate Help
+                </button>
+                <div className="flex justify-between items-center mt-1">
+                  <div>
+                    <span className="text-[10px] text-slate-500 font-bold block">ETA</span>
+                    <span className="text-[11px] font-bold text-slate-800">4:04 Min</span>
+                  </div>
+                  <div className="w-10 h-10 bg-slate-200 rounded-lg overflow-hidden border border-slate-300 relative">
+                     {/* Fake Map Background */}
+                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-20"></div>
+                     <svg className="w-4 h-4 text-red-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-md" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path></svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
 
           {/* Search Bar */}
