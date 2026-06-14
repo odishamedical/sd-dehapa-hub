@@ -21,6 +21,10 @@ export default function AdminDataCRM() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   
+  // Selection and bulk operations
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
+  
   // Advanced features state
   const [dynamicFields, setDynamicFields] = useState<{label: string, value: string}[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
@@ -171,6 +175,37 @@ export default function AdminDataCRM() {
     setIsSaving(false);
   };
 
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(filteredData.map(d => d.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    if (!confirm(`Are you sure you want to permanently delete ${selectedIds.length} selected listings?`)) return;
+    setIsDeletingBulk(true);
+    try {
+      await Promise.all(selectedIds.map(id => deleteDoc(doc(db, 'directory', id))));
+      setData(data.filter(d => !selectedIds.includes(d.id)));
+      setSelectedIds([]);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to delete selected listings.");
+    }
+    setIsDeletingBulk(false);
+  };
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[80vh]">
       {/* Header & Filters */}
@@ -178,6 +213,20 @@ export default function AdminDataCRM() {
         <div>
           <h3 className="text-lg font-bold text-slate-900">Directory Data CRM</h3>
           <p className="text-sm text-slate-500">Manage all {data.length} injected records</p>
+          {selectedIds.length > 0 && (
+            <button 
+              onClick={handleBulkDelete}
+              disabled={isDeletingBulk}
+              className="mt-2 text-xs bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3 py-1.5 rounded flex items-center gap-1 font-bold transition-colors disabled:opacity-50"
+            >
+              {isDeletingBulk ? (
+                <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              ) : (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              )}
+              Delete {selectedIds.length} Selected
+            </button>
+          )}
         </div>
         
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
@@ -223,6 +272,9 @@ export default function AdminDataCRM() {
           <table className="w-full text-left border-collapse">
             <thead className="bg-slate-50 sticky top-0 z-10 shadow-sm">
               <tr>
+                <th className="px-6 py-4 w-12">
+                  <input type="checkbox" onChange={handleSelectAll} checked={filteredData.length > 0 && selectedIds.length === filteredData.length} className="rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer" />
+                </th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Listing</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Contact</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Location</th>
@@ -232,7 +284,10 @@ export default function AdminDataCRM() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredData.map(item => (
-                <tr key={item.id} className="hover:bg-slate-50 group transition-colors">
+                <tr key={item.id} className={`group transition-colors ${selectedIds.includes(item.id) ? 'bg-teal-50/30' : 'hover:bg-slate-50'}`}>
+                  <td className="px-6 py-4">
+                    <input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => handleSelectOne(item.id)} className="rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer" />
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden shrink-0 border border-slate-200 flex items-center justify-center">
@@ -267,12 +322,31 @@ export default function AdminDataCRM() {
                     )}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button 
-                      onClick={() => openDrawer(item)}
-                      className="px-4 py-2 bg-white border border-slate-200 hover:border-teal-500 hover:text-teal-600 text-slate-600 rounded-lg text-sm font-bold transition-colors shadow-sm"
-                    >
-                      View / Edit
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button 
+                        onClick={() => openDrawer(item)}
+                        className="px-4 py-2 bg-white border border-slate-200 hover:border-teal-500 hover:text-teal-600 text-slate-600 rounded-lg text-sm font-bold transition-colors shadow-sm"
+                      >
+                        View / Edit
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!confirm(`Are you sure you want to permanently delete "${item.name}"?`)) return;
+                          try {
+                            await deleteDoc(doc(db, 'directory', item.id));
+                            setData(data.filter(d => d.id !== item.id));
+                            setSelectedIds(selectedIds.filter(id => id !== item.id));
+                          } catch (e) {
+                            console.error(e);
+                            alert("Failed to delete.");
+                          }
+                        }}
+                        className="px-3 py-2 bg-white border border-slate-200 hover:border-red-500 hover:text-red-600 hover:bg-red-50 text-slate-400 rounded-lg transition-colors shadow-sm"
+                        title="Delete Listing"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
