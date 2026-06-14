@@ -30,9 +30,9 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("users");
 
   // Crawler State
+  const [crawlerCountry, setCrawlerCountry] = useState("India");
   const [crawlerState, setCrawlerState] = useState("Odisha");
   const [crawlerDistrict, setCrawlerDistrict] = useState("Khordha");
-  const [customDistrict, setCustomDistrict] = useState("");
   const [crawlerCity, setCrawlerCity] = useState("Bhubaneswar");
   const [crawlerLocality, setCrawlerLocality] = useState("");
   const [crawlerPin, setCrawlerPin] = useState("");
@@ -89,8 +89,9 @@ export default function AdminDashboard() {
     
     try {
       const payload: any = {
+        country: crawlerCountry,
         state: crawlerState,
-        district: crawlerDistrict === "Other" ? customDistrict : crawlerDistrict,
+        district: crawlerDistrict,
         city: crawlerCity,
         locality: crawlerLocality,
         pin: crawlerPin,
@@ -173,8 +174,9 @@ export default function AdminDashboard() {
           image: listing.image || "",
           category: crawlerCategory,
           subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
+          country: crawlerCountry,
           state: crawlerState,
-          district: crawlerDistrict === "Other" ? customDistrict : crawlerDistrict,
+          district: crawlerDistrict,
           city: crawlerCity,
           locality: crawlerLocality,
           pin: crawlerPin,
@@ -304,32 +306,38 @@ export default function AdminDashboard() {
               </div>
               
               <div className="bg-[#F9FAFB] border-0 rounded-xl p-6 mb-8 shadow-inner">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start">
                   <div>
-                    <label className="text-sm font-semibold text-slate-800 block mb-2">State</label>
-                    <select 
-                      value={crawlerState} 
-                      onChange={(e) => { setCrawlerState(e.target.value); setCrawlerDistrict(""); setCustomDistrict(""); }}
+                    <label className="text-sm font-semibold text-slate-800 block mb-2">Country</label>
+                    <input 
+                      type="text" 
+                      value={crawlerCountry} 
+                      onChange={(e) => setCrawlerCountry(e.target.value)}
+                      placeholder="e.g. USA, India"
                       className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
-                    >
-                      {indianStates.map(st => <option key={st} value={st}>{st}</option>)}
-                    </select>
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold text-slate-800 block mb-2">State / Region</label>
+                    <input 
+                      type="text" 
+                      value={crawlerState} 
+                      onChange={(e) => setCrawlerState(e.target.value)}
+                      placeholder="e.g. New York, Karnataka"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
+                    />
                   </div>
 
                   <div>
                     <label className="text-sm font-semibold text-slate-800 block mb-2">District / Area</label>
-                    <select 
+                    <input 
+                      type="text" 
                       value={crawlerDistrict} 
                       onChange={(e) => setCrawlerDistrict(e.target.value)}
+                      placeholder="e.g. Manhattan, Bangalore"
                       className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none shadow-sm transition-all"
-                    >
-                      <option value="">Select District</option>
-                      {districtsByState[crawlerState]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
-                      <option value="Other">Other (Add Custom)</option>
-                    </select>
-                    {crawlerDistrict === "Other" && (
-                      <input type="text" value={customDistrict} onChange={(e) => setCustomDistrict(e.target.value)} placeholder="Type custom area..." className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 mt-2 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500 shadow-sm transition-all" />
-                    )}
+                    />
                   </div>
 
                   <div>
@@ -359,7 +367,7 @@ export default function AdminDashboard() {
                     )}
                   </div>
 
-                  <div className="md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                  <div className="md:col-span-3 lg:col-span-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                     <div>
                       <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 block">City / Town</label>
                       <input 
@@ -403,7 +411,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="md:col-span-2 lg:col-span-4 mt-6">
+                  <div className="md:col-span-3 lg:col-span-5 mt-6">
                     <button 
                       onClick={() => handleExtractLive(false)}
                       disabled={isExtracting}
@@ -414,7 +422,7 @@ export default function AdminDashboard() {
                       ) : (
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                       )}
-                      {isExtracting ? "Extracting..." : crawlerQuery ? `Extract "${crawlerQuery}"` : `Extract ${customSubCategory || crawlerSubCategory || crawlerCategory} in ${[crawlerLocality, customDistrict || crawlerDistrict, crawlerState, crawlerPin].filter(Boolean).join(", ")}`}
+                      {isExtracting ? "Extracting..." : crawlerQuery ? `Extract "${crawlerQuery}"` : `Extract ${customSubCategory || crawlerSubCategory || crawlerCategory} in ${[crawlerLocality, crawlerDistrict, crawlerState, crawlerCountry, crawlerPin].filter(Boolean).join(", ")}`}
                     </button>
                     
                     {nextPageToken && (
