@@ -79,7 +79,7 @@ const PremiumDoctorTicket = ({ data }: { data: any }) => {
             <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-2 sm:px-4 rounded-md border border-slate-400 text-[9px] sm:text-[10px] transition-colors whitespace-nowrap shadow-sm text-center">
               Contact
             </div>
-            <div className="bg-[#1e293b] hover:bg-black text-white font-bold py-1.5 px-2 sm:px-4 rounded-md text-[9px] sm:text-[10px] transition-all shadow-lg shadow-black/20 whitespace-nowrap text-center flex-1 truncate">
+            <div className="bg-teal-700 hover:bg-teal-800 text-white font-bold py-1.5 px-2 sm:px-4 rounded-md text-[9px] sm:text-[10px] transition-all shadow-lg shadow-teal-900/20 whitespace-nowrap text-center flex-1 truncate">
               Book Appt
             </div>
           </div>
