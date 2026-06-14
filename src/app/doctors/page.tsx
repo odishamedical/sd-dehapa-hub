@@ -21,20 +21,20 @@ const PremiumDoctorTicket = ({ data }: { data: any }) => {
       {/* Subtle brushed texture */}
       <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
 
-      <div className="flex items-center h-full relative z-10 pr-3">
+      <div className="flex items-center h-full relative z-10 pr-2 sm:pr-3">
         
         {/* Left Side: Floating Vertical Image */}
-        <div className="w-[32%] h-[86%] ml-3 relative shrink-0 rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-4 border-[#f8fafc] bg-slate-200 group-hover:scale-[1.03] transition-transform duration-300 z-40">
+        <div className="w-[110px] sm:w-[32%] h-[90%] sm:h-[86%] ml-2 sm:ml-3 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-[3px] sm:border-4 border-[#f8fafc] bg-slate-200 group-hover:scale-[1.03] transition-transform duration-300 z-40">
            <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
         </div>
         
         {/* Right Side: Data Content */}
-        <div className="flex-1 h-full py-4 pl-5 flex flex-col min-w-0 relative z-30">
+        <div className="flex-1 h-full py-3 sm:py-4 pl-3 sm:pl-5 flex flex-col min-w-0 relative z-30">
           
           {/* Top Row: Name and Icon */}
           <div className="flex justify-between items-start mb-0.5">
-            <h3 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight truncate drop-shadow-sm">{data.name}</h3>
-            <svg className="w-5 h-5 text-slate-400 drop-shadow-sm shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14h-2v-4H5v-2h4V7h2v4h4v2h-4v4z"/></svg>
+            <h3 className="text-[15px] sm:text-lg md:text-xl font-bold text-slate-800 tracking-tight truncate drop-shadow-sm pr-1">{data.name}</h3>
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 drop-shadow-sm shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14h-2v-4H5v-2h4V7h2v4h4v2h-4v4z"/></svg>
           </div>
           
           <p className="text-slate-600 text-xs font-semibold mb-2 truncate">{data.specialty}</p>
@@ -64,23 +64,23 @@ const PremiumDoctorTicket = ({ data }: { data: any }) => {
           </div>
           
           {/* Ratings */}
-          <div className="flex items-center gap-4 text-[10px] font-bold text-slate-600 mb-auto drop-shadow-sm">
-             <span className="flex items-center gap-1 text-amber-500">
-               ⭐⭐⭐⭐⭐ <span className="text-slate-700 ml-1">{data.rating}</span>
+          <div className="flex items-center gap-2 sm:gap-4 text-[9px] sm:text-[10px] font-bold text-slate-600 mb-auto drop-shadow-sm">
+             <span className="flex items-center gap-1 text-amber-500 shrink-0">
+               ⭐⭐⭐⭐⭐ <span className="text-slate-700 ml-0.5 sm:ml-1">{data.rating}</span>
              </span>
-             <span className="flex items-center gap-1">
-               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+             <span className="flex items-center gap-1 shrink-0 truncate">
+               <svg className="w-3 h-3 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                {data.reviews} Ratings
              </span>
           </div>
           
           {/* Bottom Buttons */}
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-400/30">
-            <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-4 rounded-md border border-slate-400 text-[10px] transition-colors whitespace-nowrap shadow-sm text-center flex-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 mt-auto pt-2 sm:pt-3 border-t border-slate-400/30">
+            <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-2 sm:px-4 rounded-md border border-slate-400 text-[9px] sm:text-[10px] transition-colors whitespace-nowrap shadow-sm text-center">
               Contact
             </div>
-            <div className="bg-[#1e293b] hover:bg-black text-white font-bold py-1.5 px-4 rounded-md text-[10px] transition-all shadow-lg shadow-black/20 whitespace-nowrap text-center flex-[1.5]">
-              Book Appointment
+            <div className="bg-[#1e293b] hover:bg-black text-white font-bold py-1.5 px-2 sm:px-4 rounded-md text-[9px] sm:text-[10px] transition-all shadow-lg shadow-black/20 whitespace-nowrap text-center flex-1 truncate">
+              Book Appt
             </div>
           </div>
           
