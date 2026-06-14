@@ -7,6 +7,8 @@ import EcosystemSwitcher from '@/components/EcosystemSwitcher';
 import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
+import CategoryNav from '@/components/CategoryNav';
+import Breadcrumb from '@/components/Breadcrumb';
 
 const HOSPITALS: any[] = [
   // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
@@ -70,6 +72,18 @@ export default function HospitalsDirectory() {
           <EcosystemSwitcher />
         </div>
       </header>
+
+      <CategoryNav />
+      
+      <div className="bg-white border-b border-slate-200 px-6 py-3">
+        <div className="max-w-6xl mx-auto">
+          <Breadcrumb paths={[
+            { name: "Home", href: "/" },
+            { name: "Odisha" },
+            { name: "Hospitals" }
+          ]} />
+        </div>
+      </div>
 
       <main className="max-w-6xl mx-auto px-6 py-12 relative z-10">
         <div className="mb-10">

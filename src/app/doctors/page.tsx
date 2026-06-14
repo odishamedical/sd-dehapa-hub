@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import EcosystemSwitcher from '@/components/EcosystemSwitcher';
 import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
+import CategoryNav from '@/components/CategoryNav';
+import Breadcrumb from '@/components/Breadcrumb';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
@@ -127,6 +129,17 @@ export default function DoctorsDirectory() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30">
+      <CategoryNav />
+      
+      <div className="bg-white border-b border-slate-200 px-6 py-3">
+        <div className="max-w-6xl mx-auto">
+          <Breadcrumb paths={[
+            { name: "Home", href: "/" },
+            { name: "Odisha" },
+            { name: "Doctors" }
+          ]} />
+        </div>
+      </div>
 
       {/* Premium Hero Search */}
       <div className="bg-slate-900 pt-16 pb-24 px-6 relative overflow-hidden">

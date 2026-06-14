@@ -4,12 +4,16 @@ import React from 'react';
 import Link from 'next/link';
 
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
 import { useState, useEffect, use } from 'react';
+
+import CategoryNav from '@/components/CategoryNav';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export default function DoctorProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const [doctor, setDoctor] = useState<any>(null);
+  const [similarDoctors, setSimilarDoctors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,34 +23,55 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          setDoctor({
-            name: data.name || "Unknown Doctor",
-            specialty: data.subCategory && data.subCategory !== "Other" ? data.subCategory : data.category || "General Physician",
-            qualification: "Verified Practitioner",
-            experience: "Google Verified Experience",
-            rating: data.rating || "New",
-            reviews: data.reviews || 0,
-            image: data.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'Doctor')}&background=0f766e&color=fff&size=200`,
+          const rawData = docSnap.data();
+          const docData = {
+            id: docSnap.id,
+            name: rawData.name || "Unknown Doctor",
+            specialty: rawData.subCategory || rawData.category || "Specialist",
+            experience: rawData.experience || "10+ Years",
+            rating: rawData.rating || 4.5,
+            reviews: rawData.reviews || 0,
+            fee: rawData.fee || 500,
+            image: rawData.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Doc")}&background=0f766e&color=fff&size=150`,
+            verified: rawData.verified || false,
+            about: rawData.about || `${rawData.name} is a dedicated healthcare professional based in ${rawData.city || rawData.district || 'Odisha'}. They are committed to providing excellent patient care.`,
+            specialties: rawData.specialties || [rawData.subCategory || "General Practice"],
+            education: rawData.education || [{ degree: "MBBS", institution: "Medical College" }],
+            languages: rawData.languages || ["English", "Odia", "Hindi"],
             banner: "https://images.unsplash.com/photo-1551076805-e18690c5e53b?auto=format&fit=crop&w=1200&q=80",
-            bio: `${data.name} is a dedicated healthcare professional based in ${data.city || data.district || 'Odisha'}. They are committed to providing excellent patient care.`,
-            specialties: data.subCategory ? [data.subCategory, "General Consultation"] : ["General Consultation"],
-            education: [
-              { year: "Verified", degree: "Medical Degree", institute: "Registered Practitioner" }
-            ],
             clinic: {
-              name: data.name,
-              address: data.address || "Address not provided",
-              phone: data.phone || "No phone number available",
-              email: "Contact via clinic",
-              website: data.website || "No website",
-              mapUrl: `https://maps.google.com/maps?q=${encodeURIComponent(data.address || data.name)}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+              name: rawData.clinicName || "Private Clinic",
+              address: rawData.address || "Odisha",
+              phone: rawData.phone || "+91 XXXXX XXXXX",
+              website: rawData.website || "Not Available",
+              mapUrl: `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name)}&t=&z=15&ie=UTF8&iwloc=&output=embed`
             },
-            hours: [
-              { day: "Monday - Saturday", time: "10:00 AM - 06:00 PM" },
+            hours: rawData.hours || [
+              { day: "Mon - Fri", time: "10:00 AM - 08:00 PM" },
+              { day: "Saturday", time: "10:00 AM - 02:00 PM" },
               { day: "Sunday", time: "Closed" }
-            ]
-          });
+            ],
+            city: rawData.city || rawData.district || "Odisha"
+          };
+          setDoctor(docData);
+          
+          // Fetch similar doctors
+          try {
+            const simQuery = query(
+              collection(db, 'directory'),
+              where("subCategory", "==", rawData.subCategory || ""),
+              where("city", "==", rawData.city || ""),
+              limit(4)
+            );
+            const simSnap = await getDocs(simQuery);
+            const simDocs = simSnap.docs
+              .map(d => ({ id: d.id, ...d.data() }))
+              .filter(d => d.id !== docSnap.id)
+              .slice(0, 3);
+            setSimilarDoctors(simDocs);
+          } catch (e) {
+            console.error("Failed to fetch similar doctors", e);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -67,9 +92,22 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] font-sans pb-20">
-      {/* 1. Hero Banner */}
+      <CategoryNav />
+      
+      <div className="bg-white border-b border-slate-200 px-6 py-3">
+        <div className="max-w-6xl mx-auto">
+          <Breadcrumb paths={[
+            { name: "Home", href: "/" },
+            { name: doctor.city || "Odisha", href: "/doctors" },
+            { name: "Doctors", href: "/doctors" },
+            { name: doctor.specialty || "Specialist", href: "/doctors" },
+            { name: doctor.name }
+          ]} />
+        </div>
+      </div>
+      
+      {/* Banner Area */}
       <div className="w-full h-64 md:h-80 relative bg-teal-900 overflow-hidden">
-        {/* Placeholder background image. Using an abstract medical/hospital gradient if image fails */}
         <div className="absolute inset-0 bg-gradient-to-r from-teal-900 to-teal-700 opacity-90 z-10"></div>
         <img 
           src={doctor.banner} 
@@ -77,12 +115,8 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
           className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
         />
         
-        {/* Back Button */}
-        <div className="absolute top-6 left-6 z-20">
-          <Link href="/portal/admin" className="text-white hover:text-teal-200 flex items-center gap-2 text-sm font-bold bg-black/20 px-4 py-2 rounded-lg backdrop-blur-sm transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Back to Directory
-          </Link>
+        {/* Main Content */}
+        <div className="max-w-6xl mx-auto px-6 -mt-16 relative z-20">
         </div>
       </div>
 
@@ -234,6 +268,30 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ id: st
           </div>
 
         </div>
+        
+        {/* Similar Doctors */}
+        {similarDoctors.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+              <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              Similar {doctor.specialty}s in {doctor.city}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {similarDoctors.map((sim, idx) => (
+                <Link key={idx} href={`/doctors/${sim.id}`} className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 p-5 flex items-center gap-4 group">
+                  <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Doc")}&background=0f766e&color=fff`} alt={sim.name} className="w-16 h-16 rounded-xl object-cover border-2 border-slate-100 group-hover:border-teal-100 transition-colors shrink-0" />
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-slate-900 truncate group-hover:text-teal-700 transition-colors">{sim.name}</h3>
+                    <p className="text-xs text-teal-600 font-semibold truncate mb-1">{sim.subCategory || sim.category}</p>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-yellow-600">
+                      ⭐ {sim.rating || 4.5} <span className="text-slate-400 font-normal">({sim.reviews || 0})</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
