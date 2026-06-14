@@ -46,6 +46,7 @@ export default function AdminDashboard() {
   const [selectedListingIds, setSelectedListingIds] = useState<string[]>([]);
   const [isExtracting, setIsExtracting] = useState(false);
   const [isInjecting, setIsInjecting] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
 
   useEffect(() => {
     const role = localStorage.getItem("sd_current_user_role");
@@ -78,8 +79,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  const [nextPageToken, setNextPageToken] = useState<string | null>(null);
 
   const handleExtractLive = async (isNextPage: boolean = false) => {
     setIsExtracting(true);
