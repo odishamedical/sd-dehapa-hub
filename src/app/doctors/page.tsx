@@ -81,7 +81,8 @@ export default function DoctorsDirectory() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const q = query(collection(db, 'directory'), orderBy('updatedAt', 'desc'));
+        // Removed orderBy to prevent any Missing Index errors
+        const q = query(collection(db, 'directory'));
         const querySnapshot = await getDocs(q);
         const docsData = querySnapshot.docs.map(doc => ({
           id: doc.id,
