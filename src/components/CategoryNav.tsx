@@ -16,22 +16,22 @@ export default function CategoryNav() {
   ];
 
   return (
-    <div className="bg-white border-b border-slate-200">
+    <div className="bg-[#f1f5f9] border-b border-slate-300 shadow-inner relative z-10">
       <div className="max-w-6xl mx-auto px-6">
-        <nav className="flex items-center md:justify-center gap-1 overflow-x-auto no-scrollbar py-2">
+        <nav className="flex items-center md:justify-center gap-2 overflow-x-auto no-scrollbar py-3">
           {categories.map((cat) => {
             const isActive = pathname.startsWith(cat.href);
             return (
               <Link
                 key={cat.name}
                 href={cat.href}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-colors shrink-0 ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all shrink-0 ${
                   isActive 
-                    ? 'bg-teal-50 text-teal-700 border-2 border-teal-100 shadow-sm' 
-                    : 'bg-transparent text-slate-600 hover:bg-slate-50 border-2 border-transparent'
+                    ? 'bg-white text-teal-700 border-[3px] border-teal-600 shadow-[0_6px_15px_rgba(13,148,136,0.2)] transform -translate-y-0.5' 
+                    : 'bg-white text-slate-500 hover:text-slate-800 border-[3px] border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md'
                 }`}
               >
-                <span className="text-lg">{cat.icon}</span>
+                <span className="text-lg drop-shadow-sm">{cat.icon}</span>
                 {cat.name}
               </Link>
             );

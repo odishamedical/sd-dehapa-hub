@@ -274,7 +274,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-white/40 shadow-[0_4px_30px_rgba(0,0,0,0.03)] flex items-center justify-between px-6 lg:px-12 h-20 transition-all duration-300">
+    <header className="sticky top-0 z-[100] bg-white/90 backdrop-blur-2xl border-b-[3px] border-slate-200 shadow-[0_10px_30px_rgba(0,0,0,0.08)] flex items-center justify-between px-6 lg:px-12 h-20 transition-all duration-300">
       {/* 1. Web Name / Logo */}
       <div className="flex items-center gap-4">
         <a href="/" className="flex items-center gap-4">
@@ -292,7 +292,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
 
       {/* 2. Menu */}
       <nav className="hidden md:flex items-center gap-3">
-        <a href="/doctors" className="bg-teal-600 hover:bg-teal-700 text-white transition-all rounded-full px-5 py-2.5 font-bold text-sm capitalize shadow-sm">Find Specialists</a>
+        <a href="/doctors" className="bg-teal-700 hover:bg-teal-800 text-white transition-all rounded-xl border border-teal-600 px-6 py-2.5 font-bold text-sm capitalize shadow-[0_4px_12px_rgba(15,118,110,0.3)] hover:shadow-[0_6px_16px_rgba(15,118,110,0.4)] hover:-translate-y-0.5">Find Specialists</a>
       </nav>
 
       {/* 3. User Menu / Auth */}
@@ -354,7 +354,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
             )}
           </div>
         ) : (
-          <a href={getAuthCenterUrl()} className="text-[10px] font-bold uppercase tracking-widest bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-lg transition-colors shadow-sm hidden sm:inline-block">
+          <a href={getAuthCenterUrl()} className="text-[10px] font-bold uppercase tracking-widest bg-teal-700 hover:bg-teal-800 text-white border border-teal-600 px-5 py-2.5 rounded-xl transition-all shadow-[0_4px_12px_rgba(15,118,110,0.3)] hidden sm:inline-block">
             Sign In
           </a>
         )}

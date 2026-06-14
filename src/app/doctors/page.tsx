@@ -157,10 +157,10 @@ export default function DoctorsDirectory() {
   const uniqueDistricts = Array.from(new Set(doctors.map(d => d.district).filter(d => d !== "Unknown"))).sort();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-sky-100 to-blue-200 text-slate-900 font-sans selection:bg-teal-500/30">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-teal-500/30">
       <CategoryNav />
       
-      <div className="bg-white/60 backdrop-blur-md border-b border-white/50 px-6 py-3 shadow-sm">
+      <div className="bg-white border-b border-slate-200 px-6 py-3 shadow-sm relative z-20">
         <div className="w-full max-w-[1920px] mx-auto">
           <Breadcrumb paths={[
             { name: "Home", href: "/" },
@@ -171,28 +171,31 @@ export default function DoctorsDirectory() {
       </div>
 
       {/* Premium Hero Search */}
-      <div className="pt-16 pb-24 px-6 relative overflow-hidden">
+      <div className="pt-20 pb-32 px-6 relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f766e] shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
+        {/* Subtle grid pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-6 drop-shadow-sm">
-            Find the Best <span className="text-teal-600">Specialists</span> in Odisha
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 drop-shadow-lg tracking-tight">
+            Find the Best <span className="text-teal-400">Specialists</span> in Odisha
           </h1>
-          <p className="text-slate-600 text-lg mb-10 max-w-2xl mx-auto">
+          <p className="text-slate-300 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium">
             Book a secure FHIR-compliant video consultation or in-clinic visit with verified medical experts.
           </p>
           
           {/* Floating Search Bar */}
-          <div className="bg-white/80 backdrop-blur-xl border border-white/50 rounded-2xl p-2 shadow-xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto">
+          <div className="bg-white/95 backdrop-blur-xl border-4 border-white/40 rounded-2xl p-2 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col md:flex-row gap-2 max-w-3xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
              <div className="flex-1 relative">
-                <svg className="w-6 h-6 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <svg className="w-6 h-6 text-slate-400 absolute left-5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input 
                   type="text" 
                   placeholder="Search by doctor name, specialty, or symptoms..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-transparent border-none pl-14 pr-4 py-4 text-base text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-500 font-medium"
+                  className="w-full bg-transparent border-none pl-14 pr-4 py-4 text-lg text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-500 font-bold"
                 />
              </div>
-             <button className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-8 py-4 rounded-xl text-sm transition-all shadow-lg hidden md:block">
+             <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold px-10 py-4 rounded-xl text-base transition-all shadow-lg hidden md:block border border-teal-600">
                Search
              </button>
           </div>
@@ -203,18 +206,21 @@ export default function DoctorsDirectory() {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}
-          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white/60 backdrop-blur-xl border border-white/50 rounded-3xl p-6 shadow-[0_8px_32px_rgba(0,0,0,0.05)]">
-            <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-widest text-xs">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white border border-slate-200 rounded-[24px] p-6 shadow-xl relative overflow-hidden">
+            {/* Metallic top accent line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-slate-400"></div>
+
+            <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-widest text-xs border-b border-slate-100 pb-4">
+              <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
               Smart Filters
             </h3>
             
             <div className="space-y-6">
               <div>
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Popular Specialties</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Popular Specialties</label>
                 <div className="flex flex-wrap gap-2">
                   {["❤️ Cardiology", "🧠 Neurology", "🦴 Orthopedics", "👶 Pediatrics", "🦷 Dentistry"].map(spec => (
-                    <button key={spec} className="bg-slate-50 hover:bg-teal-50 text-slate-700 hover:text-teal-700 border border-slate-200 hover:border-teal-200 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors">
+                    <button key={spec} className="bg-slate-100 hover:bg-white text-slate-700 hover:text-teal-700 border border-slate-200 hover:border-teal-300 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm hover:shadow-md">
                       {spec}
                     </button>
                   ))}
@@ -222,20 +228,20 @@ export default function DoctorsDirectory() {
               </div>
               
               <div className="pt-6 border-t border-slate-100">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Locality / District</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Locality / District</label>
                 <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                   {uniqueDistricts.map((dist: any) => (
                     <label key={dist} className="flex items-center gap-3 cursor-pointer group">
                       <input 
                         type="checkbox" 
-                        className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer" 
+                        className="w-4 h-4 rounded border-slate-300 text-teal-700 focus:ring-teal-700 cursor-pointer shadow-sm" 
                         checked={selectedDistricts.includes(dist)}
                         onChange={(e) => {
                           if (e.target.checked) setSelectedDistricts([...selectedDistricts, dist]);
                           else setSelectedDistricts(selectedDistricts.filter(d => d !== dist));
                         }}
                       />
-                      <span className="text-sm font-semibold text-slate-700">{dist}</span>
+                      <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">{dist}</span>
                     </label>
                   ))}
                   {uniqueDistricts.length === 0 && (
@@ -245,14 +251,14 @@ export default function DoctorsDirectory() {
               </div>
               
               <div className="pt-6 border-t border-slate-100">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-3">Availability</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Availability</label>
                 <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className="w-5 h-5 rounded border-2 border-slate-300 group-hover:border-teal-500 flex items-center justify-center transition-colors"></div>
-                  <span className="text-sm font-semibold text-slate-700">Available Today</span>
+                  <div className="w-5 h-5 rounded border-2 border-slate-300 bg-slate-50 group-hover:border-teal-600 group-hover:bg-white flex items-center justify-center transition-all shadow-inner"></div>
+                  <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">Available Today</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer group mt-3">
-                  <div className="w-5 h-5 rounded border-2 border-slate-300 group-hover:border-teal-500 flex items-center justify-center transition-colors"></div>
-                  <span className="text-sm font-semibold text-slate-700">Video Consult</span>
+                  <div className="w-5 h-5 rounded border-2 border-slate-300 bg-slate-50 group-hover:border-teal-600 group-hover:bg-white flex items-center justify-center transition-all shadow-inner"></div>
+                  <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">Video Consult</span>
                 </label>
               </div>
             </div>
