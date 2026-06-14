@@ -3,12 +3,27 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { db } from '@/lib/firebase';
+import { collection, writeBatch, doc, serverTimestamp } from 'firebase/firestore';
+import { useTenant } from '@/components/TenantContext';
 import { indianStates, districtsByState } from '@/lib/locations';
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 
+interface StagedListing {
+  id: string;
+  name: string;
+  address: string;
+  phone?: string;
+  rating?: number;
+  reviews?: number;
+  website?: string;
+  image?: string;
+}
+
 export default function AdminDashboard() {
   const router = useRouter();
+  const { activeTenant } = useTenant();
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [activeTab, setActiveTab] = useState("users");
@@ -26,9 +41,10 @@ export default function AdminDashboard() {
   const [crawlerQuery, setCrawlerQuery] = useState("");
 
   // Staging Grid State
-  const [stagedListings, setStagedListings] = useState<any[]>([]);
+  const [stagedListings, setStagedListings] = useState<StagedListing[]>([]);
   const [selectedListingIds, setSelectedListingIds] = useState<string[]>([]);
   const [isExtracting, setIsExtracting] = useState(false);
+  const [isInjecting, setIsInjecting] = useState(false);
 
   useEffect(() => {
     const role = localStorage.getItem("sd_current_user_role");
@@ -121,9 +137,51 @@ export default function AdminDashboard() {
     setSelectedListingIds([]);
   };
 
-  const handleInjectSelected = () => {
-    alert(`Successfully injected ${selectedListingIds.length} listings into the database! (Mocked)`);
-    handleDeleteSelected(); // Clear them from staging after injection
+  const handleInject = async () => {
+    if (selectedListingIds.length === 0) return;
+    setIsInjecting(true);
+    try {
+      const batch = writeBatch(db);
+      const directoryRef = collection(db, 'directory');
+
+      const toInject = stagedListings.filter(l => selectedListingIds.includes(l.id));
+
+      for (const listing of toInject) {
+        const newDocRef = doc(directoryRef);
+        batch.set(newDocRef, {
+          googlePlaceId: listing.id,
+          name: listing.name,
+          address: listing.address,
+          phone: listing.phone || "",
+          rating: listing.rating || 0,
+          reviews: listing.reviews || 0,
+          website: listing.website || "",
+          image: listing.image || "",
+          category: crawlerCategory,
+          subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
+          state: crawlerState,
+          district: crawlerDistrict === "Other" ? customDistrict : crawlerDistrict,
+          city: crawlerCity,
+          locality: crawlerLocality,
+          pin: crawlerPin,
+          verified: false,
+          source: "google_crawler",
+          tenantId: activeTenant?.id || "default",
+          createdAt: serverTimestamp()
+        });
+      }
+
+      await batch.commit();
+
+      setStagedListings(stagedListings.filter(l => !selectedListingIds.includes(l.id)));
+      setSelectedListingIds([]);
+      alert(`Successfully injected ${toInject.length} records into the live database!`);
+    } catch (err) {
+      console.error("Injection error:", err);
+      alert("Failed to inject into the database. Check console for details.");
+    } finally {
+      setIsInjecting(false);
+    }
   };
 
   const adminTabs: DashboardTab[] = [
@@ -364,8 +422,8 @@ export default function AdminDashboard() {
                       <button onClick={handleDeleteSelected} disabled={selectedListingIds.length === 0} className="flex-1 md:flex-none px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg text-sm border border-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         Delete Selected ({selectedListingIds.length})
                       </button>
-                      <button onClick={handleInjectSelected} disabled={selectedListingIds.length === 0} className="flex-1 md:flex-none px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
-                        Inject {selectedListingIds.length} to Database
+                      <button onClick={handleInject} disabled={selectedListingIds.length === 0} className="flex-1 md:flex-none px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
+                        {isInjecting ? "Injecting..." : `Inject ${selectedListingIds.length} to Database`}
                       </button>
                     </div>
                   </div>
@@ -419,8 +477,8 @@ export default function AdminDashboard() {
                       <button onClick={handleDeleteSelected} disabled={selectedListingIds.length === 0} className="px-6 py-3 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-xl text-sm border border-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         Delete Selected ({selectedListingIds.length})
                       </button>
-                      <button onClick={handleInjectSelected} disabled={selectedListingIds.length === 0} className="px-6 py-3 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
-                        Inject {selectedListingIds.length} to Database
+                      <button onClick={handleInject} disabled={selectedListingIds.length === 0} className="px-6 py-3 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
+                        {isInjecting ? "Injecting..." : `Inject ${selectedListingIds.length} to Database`}
                       </button>
                     </div>
                   )}
