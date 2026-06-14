@@ -171,16 +171,16 @@ export default function DoctorsDirectory() {
       </div>
 
       {/* Premium Hero Search */}
-      <div className="pt-20 pb-32 px-6 relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f766e] shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
+      <div className="pt-10 pb-20 px-6 relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f766e] shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
         {/* Subtle grid pattern overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 drop-shadow-lg tracking-tight">
-            Find the Best <span className="text-teal-400">Specialists</span> in Odisha
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-lg tracking-tight">
+            DehaPa.com : <span className="text-teal-400">Your Health Our Mission</span>
           </h1>
-          <p className="text-slate-300 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium">
-            Book a secure FHIR-compliant video consultation or in-clinic visit with verified medical experts.
+          <p className="text-slate-300 text-base md:text-lg mb-8 max-w-2xl mx-auto font-medium">
+            Connect with renowned specialists through secure video consultations or physical appointments.
           </p>
           
           {/* Floating Search Bar */}
