@@ -21,6 +21,7 @@ interface DashboardLayoutProps {
     name: string;
     subtitle: string;
   };
+  homeWidget?: React.ReactNode;
 }
 
 export default function DashboardLayout({
@@ -30,7 +31,8 @@ export default function DashboardLayout({
   onTabChange,
   children,
   headerTitle,
-  userProfile
+  userProfile,
+  homeWidget
 }: DashboardLayoutProps) {
   // Find which section the active tab belongs to
   const activeTabDetails = tabs.find(t => t.id === activeTab);
@@ -181,6 +183,11 @@ export default function DashboardLayout({
         <div className="p-8 flex-1">
           {activeTab === "home" ? (
             <div className="max-w-6xl mx-auto">
+              {homeWidget && (
+                <div className="mb-10">
+                  {homeWidget}
+                </div>
+              )}
               <div className="mb-8">
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">Welcome to {roleName}</h3>
                 <p className="text-slate-500">Select a module below to get started.</p>

@@ -5,6 +5,80 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
 import EntitySearchInput from '@/components/EntitySearchInput';
 
+function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+      <div className="flex justify-between items-end mb-4">
+        <div>
+          <h3 className="text-xl font-bold text-slate-900">Profile Strength</h3>
+          <p className="text-sm text-slate-500 mt-1">Complete your profile to unlock the "Verified DehaPa Doctor" badge.</p>
+        </div>
+        <div className="text-right">
+          <span className="text-3xl font-bold text-teal-600">35%</span>
+        </div>
+      </div>
+      
+      {/* Progress Bar */}
+      <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-8">
+        <div className="bg-gradient-to-r from-teal-400 to-teal-600 h-full rounded-full w-[35%]"></div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            Pending Actions
+          </h4>
+          <ul className="space-y-3">
+            <li className="flex items-center justify-between bg-amber-50 border border-amber-100 p-3 rounded-xl">
+              <span className="text-sm text-amber-900 font-medium flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                Add Medical Registration No.
+              </span>
+              <button onClick={() => onNavigate('identity')} className="text-xs font-bold text-amber-700 bg-amber-100/50 px-3 py-1.5 rounded-lg hover:bg-amber-200 transition-colors">Complete</button>
+            </li>
+            <li className="flex items-center justify-between bg-slate-50 border border-slate-100 p-3 rounded-xl hover:border-slate-200 transition-colors">
+              <span className="text-sm text-slate-700 font-medium flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+                Add Practice Locations
+              </span>
+              <button onClick={() => onNavigate('locations')} className="text-xs font-bold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">Complete</button>
+            </li>
+            <li className="flex items-center justify-between bg-slate-50 border border-slate-100 p-3 rounded-xl hover:border-slate-200 transition-colors">
+              <span className="text-sm text-slate-700 font-medium flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+                Upload Profile Photo
+              </span>
+              <button onClick={() => onNavigate('identity')} className="text-xs font-bold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">Complete</button>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Completed
+          </h4>
+          <ul className="space-y-3">
+            <li className="flex items-center justify-between opacity-50 p-3 border border-transparent">
+              <span className="text-sm text-slate-500 font-medium flex items-center gap-2 line-through">
+                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                Basic Identity Added
+              </span>
+            </li>
+            <li className="flex items-center justify-between opacity-50 p-3 border border-transparent">
+              <span className="text-sm text-slate-500 font-medium flex items-center gap-2 line-through">
+                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                Qualifications Saved
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
@@ -69,6 +143,7 @@ export default function DoctorDashboard() {
         subtitle: "MBBS, MD - Cardiology",
         image: "https://i.pravatar.cc/150?u=a042581f4e29026704d" // Mock image
       }}
+      homeWidget={<DoctorHomeWidget onNavigate={setActiveTab} />}
     >
       <div className="max-w-4xl mx-auto">
         {/* Header Alert */}
