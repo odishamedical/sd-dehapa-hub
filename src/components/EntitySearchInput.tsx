@@ -122,7 +122,7 @@ export default function EntitySearchInput({
             if (searchTerm && searchTerm !== valueName) setShowDropdown(true);
           }}
           placeholder={placeholder}
-          className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none transition-all pr-10"
+          className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all pr-10"
         />
         {isSearching && (
           <div className="absolute right-3 top-3.5">
@@ -165,7 +165,7 @@ export default function EntitySearchInput({
             <div className="p-2 border-t border-slate-100 bg-slate-50">
               <button
                 onClick={handleCreateGhostEntity}
-                className="w-full text-left px-4 py-3 text-sm text-slate-900 font-medium hover:bg-white border border-transparent hover:border-teal-200 hover:shadow-sm rounded-lg transition-all flex items-center gap-2"
+                className="w-full text-left px-5 py-3.5 shadow-sm text-sm text-slate-900 font-medium hover:bg-white border border-transparent hover:border-teal-200 hover:shadow-sm rounded-lg transition-all flex items-center gap-2"
               >
                 <div className="w-6 h-6 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>

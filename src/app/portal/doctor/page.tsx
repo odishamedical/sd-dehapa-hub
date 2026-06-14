@@ -219,11 +219,11 @@ export default function DoctorDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
-                  <input type="text" placeholder="e.g. Dr. Sandeep Sharma" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. Dr. Sandeep Sharma" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Primary Speciality</label>
-                  <select className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none transition-all">
+                  <select className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all">
                     <option>Select Speciality</option>
                     <option>Cardiologist</option>
                     <option>Neurologist</option>
@@ -235,11 +235,11 @@ export default function DoctorDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Degrees</label>
-                  <input type="text" placeholder="e.g. MBBS, MD (Medicine)" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. MBBS, MD (Medicine)" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Medical Registration No.</label>
-                  <input type="text" placeholder="e.g. MCI-12345" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. MCI-12345" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all" />
                 </div>
               </div>
 
@@ -280,7 +280,7 @@ export default function DoctorDashboard() {
                       value={qualificationsData.degreeName}
                       onChange={(e) => setQualificationsData(prev => ({...prev, degreeName: e.target.value}))}
                       placeholder="e.g. MBBS, MD" 
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" 
+                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
                     />
                   </div>
                   <div>
@@ -290,7 +290,7 @@ export default function DoctorDashboard() {
                       value={qualificationsData.passingYear}
                       onChange={(e) => setQualificationsData(prev => ({...prev, passingYear: e.target.value}))}
                       placeholder="e.g. 2010" 
-                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" 
+                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
                     />
                   </div>
                 </div>
@@ -362,11 +362,11 @@ export default function DoctorDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Title / Position</label>
-                    <input type="text" defaultValue="Head of Cardiology" placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" defaultValue="Head of Cardiology" placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Years (e.g. 2015-2020)</label>
-                    <input type="text" defaultValue="2018 - Present" placeholder="e.g. 2015 - Present" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" defaultValue="2018 - Present" placeholder="e.g. 2015 - Present" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
               </div>
@@ -412,17 +412,17 @@ export default function DoctorDashboard() {
 
                 <div className="mb-4">
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Full Address</label>
-                  <input type="text" defaultValue="Unit 15, Near Sainik School, Bhubaneswar" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                  <input type="text" defaultValue="Unit 15, Near Sainik School, Bhubaneswar" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Timings</label>
-                    <input type="text" defaultValue="Mon-Sat, 10 AM - 2 PM" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" defaultValue="Mon-Sat, 10 AM - 2 PM" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Consultation Fee (₹)</label>
-                    <input type="number" defaultValue="800" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="number" defaultValue="800" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
               </div>
@@ -454,7 +454,7 @@ export default function DoctorDashboard() {
                 
                 <div className="mb-4 mt-2">
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Paper Title</label>
-                  <input type="text" placeholder="Title of your research paper" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                  <input type="text" placeholder="Title of your research paper" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
@@ -470,7 +470,7 @@ export default function DoctorDashboard() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Publication Year</label>
-                    <input type="number" placeholder="e.g. 2021" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="number" placeholder="e.g. 2021" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
               </div>
@@ -505,7 +505,7 @@ export default function DoctorDashboard() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Role / Status</label>
-                    <input type="text" placeholder="e.g. Life Member, Secretary" className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" placeholder="e.g. Life Member, Secretary" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
                   </div>
                 </div>
               </div>
