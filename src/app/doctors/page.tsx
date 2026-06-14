@@ -175,11 +175,11 @@ export default function DoctorsDirectory() {
         {/* Subtle grid pattern overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-lg tracking-tight">
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-lg tracking-tight md:whitespace-nowrap">
             DehaPa.com : <span className="text-teal-400">Your Health Our Mission</span>
           </h1>
-          <p className="text-slate-300 text-base md:text-lg mb-8 max-w-2xl mx-auto font-medium">
+          <p className="text-slate-300 text-base md:text-lg mb-8 max-w-5xl mx-auto font-medium md:whitespace-nowrap">
             Connect with renowned specialists through secure video consultations or physical appointments.
           </p>
           
