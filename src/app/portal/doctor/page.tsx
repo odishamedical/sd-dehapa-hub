@@ -215,6 +215,12 @@ export default function DoctorDashboard() {
       label: "Hobbies & Interests",
       section: "PROFILE BUILDER",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    },
+    {
+      id: "networking",
+      label: "Networking & Invites",
+      section: "PROFILE BUILDER",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     }
   ];
 
@@ -604,6 +610,58 @@ export default function DoctorDashboard() {
                 </div>
               <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
                 <AutosaveIndicator status={membershipsSaveStatus} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Networking & Invites */}
+        {activeTab === "networking" && (
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Networking & Invites</h3>
+            
+            <div className="space-y-8">
+              {/* Pending Invites */}
+              <div>
+                <h4 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                  Pending Roster Invites
+                </h4>
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-xl shadow-sm border border-amber-100">🏥</div>
+                    <div>
+                      <p className="font-bold text-slate-900">Apollo Super Specialty</p>
+                      <p className="text-sm text-slate-600">Invited you to join their Cardiology Department</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-4 py-2 rounded-lg text-sm font-bold transition-colors">Decline</button>
+                    <button className="bg-tenant-accent hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors">Accept Invite</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Active Connections */}
+              <div>
+                <h4 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Associated Hospitals
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border border-slate-200 rounded-xl p-4 flex items-center justify-between group hover:border-teal-400 transition-colors cursor-pointer">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-lg">🏥</div>
+                      <div>
+                        <p className="font-bold text-slate-900 group-hover:text-tenant-accent transition-colors">LifeCare Clinic</p>
+                        <p className="text-xs text-slate-500">Active Roster • Since Jan 2023</p>
+                      </div>
+                    </div>
+                    <button className="text-slate-400 hover:text-red-500 transition-colors p-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -8,6 +8,13 @@ import { useAutosave } from '@/hooks/useAutosave';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
 import ImageUpload from '@/components/ImageUpload';
 
+interface RosteredDoctor {
+  id: string;
+  name: string;
+  department: string;
+  status: "Pending" | "Active";
+}
+
 function HospitalHomeWidget({ hospitalName }: { hospitalName: string }) {
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
@@ -101,6 +108,28 @@ export default function HospitalDashboard() {
   // State: Insurance
   const [insuranceNetworks, setInsuranceNetworks] = useState<string[]>([]);
   const insuranceSaveStatus = useAutosave(insuranceNetworks, 1000);
+
+  // State: Roster
+  const [rosterDoctors, setRosterDoctors] = useState<RosteredDoctor[]>([]);
+  const rosterSaveStatus = useAutosave(rosterDoctors, 1000);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
+
+  // Mock search results for inviting doctors
+  const searchResults = [
+    { id: "doc_1", name: "Dr. A. K. Sharma", specialty: "Cardiologist" },
+    { id: "doc_2", name: "Dr. Smita Das", specialty: "Neurologist" },
+  ].filter(d => d.name.toLowerCase().includes(doctorSearchQuery.toLowerCase()) || d.specialty.toLowerCase().includes(doctorSearchQuery.toLowerCase()));
+
+  const handleInviteDoctor = (doc: any) => {
+    // Check if already in roster
+    if (rosterDoctors.find(r => r.id === doc.id)) return;
+    setRosterDoctors(prev => [...prev, { id: doc.id, name: doc.name, department: doc.specialty, status: "Pending" }]);
+    setShowInviteModal(false);
+    setDoctorSearchQuery("");
+  };
+
+  const removeDoctor = (id: string) => setRosterDoctors(prev => prev.filter(d => d.id !== id));
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -332,21 +361,104 @@ export default function HospitalDashboard() {
 
         {/* Tab 4: Associated Doctors */}
         {activeTab === "roster" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4 relative">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Doctor Roster</h3>
                 <p className="text-sm text-slate-500 mt-1">Manage the doctors linked to your hospital profile.</p>
               </div>
-              <button className="bg-tenant-accent hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-widest shadow-sm transition-colors">+ Invite Doctor</button>
+              <button onClick={() => setShowInviteModal(true)} className="bg-tenant-accent hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-widest shadow-sm transition-colors">+ Invite Doctor</button>
             </div>
             
-            <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl">
-               <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-               </div>
-               <p className="font-bold text-slate-900 mb-1">No Doctors on Roster</p>
-               <p className="text-sm text-slate-500 max-w-sm mx-auto">Invite doctors to link their DehaPa profiles to your hospital.</p>
+            {/* Invite Modal Overlay */}
+            {showInviteModal && (
+              <div className="absolute inset-0 bg-white z-10 p-8 rounded-2xl flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-slate-900">Search & Invite Doctor</h3>
+                  <button onClick={() => setShowInviteModal(false)} className="text-slate-400 hover:text-red-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                </div>
+                
+                <div className="relative mb-6">
+                  <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                  <input 
+                    type="text" 
+                    autoFocus
+                    value={doctorSearchQuery}
+                    onChange={(e) => setDoctorSearchQuery(e.target.value)}
+                    placeholder="Search doctor by name or specialty..." 
+                    className="w-full bg-slate-50 border-2 border-slate-200 hover:border-slate-300 rounded-xl pl-12 pr-4 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
+                  />
+                </div>
+
+                <div className="flex-1 overflow-y-auto space-y-3">
+                  {doctorSearchQuery.length > 0 && searchResults.length === 0 ? (
+                    <p className="text-center text-slate-500 py-4">No doctors found matching "{doctorSearchQuery}"</p>
+                  ) : (
+                    searchResults.map(doc => (
+                      <div key={doc.id} className="flex items-center justify-between p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-lg">👨‍⚕️</div>
+                          <div>
+                            <p className="font-bold text-slate-900">{doc.name}</p>
+                            <p className="text-xs text-slate-500">{doc.specialty}</p>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => handleInviteDoctor(doc)}
+                          disabled={rosterDoctors.some(r => r.id === doc.id)}
+                          className="bg-slate-900 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                        >
+                          {rosterDoctors.some(r => r.id === doc.id) ? 'Invited' : 'Send Invite'}
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+
+            {rosterDoctors.length === 0 ? (
+              <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl">
+                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                 </div>
+                 <p className="font-bold text-slate-900 mb-1">No Doctors on Roster</p>
+                 <p className="text-sm text-slate-500 max-w-sm mx-auto">Invite doctors to link their DehaPa profiles to your hospital.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {rosterDoctors.map(doc => (
+                  <div key={doc.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-xl">👨‍⚕️</div>
+                      <div>
+                        <p className="font-bold text-slate-900 text-lg">{doc.name}</p>
+                        <p className="text-sm font-medium text-slate-600 mb-1">{doc.department}</p>
+                        {doc.status === 'Pending' ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                            <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            Pending Acceptance
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-700 border border-teal-200">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
+                            Active
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button onClick={() => removeDoctor(doc.id)} className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <div className="flex justify-end pt-6 mt-6 border-t border-slate-100">
+              <AutosaveIndicator status={rosterSaveStatus} />
             </div>
           </div>
         )}
