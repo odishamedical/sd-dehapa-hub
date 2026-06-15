@@ -33,6 +33,14 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
           if (!querySnapshot.empty) {
             docSnap = querySnapshot.docs[0];
             docId = docSnap.id;
+          } else {
+            // Fallback: customSlug might be the raw ID (like a Google Places ChIJ ID)
+            const docRef = doc(db, 'directory', customSlug);
+            const fallbackSnap = await getDoc(docRef);
+            if (fallbackSnap.exists()) {
+              docSnap = fallbackSnap;
+              docId = fallbackSnap.id;
+            }
           }
         } else if (id) {
           const docRef = doc(db, 'directory', id);
