@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import { useAutosave } from '@/hooks/useAutosave';
