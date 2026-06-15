@@ -58,7 +58,35 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
     };
 
     if (accessGranted) {
-      fetchVaultRecords();
+      // Mocking the Data synchronization from Phase 8
+      setTimeout(() => {
+        setRecords([
+          {
+            id: "rec_1",
+            type: "prescription",
+            date: new Date().toLocaleDateString(),
+            authorName: "Dr. Sandeep Sharma",
+            facilityName: "Dehapa Clinic",
+            diagnosis: "Viral Fever with minor throat infection.",
+            medicines: [
+              { name: "Paracetamol 650mg", dosage: "1 tablet", frequency: "1-1-1", duration: "3 days" },
+              { name: "Azithromycin 500mg", dosage: "1 tablet", frequency: "1-0-0", duration: "3 days" }
+            ],
+            routedToPharmacy: "LifeCare Meds (Pending Pickup)",
+            routedToLab: "Apollo Diagnostics (Pending Test)"
+          },
+          {
+            id: "rec_2",
+            type: "hospital_admission",
+            date: "12/05/2025",
+            authorName: "Dr. Ananya Das",
+            facilityName: "Apollo Super Specialty",
+            diagnosis: "Observation - Mild Dehydration",
+            notes: "Discharged after 6 hours IV fluids."
+          }
+        ]);
+        setLoading(false);
+      }, 500);
     } else {
       setLoading(false); // Finished loading but access denied
     }
@@ -156,8 +184,71 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
                 <p className="text-[#64748b] text-sm max-w-sm mx-auto">No medical records, prescriptions, or lab reports have been saved to this vault yet.</p>
               </div>
             ) : (
-              <div className="space-y-6">
-                {/* Future loop over records */}
+              <div className="relative border-l-2 border-[#1e293b] ml-4 space-y-8 pb-8">
+                {records.map((rec, index) => (
+                  <div key={rec.id} className="relative pl-8">
+                    {/* Timeline Dot */}
+                    <div className={`absolute -left-[9px] top-0 w-4 h-4 rounded-full border-2 border-[#0f172a] shadow-[0_0_10px_rgba(0,0,0,0.5)] ${rec.type === 'prescription' ? 'bg-[#06b6d4]' : 'bg-amber-500'}`}></div>
+                    
+                    {/* Card */}
+                    <div className="bg-[#1e293b] border border-[#334155] rounded-xl p-5 hover:border-[#475569] transition-colors">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md mb-2 inline-block ${rec.type === 'prescription' ? 'bg-teal-500/10 text-teal-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                            {rec.type.replace('_', ' ')}
+                          </span>
+                          <h3 className="text-lg font-bold text-white mt-1">{rec.authorName}</h3>
+                          <p className="text-sm text-[#94a3b8]">{rec.facilityName}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-white">{rec.date}</p>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="bg-[#0f172a] rounded-lg p-4 mb-4">
+                        <p className="text-sm text-white font-medium mb-3"><span className="text-[#64748b] uppercase text-[10px] tracking-widest mr-2">Diagnosis:</span>{rec.diagnosis}</p>
+                        
+                        {rec.medicines && (
+                          <div className="mt-4 border-t border-[#1e293b] pt-4">
+                            <p className="text-[10px] text-[#64748b] uppercase tracking-widest mb-2 font-bold">Prescribed Medicines</p>
+                            <ul className="space-y-2">
+                              {rec.medicines.map((m: any, i: number) => (
+                                <li key={i} className="flex justify-between text-sm bg-[#1e293b] px-3 py-2 rounded-lg">
+                                  <span className="text-white font-medium">{m.name}</span>
+                                  <span className="text-[#94a3b8]">{m.dosage} • {m.frequency} • {m.duration}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {rec.notes && (
+                          <p className="text-sm text-[#94a3b8] mt-2 italic">"{rec.notes}"</p>
+                        )}
+                      </div>
+
+                      {/* Routing Badges */}
+                      {(rec.routedToPharmacy || rec.routedToLab) && (
+                        <div className="flex gap-3">
+                          {rec.routedToPharmacy && (
+                            <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-lg text-xs flex items-center gap-2">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                              Routed to: {rec.routedToPharmacy}
+                            </span>
+                          )}
+                          {rec.routedToLab && (
+                            <span className="bg-purple-500/10 text-purple-400 border border-purple-500/20 px-3 py-1 rounded-lg text-xs flex items-center gap-2">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                              Routed to: {rec.routedToLab}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
