@@ -183,7 +183,7 @@ function PrescriptionPadContent() {
       <main className="max-w-4xl mx-auto px-6 py-12 print:hidden">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
           
-          <div className="bg-tenant-accent/10 border-b border-tenant-accent/20 p-6 flex justify-between items-center">
+          <div className="sticky top-[73px] z-40 bg-slate-50/95 backdrop-blur-md border-b border-tenant-accent/20 p-6 flex justify-between items-center shadow-sm">
             <div>
               <p className="text-xs uppercase font-bold text-tenant-accent tracking-widest mb-1">Prescribing To</p>
               <h2 className="text-lg font-bold text-slate-900 font-mono">{decodeURIComponent(patientVaultId).split("@")[0] || "Unknown Patient"}</h2>
@@ -340,8 +340,8 @@ function PrescriptionPadContent() {
               />
             </div>
 
-            <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-end gap-4 print:hidden">
-              <button type="button" onClick={() => window.print()} className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2">
+            <div className="sticky bottom-0 bg-white/95 backdrop-blur-md p-6 border-t border-slate-200 flex flex-col sm:flex-row justify-end gap-4 print:hidden z-50 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] -mx-8 -mb-8 rounded-b-2xl">
+              <button type="button" onClick={() => window.print()} className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-xl font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-sm">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                 Print PDF
               </button>
