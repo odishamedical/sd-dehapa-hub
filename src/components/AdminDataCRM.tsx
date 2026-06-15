@@ -32,6 +32,7 @@ export default function AdminDataCRM() {
 
   // Image Cropping
   const [imageFileToCrop, setImageFileToCrop] = useState<File | null>(null);
+  const [imageUrlToCrop, setImageUrlToCrop] = useState<string | null>(null);
   
   // Selection and bulk operations
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -121,20 +122,33 @@ export default function AdminDataCRM() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0] || !selectedListing) return;
     setImageFileToCrop(e.target.files[0]);
+    setImageUrlToCrop(null);
     e.target.value = ''; // Reset input so same file can be selected again
   };
 
-  const handleCroppedImage = async (croppedBlob: Blob) => {
+  const handleRawImageClick = (url: string) => {
+    setImageUrlToCrop(url);
+    setImageFileToCrop(null);
+  };
+
+  const handleCroppedImage = async (croppedBlob: Blob, isPrimary: boolean) => {
     if (!selectedListing) return;
     setImageFileToCrop(null);
+    setImageUrlToCrop(null);
     setIsUploadingImage(true);
     try {
       const fileExt = "jpg";
-      const fileName = `profile_crop_${Date.now()}.${fileExt}`;
+      const fileName = `${isPrimary ? 'profile' : 'gallery'}_crop_${Date.now()}.${fileExt}`;
       const fileRef = ref(storage, `directory/${selectedListing.id || Date.now()}/${fileName}`);
       await uploadBytes(fileRef, croppedBlob);
       const url = await getDownloadURL(fileRef);
-      setSelectedListing({ ...selectedListing, image: url });
+      
+      if (isPrimary) {
+        setSelectedListing({ ...selectedListing, image: url });
+      } else {
+        const existingGallery = selectedListing.galleryImages || [];
+        setSelectedListing({ ...selectedListing, galleryImages: [...existingGallery, url] });
+      }
     } catch (err) {
       console.error(err);
       alert("Failed to upload cropped image");
@@ -200,21 +214,16 @@ export default function AdminDataCRM() {
         verified: selectedListing.verified || false,
         customSlug: selectedListing.customSlug || "",
         clinicName: selectedListing.clinicName || "",
-        experience: selectedListing.experience || "",
-        qualification: selectedListing.qualification || "",
-        about: selectedListing.about || "",
-        website: selectedListing.website || "",
-        fee: selectedListing.fee || "",
-        internalNotes: selectedListing.internalNotes || "",
-        featured: selectedListing.featured || false,
-        assignedOwnerEmail: selectedListing.assignedOwnerEmail || "",
+        ...selectedListing,
         customFields: cleanDynamicFields,
         locations: cleanLocations,
         experiences: cleanExperiences,
         qualificationsList: cleanQualifications,
         research: cleanResearch,
         awards: cleanAwards,
-        image: selectedListing.image || ""
+        galleryImages: selectedListing.galleryImages || [],
+        rawImages: selectedListing.rawImages || [],
+        updatedAt: serverTimestamp()
       };
 
       if (isNewListing) {
@@ -398,12 +407,53 @@ export default function AdminDataCRM() {
                       </label>
                       {selectedListing.image && (
                         <button onClick={() => setSelectedListing({...selectedListing, image: null})} className="px-5 py-2.5 text-red-600 hover:bg-red-50 rounded-xl text-sm font-bold transition-colors">
-                          Remove
+                          Remove Primary
                         </button>
                       )}
                     </div>
                   </div>
                 </div>
+
+                {/* Scraped Raw Images Section */}
+                {selectedListing.rawImages && selectedListing.rawImages.length > 0 && (
+                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
+                    <h4 className="font-bold text-slate-900 mb-2">Scraped Images (Crawler)</h4>
+                    <p className="text-xs text-slate-500 mb-4">Click any image to crop it and set as Primary or add to Gallery.</p>
+                    <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+                      {selectedListing.rawImages.map((rawUrl: string, idx: number) => (
+                        <div key={idx} onClick={() => handleRawImageClick(rawUrl)} className="w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-transparent hover:border-teal-500 cursor-pointer shadow-sm transition-all hover:scale-105">
+                          <img src={rawUrl} alt={`Scraped ${idx}`} className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Gallery Images Section */}
+                {selectedListing.galleryImages && selectedListing.galleryImages.length > 0 && (
+                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
+                    <h4 className="font-bold text-slate-900 mb-4">Gallery Images</h4>
+                    <div className="flex flex-wrap gap-4">
+                      {selectedListing.galleryImages.map((galUrl: string, idx: number) => (
+                        <div key={idx} className="relative w-24 h-24 rounded-lg overflow-hidden border border-slate-200 shadow-sm group">
+                          <img src={galUrl} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => {
+                                const newGal = [...selectedListing.galleryImages];
+                                newGal.splice(idx, 1);
+                                setSelectedListing({...selectedListing, galleryImages: newGal});
+                              }}
+                              className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 shadow-lg"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <label className="form-label">Name</label>
@@ -537,10 +587,11 @@ export default function AdminDataCRM() {
         currentUglyUrl={`dehapa.com/india/odisha/category/${selectedListing?.id || "temporary-id-12345"}`}
       />
 
-      {imageFileToCrop && (
+      {(imageFileToCrop || imageUrlToCrop) && (
         <ImageCropper
           imageFile={imageFileToCrop}
-          onCancel={() => setImageFileToCrop(null)}
+          imageUrl={imageUrlToCrop}
+          onCancel={() => { setImageFileToCrop(null); setImageUrlToCrop(null); }}
           onCropComplete={handleCroppedImage}
         />
       )}

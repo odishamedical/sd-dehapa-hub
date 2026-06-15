@@ -79,9 +79,16 @@ export async function POST(req: NextRequest) {
       const phone = place.nationalPhoneNumber || '';
       
       let imageUrl = '';
+      let rawImages: string[] = [];
+      
       if (place.photos && place.photos.length > 0) {
-        // Construct media url for the first photo
+        // Construct media url for the first photo as the default thumbnail
         imageUrl = `https://places.googleapis.com/v1/${place.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${GOOGLE_PLACES_API_KEY}`;
+        
+        // Extract up to 10 photos for the rawImages array (high res for cropping)
+        rawImages = place.photos.slice(0, 10).map((p: any) => 
+          `https://places.googleapis.com/v1/${p.name}/media?maxHeightPx=1200&maxWidthPx=1200&key=${GOOGLE_PLACES_API_KEY}`
+        );
       } else {
         // Fallback UI avatar
         imageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f766e&color=fff&size=150`;
@@ -96,6 +103,7 @@ export async function POST(req: NextRequest) {
         reviews: place.userRatingCount || 0,
         website: place.websiteUri || '',
         image: imageUrl,
+        rawImages: rawImages,
         hasWarning: !phone // Flag if phone is missing so Admin knows
       };
     });

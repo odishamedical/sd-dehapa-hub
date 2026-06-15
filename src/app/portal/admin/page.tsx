@@ -23,6 +23,8 @@ interface StagedListing {
   reviews?: number;
   website?: string;
   image?: string;
+  rawImages?: string[];
+  galleryImages?: string[];
 }
 
 export default function AdminDashboard() {
@@ -239,6 +241,8 @@ export default function AdminDashboard() {
           pin: crawlerAddress.pincode,
           verified: false,
           source: "google_crawler",
+          rawImages: listing.rawImages || [],
+          galleryImages: listing.galleryImages || [],
           tenantId: activeTenant?.id || "default",
           updatedAt: serverTimestamp()
         }, { merge: true });

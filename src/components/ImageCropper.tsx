@@ -4,31 +4,37 @@ import React, { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 
 interface ImageCropperProps {
-  imageFile: File;
+  imageFile?: File | null;
+  imageUrl?: string | null;
   onCancel: () => void;
-  onCropComplete: (croppedBlob: Blob) => void;
+  onCropComplete: (croppedBlob: Blob, isPrimary: boolean) => void;
 }
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const image = new Image();
+    image.crossOrigin = 'anonymous'; // Important for CORS
     image.addEventListener('load', () => resolve(image));
     image.addEventListener('error', (error) => reject(error));
     image.src = url;
   });
 
-export default function ImageCropper({ imageFile, onCancel, onCropComplete }: ImageCropperProps) {
+export default function ImageCropper({ imageFile, imageUrl, onCancel, onCropComplete }: ImageCropperProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
-  const imageSrc = React.useMemo(() => URL.createObjectURL(imageFile), [imageFile]);
+  const imageSrc = React.useMemo(() => {
+    if (imageUrl) return imageUrl;
+    if (imageFile) return URL.createObjectURL(imageFile);
+    return "";
+  }, [imageFile, imageUrl]);
 
   const handleCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
-  const handleSave = async () => {
+  const handleSave = async (isPrimary: boolean) => {
     if (!croppedAreaPixels) return;
     try {
       const image = await createImage(imageSrc);
@@ -52,7 +58,7 @@ export default function ImageCropper({ imageFile, onCancel, onCropComplete }: Im
       );
 
       canvas.toBlob((blob) => {
-        if (blob) onCropComplete(blob);
+        if (blob) onCropComplete(blob, isPrimary);
       }, 'image/jpeg', 0.9);
     } catch (e) {
       console.error(e);
@@ -93,9 +99,10 @@ export default function ImageCropper({ imageFile, onCancel, onCropComplete }: Im
               className="flex-1 accent-teal-600 cursor-pointer"
             />
           </div>
-          <div className="flex justify-end gap-3 mt-2">
+          <div className="flex justify-end gap-3 mt-2 flex-wrap">
             <button onClick={onCancel} className="px-6 py-2.5 border-2 border-slate-200 hover:bg-slate-100 font-bold rounded-xl text-slate-600 transition-colors">Cancel</button>
-            <button onClick={handleSave} className="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-colors shadow-md transform hover:-translate-y-0.5">Apply Crop</button>
+            <button onClick={() => handleSave(false)} className="px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-colors shadow-md transform hover:-translate-y-0.5">Add to Gallery</button>
+            <button onClick={() => handleSave(true)} className="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-colors shadow-md transform hover:-translate-y-0.5">Set as Primary Profile</button>
           </div>
         </div>
       </div>
