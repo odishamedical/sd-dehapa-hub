@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { BotService } from '@/services/bot.service';
+import { WhatsAppService } from '@/services/whatsapp.service';
 
 // This is the token you will enter in the Meta Developer Dashboard
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'DEHAPA_WHATSAPP_SECRET_2026';
