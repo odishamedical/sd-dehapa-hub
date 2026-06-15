@@ -11,8 +11,16 @@ export default function AmbulancesRoute({ params }: { params: Promise<{ location
   if (slug.length === 4) {
     // It's a profile
     const paramStr = slug[3];
-    const parts = paramStr.split('-');
-    const id = parts[parts.length - 1]; 
+    let id;
+    const chijIndex = paramStr.indexOf('-ChIJ');
+    if (chijIndex !== -1) {
+      id = paramStr.substring(chijIndex + 1);
+    } else if (paramStr.startsWith('ChIJ')) {
+      id = paramStr;
+    } else {
+      const parts = paramStr.split('-');
+      id = parts[parts.length - 1];
+    } 
     return <AmbulanceProfileView id={id} />;
   }
 

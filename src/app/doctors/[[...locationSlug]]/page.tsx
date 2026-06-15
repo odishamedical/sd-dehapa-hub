@@ -11,8 +11,16 @@ export default function DoctorsRoute({ params }: { params: Promise<{ locationSlu
   if (slug.length === 4) {
     // It's a profile: /doctors/india/odisha/sambalpur/dr-milan-misra-A1B2C3D4
     const doctorParam = slug[3];
-    const parts = doctorParam.split('-');
-    const id = parts[parts.length - 1]; // Extract the Firebase ID at the end
+    let id;
+    const chijIndex = doctorParam.indexOf('-ChIJ');
+    if (chijIndex !== -1) {
+      id = doctorParam.substring(chijIndex + 1);
+    } else if (doctorParam.startsWith('ChIJ')) {
+      id = doctorParam;
+    } else {
+      const parts = doctorParam.split('-');
+      id = parts[parts.length - 1];
+    } // Extract the Firebase ID at the end
     return <DoctorProfileView id={id} />;
   }
 
