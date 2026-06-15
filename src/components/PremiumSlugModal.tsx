@@ -305,8 +305,8 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                         </div>
                         <div className="flex flex-col sm:flex-row gap-3 items-end">
                           <div className="flex-1 w-full">
-                            <label className="block text-xs font-bold text-slate-600 mb-1">State / Region</label>
-                            <select value={locState} onChange={e => setLocState(e.target.value)} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 text-sm focus:border-teal-500 outline-none transition-all shadow-sm">
+                            <label className="form-label">State / Region</label>
+                            <select value={locState} onChange={e => setLocState(e.target.value)} className="form-select">
                               <option value="westbengal">West Bengal</option>
                               <option value="bihar">Bihar</option>
                               <option value="jharkhand">Jharkhand</option>
@@ -318,8 +318,8 @@ export default function PremiumSlugModal({ isOpen, onClose, currentName, current
                             </select>
                           </div>
                           <div className="flex-1 w-full">
-                            <label className="block text-xs font-bold text-slate-600 mb-1">Category (Optional)</label>
-                            <select value={locCategory} onChange={e => setLocCategory(e.target.value)} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 text-sm focus:border-teal-500 outline-none transition-all shadow-sm">
+                            <label className="form-label">Category (Optional)</label>
+                            <select value={locCategory} onChange={e => setLocCategory(e.target.value)} className="form-select">
                               <option value="none">None (Root Location)</option>
                               <option value="doctor">Doctor</option>
                               <option value="hospitals">Hospital</option>
