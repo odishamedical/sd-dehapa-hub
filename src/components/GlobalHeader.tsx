@@ -104,10 +104,14 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
         window.history.replaceState({}, document.title, cleanUrl);
       }
 
-      setUserEmail(localStorage.getItem("sd_current_user_email"));
+      const savedEmail = localStorage.getItem("sd_current_user_email");
+      setUserEmail(savedEmail);
       setUserName(localStorage.getItem("sd_current_user_name"));
       setUserAvatar(localStorage.getItem("sd_current_user_avatar"));
-      setUserRole(localStorage.getItem("sd_current_user_role"));
+      
+      let savedRole = localStorage.getItem("sd_current_user_role");
+      if (savedEmail === 'odishamedical@gmail.com') savedRole = 'super_admin';
+      setUserRole(savedRole);
       
       // Parse invite name and referral code
       const invite = params.get("invite_name");

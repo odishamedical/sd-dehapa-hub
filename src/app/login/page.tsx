@@ -44,7 +44,13 @@ function LoginContent() {
       userName = userSnap.data()?.displayName || userName;
       await setDoc(userRef, { lastLogin: serverTimestamp() }, { merge: true });
     }
-    localStorage.setItem("sd_current_user_email", user.email || user.phoneNumber || additionalData.phone);
+    
+    const userEmail = user.email || user.phoneNumber || additionalData.phone;
+    if (userEmail === 'odishamedical@gmail.com') {
+      userRole = 'super_admin';
+    }
+    
+    localStorage.setItem("sd_current_user_email", userEmail);
     localStorage.setItem("sd_current_user_role", userRole);
     localStorage.setItem("sd_current_user_name", userName);
     localStorage.setItem("sd_current_user_profile_complete", userSnap.exists() ? "true" : "false");

