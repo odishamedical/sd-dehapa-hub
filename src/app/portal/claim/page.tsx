@@ -3,6 +3,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 function ClaimListingContent() {
   const router = useRouter();
@@ -12,6 +14,13 @@ function ClaimListingContent() {
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    legalName: '',
+    phone: '',
+    licenseNumber: '',
+    address: ''
+  });
 
   useEffect(() => {
     // Check if user is logged in
@@ -37,9 +46,32 @@ function ClaimListingContent() {
     { id: "ambulance", name: "Ambulance Service", icon: "🚑", desc: "For emergency vehicle providers." }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep(3); // Go to success step
+    setIsSubmitting(true);
+    
+    try {
+      const userEmail = localStorage.getItem("sd_current_user_email") || "unknown";
+      
+      await addDoc(collection(db, 'listing_claims'), {
+        listingId: listingId || "new_listing",
+        entityType: selectedRole || "unknown",
+        legalName: formData.legalName,
+        phone: formData.phone,
+        licenseNumber: formData.licenseNumber,
+        address: formData.address,
+        userEmail: userEmail,
+        status: "pending",
+        timestamp: serverTimestamp()
+      });
+      
+      setStep(3); // Go to success step
+    } catch (error) {
+      console.error("Error submitting claim:", error);
+      alert("An error occurred while submitting your application. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!authChecked) {
@@ -109,29 +141,31 @@ function ClaimListingContent() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Legal Entity Name</label>
-                  <input type="text" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="e.g. Apollo Hospitals" />
+                  <input type="text" required value={formData.legalName} onChange={e => setFormData({...formData, legalName: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="e.g. Apollo Hospitals" />
                 </div>
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Contact Number</label>
-                  <input type="tel" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="+91" />
+                  <input type="tel" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="+91" />
                 </div>
               </div>
 
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Registration / License Number</label>
-                <input type="text" required className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="Medical council registration or GSTIN" />
+                <input type="text" required value={formData.licenseNumber} onChange={e => setFormData({...formData, licenseNumber: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="Medical council registration or GSTIN" />
               </div>
 
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Location / Address</label>
-                <textarea required rows={3} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="Complete address including District and PIN code"></textarea>
+                <textarea required rows={3} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="Complete address including District and PIN code"></textarea>
               </div>
 
               <div className="flex gap-4 pt-4 border-t border-slate-100">
                 {!listingId && (
                   <button type="button" onClick={() => setStep(1)} className="px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs text-slate-500 hover:bg-slate-100 transition-colors">Back</button>
                 )}
-                <button type="submit" className="flex-1 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors shadow-lg">Submit for Verification</button>
+                <button type="submit" disabled={isSubmitting} className="flex-1 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors shadow-lg disabled:opacity-70">
+                  {isSubmitting ? 'Submitting...' : 'Submit for Verification'}
+                </button>
               </div>
             </form>
           </div>

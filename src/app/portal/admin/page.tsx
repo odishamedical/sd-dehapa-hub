@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
-import { collection, writeBatch, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, writeBatch, doc, serverTimestamp, getDocs, updateDoc, query, orderBy } from 'firebase/firestore';
 import { useTenant } from '@/components/TenantContext';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
@@ -54,6 +54,29 @@ export default function AdminDashboard() {
   const [isInjecting, setIsInjecting] = useState(false);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
 
+  // Claims State
+  const [listingClaims, setListingClaims] = useState<any[]>([]);
+  const [loadingClaims, setLoadingClaims] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "verification") {
+      const fetchClaims = async () => {
+        setLoadingClaims(true);
+        try {
+          const q = query(collection(db, 'listing_claims'), orderBy('timestamp', 'desc'));
+          const snap = await getDocs(q);
+          const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setListingClaims(data);
+        } catch (err) {
+          console.error("Error fetching claims:", err);
+        } finally {
+          setLoadingClaims(false);
+        }
+      };
+      fetchClaims();
+    }
+  }, [activeTab]);
+
   useEffect(() => {
     const role = localStorage.getItem("sd_current_user_role");
     
@@ -85,6 +108,32 @@ export default function AdminDashboard() {
       </div>
     );
   }
+
+  const handleApproveClaim = async (claim: any) => {
+    try {
+      const batch = writeBatch(db);
+      
+      // Update claim status
+      batch.update(doc(db, 'listing_claims', claim.id), { status: 'approved' });
+      
+      // Update listing in directory if it's not a new generic listing request
+      if (claim.listingId !== "new_listing") {
+        batch.update(doc(db, 'directory', claim.listingId), {
+          verified: true,
+          ownerEmail: claim.userEmail
+        });
+      }
+      
+      await batch.commit();
+      
+      // update state
+      setListingClaims(claims => claims.map(c => c.id === claim.id ? { ...c, status: 'approved' } : c));
+      alert("Claim Approved and Listing Verified!");
+    } catch (err) {
+      console.error("Approval error:", err);
+      alert("Failed to approve claim.");
+    }
+  };
 
   const handleExtractLive = async (isNextPage: boolean = false) => {
     setIsExtracting(true);
@@ -302,13 +351,49 @@ export default function AdminDashboard() {
                 </div>
               </div>
               
-              <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
-                <div className="w-16 h-16 bg-white border border-slate-200 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                  <svg className="w-8 h-8 text-tenant-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              {loadingClaims ? (
+                <div className="flex justify-center py-16">
+                  <div className="w-8 h-8 border-4 border-tenant-accent border-t-transparent rounded-full animate-spin"></div>
                 </div>
-                <p className="font-bold text-slate-900 mb-1">Queue is Empty</p>
-                <p className="text-sm text-slate-500 max-w-sm mx-auto">There are no pending role upgrade requests.</p>
-              </div>
+              ) : listingClaims.length === 0 ? (
+                <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
+                  <div className="w-16 h-16 bg-white border border-slate-200 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                    <svg className="w-8 h-8 text-tenant-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </div>
+                  <p className="font-bold text-slate-900 mb-1">Queue is Empty</p>
+                  <p className="text-sm text-slate-500 max-w-sm mx-auto">There are no pending role upgrade requests.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {listingClaims.map(claim => (
+                    <div key={claim.id} className="border border-slate-200 rounded-xl p-5 shadow-sm bg-slate-50 flex flex-col md:flex-row justify-between items-start gap-4">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-bold text-lg text-slate-900">{claim.legalName}</h4>
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${claim.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                            {claim.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-1"><span className="font-semibold">Type:</span> <span className="uppercase tracking-widest text-[10px]">{claim.entityType}</span></p>
+                        <p className="text-sm text-slate-600 mb-1"><span className="font-semibold">License:</span> {claim.licenseNumber}</p>
+                        <p className="text-sm text-slate-600 mb-1"><span className="font-semibold">Email:</span> {claim.userEmail}</p>
+                        <p className="text-sm text-slate-600 mb-1"><span className="font-semibold">Phone:</span> {claim.phone}</p>
+                        <p className="text-xs text-slate-500 mt-2 bg-white p-2 rounded border border-slate-200">{claim.address}</p>
+                        <p className="text-xs text-slate-400 mt-2 font-mono">Listing ID: {claim.listingId}</p>
+                      </div>
+                      
+                      {claim.status === 'pending' && (
+                        <button 
+                          onClick={() => handleApproveClaim(claim)}
+                          className="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest shadow-md transition-all shrink-0"
+                        >
+                          Approve Claim
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

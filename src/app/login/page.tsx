@@ -25,22 +25,32 @@ function LoginContent() {
   const saveUserToFirestore = async (user: any, additionalData: any = {}) => {
     const userRef = doc(db, 'users', user.uid);
     const userSnap = await getDoc(userRef);
+    let userRole = 'user';
+    let userName = user.displayName || 'New User';
+    
     if (!userSnap.exists()) {
       await setDoc(userRef, {
         uid: user.uid,
         email: user.email || '',
         phone: user.phoneNumber || additionalData.phone || '',
-        displayName: user.displayName || 'New User',
-        role: 'user',
+        displayName: userName,
+        role: userRole,
         createdAt: serverTimestamp(),
         lastLogin: serverTimestamp(),
         linkedProjects: ['dehapa']
       }, { merge: true });
     } else {
+      userRole = userSnap.data()?.role || 'user';
+      userName = userSnap.data()?.displayName || userName;
       await setDoc(userRef, { lastLogin: serverTimestamp() }, { merge: true });
     }
     localStorage.setItem("sd_current_user_email", user.email || user.phoneNumber || additionalData.phone);
+    localStorage.setItem("sd_current_user_role", userRole);
+    localStorage.setItem("sd_current_user_name", userName);
     localStorage.setItem("sd_current_user_profile_complete", userSnap.exists() ? "true" : "false");
+    
+    // Notify GlobalHeader that auth state has changed
+    window.dispatchEvent(new Event("sd_auth_change"));
   };
 
   const handleGoogleLogin = async () => {
