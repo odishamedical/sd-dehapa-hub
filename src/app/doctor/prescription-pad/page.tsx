@@ -42,7 +42,7 @@ function PrescriptionPadContent() {
     const role = localStorage.getItem("sd_current_user_role");
     const name = localStorage.getItem("sd_current_user_name");
 
-    if (role !== "doctor") {
+    if (role !== "doctor" && role !== "super_admin") {
       setAccessGranted(false);
       setLoading(false);
       return;
