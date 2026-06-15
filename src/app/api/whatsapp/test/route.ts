@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const result = await WhatsAppService.sendTextMessage(to, "Hello from Test Endpoint!");
+    const result = await WhatsAppService.sendInteractiveButtons(to, "Test Interactive Message", [
+      { id: 'btn_test', title: 'Test Button' }
+    ]);
     return NextResponse.json({ 
       success: true, 
       metaResponse: result,
