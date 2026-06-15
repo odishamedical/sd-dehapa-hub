@@ -16,6 +16,7 @@ function PrescriptionPadContent() {
   const [doctorName, setDoctorName] = useState("");
 
   const [rxData, setRxData] = useState({
+    history: "",
     diagnosis: "",
     medicines: [{ name: "", dosage: "", frequency: "", duration: "" }],
     tests: [{ name: "", instructions: "" }],
@@ -156,6 +157,20 @@ function PrescriptionPadContent() {
 
           <form onSubmit={handleSaveAndSend} className="p-8 space-y-8">
             
+            {/* Patient History */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Patient Medical History
+              </label>
+              <textarea 
+                value={rxData.history}
+                onChange={e => setRxData({...rxData, history: e.target.value})}
+                placeholder="First time visit? Enter past medical history, allergies, surgeries, etc. (Optional)"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none transition-all min-h-[80px]"
+              />
+            </div>
+
             {/* Diagnosis */}
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
@@ -166,7 +181,7 @@ function PrescriptionPadContent() {
                 required
                 value={rxData.diagnosis}
                 onChange={e => setRxData({...rxData, diagnosis: e.target.value})}
-                placeholder="Enter primary diagnosis and symptoms..."
+                placeholder="Enter primary diagnosis and current symptoms..."
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none transition-all min-h-[100px]"
               />
             </div>
