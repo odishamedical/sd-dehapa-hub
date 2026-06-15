@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     // Try to mint a Firebase Custom Token if firebase-admin is configured
     try {
-      const admin = await import('firebase-admin');
+      const admin: any = await import('firebase-admin');
       if (!admin.apps.length) {
         // This will throw if GOOGLE_APPLICATION_CREDENTIALS or env vars are missing
         admin.initializeApp({
