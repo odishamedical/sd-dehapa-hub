@@ -6,7 +6,7 @@ import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc } 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import PremiumSlugModal from './PremiumSlugModal';
-import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
+import AddressBlock from './AddressBlock';
 import ImageCropper from './ImageCropper';
 
 export default function AdminDataCRM() {
@@ -489,98 +489,32 @@ export default function AdminDataCRM() {
                   <label className="form-label">Sub-Category / Specialty</label>
                   <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="form-input" />
                 </div>
-                <div>
-                  <label className="form-label">Country</label>
-                  <select value={selectedListing.country || "India"} onChange={e => setSelectedListing({...selectedListing, country: e.target.value})} className="form-select">
-                    <option value="India">India</option>
-                    <option value="USA">USA</option>
-                    <option value="UAE">UAE</option>
-                    <option value="Australia">Australia</option>
-                    <option value="England">England</option>
-                    <option value="Other">Other</option>
-                  </select>
+                <div className="col-span-2 pt-4 mt-2 border-t border-slate-100">
+                  <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Location Data</h4>
+                  <AddressBlock 
+                    data={{
+                      country: selectedListing.country || '',
+                      state: selectedListing.state || '',
+                      district: selectedListing.district || '',
+                      block: selectedListing.block || '',
+                      city: selectedListing.city || '',
+                      pincode: selectedListing.pin || '',
+                      localAddress: selectedListing.locality || selectedListing.address || ''
+                    }}
+                    onChange={(newData) => setSelectedListing({
+                      ...selectedListing,
+                      country: newData.country,
+                      state: newData.state,
+                      district: newData.district,
+                      block: newData.block,
+                      city: newData.city,
+                      pin: newData.pincode,
+                      locality: newData.localAddress,
+                      address: newData.localAddress
+                    })}
+                  />
                 </div>
-                {selectedListing.country === "Other" ? (
-                  <div>
-                    <label className="form-label">Custom Country</label>
-                    <input type="text" value={selectedListing.customCountry || ""} onChange={e => setSelectedListing({...selectedListing, customCountry: e.target.value})} className="form-input" />
-                  </div>
-                ) : null}
-
-                <div>
-                  <label className="form-label">State</label>
-                  {selectedListing.country === "India" || !selectedListing.country ? (
-                    <select value={selectedListing.state || ""} onChange={e => setSelectedListing({...selectedListing, state: e.target.value, district: "", city: ""})} className="form-select">
-                      <option value="">Select State</option>
-                      {indianStates.map(state => (
-                        <option key={state} value={state}>{state}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input type="text" value={selectedListing.state || ""} onChange={e => setSelectedListing({...selectedListing, state: e.target.value})} className="form-input" />
-                  )}
-                </div>
-
-                <div>
-                  <label className="form-label">District</label>
-                  {selectedListing.state && districtsByState[selectedListing.state] ? (
-                    <select 
-                      value={districtsByState[selectedListing.state].includes(selectedListing.district) ? selectedListing.district : (selectedListing.district ? "Other" : "")} 
-                      onChange={e => {
-                        if (e.target.value === "Other") {
-                          setSelectedListing({...selectedListing, district: "", city: ""});
-                        } else {
-                          setSelectedListing({...selectedListing, district: e.target.value, city: ""});
-                        }
-                      }} 
-                      className="form-select mb-2"
-                    >
-                      <option value="">Select District</option>
-                      {districtsByState[selectedListing.state].map(dist => (
-                        <option key={dist} value={dist}>{dist}</option>
-                      ))}
-                      <option value="Other">Other</option>
-                    </select>
-                  ) : (
-                    <input type="text" value={selectedListing.district || ""} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} className="form-input" />
-                  )}
-                  {selectedListing.state && districtsByState[selectedListing.state] && !districtsByState[selectedListing.state].includes(selectedListing.district) && selectedListing.district !== "" && selectedListing.district !== undefined && (
-                    <input type="text" value={selectedListing.district || ""} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} placeholder="Type Custom District..." className="form-input animate-in fade-in" />
-                  )}
-                </div>
-
-                <div>
-                  <label className="form-label">City / Block</label>
-                  {selectedListing.district && blocksByDistrict[selectedListing.district] ? (
-                    <select 
-                      value={blocksByDistrict[selectedListing.district].includes(selectedListing.city) ? selectedListing.city : (selectedListing.city ? "Other" : "")} 
-                      onChange={e => {
-                        if (e.target.value === "Other") {
-                          setSelectedListing({...selectedListing, city: ""});
-                        } else {
-                          setSelectedListing({...selectedListing, city: e.target.value});
-                        }
-                      }} 
-                      className="form-select mb-2"
-                    >
-                      <option value="">Select City / Block</option>
-                      {blocksByDistrict[selectedListing.district].map(block => (
-                        <option key={block} value={block}>{block}</option>
-                      ))}
-                      <option value="Other">Other</option>
-                    </select>
-                  ) : (
-                    <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="form-input" />
-                  )}
-                  {selectedListing.district && blocksByDistrict[selectedListing.district] && !blocksByDistrict[selectedListing.district].includes(selectedListing.city) && selectedListing.city !== "" && selectedListing.city !== undefined && (
-                    <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} placeholder="Type Custom City/Block..." className="form-input animate-in fade-in" />
-                  )}
-                </div>
-                <div className="col-span-2">
-                  <label className="form-label">Full Address</label>
-                  <textarea value={selectedListing.address || ""} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} className="form-input" rows={2} />
-                </div>
-                <div className="col-span-2">
+                <div className="col-span-2 mt-4">
                   <label className="form-label">About / Biography</label>
                   <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="form-input" rows={4} />
                 </div>
