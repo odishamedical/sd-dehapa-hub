@@ -6,6 +6,7 @@ import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc } 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import PremiumSlugModal from './PremiumSlugModal';
+import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -401,8 +402,64 @@ export default function AdminDataCRM() {
                   <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="form-input" />
                 </div>
                 <div>
-                  <label className="form-label">City</label>
-                  <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="form-input" />
+                  <label className="form-label">Country</label>
+                  <select value={selectedListing.country || "India"} onChange={e => setSelectedListing({...selectedListing, country: e.target.value})} className="form-select">
+                    <option value="India">India</option>
+                    <option value="USA">USA</option>
+                    <option value="UAE">UAE</option>
+                    <option value="Australia">Australia</option>
+                    <option value="England">England</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                {selectedListing.country === "Other" ? (
+                  <div>
+                    <label className="form-label">Custom Country</label>
+                    <input type="text" value={selectedListing.customCountry || ""} onChange={e => setSelectedListing({...selectedListing, customCountry: e.target.value})} className="form-input" />
+                  </div>
+                ) : null}
+
+                <div>
+                  <label className="form-label">State</label>
+                  {selectedListing.country === "India" || !selectedListing.country ? (
+                    <select value={selectedListing.state || ""} onChange={e => setSelectedListing({...selectedListing, state: e.target.value, district: "", city: ""})} className="form-select">
+                      <option value="">Select State</option>
+                      {indianStates.map(state => (
+                        <option key={state} value={state}>{state}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input type="text" value={selectedListing.state || ""} onChange={e => setSelectedListing({...selectedListing, state: e.target.value})} className="form-input" />
+                  )}
+                </div>
+
+                <div>
+                  <label className="form-label">District</label>
+                  {selectedListing.state && districtsByState[selectedListing.state] ? (
+                    <select value={selectedListing.district || ""} onChange={e => setSelectedListing({...selectedListing, district: e.target.value, city: ""})} className="form-select">
+                      <option value="">Select District</option>
+                      {districtsByState[selectedListing.state].map(dist => (
+                        <option key={dist} value={dist}>{dist}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input type="text" value={selectedListing.district || ""} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} className="form-input" />
+                  )}
+                </div>
+
+                <div>
+                  <label className="form-label">City / Block</label>
+                  {selectedListing.district && blocksByDistrict[selectedListing.district] ? (
+                    <select value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="form-select">
+                      <option value="">Select City / Block</option>
+                      {blocksByDistrict[selectedListing.district].map(block => (
+                        <option key={block} value={block}>{block}</option>
+                      ))}
+                      <option value="Other">Other</option>
+                    </select>
+                  ) : (
+                    <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="form-input" />
+                  )}
                 </div>
                 <div className="col-span-2">
                   <label className="form-label">Full Address</label>
