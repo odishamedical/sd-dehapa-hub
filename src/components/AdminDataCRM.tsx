@@ -20,6 +20,7 @@ export default function AdminDataCRM() {
   const [verifiedFilter, setVerifiedFilter] = useState("all");
   
   // Location Filters
+  const [countryFilter, setCountryFilter] = useState("India");
   const [stateFilter, setStateFilter] = useState("Odisha");
   const [districtFilter, setDistrictFilter] = useState("");
   const [blockFilter, setBlockFilter] = useState("");
@@ -81,6 +82,7 @@ export default function AdminDataCRM() {
       if (verifiedFilter === "verified" && !item.verified) return false;
       if (verifiedFilter === "unverified" && item.verified) return false;
     }
+    if (countryFilter && item.country && item.country !== countryFilter) return false;
     if (stateFilter && item.state !== stateFilter) return false;
     if (districtFilter && item.district !== districtFilter) return false;
     if (blockFilter && item.city !== blockFilter && item.block !== blockFilter) return false; // checking both city and block for backward compatibility
@@ -322,6 +324,28 @@ export default function AdminDataCRM() {
         </div>
         
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          <select 
+            value={countryFilter} 
+            onChange={e => { setCountryFilter(e.target.value); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); }}
+            className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-32 form-select"
+          >
+            <option value="">All Countries</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UAE">UAE</option>
+            <option value="Australia">Australia</option>
+            <option value="England">England</option>
+          </select>
+          {countryFilter === "India" && (
+            <select 
+              value={stateFilter} 
+              onChange={e => { setStateFilter(e.target.value); setDistrictFilter(""); setBlockFilter(""); }}
+              className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-32 form-select"
+            >
+              <option value="">All States</option>
+              {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          )}
           {stateFilter && districtsByState[stateFilter] && (
             <select 
               value={districtFilter} 
