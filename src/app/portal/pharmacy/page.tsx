@@ -161,6 +161,32 @@ export default function PharmacyDashboard() {
     setActiveTab(tabId);
   };
 
+  const handleBusinessTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newType = e.target.value;
+    const confirmChange = window.confirm(
+      "WARNING: Are you sure you want to change your Business Category?\n\nChanging this will erase any data (licenses, catalogs, etc.) you have saved under your current category. Please select carefully."
+    );
+
+    if (confirmChange) {
+      setIdentityData(prev => ({
+        ...prev,
+        businessType: newType,
+        pharmacistName: "",
+        retailLicense: "",
+        wholesaleLicense: "",
+        gstin: "",
+        manufacturingLicense: ""
+      }));
+      setServicesData({
+        homeDeliveryRadius: "",
+        bulkOrderCapacity: "",
+        supplyChainAreas: "",
+        factoryLocations: "",
+        drugCatalog: ""
+      });
+    }
+  };
+
   return (
     <DashboardLayout 
       roleName="Pharma Portal" 
@@ -181,16 +207,23 @@ export default function PharmacyDashboard() {
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Identity & Licenses</h3>
-                <p className="text-sm text-slate-500 mt-1">Select your business type to customize this profile.</p>
+                <p className="text-sm text-slate-500 mt-1">Please carefully select your category below.</p>
               </div>
             </div>
             
             <div className="space-y-6">
+              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl mb-6">
+                <p className="text-sm text-amber-800 font-medium flex items-start gap-2">
+                  <svg className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                  <span><strong>Important:</strong> Once you select and save your Business Type, changing it later will erase your old category's data.</span>
+                </p>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-tenant-accent uppercase tracking-widest mb-2">Business Type</label>
                 <select 
                   value={identityData.businessType}
-                  onChange={(e) => setIdentityData(prev => ({...prev, businessType: e.target.value}))}
+                  onChange={handleBusinessTypeChange}
                   className="w-full bg-slate-50 border-2 border-slate-200 hover:border-tenant-accent rounded-xl px-5 py-3.5 shadow-sm text-slate-900 font-bold text-sm focus:border-tenant-accent outline-none transition-all cursor-pointer"
                 >
                   <option value="Retail Pharmacy">Retail Pharmacy</option>
