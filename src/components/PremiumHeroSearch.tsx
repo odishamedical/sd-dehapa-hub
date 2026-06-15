@@ -10,6 +10,12 @@ interface PremiumHeroSearchProps {
   searchPlaceholder: string;
   search: string;
   setSearch: (val: string) => void;
+  searchCountry: string;
+  setSearchCountry: (val: string) => void;
+  uniqueCountries: string[];
+  searchState: string;
+  setSearchState: (val: string) => void;
+  uniqueStates: string[];
   searchDistrict: string;
   setSearchDistrict: (val: string) => void;
   searchType: string;
@@ -24,6 +30,12 @@ export default function PremiumHeroSearch({
   searchPlaceholder,
   search,
   setSearch,
+  searchCountry,
+  setSearchCountry,
+  uniqueCountries,
+  searchState,
+  setSearchState,
+  uniqueStates,
   searchDistrict,
   setSearchDistrict,
   searchType,
@@ -49,19 +61,27 @@ export default function PremiumHeroSearch({
            {/* Country */}
            <CustomDropdown 
              label="Country"
-             options={[{ label: "India", value: "India" }]}
-             value="India"
-             onChange={() => {}}
-             className="hidden lg:block"
+             placeholder="All Countries"
+             options={[
+               { label: "All Countries", value: "" },
+               ...uniqueCountries.map(c => ({ label: c, value: c }))
+             ]}
+             value={searchCountry}
+             onChange={setSearchCountry}
+             className="hidden lg:block md:w-36"
            />
 
            {/* State */}
            <CustomDropdown 
              label="State"
-             options={[{ label: "Odisha", value: "Odisha" }]}
-             value="Odisha"
-             onChange={() => {}}
-             className="hidden lg:block"
+             placeholder="All States"
+             options={[
+               { label: "All States", value: "" },
+               ...uniqueStates.map(s => ({ label: s, value: s }))
+             ]}
+             value={searchState}
+             onChange={setSearchState}
+             className="hidden lg:block md:w-36"
            />
 
            {/* District */}

@@ -299,7 +299,7 @@ export default function AdminDataCRM() {
             placeholder="Search name or phone..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-5 py-3.5 border-2 border-slate-200 hover:border-slate-300 rounded-xl text-sm flex-1 md:w-64 focus:outline-none focus:border-teal-500 shadow-sm transition-all"
+            className="flex-1 md:w-64 border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white"
           />
           <button onClick={handleCreateNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap transition-colors">
             Create Record

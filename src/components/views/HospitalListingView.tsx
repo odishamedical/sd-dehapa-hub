@@ -32,6 +32,8 @@ export default function HospitalsDirectory({
   const [hospitals, setHospitals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
+  const [searchCountry, setSearchCountry] = useState(initialCountry || "");
+  const [searchState, setSearchState] = useState(initialState || "");
   const [searchDistrict, setSearchDistrict] = useState(initialDistrict);
   const [searchType, setSearchType] = useState("");
 
@@ -121,6 +123,8 @@ export default function HospitalsDirectory({
     return searchMatch && matchTenant;
   });
 
+  const uniqueCountries = Array.from(new Set(hospitals.map((d: any) => d.country).filter(Boolean)));
+  const uniqueStates = Array.from(new Set(hospitals.map((d: any) => d.state).filter(Boolean)));
   const uniqueDistricts = Array.from(new Set(hospitals.map(d => d.district).filter(d => d !== "Unknown"))).sort();
 
   return (
@@ -150,6 +154,12 @@ export default function HospitalsDirectory({
         setSearchDistrict={setSearchDistrict}
         searchType={searchType}
         setSearchType={setSearchType}
+        searchCountry={searchCountry}
+        setSearchCountry={setSearchCountry}
+        uniqueCountries={uniqueCountries as string[]}
+        searchState={searchState}
+        setSearchState={setSearchState}
+        uniqueStates={uniqueStates as string[]}
         uniqueDistricts={uniqueDistricts as string[]}
       />
 

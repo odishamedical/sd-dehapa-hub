@@ -112,6 +112,8 @@ export default function DoctorsDirectory({
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
+  const [searchCountry, setSearchCountry] = useState(initialCountry || "");
+  const [searchState, setSearchState] = useState(initialState || "");
   const [searchDistrict, setSearchDistrict] = useState(initialDistrict);
   const [searchType, setSearchType] = useState("");
 
@@ -127,7 +129,9 @@ export default function DoctorsDirectory({
         }));
         
         // Map the backend schema to what PremiumDoctorTicket expects
-        const mappedData = docsData.map((d: any) => ({
+        const mappedData = docsData
+          .filter((d: any) => d.category?.toLowerCase() === "doctor")
+          .map((d: any) => ({
           id: d.id,
           name: d.name || "Unknown Doctor",
           specialty: d.subCategory || d.category || "Specialist",
@@ -178,6 +182,8 @@ export default function DoctorsDirectory({
     return searchMatch;
   });
   
+  const uniqueCountries = Array.from(new Set(doctors.map((d: any) => d.country).filter(Boolean)));
+  const uniqueStates = Array.from(new Set(doctors.map((d: any) => d.state).filter(Boolean)));
   const uniqueDistricts = Array.from(new Set(doctors.map(d => d.district).filter(d => d !== "Unknown"))).sort();
 
   return (
@@ -207,6 +213,12 @@ export default function DoctorsDirectory({
         setSearchDistrict={setSearchDistrict}
         searchType={searchType}
         setSearchType={setSearchType}
+        searchCountry={searchCountry}
+        setSearchCountry={setSearchCountry}
+        uniqueCountries={uniqueCountries as string[]}
+        searchState={searchState}
+        setSearchState={setSearchState}
+        uniqueStates={uniqueStates as string[]}
         uniqueDistricts={uniqueDistricts as string[]}
       />
 

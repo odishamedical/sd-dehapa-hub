@@ -351,7 +351,7 @@ export default function AdminDashboard() {
                         <option value="Other">Other (Add Custom)</option>
                       </select>
                       {crawlerSubCategory === "Other" && (
-                        <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm mt-2 outline-none focus:border-teal-500 transition-all" />
+                        <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full mt-2 border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white" />
                       )}
                     </div>
 
@@ -362,7 +362,7 @@ export default function AdminDashboard() {
                         value={crawlerQuery} 
                         onChange={(e) => setCrawlerQuery(e.target.value)} 
                         placeholder="e.g. Top Doctors, Apollo..." 
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
+                        className="w-full border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white" 
                       />
                     </div>
                   </div>

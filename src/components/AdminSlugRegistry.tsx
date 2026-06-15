@@ -91,7 +91,7 @@ export default function AdminSlugRegistry() {
             placeholder="Search slugs or names..." 
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 text-sm outline-none focus:border-teal-500 shadow-sm transition-all"
+            className="w-full border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white"
           />
         </div>
       </div>
