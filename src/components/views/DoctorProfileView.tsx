@@ -11,6 +11,8 @@ import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
 import UnverifiedBanner from '@/components/UnverifiedBanner';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
+import TicketCard from '@/components/TicketCard';
+import { TicketConfig } from '@/lib/ticketConfig';
 
 export default function DoctorProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [doctor, setDoctor] = useState<any>(null);

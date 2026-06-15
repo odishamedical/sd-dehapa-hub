@@ -7,7 +7,7 @@ import EcosystemSwitcher from '@/components/EcosystemSwitcher';
 import ProfileBlockerModal from '@/components/ProfileBlockerModal';
 import { useTenant } from '@/components/TenantContext';
 import CategoryNav from '@/components/CategoryNav';
-import PremiumHeroSearch from '@/components/PremiumHeroSearch';
+import PremiumEntityTicket from '@/components/PremiumEntityTicket';
 import Breadcrumb from '@/components/Breadcrumb';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
 import CustomDropdown from '@/components/CustomDropdown';
@@ -15,7 +15,7 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
-const PremiumDoctorTicket = ({ data }: { data: any }) => {
+// PremiumDoctorTicket component removed; using PremiumEntityTicket instead
   return (
     <Link href={generateUniversalSeoUrl(data, 'doctors')} className="relative h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
       {/* Background Metal Gradient */}
@@ -308,7 +308,7 @@ export default function DoctorsDirectory({
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     Design Template Preview (Waiting for Real Data)
                   </div>
-                  <PremiumDoctorTicket data={{
+                  <PremiumEntityTicket type="doctors" data={{
                       id: "mock123",
                       name: "Dr. Sandeep Sharma",
                       specialty: "Cardiology & Internal Medicine",
@@ -334,7 +334,7 @@ export default function DoctorsDirectory({
             ) : (
               <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
                 {filteredDoctors.map(doc => (
-                  <PremiumDoctorTicket key={doc.id} data={doc} />
+                  <PremiumEntityTicket type="doctors" key={doc.id} data={doc} />
                 ))}
               </div>
             )}

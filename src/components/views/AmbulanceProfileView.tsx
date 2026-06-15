@@ -11,6 +11,8 @@ import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
 import UnverifiedBanner from '@/components/UnverifiedBanner';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
+import TicketCard from '@/components/TicketCard';
+import { TicketConfig } from '@/lib/ticketConfig';
 
 export default function AmbulanceProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [ambulance, setAmbulance] = useState<any>(null);
@@ -147,7 +149,7 @@ export default function AmbulanceProfileView({ id, customSlug }: { id?: string, 
           <div className="lg:col-span-3 space-y-8">
             
             {/* Unified Header Card */}
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col md:flex-row items-center gap-8">
+            <TicketCard entity={ambulance} config={TicketConfig.ambulance} />
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg overflow-hidden shrink-0 bg-slate-100">
                 <img src={ambulance.image} alt={ambulance.name} className="w-full h-full object-cover" />
               </div>
