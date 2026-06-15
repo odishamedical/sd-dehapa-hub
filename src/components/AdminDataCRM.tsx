@@ -317,6 +317,7 @@ export default function AdminDataCRM() {
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-6 py-4"><input type="checkbox" onChange={handleSelectAll} /></th>
+                <th className="px-6 py-4">Image</th>
                 <th className="px-6 py-4">Listing</th>
                 <th className="px-6 py-4">Contact</th>
                 <th className="px-6 py-4">Status</th>
@@ -327,11 +328,26 @@ export default function AdminDataCRM() {
               {filteredData.map(item => (
                 <tr key={item.id}>
                   <td className="px-6 py-4"><input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => handleSelectOne(item.id)} /></td>
+                  <td className="px-6 py-4">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} className="w-10 h-10 rounded-full object-cover border border-slate-200" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      </div>
+                    )}
+                  </td>
                   <td className="px-6 py-4 font-bold text-sm">{item.name}</td>
                   <td className="px-6 py-4 text-sm">{item.phone}</td>
-                  <td className="px-6 py-4">{item.verified ? 'Verified' : 'Unverified'}</td>
+                  <td className="px-6 py-4">{item.verified ? <span className="text-green-600 font-bold text-xs uppercase tracking-widest bg-green-50 px-2 py-1 rounded">Verified</span> : <span className="text-slate-500 font-bold text-xs uppercase tracking-widest bg-slate-100 px-2 py-1 rounded">Unverified</span>}</td>
                   <td className="px-6 py-4 text-right">
-                    <button onClick={() => openDrawer(item)} className="text-teal-600 font-bold text-sm">View / Edit</button>
+                    <div className="flex items-center justify-end gap-4">
+                      <Link href={`/doctors/${item.customSlug || item.id}`} target="_blank" className="text-slate-500 hover:text-slate-900 font-bold text-xs uppercase tracking-widest flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        View Live
+                      </Link>
+                      <button onClick={() => openDrawer(item)} className="text-teal-600 hover:text-teal-700 font-bold text-sm bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100">Edit Data</button>
+                    </div>
                   </td>
                 </tr>
               ))}
