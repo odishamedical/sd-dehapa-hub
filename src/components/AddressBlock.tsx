@@ -56,7 +56,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
             value={defaultCountries.includes(data.country) ? data.country : (data.country ? "Other" : "")} 
             onChange={(e) => {
               if (e.target.value === "Other") {
-                updateField('country', ""); // Open text box
+                updateField('country', "Other"); // Open text box
               } else {
                 updateField('country', e.target.value);
               }
@@ -70,7 +70,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
           {!defaultCountries.includes(data.country) && data.country !== undefined && (
             <input 
               type="text" 
-              value={data.country}
+              value={data.country === "Other" ? "" : data.country}
               onChange={(e) => updateField('country', e.target.value)}
               placeholder="Type Country Name..."
               className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all animate-in fade-in"
@@ -111,7 +111,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               value={districtsByState[data.state].includes(data.district) ? data.district : (data.district ? "Other" : "")}
               onChange={(e) => {
                 if (e.target.value === "Other") {
-                  updateField('district', "");
+                  updateField('district', "Other");
                 } else {
                   updateField('district', e.target.value);
                 }
@@ -134,7 +134,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
           {data.state && districtsByState[data.state] && !districtsByState[data.state].includes(data.district) && data.district !== "" && data.district !== undefined && (
             <input 
               type="text" 
-              value={data.district}
+              value={data.district === "Other" ? "" : data.district}
               onChange={(e) => updateField('district', e.target.value)}
               placeholder="Type Custom District..."
               className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all animate-in fade-in"
@@ -150,7 +150,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               value={blocksByDistrict[data.district].includes(data.block) ? data.block : (data.block ? "Other" : "")}
               onChange={(e) => {
                 if (e.target.value === "Other") {
-                  updateField('block', "");
+                  updateField('block', "Other");
                 } else {
                   updateField('block', e.target.value);
                 }
@@ -173,7 +173,7 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
           {data.district && blocksByDistrict[data.district] && !blocksByDistrict[data.district].includes(data.block) && data.block !== "" && data.block !== undefined && (
             <input 
               type="text" 
-              value={data.block}
+              value={data.block === "Other" ? "" : data.block}
               onChange={(e) => updateField('block', e.target.value)}
               placeholder="Type Custom Block..."
               className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all animate-in fade-in"
