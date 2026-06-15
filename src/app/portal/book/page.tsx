@@ -36,7 +36,7 @@ function BookAppointmentForm() {
     if (!email) {
       const authCenterBase = window.location.hostname === "localhost" 
         ? "http://localhost:3000" 
-        : "https://sd-auth-center.vercel.app";
+        : "/login";
       window.location.href = `${authCenterBase}?redirect_uri=${encodeURIComponent(window.location.href)}`;
     } else if (!isComplete) {
       router.push("/doctors");

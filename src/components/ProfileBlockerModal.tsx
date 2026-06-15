@@ -14,7 +14,7 @@ export default function ProfileBlockerModal({ onClose, actionName = "perform thi
       const currentUrl = window.location.href;
       const authCenterBase = window.location.hostname === "localhost" 
         ? "http://localhost:3000" 
-        : "https://sd-auth-center.vercel.app";
+        : "/login";
       
       const inviteRef = sessionStorage.getItem("sd_invite_ref") || "";
       const inviteName = sessionStorage.getItem("sd_invite_name") || "";

@@ -19,7 +19,7 @@ export default function PatientPortal() {
       
       if (!email) {
         // Redirect to Auth Center if not logged in
-        window.location.href = "https://sd-auth-center.vercel.app";
+        window.location.href = "/login";
       } else {
         setUserEmail(email);
         setUserName(name || email.split("@")[0]);

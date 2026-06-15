@@ -90,7 +90,7 @@ export default function PharmacysDirectory({
       const currentUrl = window.location.href;
       const authCenterBase = window.location.hostname === "localhost" 
         ? "http://localhost:3000" 
-        : "https://sd-auth-center.vercel.app";
+        : "/login";
       window.location.href = `${authCenterBase}?redirect_uri=${encodeURIComponent(currentUrl)}`;
       return;
     }

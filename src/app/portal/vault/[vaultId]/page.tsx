@@ -20,7 +20,7 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
     const currentRole = localStorage.getItem("sd_current_user_role") || "patient";
     
     if (!currentUserEmail) {
-      window.location.href = "https://sd-auth-center.vercel.app";
+      window.location.href = "/login";
       return;
     }
 
