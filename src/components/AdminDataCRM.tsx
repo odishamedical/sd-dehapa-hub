@@ -8,6 +8,7 @@ import Link from 'next/link';
 import PremiumSlugModal from './PremiumSlugModal';
 import AddressBlock from './AddressBlock';
 import ImageCropper from './ImageCropper';
+import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -17,6 +18,11 @@ export default function AdminDataCRM() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [verifiedFilter, setVerifiedFilter] = useState("all");
+  
+  // Location Filters
+  const [stateFilter, setStateFilter] = useState("Odisha");
+  const [districtFilter, setDistrictFilter] = useState("");
+  const [blockFilter, setBlockFilter] = useState("");
 
   // Drawer state
   const [selectedListing, setSelectedListing] = useState<any | null>(null);
@@ -75,6 +81,9 @@ export default function AdminDataCRM() {
       if (verifiedFilter === "verified" && !item.verified) return false;
       if (verifiedFilter === "unverified" && item.verified) return false;
     }
+    if (stateFilter && item.state !== stateFilter) return false;
+    if (districtFilter && item.district !== districtFilter) return false;
+    if (blockFilter && item.city !== blockFilter && item.block !== blockFilter) return false; // checking both city and block for backward compatibility
     return true;
   });
 
@@ -313,6 +322,26 @@ export default function AdminDataCRM() {
         </div>
         
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          {stateFilter && districtsByState[stateFilter] && (
+            <select 
+              value={districtFilter} 
+              onChange={e => { setDistrictFilter(e.target.value); setBlockFilter(""); }}
+              className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-36 form-select"
+            >
+              <option value="">All Districts</option>
+              {districtsByState[stateFilter].map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          )}
+          {districtFilter && blocksByDistrict[districtFilter] && (
+            <select 
+              value={blockFilter} 
+              onChange={e => setBlockFilter(e.target.value)}
+              className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-36 form-select"
+            >
+              <option value="">All Blocks</option>
+              {blocksByDistrict[districtFilter].map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+          )}
           <input 
             type="text" 
             placeholder="Search name or phone..." 
@@ -320,7 +349,7 @@ export default function AdminDataCRM() {
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 md:w-64 border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white"
           />
-          <button onClick={handleCreateNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 whitespace-nowrap transition-colors">
+          <button onClick={handleCreateNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 whitespace-nowrap transition-colors">
             Create Record
           </button>
         </div>
