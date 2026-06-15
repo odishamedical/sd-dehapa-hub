@@ -524,21 +524,45 @@ export default function AdminDataCRM() {
                 <div>
                   <label className="form-label">District</label>
                   {selectedListing.state && districtsByState[selectedListing.state] ? (
-                    <select value={selectedListing.district || ""} onChange={e => setSelectedListing({...selectedListing, district: e.target.value, city: ""})} className="form-select">
+                    <select 
+                      value={districtsByState[selectedListing.state].includes(selectedListing.district) ? selectedListing.district : (selectedListing.district ? "Other" : "")} 
+                      onChange={e => {
+                        if (e.target.value === "Other") {
+                          setSelectedListing({...selectedListing, district: "", city: ""});
+                        } else {
+                          setSelectedListing({...selectedListing, district: e.target.value, city: ""});
+                        }
+                      }} 
+                      className="form-select mb-2"
+                    >
                       <option value="">Select District</option>
                       {districtsByState[selectedListing.state].map(dist => (
                         <option key={dist} value={dist}>{dist}</option>
                       ))}
+                      <option value="Other">Other</option>
                     </select>
                   ) : (
                     <input type="text" value={selectedListing.district || ""} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} className="form-input" />
+                  )}
+                  {selectedListing.state && districtsByState[selectedListing.state] && !districtsByState[selectedListing.state].includes(selectedListing.district) && selectedListing.district !== "" && selectedListing.district !== undefined && (
+                    <input type="text" value={selectedListing.district || ""} onChange={e => setSelectedListing({...selectedListing, district: e.target.value})} placeholder="Type Custom District..." className="form-input animate-in fade-in" />
                   )}
                 </div>
 
                 <div>
                   <label className="form-label">City / Block</label>
                   {selectedListing.district && blocksByDistrict[selectedListing.district] ? (
-                    <select value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="form-select">
+                    <select 
+                      value={blocksByDistrict[selectedListing.district].includes(selectedListing.city) ? selectedListing.city : (selectedListing.city ? "Other" : "")} 
+                      onChange={e => {
+                        if (e.target.value === "Other") {
+                          setSelectedListing({...selectedListing, city: ""});
+                        } else {
+                          setSelectedListing({...selectedListing, city: e.target.value});
+                        }
+                      }} 
+                      className="form-select mb-2"
+                    >
                       <option value="">Select City / Block</option>
                       {blocksByDistrict[selectedListing.district].map(block => (
                         <option key={block} value={block}>{block}</option>
@@ -547,6 +571,9 @@ export default function AdminDataCRM() {
                     </select>
                   ) : (
                     <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="form-input" />
+                  )}
+                  {selectedListing.district && blocksByDistrict[selectedListing.district] && !blocksByDistrict[selectedListing.district].includes(selectedListing.city) && selectedListing.city !== "" && selectedListing.city !== undefined && (
+                    <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} placeholder="Type Custom City/Block..." className="form-input animate-in fade-in" />
                   )}
                 </div>
                 <div className="col-span-2">

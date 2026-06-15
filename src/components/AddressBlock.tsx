@@ -106,14 +106,21 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
         {/* District */}
         <div>
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">District / County</label>
-          {isOdisha ? (
+          {data.state && districtsByState[data.state] ? (
             <select 
-              value={data.district}
-              onChange={(e) => updateField('district', e.target.value)}
-              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
+              value={districtsByState[data.state].includes(data.district) ? data.district : (data.district ? "Other" : "")}
+              onChange={(e) => {
+                if (e.target.value === "Other") {
+                  updateField('district', "");
+                } else {
+                  updateField('district', e.target.value);
+                }
+              }}
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all mb-2"
             >
               <option value="">Select District</option>
-              {districtsByState["Odisha"]?.map((d: string) => <option key={d} value={d}>{d}</option>)}
+              {districtsByState[data.state].map((d: string) => <option key={d} value={d}>{d}</option>)}
+              <option value="Other">Other</option>
             </select>
           ) : (
             <input 
@@ -124,19 +131,35 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
             />
           )}
+          {data.state && districtsByState[data.state] && !districtsByState[data.state].includes(data.district) && data.district !== "" && data.district !== undefined && (
+            <input 
+              type="text" 
+              value={data.district}
+              onChange={(e) => updateField('district', e.target.value)}
+              placeholder="Type Custom District..."
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all animate-in fade-in"
+            />
+          )}
         </div>
 
         {/* Block */}
         <div>
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Block / Sub-District</label>
-          {isOdisha && data.district ? (
+          {data.district && blocksByDistrict[data.district] ? (
             <select 
-              value={data.block}
-              onChange={(e) => updateField('block', e.target.value)}
-              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
+              value={blocksByDistrict[data.district].includes(data.block) ? data.block : (data.block ? "Other" : "")}
+              onChange={(e) => {
+                if (e.target.value === "Other") {
+                  updateField('block', "");
+                } else {
+                  updateField('block', e.target.value);
+                }
+              }}
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all mb-2"
             >
               <option value="">Select Block</option>
-              {blocksByDistrict[data.district]?.map((b: string) => <option key={b} value={b}>{b}</option>)}
+              {blocksByDistrict[data.district].map((b: string) => <option key={b} value={b}>{b}</option>)}
+              <option value="Other">Other</option>
             </select>
           ) : (
             <input 
@@ -145,6 +168,15 @@ export default function AddressBlock({ data, onChange }: AddressBlockProps) {
               onChange={(e) => updateField('block', e.target.value)}
               placeholder="Type Block (Optional)"
               className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all"
+            />
+          )}
+          {data.district && blocksByDistrict[data.district] && !blocksByDistrict[data.district].includes(data.block) && data.block !== "" && data.block !== undefined && (
+            <input 
+              type="text" 
+              value={data.block}
+              onChange={(e) => updateField('block', e.target.value)}
+              placeholder="Type Custom Block..."
+              className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all animate-in fade-in"
             />
           )}
         </div>
