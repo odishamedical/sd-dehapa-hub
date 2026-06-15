@@ -381,18 +381,6 @@ export default function AdminDashboard() {
                       )}
                       {isExtracting ? "Extracting..." : crawlerQuery ? `Extract "${crawlerQuery}"` : `Extract ${customSubCategory || crawlerSubCategory || crawlerCategory} in ${[crawlerAddress.localAddress, crawlerAddress.district, crawlerAddress.state, crawlerAddress.country, crawlerAddress.pincode].filter(Boolean).join(", ")}`}
                     </button>
-                    
-                    {nextPageToken && (
-                      <div className="mt-4 flex justify-center">
-                        <button 
-                          onClick={() => handleExtractLive(true)} 
-                          disabled={isExtracting}
-                          className="px-6 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold rounded-lg text-sm disabled:opacity-50 transition-colors border-2 border-slate-200 hover:border-slate-300"
-                        >
-                          {isExtracting ? "Loading..." : "Load More Results"}
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -404,13 +392,22 @@ export default function AdminDashboard() {
                       <h3 className="text-xl font-bold text-slate-900">Data Staging Pipeline</h3>
                       <p className="text-sm text-slate-500">Review {stagedListings.length} extracted results before injecting into the live database.</p>
                     </div>
-                    <div className="flex gap-3 w-full md:w-auto">
+                    <div className="flex flex-wrap gap-3 w-full md:w-auto">
                       <button onClick={handleDeleteSelected} disabled={selectedListingIds.length === 0} className="flex-1 md:flex-none px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-lg text-sm border border-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         Delete Selected ({selectedListingIds.length})
                       </button>
                       <button onClick={handleInject} disabled={selectedListingIds.length === 0} className="flex-1 md:flex-none px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
                         {isInjecting ? "Injecting..." : `Inject ${selectedListingIds.length} to Database`}
                       </button>
+                      {nextPageToken && (
+                        <button 
+                          onClick={() => handleExtractLive(true)} 
+                          disabled={isExtracting}
+                          className="flex-1 md:flex-none px-4 py-2 bg-teal-600 text-white hover:bg-teal-700 font-bold rounded-lg text-sm disabled:opacity-50 transition-colors shadow-md"
+                        >
+                          {isExtracting ? "Loading..." : "Load More Results"}
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -459,13 +456,22 @@ export default function AdminDashboard() {
                   </div>
 
                   {stagedListings.length > 5 && (
-                    <div className="flex justify-center gap-3 pt-6 border-t border-slate-200">
+                    <div className="flex flex-wrap justify-center gap-3 pt-6 border-t border-slate-200">
                       <button onClick={handleDeleteSelected} disabled={selectedListingIds.length === 0} className="px-6 py-3 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-xl text-sm border border-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         Delete Selected ({selectedListingIds.length})
                       </button>
                       <button onClick={handleInject} disabled={selectedListingIds.length === 0} className="px-6 py-3 bg-slate-900 text-white hover:bg-slate-800 font-bold rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md">
                         {isInjecting ? "Injecting..." : `Inject ${selectedListingIds.length} to Database`}
                       </button>
+                      {nextPageToken && (
+                        <button 
+                          onClick={() => handleExtractLive(true)} 
+                          disabled={isExtracting}
+                          className="px-6 py-3 bg-teal-600 text-white hover:bg-teal-700 font-bold rounded-xl text-sm disabled:opacity-50 transition-colors shadow-md"
+                        >
+                          {isExtracting ? "Loading..." : "Load More Results"}
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
