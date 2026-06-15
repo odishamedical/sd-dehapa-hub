@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         // This will throw if GOOGLE_APPLICATION_CREDENTIALS or env vars are missing
         admin.initializeApp({
           credential: admin.credential.applicationDefault(),
-          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "sd-auth-center"
         });
       }
       
