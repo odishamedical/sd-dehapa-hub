@@ -48,11 +48,12 @@ export async function POST(req: NextRequest) {
 
             console.log(`Received message from ${from}: ${change.value.messages[0].type}`);
             
-            // Pass message to Bot State Machine without waiting for it to finish
-            // This ensures we always return 200 OK to Meta quickly
-            BotService.handleIncomingMessage(from, change.value.messages[0]).catch(err => {
+            // Await the message handling to ensure Vercel doesn't kill the serverless function before it finishes
+            try {
+              await BotService.handleIncomingMessage(from, change.value.messages[0]);
+            } catch (err) {
               console.error("Bot Service Error:", err);
-            });
+            }
           }
         }
       }
