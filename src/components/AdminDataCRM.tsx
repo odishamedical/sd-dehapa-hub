@@ -7,6 +7,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import PremiumSlugModal from './PremiumSlugModal';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
+import ImageCropper from './ImageCropper';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -28,6 +29,9 @@ export default function AdminDataCRM() {
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
   const [slugAvailability, setSlugAvailability] = useState<{status: 'idle' | 'checking' | 'available' | 'taken', message: string}>({status: 'idle', message: ''});
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
+
+  // Image Cropping
+  const [imageFileToCrop, setImageFileToCrop] = useState<File | null>(null);
   
   // Selection and bulk operations
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -114,22 +118,26 @@ export default function AdminDataCRM() {
     setIsDrawerOpen(true);
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !selectedListing) return;
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0] || !selectedListing) return;
+    setImageFileToCrop(e.target.files[0]);
+    e.target.value = ''; // Reset input so same file can be selected again
+  };
+
+  const handleCroppedImage = async (croppedBlob: Blob) => {
+    if (!selectedListing) return;
+    setImageFileToCrop(null);
     setIsUploadingImage(true);
     try {
-      const fileRef = ref(storage, `directory/${selectedListing.id}/${file.name}`);
-      await uploadBytes(fileRef, file);
+      const fileExt = "jpg";
+      const fileName = `profile_crop_${Date.now()}.${fileExt}`;
+      const fileRef = ref(storage, `directory/${selectedListing.id || Date.now()}/${fileName}`);
+      await uploadBytes(fileRef, croppedBlob);
       const url = await getDownloadURL(fileRef);
       setSelectedListing({ ...selectedListing, image: url });
-      
-      const docRef = doc(db, 'directory', selectedListing.id);
-      await updateDoc(docRef, { image: url });
-      setData(data.map(d => d.id === selectedListing.id ? { ...d, image: url } : d));
     } catch (err) {
       console.error(err);
-      alert("Failed to upload image.");
+      alert("Failed to upload cropped image");
     }
     setIsUploadingImage(false);
   };
@@ -528,6 +536,14 @@ export default function AdminDataCRM() {
         currentName={selectedListing?.name || "Dr. Example"}
         currentUglyUrl={`dehapa.com/india/odisha/category/${selectedListing?.id || "temporary-id-12345"}`}
       />
+
+      {imageFileToCrop && (
+        <ImageCropper
+          imageFile={imageFileToCrop}
+          onCancel={() => setImageFileToCrop(null)}
+          onCropComplete={handleCroppedImage}
+        />
+      )}
     </div>
   );
 }
