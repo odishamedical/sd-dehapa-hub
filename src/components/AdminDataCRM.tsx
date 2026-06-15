@@ -170,22 +170,6 @@ export default function AdminDataCRM() {
   };
   const removeDynamicField = (index: number) => setDynamicFields(dynamicFields.filter((_, i) => i !== index));
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0] || !selectedListing) return;
-    const file = e.target.files[0];
-    setIsUploadingImage(true);
-    try {
-      const fileRef = ref(storage, `directory/${selectedListing.id || Date.now()}/${file.name}`);
-      await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(fileRef);
-      setSelectedListing({ ...selectedListing, image: url });
-    } catch (err) {
-      console.error(err);
-      alert("Failed to upload image");
-    }
-    setIsUploadingImage(false);
-  };
-
   const handleSave = async () => {
     if (!selectedListing) return;
     setIsSaving(true);
