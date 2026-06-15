@@ -168,11 +168,31 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
           
           {/* Timeline / Records */}
           <div className="flex-1 bg-[#0f172a] border border-[#1e293b] rounded-2xl p-8">
-            <div className="flex items-center justify-between mb-8 border-b border-[#1e293b] pb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 border-b border-[#1e293b] pb-4">
               <h2 className="text-xl font-bold font-serif text-white flex items-center gap-3">
                 <svg className="w-6 h-6 text-[#06b6d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Medical Records History
               </h2>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                  <svg className="w-4 h-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input type="text" placeholder="Search by doctor, diagnosis, or facility..." className="w-full bg-[#1e293b] border border-[#334155] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none" />
+              </div>
+              <select className="bg-[#1e293b] border border-[#334155] rounded-xl px-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none cursor-pointer w-full sm:w-auto">
+                <option>All Record Types</option>
+                <option>Prescriptions Only</option>
+                <option>Lab Reports Only</option>
+                <option>Hospital Admissions</option>
+              </select>
+              <select className="bg-[#1e293b] border border-[#334155] rounded-xl px-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none cursor-pointer w-full sm:w-auto">
+                <option>Sort: Newest First</option>
+                <option>Sort: Oldest First</option>
+              </select>
             </div>
 
             {records.length === 0 ? (
@@ -230,7 +250,7 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
 
                       {/* Routing Badges */}
                       {(rec.routedToPharmacy || rec.routedToLab) && (
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 mb-4">
                           {rec.routedToPharmacy && (
                             <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-lg text-xs flex items-center gap-2">
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -246,6 +266,20 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
                         </div>
                       )}
                       
+                      {/* Actions: Print & Share */}
+                      {rec.type === 'prescription' && (
+                        <div className="mt-4 pt-4 border-t border-[#1e293b] flex justify-end gap-4">
+                          <button className="text-xs font-bold uppercase tracking-widest text-[#94a3b8] hover:text-white flex items-center gap-1.5 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                            Share via WhatsApp
+                          </button>
+                          <button className="text-xs font-bold uppercase tracking-widest text-[#06b6d4] hover:text-[#0891b2] flex items-center gap-1.5 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                            Print Original PDF
+                          </button>
+                        </div>
+                      )}
+
                     </div>
                   </div>
                 ))}
