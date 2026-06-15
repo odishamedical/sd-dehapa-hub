@@ -6,11 +6,14 @@ export class BotService {
   
   static async handleIncomingMessage(from: string, messageData: any) {
     const sessionRef = doc(db, 'whatsapp_sessions', from);
-    const sessionSnap = await getDoc(sessionRef);
-    
     let state = 'NEW';
-    if (sessionSnap.exists()) {
-      state = sessionSnap.data().state || 'NEW';
+    try {
+      const sessionSnap = await getDoc(sessionRef);
+      if (sessionSnap.exists()) {
+        state = sessionSnap.data().state || 'NEW';
+      }
+    } catch (error) {
+      console.error("Firebase read error (check rules):", error);
     }
 
     // Extract message content
@@ -34,7 +37,7 @@ export class BotService {
       case 'NEW':
       case 'MAIN_MENU':
         if (interactiveId === 'btn_doctors') {
-          await setDoc(sessionRef, { state: 'SEARCHING_DOCTOR_SPECIALTY', lastInteraction: new Date() }, { merge: true });
+          try { await setDoc(sessionRef, { state: 'SEARCHING_DOCTOR_SPECIALTY', lastInteraction: new Date() }, { merge: true }); } catch(e){}
           await WhatsAppService.sendTextMessage(from, "👩‍⚕️ *Find a Doctor*\n\nPlease type the specialty you are looking for (e.g., Cardiologist, Dentist, General Physician):");
         } else if (interactiveId === 'btn_hospitals') {
           await WhatsAppService.sendTextMessage(from, "🏥 *Hospital Search*\n\nThis feature is coming soon! Please type 'Menu' to go back.");
@@ -47,7 +50,7 @@ export class BotService {
         if (textBody) {
           await this.searchDoctors(from, textBody);
           // Return to main menu state after searching to allow new searches
-          await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true });
+          try { await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true }); } catch(e){}
         }
         break;
 
@@ -58,7 +61,7 @@ export class BotService {
   }
 
   private static async sendMainMenu(from: string, sessionRef: any) {
-    await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true });
+    try { await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true }); } catch(e){}
     
     await WhatsAppService.sendInteractiveButtons(
       from, 
