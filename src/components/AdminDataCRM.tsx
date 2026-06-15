@@ -393,7 +393,7 @@ export default function AdminDataCRM() {
                     <p className="text-xs text-slate-500 mb-3">Upload a high quality square image. Maximum 2MB.</p>
                     <div className="flex gap-3">
                       <label className="px-5 py-2.5 bg-white border-2 border-slate-200 hover:border-teal-500 rounded-xl text-sm font-bold text-slate-700 cursor-pointer transition-colors shadow-sm inline-block">
-                        {isUploadingImage ? 'Uploading...' : 'Upload Image'}
+                        {isUploadingImage ? 'Uploading...' : 'Upload / Edit Image'}
                         <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={isUploadingImage} />
                       </label>
                       {selectedListing.image && (
