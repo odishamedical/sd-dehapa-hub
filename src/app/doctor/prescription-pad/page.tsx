@@ -18,8 +18,24 @@ function PrescriptionPadContent() {
   const [rxData, setRxData] = useState({
     diagnosis: "",
     medicines: [{ name: "", dosage: "", frequency: "", duration: "" }],
-    advice: ""
+    tests: [{ name: "", instructions: "" }],
+    advice: "",
+    routing: {
+      pharmacyId: "",
+      labId: ""
+    }
   });
+
+  // Mock Data for Proactive Routing
+  const myRosteredPharmacies = [
+    { id: "pharm_1", name: "Apollo In-house Pharmacy" },
+    { id: "pharm_2", name: "LifeCare Meds (Partner)" }
+  ];
+  
+  const myRosteredLabs = [
+    { id: "lab_1", name: "Apollo Diagnostics" },
+    { id: "lab_2", name: "Dr. Lal PathLabs (Partner)" }
+  ];
 
   useEffect(() => {
     // Authentication & Role Check
@@ -48,6 +64,19 @@ function PrescriptionPadContent() {
     const newMedicines = [...rxData.medicines];
     newMedicines[index] = { ...newMedicines[index], [field]: value };
     setRxData(prev => ({ ...prev, medicines: newMedicines }));
+  };
+
+  const handleAddTest = () => {
+    setRxData(prev => ({
+      ...prev,
+      tests: [...prev.tests, { name: "", instructions: "" }]
+    }));
+  };
+
+  const handleTestChange = (index: number, field: string, value: string) => {
+    const newTests = [...rxData.tests];
+    newTests[index] = { ...newTests[index], [field]: value };
+    setRxData(prev => ({ ...prev, tests: newTests }));
   };
 
   const handleSaveAndSend = async (e: React.FormEvent) => {
@@ -143,20 +172,40 @@ function PrescriptionPadContent() {
             </div>
 
             {/* Medicines */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                  Rx (Medications)
-                </label>
-                <button type="button" onClick={handleAddMedicine} className="text-xs font-bold uppercase text-tenant-accent hover:underline">+ Add Medicine</button>
+            <div className="space-y-4 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-4">
+                  <label className="text-sm font-bold uppercase tracking-widest text-slate-800 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-tenant-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Rx (Medications)
+                  </label>
+                  <button type="button" onClick={handleAddMedicine} className="text-xs font-bold uppercase text-white bg-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors">+ Add</button>
+                </div>
+                
+                {/* Proactive Routing: Pharmacy */}
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-slate-500 uppercase">Send to Pharmacy:</span>
+                  <select 
+                    value={rxData.routing.pharmacyId}
+                    onChange={e => setRxData(prev => ({...prev, routing: {...prev.routing, pharmacyId: e.target.value}}))}
+                    className="bg-white border border-teal-200 text-teal-800 text-sm font-bold rounded-lg px-3 py-1.5 focus:border-tenant-accent outline-none cursor-pointer"
+                  >
+                    <option value="">Do Not Send (Give to Patient)</option>
+                    {myRosteredPharmacies.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               
               <div className="space-y-3">
                 {rxData.medicines.map((med, index) => (
-                  <div key={index} className="flex flex-col md:flex-row gap-3 items-start md:items-center bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                    <div className="flex-1 w-full">
-                      <input type="text" placeholder="Medicine Name (e.g., Paracetamol 650mg)" value={med.name} onChange={e => handleMedicineChange(index, "name", e.target.value)} required className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-tenant-accent outline-none" />
+                  <div key={index} className="flex flex-col md:flex-row gap-3 items-start md:items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                    <div className="flex-1 w-full relative">
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <span className="text-xs font-bold text-slate-300">{index + 1}.</span>
+                      </div>
+                      <input type="text" placeholder="Medicine Name (e.g., Paracetamol 650mg)" value={med.name} onChange={e => handleMedicineChange(index, "name", e.target.value)} required className="w-full bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-sm focus:border-tenant-accent outline-none" />
                     </div>
                     <div className="w-full md:w-24">
                       <input type="text" placeholder="Dosage" value={med.dosage} onChange={e => handleMedicineChange(index, "dosage", e.target.value)} required className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-tenant-accent outline-none" />
@@ -165,13 +214,57 @@ function PrescriptionPadContent() {
                       <select value={med.frequency} onChange={e => handleMedicineChange(index, "frequency", e.target.value)} className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-tenant-accent outline-none">
                         <option value="">Frequency</option>
                         <option value="1-0-0">1-0-0 (Morning)</option>
-                        <option value="1-0-1">1-0-1 (Morning/Night)</option>
+                        <option value="1-0-1">1-0-1 (Morn/Night)</option>
                         <option value="1-1-1">1-1-1 (TID)</option>
                         <option value="SOS">SOS (As Needed)</option>
                       </select>
                     </div>
                     <div className="w-full md:w-24">
                       <input type="text" placeholder="Duration" value={med.duration} onChange={e => handleMedicineChange(index, "duration", e.target.value)} required className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-tenant-accent outline-none" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Lab Tests */}
+            <div className="space-y-4 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-4">
+                  <label className="text-sm font-bold uppercase tracking-widest text-slate-800 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Lab Tests & Investigations
+                  </label>
+                  <button type="button" onClick={handleAddTest} className="text-xs font-bold uppercase text-white bg-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors">+ Add</button>
+                </div>
+                
+                {/* Proactive Routing: Lab */}
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-slate-500 uppercase">Send to Lab:</span>
+                  <select 
+                    value={rxData.routing.labId}
+                    onChange={e => setRxData(prev => ({...prev, routing: {...prev.routing, labId: e.target.value}}))}
+                    className="bg-white border border-blue-200 text-blue-800 text-sm font-bold rounded-lg px-3 py-1.5 focus:border-blue-500 outline-none cursor-pointer"
+                  >
+                    <option value="">Do Not Send (Give to Patient)</option>
+                    {myRosteredLabs.map(l => (
+                      <option key={l.id} value={l.id}>{l.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                {rxData.tests.map((test, index) => (
+                  <div key={index} className="flex flex-col md:flex-row gap-3 items-start md:items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                    <div className="w-full md:w-1/2 relative">
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <span className="text-xs font-bold text-slate-300">{index + 1}.</span>
+                      </div>
+                      <input type="text" placeholder="Test Name (e.g., CBC, Lipid Profile)" value={test.name} onChange={e => handleTestChange(index, "name", e.target.value)} required className="w-full bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-sm focus:border-blue-500 outline-none" />
+                    </div>
+                    <div className="flex-1 w-full">
+                      <input type="text" placeholder="Instructions (e.g., Fasting)" value={test.instructions} onChange={e => handleTestChange(index, "instructions", e.target.value)} className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-blue-500 outline-none" />
                     </div>
                   </div>
                 ))}
