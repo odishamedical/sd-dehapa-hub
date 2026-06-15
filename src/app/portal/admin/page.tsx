@@ -236,6 +236,7 @@ export default function AdminDashboard() {
           country: crawlerAddress.country,
           state: crawlerAddress.state,
           district: crawlerAddress.district,
+          block: crawlerAddress.block || "",
           city: crawlerAddress.city,
           locality: crawlerAddress.localAddress,
           pin: crawlerAddress.pincode,
