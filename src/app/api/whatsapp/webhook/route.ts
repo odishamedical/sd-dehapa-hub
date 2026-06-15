@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { BotService } from '@/services/bot.service';
 
 // This is the token you will enter in the Meta Developer Dashboard
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'DEHAPA_WHATSAPP_SECRET_2026';
@@ -45,10 +46,13 @@ export async function POST(req: NextRequest) {
             const from = change.value.messages[0].from; // The user's phone number
             const msg_body = change.value.messages[0].text?.body; // The message text
 
-            console.log(`Received message from ${from}: ${msg_body}`);
+            console.log(`Received message from ${from}: ${change.value.messages[0].type}`);
             
-            // Here you can add logic to save the message to Firebase,
-            // trigger a bot response, or alert an admin.
+            // Pass message to Bot State Machine without waiting for it to finish
+            // This ensures we always return 200 OK to Meta quickly
+            BotService.handleIncomingMessage(from, change.value.messages[0]).catch(err => {
+              console.error("Bot Service Error:", err);
+            });
           }
         }
       }
