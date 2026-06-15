@@ -181,7 +181,7 @@ function PrescriptionPadContent() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-12 print:hidden">
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-xl">
           
           <div className="sticky top-[73px] z-40 bg-slate-50/95 backdrop-blur-md border-b border-tenant-accent/20 p-6 flex justify-between items-center shadow-sm">
             <div>
