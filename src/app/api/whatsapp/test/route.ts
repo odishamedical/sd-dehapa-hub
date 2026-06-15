@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { WhatsAppService } from '@/services/whatsapp.service';
+import { BotService } from '@/services/bot.service';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -10,16 +11,22 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const result = await WhatsAppService.sendInteractiveButtons(to, "Test Interactive Message", [
-      { id: 'btn_test', title: 'Test Button' }
-    ]);
+    // Simulate user clicking 'btn_doctors'
+    await BotService.handleIncomingMessage(to, {
+      from: to,
+      type: "interactive",
+      interactive: {
+        type: "button_reply",
+        button_reply: {
+          id: "btn_doctors",
+          title: "Find a Doctor"
+        }
+      }
+    });
+
     return NextResponse.json({ 
       success: true, 
-      metaResponse: result,
-      env: {
-        hasToken: !!process.env.WHATSAPP_ACCESS_TOKEN,
-        hasPhoneId: !!process.env.WHATSAPP_PHONE_NUMBER_ID
-      }
+      message: "Simulated btn_doctors click!"
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

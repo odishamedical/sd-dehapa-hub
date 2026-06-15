@@ -48,11 +48,12 @@ export async function POST(req: NextRequest) {
 
             console.log(`Received message from ${from}: ${change.value.messages[0].type}`);
             
-            // Await the message handling to ensure Vercel doesn't kill the serverless function before it finishes
             try {
               await BotService.handleIncomingMessage(from, change.value.messages[0]);
-            } catch (err) {
+            } catch (err: any) {
               console.error("Bot Service Error:", err);
+              // Send error to WhatsApp so user can see it
+              await WhatsAppService.sendTextMessage(from, "Bot Crashed: " + err.message);
             }
           }
         }
