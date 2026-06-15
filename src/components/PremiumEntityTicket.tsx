@@ -33,9 +33,13 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
       subtitle: data.subCategory || "Medical Store",
       location: data.city || data.district || "Local Region",
       topBoxLabel: "Verification Status",
-      topBoxContent: (
-        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-green-400 to-green-600 border border-green-200 shadow-sm flex items-center justify-center">
+      topBoxContent: data.verified ? (
+        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-green-400 to-green-600 border border-green-200 shadow-sm flex items-center justify-center" title="Verified">
           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+      ) : (
+        <div className="px-1.5 py-0.5 rounded bg-slate-300 border border-slate-400 shadow-sm flex items-center justify-center">
+          <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">Unverified</span>
         </div>
       ),
       bottomLeftLabel: "Delivery Options",
@@ -48,9 +52,13 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
       subtitle: data.subCategory || "Multi-Specialty Hospital",
       location: data.city || data.district || "Local Region",
       topBoxLabel: "Institution Status",
-      topBoxContent: (
-        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border border-blue-200 shadow-sm flex items-center justify-center">
+      topBoxContent: data.verified ? (
+        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border border-blue-200 shadow-sm flex items-center justify-center" title="Verified">
           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+      ) : (
+        <div className="px-1.5 py-0.5 rounded bg-slate-300 border border-slate-400 shadow-sm flex items-center justify-center">
+          <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">Unverified</span>
         </div>
       ),
       bottomLeftLabel: "Facility Scale",
@@ -63,9 +71,13 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
       subtitle: data.subCategory || "Diagnostic Center",
       location: data.city || data.district || "Local Region",
       topBoxLabel: "Lab Accreditation",
-      topBoxContent: (
+      topBoxContent: data.verified ? (
         <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border border-purple-200 shadow-sm flex items-center justify-center">
           <span className="text-[8px] text-white font-bold">NABL</span>
+        </div>
+      ) : (
+        <div className="px-1.5 py-0.5 rounded bg-slate-300 border border-slate-400 shadow-sm flex items-center justify-center">
+          <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">Unverified</span>
         </div>
       ),
       bottomLeftLabel: "Home Collection",
@@ -78,9 +90,13 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
       subtitle: data.subCategory || "Emergency Transport",
       location: data.city || data.district || "Local Region",
       topBoxLabel: "Fleet Status",
-      topBoxContent: (
-        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-red-400 to-red-600 border border-red-200 shadow-sm flex items-center justify-center">
+      topBoxContent: data.verified ? (
+        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-red-400 to-red-600 border border-red-200 shadow-sm flex items-center justify-center" title="Verified">
           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+      ) : (
+        <div className="px-1.5 py-0.5 rounded bg-slate-300 border border-slate-400 shadow-sm flex items-center justify-center">
+          <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">Unverified</span>
         </div>
       ),
       bottomLeftLabel: "Response Area",
