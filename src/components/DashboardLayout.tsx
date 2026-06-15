@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import Link from 'next/link';
+import { QRCodeSVG } from 'qrcode.react';
 
 export type DashboardTab = {
   id: string;
@@ -94,7 +95,18 @@ export default function DashboardLayout({
                 )}
               </div>
               <h3 className="font-bold text-white text-base">{userProfile.name}</h3>
-              <p className="text-teal-400 text-xs font-medium mt-1">{userProfile.subtitle}</p>
+              <p className="text-teal-400 text-xs font-medium mt-1 mb-4">{userProfile.subtitle}</p>
+              
+              {/* Dehapa ID QR Code */}
+              <div className="bg-white p-2 rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.1)] inline-block">
+                <QRCodeSVG 
+                  value={`https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
+                  size={96} 
+                  level="H"
+                  fgColor="#0f172a" 
+                />
+              </div>
+              <p className="text-[9px] text-slate-500 uppercase tracking-widest mt-2">Scan for Profile Access</p>
             </div>
           </div>
         )}
