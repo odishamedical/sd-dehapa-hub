@@ -25,13 +25,13 @@ export default function CategoryNav() {
               <Link
                 key={cat.name}
                 href={cat.href}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all shrink-0 ${
+                className={`flex items-center gap-1.5 md:gap-2 px-3 py-1.5 md:px-5 md:py-2.5 rounded-lg md:rounded-xl text-xs md:text-sm font-bold whitespace-nowrap transition-all shrink-0 ${
                   isActive 
-                    ? 'bg-white text-teal-700 border-[3px] border-teal-600 shadow-[0_6px_15px_rgba(13,148,136,0.2)] transform -translate-y-0.5' 
-                    : 'bg-white text-slate-500 hover:text-slate-800 border-[3px] border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md'
+                    ? 'bg-white text-teal-700 border-[2px] md:border-[3px] border-teal-600 shadow-[0_6px_15px_rgba(13,148,136,0.2)] transform md:-translate-y-0.5' 
+                    : 'bg-white text-slate-500 hover:text-slate-800 border-[2px] md:border-[3px] border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md'
                 }`}
               >
-                <span className="text-lg drop-shadow-sm">{cat.icon}</span>
+                <span className="text-sm md:text-lg drop-shadow-sm">{cat.icon}</span>
                 {cat.name}
               </Link>
             );

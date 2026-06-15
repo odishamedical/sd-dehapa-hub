@@ -111,26 +111,26 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
   const imageSrc = data.image || data.img || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'H')}&background=random`;
 
   return (
-    <Link href={generateUniversalSeoUrl(data, type)} className="relative h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
+    <Link href={generateUniversalSeoUrl(data, type)} className="relative h-auto sm:h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
       {/* Background Metal Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#ffffff] via-[#e2e8f0] to-[#94a3b8] opacity-90 transition-colors"></div>
       
       {/* Subtle brushed texture */}
       <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
 
-      <div className="flex items-center h-full relative z-10 pr-2 sm:pr-3">
+      <div className="flex flex-col sm:flex-row sm:items-center h-full relative z-10 p-3 sm:p-0 sm:pr-3">
         
         {/* Left Side: Floating Vertical Image */}
-        <div className="w-[110px] sm:w-[32%] h-[90%] sm:h-[86%] ml-2 sm:ml-3 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-[3px] sm:border-4 border-[#f8fafc] bg-slate-200 group-hover:scale-[1.03] transition-transform duration-300 z-40 flex items-center justify-center">
+        <div className="w-full sm:w-[32%] h-[160px] sm:h-[86%] sm:ml-3 mb-3 sm:mb-0 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-[3px] sm:border-4 border-[#f8fafc] bg-slate-200 group-hover:scale-[1.03] transition-transform duration-300 z-40 flex items-center justify-center">
            <img src={imageSrc} alt={data.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'H')}&background=random` }} />
         </div>
         
         {/* Right Side: Data Content */}
-        <div className="flex-1 h-full py-3 sm:py-4 pl-3 sm:pl-5 flex flex-col min-w-0 relative z-30">
+        <div className="flex-1 py-1 sm:py-4 sm:pl-5 flex flex-col min-w-0 relative z-30">
           
           {/* Top Row: Name and Icon */}
-          <div className="flex justify-between items-start mb-0.5">
-            <h3 className="text-[15px] sm:text-lg md:text-xl font-bold text-slate-800 tracking-tight truncate drop-shadow-sm pr-1">{data.name}</h3>
+          <div className="flex justify-between items-start mb-1 sm:mb-0.5">
+            <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-800 tracking-tight truncate drop-shadow-sm pr-1">{data.name}</h3>
             {type === 'ambulances' ? (
               <span className="text-red-500 font-bold text-lg leading-none">🚨</span>
             ) : type === 'pharmacies' ? (
@@ -144,25 +144,25 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
             )}
           </div>
           
-          <p className="text-slate-600 text-xs font-semibold mb-2 truncate">{c.subtitle}</p>
+          <p className="text-slate-600 text-xs sm:text-sm font-semibold mb-2 sm:mb-2 truncate">{c.subtitle}</p>
           
           {/* Top Box (Certifications/Verifications) */}
-          <div className="flex items-center gap-2 mb-2.5">
-            <span className="text-[10px] font-bold text-slate-700">{c.topBoxLabel}</span>
+          <div className="flex items-center gap-2 mb-2 sm:mb-2.5">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-700">{c.topBoxLabel}</span>
             {c.topBoxContent}
           </div>
           
           {/* Location */}
-          <div className="mb-2.5">
-            <p className="text-slate-800 text-xs font-bold truncate drop-shadow-sm">{c.location}</p>
-            <p className="text-slate-600 text-[10px] flex items-center gap-1">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <div className="mb-3 sm:mb-2.5">
+            <p className="text-slate-800 text-xs sm:text-sm font-bold truncate drop-shadow-sm">{c.location}</p>
+            <p className="text-slate-600 text-[10px] sm:text-xs flex items-center gap-1 mt-0.5">
+              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
               {data.district || data.city || "Odisha"}
             </p>
           </div>
           
           {/* Ratings */}
-          <div className="flex items-center gap-2 sm:gap-4 text-[9px] sm:text-[10px] font-bold text-slate-600 mb-auto drop-shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-[11px] font-bold text-slate-600 mb-3 sm:mb-auto drop-shadow-sm">
              <span className="flex items-center gap-1 text-amber-500 shrink-0">
                ⭐⭐⭐⭐⭐ <span className="text-slate-700 ml-0.5 sm:ml-1">{data.rating || '4.8'}</span>
              </span>
@@ -173,16 +173,16 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
           </div>
           
           {/* Bottom Buttons */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2 mt-auto pt-2 sm:pt-3 border-t border-slate-400/30">
+          <div className="flex flex-row items-center gap-2 sm:mt-auto pt-3 border-t border-slate-400/30">
             <div className="flex-1 flex flex-col justify-center">
               <span className="text-[8px] sm:text-[9px] text-slate-500 font-bold uppercase tracking-widest">{c.bottomLeftLabel}</span>
-              <span className="text-[10px] sm:text-xs text-slate-900 font-black truncate">{c.bottomLeftValue}</span>
+              <span className="text-[11px] sm:text-xs text-slate-900 font-black truncate">{c.bottomLeftValue}</span>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-2 rounded-md border border-slate-400 text-[9px] sm:text-[10px] transition-colors whitespace-nowrap shadow-sm text-center">
+            <div className="flex items-center gap-2">
+              <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-2 px-3 sm:py-1.5 sm:px-2 rounded-lg sm:rounded-md border border-slate-400 text-xs sm:text-[10px] transition-colors whitespace-nowrap shadow-sm text-center">
                 {c.btnSecondary}
               </div>
-              <div className={`${c.btnPrimaryClass} font-bold py-1.5 px-2 rounded-md text-[9px] sm:text-[10px] transition-all shadow-lg shadow-teal-900/20 whitespace-nowrap text-center`}>
+              <div className={`${c.btnPrimaryClass} font-bold py-2 px-4 sm:py-1.5 sm:px-2 rounded-lg sm:rounded-md text-xs sm:text-[10px] transition-all shadow-lg shadow-teal-900/20 whitespace-nowrap text-center`}>
                 {c.btnPrimary}
               </div>
             </div>

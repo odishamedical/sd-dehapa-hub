@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
 
-export default function AdminWhatsAppDashboard() {
+export default function WhatsAppChatAdmin() {
   const [sessions, setSessions] = useState<any[]>([]);
   const [selectedSession, setSelectedSession] = useState<any | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -14,14 +14,11 @@ export default function AdminWhatsAppDashboard() {
 
   // Fetch Sessions
   useEffect(() => {
-    const q = query(collection(db, 'whatsapp_sessions'));
+    const q = query(collection(db, 'whatsapp_sessions')); // Could order by lastInteraction if we add index
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const sessData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      sessData.sort((a: any, b: any) => {
-        const timeA = a.lastInteraction?.toMillis ? a.lastInteraction.toMillis() : (a.lastInteraction || 0);
-        const timeB = b.lastInteraction?.toMillis ? b.lastInteraction.toMillis() : (b.lastInteraction || 0);
-        return timeB - timeA;
-      });
+      // Sort by lastInteraction descending in memory to avoid index requirement for now
+      sessData.sort((a: any, b: any) => (b.lastInteraction || 0) - (a.lastInteraction || 0));
       setSessions(sessData);
       setLoading(false);
     });
@@ -41,7 +38,7 @@ export default function AdminWhatsAppDashboard() {
     return () => unsubscribe();
   }, [selectedSession?.id]);
 
-  // Keep selectedSession state up to date
+  // Keep selectedSession state up to date when sessions list changes
   useEffect(() => {
     if (selectedSession) {
       const updated = sessions.find(s => s.id === selectedSession.id);
@@ -49,7 +46,7 @@ export default function AdminWhatsAppDashboard() {
         setSelectedSession(updated);
       }
     }
-  }, [sessions, selectedSession]);
+  }, [sessions]);
 
   const toggleTakeover = async () => {
     if (!selectedSession) return;
@@ -74,33 +71,32 @@ export default function AdminWhatsAppDashboard() {
   };
 
   return (
-    <div className="flex h-[700px] bg-gray-50 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+    <div className="flex h-[calc(100vh-100px)] bg-gray-50 rounded-xl overflow-hidden shadow-sm border border-gray-200">
       {/* Sidebar */}
-      <div className="w-1/3 bg-white border-r border-slate-200 flex flex-col">
-        <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
-          <h2 className="font-bold text-slate-900">Live Sessions</h2>
-          <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+      <div className="w-1/3 bg-white border-r border-gray-200 flex flex-col">
+        <div className="p-4 border-b border-gray-200 bg-gray-50 font-semibold text-gray-700">
+          WhatsApp Sessions
         </div>
         <div className="flex-1 overflow-y-auto">
           {loading ? (
-            <div className="p-4 text-center text-slate-500">Loading...</div>
+            <div className="p-4 text-center text-gray-500">Loading...</div>
           ) : sessions.length === 0 ? (
-            <div className="p-4 text-center text-slate-500">No active chats</div>
+            <div className="p-4 text-center text-gray-500">No active chats</div>
           ) : (
             sessions.map((s) => (
               <div 
                 key={s.id} 
                 onClick={() => setSelectedSession(s)}
-                className={`p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors ${selectedSession?.id === s.id ? 'bg-teal-50 border-l-4 border-l-teal-500' : ''}`}
+                className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${selectedSession?.id === s.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''}`}
               >
                 <div className="flex justify-between items-start mb-1">
-                  <span className="font-bold text-slate-800">+{s.id}</span>
-                  <span className="text-xs text-slate-400">
-                    {s.lastInteraction ? new Date(s.lastInteraction?.toMillis ? s.lastInteraction.toMillis() : s.lastInteraction).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
+                  <span className="font-semibold text-gray-800">{s.id}</span>
+                  <span className="text-xs text-gray-500">
+                    {s.lastInteraction ? new Date(s.lastInteraction).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
                   </span>
                 </div>
-                <div className="text-xs text-slate-500 truncate mt-1">
-                  State: <span className={s.state === 'HUMAN_TAKEOVER' ? 'text-red-500 font-bold' : 'text-teal-600 font-bold'}>{s.state || 'NEW'}</span>
+                <div className="text-sm text-gray-600 truncate">
+                  State: <span className={s.state === 'HUMAN_TAKEOVER' ? 'text-red-500 font-medium' : 'text-green-500'}>{s.state || 'NEW'}</span>
                 </div>
               </div>
             ))
@@ -113,17 +109,17 @@ export default function AdminWhatsAppDashboard() {
         {selectedSession ? (
           <>
             {/* Header */}
-            <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center shadow-sm z-10">
+            <div className="p-4 bg-gray-100 border-b border-gray-200 flex justify-between items-center shadow-sm z-10">
               <div>
-                <h2 className="font-bold text-slate-900">+{selectedSession.id}</h2>
-                <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                  <span className={`w-1.5 h-1.5 rounded-full ${selectedSession.state === 'HUMAN_TAKEOVER' ? 'bg-red-500' : 'bg-teal-500'}`}></span>
+                <h2 className="font-semibold text-gray-800 text-lg">{selectedSession.id}</h2>
+                <div className="text-sm text-gray-500 flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${selectedSession.state === 'HUMAN_TAKEOVER' ? 'bg-red-500' : 'bg-green-500'}`}></span>
                   {selectedSession.state === 'HUMAN_TAKEOVER' ? 'Human Takeover (Bot Paused)' : 'Bot Auto-Reply Active'}
                 </div>
               </div>
               <button 
                 onClick={toggleTakeover}
-                className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors ${selectedSession.state === 'HUMAN_TAKEOVER' ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-500/20' : 'bg-red-500 hover:bg-red-600 text-white shadow-md shadow-red-500/20'}`}
+                className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${selectedSession.state === 'HUMAN_TAKEOVER' ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'}`}
               >
                 {selectedSession.state === 'HUMAN_TAKEOVER' ? 'Re-Enable Bot' : 'Takeover Chat'}
               </button>
@@ -132,28 +128,28 @@ export default function AdminWhatsAppDashboard() {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.length === 0 && (
-                <div className="text-center text-slate-500 my-10 bg-white/60 py-2 rounded-lg mx-auto w-fit px-4 text-sm font-medium">
+                <div className="text-center text-gray-500 my-10 bg-white/50 py-2 rounded-lg mx-auto w-fit px-4">
                   No messages logged yet. (Only new messages will appear here)
                 </div>
               )}
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
                   <div 
-                    className={`max-w-[75%] rounded-xl px-4 py-2 shadow-sm ${
+                    className={`max-w-[70%] rounded-lg px-4 py-2 shadow-sm ${
                       msg.role === 'user' 
-                        ? 'bg-white text-slate-800' 
+                        ? 'bg-white text-gray-800' 
                         : msg.role === 'admin' 
-                          ? 'bg-blue-100 text-slate-800 border border-blue-200'
-                          : 'bg-[#dcf8c6] text-slate-800 border border-[#cbe6b6]'
+                          ? 'bg-blue-100 text-gray-800'
+                          : 'bg-[#dcf8c6] text-gray-800'
                     }`}
                   >
                     {msg.role !== 'user' && (
-                      <div className="text-[9px] uppercase font-bold mb-1 opacity-40 flex justify-end">
+                      <div className="text-[10px] uppercase font-bold mb-1 opacity-50 flex justify-end">
                         {msg.role}
                       </div>
                     )}
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">{msg.text}</div>
-                    <div className="text-[10px] text-slate-400 text-right mt-1.5 font-medium">
+                    <div className="whitespace-pre-wrap">{msg.text}</div>
+                    <div className="text-[10px] text-gray-500 text-right mt-1">
                       {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </div>
                   </div>
@@ -163,36 +159,37 @@ export default function AdminWhatsAppDashboard() {
             </div>
 
             {/* Input Form */}
-            <div className="p-4 bg-slate-50 border-t border-slate-200">
-              <div className="flex gap-3">
+            <div className="p-4 bg-gray-100 border-t border-gray-200">
+              <div className="flex gap-2">
                 <input 
                   type="text" 
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                  placeholder="Type a manual reply..." 
-                  className="flex-1 rounded-xl px-4 py-3 border-2 border-slate-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-sm text-sm outline-none transition-all disabled:opacity-50 disabled:bg-slate-100"
+                  placeholder="Type a message..." 
+                  className="flex-1 rounded-full px-4 py-2 border-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                   disabled={selectedSession.state !== 'HUMAN_TAKEOVER'}
                 />
                 <button 
                   onClick={sendMessage}
                   disabled={!inputText.trim() || selectedSession.state !== 'HUMAN_TAKEOVER'}
-                  className="bg-teal-600 text-white rounded-xl px-6 font-bold disabled:opacity-50 hover:bg-teal-700 transition-colors shadow-md shadow-teal-500/20"
+                  className="bg-blue-500 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center disabled:opacity-50 hover:bg-blue-600 transition-colors shadow-sm"
                 >
-                  Send
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 ml-1">
+                    <path d="M3.478 2.404a.75.75 0 00-.926.941l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.404z" />
+                  </svg>
                 </button>
               </div>
               {selectedSession.state !== 'HUMAN_TAKEOVER' && (
-                <div className="text-xs text-slate-500 mt-2 text-center font-medium bg-slate-200/50 py-1.5 rounded-lg w-fit mx-auto px-4">
-                  🔒 Click 'Takeover Chat' to disable the bot and type manually.
+                <div className="text-xs text-red-500 mt-2 text-center font-medium">
+                  Click 'Takeover Chat' to disable the bot and type manually.
                 </div>
               )}
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-slate-50">
-            <svg className="w-16 h-16 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-            <p className="font-medium">Select a session from the left to view chat history</p>
+          <div className="flex-1 flex items-center justify-center text-gray-500 bg-gray-50">
+            Select a session to view chat
           </div>
         )}
       </div>

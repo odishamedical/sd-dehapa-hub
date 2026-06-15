@@ -4,6 +4,21 @@ import { WhatsAppService } from './whatsapp.service';
 
 export class BotService {
   
+  public static async logMessage(from: string, role: 'user' | 'bot' | 'admin', text: string) {
+    try {
+      const msgRef = doc(collection(db, 'whatsapp_sessions', from, 'messages'));
+      await setDoc(msgRef, {
+        role,
+        text,
+        timestamp: Date.now()
+      });
+      const sessionRef = doc(db, 'whatsapp_sessions', from);
+      await setDoc(sessionRef, { lastInteraction: Date.now() }, { merge: true });
+    } catch (e) {
+      console.error("Error logging message:", e);
+    }
+  }
+
   static async handleIncomingMessage(from: string, messageData: any) {
     console.log("handleIncomingMessage starting for:", from);
     const sessionRef = doc(db, 'whatsapp_sessions', from);
@@ -31,6 +46,16 @@ export class BotService {
       interactiveId = messageData.interactive?.button_reply?.id || '';
     }
 
+    // Log incoming message
+    const msgTextToLog = messageData.type === 'text' ? (messageData.text?.body || '') : (interactiveId ? `[Button Click: ${interactiveId}]` : '[Unknown Message]');
+    await this.logMessage(from, 'user', msgTextToLog);
+
+    // Human Takeover check
+    if (state === 'HUMAN_TAKEOVER') {
+      console.log("Session in HUMAN_TAKEOVER mode. Skipping bot reply.");
+      return;
+    }
+
     // Universal Reset Commands
     if (textBody === 'menu' || textBody === 'hi' || textBody === 'hello' || textBody === 'reset') {
       await this.sendMainMenu(from, sessionRef);
@@ -42,10 +67,14 @@ export class BotService {
       case 'NEW':
       case 'MAIN_MENU':
         if (interactiveId === 'btn_doctors') {
-          try { await setDoc(sessionRef, { state: 'SEARCHING_DOCTOR_SPECIALTY', lastInteraction: new Date() }, { merge: true }); } catch(e){}
-          await WhatsAppService.sendTextMessage(from, "👩‍⚕️ *Find a Doctor*\n\nPlease type the specialty you are looking for (e.g., Cardiologist, Dentist, General Physician):");
+          try { await setDoc(sessionRef, { state: 'SEARCHING_DOCTOR_SPECIALTY', lastInteraction: Date.now() }, { merge: true }); } catch(e){}
+          const msg = "👩‍⚕️ *Find a Doctor*\n\nPlease type the specialty you are looking for (e.g., Cardiologist, Dentist, General Physician):";
+          await WhatsAppService.sendTextMessage(from, msg);
+          await this.logMessage(from, 'bot', msg);
         } else if (interactiveId === 'btn_hospitals') {
-          await WhatsAppService.sendTextMessage(from, "🏥 *Hospital Search*\n\nThis feature is coming soon! Please type 'Menu' to go back.");
+          const msg = "🏥 *Hospital Search*\n\nThis feature is coming soon! Please type 'Menu' to go back.";
+          await WhatsAppService.sendTextMessage(from, msg);
+          await this.logMessage(from, 'bot', msg);
         } else {
           await this.sendMainMenu(from, sessionRef);
         }
@@ -55,7 +84,7 @@ export class BotService {
         if (textBody) {
           await this.searchDoctors(from, textBody);
           // Return to main menu state after searching to allow new searches
-          try { await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true }); } catch(e){}
+          try { await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: Date.now() }, { merge: true }); } catch(e){}
         }
         break;
 
@@ -68,25 +97,29 @@ export class BotService {
   private static async sendMainMenu(from: string, sessionRef: any) {
     console.log("sendMainMenu called for", from);
     try { 
-      await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true }); 
+      await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: Date.now() }, { merge: true }); 
       console.log("sendMainMenu: setDoc SUCCESS!");
     } catch(e) {
       console.log("sendMainMenu: setDoc FAILED silently:", e);
     }
     
     console.log("sendMainMenu: Calling WhatsAppService.sendInteractiveButtons...");
+    const msg = "👋 *Welcome to Dehapa Hub!*\n\nI am your virtual healthcare assistant. What would you like to find today?";
     await WhatsAppService.sendInteractiveButtons(
       from, 
-      "👋 *Welcome to Dehapa Hub!*\n\nI am your virtual healthcare assistant. What would you like to find today?",
+      msg,
       [
         { id: 'btn_doctors', title: 'Find a Doctor' },
         { id: 'btn_hospitals', title: 'Find a Hospital' }
       ]
     );
+    await this.logMessage(from, 'bot', msg);
   }
 
   private static async searchDoctors(from: string, specialty: string) {
-    await WhatsAppService.sendTextMessage(from, `🔍 Searching for *${specialty}*... please wait a moment.`);
+    const searchingMsg = `🔍 Searching for *${specialty}*... please wait a moment.`;
+    await WhatsAppService.sendTextMessage(from, searchingMsg);
+    await this.logMessage(from, 'bot', searchingMsg);
     
     try {
       const q = query(collection(db, 'directory'));
@@ -102,7 +135,9 @@ export class BotService {
         .slice(0, 3); // Max 3 for WhatsApp readability
 
       if (doctors.length === 0) {
-        await WhatsAppService.sendTextMessage(from, `❌ Sorry, we couldn't find any doctors for "${specialty}".\n\nType 'Menu' to start over.`);
+        const errMsg = `❌ Sorry, we couldn't find any doctors for "${specialty}".\n\nType 'Menu' to start over.`;
+        await WhatsAppService.sendTextMessage(from, errMsg);
+        await this.logMessage(from, 'bot', errMsg);
         return;
       }
 
@@ -116,10 +151,13 @@ export class BotService {
 
       resultText += "To search again, type 'Menu'.";
       await WhatsAppService.sendTextMessage(from, resultText);
+      await this.logMessage(from, 'bot', resultText);
 
     } catch (error) {
       console.error("Error searching doctors:", error);
-      await WhatsAppService.sendTextMessage(from, "⚠️ Sorry, an error occurred while searching our directory. Please try again later.");
+      const errMsg = "⚠️ Sorry, an error occurred while searching our directory. Please try again later.";
+      await WhatsAppService.sendTextMessage(from, errMsg);
+      await this.logMessage(from, 'bot', errMsg);
     }
   }
 

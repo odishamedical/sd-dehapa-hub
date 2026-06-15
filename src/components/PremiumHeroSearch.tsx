@@ -48,10 +48,10 @@ export default function PremiumHeroSearch({
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
       <div className="max-w-7xl mx-auto text-center relative z-10">
-        <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-lg tracking-tight md:whitespace-nowrap">
+        <h1 className="text-2xl md:text-5xl font-serif font-bold text-white mb-3 md:mb-4 drop-shadow-lg tracking-tight md:whitespace-nowrap">
           {titlePrefix} <span className="text-teal-400">{titleHighlight}</span>
         </h1>
-        <p className="text-slate-300 text-base md:text-lg mb-8 max-w-5xl mx-auto font-medium md:whitespace-nowrap">
+        <p className="text-slate-300 text-sm md:text-lg mb-6 md:mb-8 max-w-5xl mx-auto font-medium md:whitespace-nowrap">
           {description}
         </p>
         
@@ -84,34 +84,37 @@ export default function PremiumHeroSearch({
              className="hidden lg:block md:w-36"
            />
 
-           {/* District */}
-           <CustomDropdown 
-             label="District"
-             placeholder="All Districts"
-             options={[
-               { label: "All Districts", value: "" },
-               ...uniqueDistricts.map(d => ({ label: d as string, value: d as string }))
-             ]}
-             value={searchDistrict}
-             onChange={setSearchDistrict}
-             className="md:w-40"
-           />
+           {/* Mobile Grid for District & Type */}
+           <div className="flex gap-2 w-full md:w-auto">
+             {/* District */}
+             <CustomDropdown 
+               label="District"
+               placeholder="All Districts"
+               options={[
+                 { label: "All Districts", value: "" },
+                 ...uniqueDistricts.map(d => ({ label: d as string, value: d as string }))
+               ]}
+               value={searchDistrict}
+               onChange={setSearchDistrict}
+               className="flex-1 md:flex-none md:w-40"
+             />
 
-           {/* Type */}
-           <CustomDropdown 
-             label="Type"
-             placeholder="All Types"
-             options={[
-               { label: "All Types", value: "" },
-               { label: "Doctors", value: "doctors" },
-               { label: "Hospitals", value: "hospitals" },
-               { label: "Clinics", value: "clinics" },
-               { label: "Labs", value: "labs" }
-             ]}
-             value={searchType}
-             onChange={setSearchType}
-             className="md:w-36"
-           />
+             {/* Type */}
+             <CustomDropdown 
+               label="Type"
+               placeholder="All Types"
+               options={[
+                 { label: "All Types", value: "" },
+                 { label: "Doctors", value: "doctors" },
+                 { label: "Hospitals", value: "hospitals" },
+                 { label: "Clinics", value: "clinics" },
+                 { label: "Labs", value: "labs" }
+               ]}
+               value={searchType}
+               onChange={setSearchType}
+               className="flex-1 md:flex-none md:w-36"
+             />
+           </div>
 
            {/* Free Text Search */}
            <div className="flex-1 relative px-2 py-1 flex flex-col justify-center">

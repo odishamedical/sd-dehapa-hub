@@ -1,13 +1,33 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function ClaimListingPage() {
+function ClaimListingContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const listingId = searchParams.get('id');
+  
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userEmail = localStorage.getItem("sd_current_user_email");
+    if (!userEmail) {
+      // Redirect to native DehaPa login
+      const redirectUrl = listingId ? `/portal/claim?id=${listingId}` : '/portal/claim';
+      router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+    } else {
+      setAuthChecked(true);
+      // Auto-skip to step 2 if we already have the listing ID
+      if (listingId) {
+        setStep(2);
+      }
+    }
+  }, [router, listingId]);
 
   const ROLES = [
     { id: "doctor", name: "Medical Practitioner", icon: "👨‍⚕️", desc: "For individual doctors and specialists." },
@@ -21,6 +41,10 @@ export default function ClaimListingPage() {
     e.preventDefault();
     setStep(3); // Go to success step
   };
+
+  if (!authChecked) {
+    return <div className="min-h-screen bg-slate-50 flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-tenant-accent/30 flex flex-col">
@@ -75,9 +99,9 @@ export default function ClaimListingPage() {
         {step === 2 && (
           <div className="w-full animate-fade-in">
             <div className="text-center mb-10">
-              <span className="inline-block px-3 py-1 rounded-full bg-tenant-accent/10 text-tenant-accent text-[10px] font-bold uppercase tracking-widest mb-4">Step 2 of 2</span>
-              <h2 className="text-3xl font-serif font-bold mb-2 text-slate-900">Verify your credentials</h2>
-              <p className="text-slate-500">Provide official details to claim your listing and access the provider dashboard.</p>
+              <span className="inline-block px-3 py-1 rounded-full bg-tenant-accent/10 text-tenant-accent text-[10px] font-bold uppercase tracking-widest mb-4">Verification</span>
+              <h2 className="text-3xl font-serif font-bold mb-2 text-slate-900">Verify your listing</h2>
+              <p className="text-slate-500">Submit this data to prove ownership of {listingId ? <span className="font-bold">Listing ID: {listingId}</span> : 'this listing'}.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-6">
@@ -104,7 +128,9 @@ export default function ClaimListingPage() {
               </div>
 
               <div className="flex gap-4 pt-4 border-t border-slate-100">
-                <button type="button" onClick={() => setStep(1)} className="px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs text-slate-500 hover:bg-slate-100 transition-colors">Back</button>
+                {!listingId && (
+                  <button type="button" onClick={() => setStep(1)} className="px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs text-slate-500 hover:bg-slate-100 transition-colors">Back</button>
+                )}
                 <button type="submit" className="flex-1 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors shadow-lg">Submit for Verification</button>
               </div>
             </form>
@@ -117,7 +143,7 @@ export default function ClaimListingPage() {
               <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
             <h2 className="text-3xl font-serif font-bold mb-4 text-slate-900">Application Received</h2>
-            <p className="text-slate-500 max-w-md mx-auto mb-8">Your request has been added to the Super Admin Verification Queue. Once approved, your role will be upgraded and your dashboard will be unlocked.</p>
+            <p className="text-slate-500 max-w-md mx-auto mb-8 font-medium">Your verification status is under process. Once our verification officer approves it, you will get access to your listing and manage the listing.</p>
             <Link href="/portal" className="inline-block bg-tenant-accent hover:opacity-90 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-xs transition-colors shadow-lg">
               Return to Portal
             </Link>
@@ -126,5 +152,13 @@ export default function ClaimListingPage() {
 
       </main>
     </div>
+  );
+}
+
+export default function ClaimListingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center">Loading...</div>}>
+      <ClaimListingContent />
+    </Suspense>
   );
 }

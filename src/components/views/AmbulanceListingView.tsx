@@ -37,6 +37,7 @@ export default function AmbulancesDirectory({
   const [searchState, setSearchState] = useState(initialState || "");
   const [searchDistrict, setSearchDistrict] = useState(initialDistrict);
   const [searchType, setSearchType] = useState("");
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   useEffect(() => {
     const fetchAmbulances = async () => {
@@ -168,16 +169,21 @@ export default function AmbulancesDirectory({
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}
-          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white border border-slate-200 rounded-[24px] p-6 shadow-xl relative overflow-hidden">
+          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white border border-slate-200 rounded-[24px] p-4 lg:p-6 shadow-xl relative overflow-hidden">
             {/* Metallic top accent line */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-slate-400"></div>
 
-            <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 uppercase tracking-widest text-xs border-b border-slate-100 pb-4">
-              <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-              Smart Filters
-            </h3>
+            <div className={`flex justify-between items-center border-slate-100 ${isFiltersOpen ? 'mb-6 border-b pb-4' : 'lg:mb-6 lg:border-b lg:pb-4'}`}>
+              <h3 className="font-bold text-slate-900 flex items-center gap-2 uppercase tracking-widest text-xs">
+                <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                Smart Filters
+              </h3>
+              <button onClick={() => setIsFiltersOpen(!isFiltersOpen)} className="lg:hidden text-teal-600 bg-teal-50 px-3 py-1.5 rounded-lg text-xs font-bold border border-teal-200 hover:bg-teal-100 transition-colors">
+                {isFiltersOpen ? "Hide" : "Show"} Filters
+              </button>
+            </div>
             
-            <div className="space-y-6">
+            <div className={`space-y-6 ${isFiltersOpen ? "block" : "hidden lg:block"}`}>
               <div>
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Popular Specialties</label>
                 <div className="flex flex-wrap gap-2">
