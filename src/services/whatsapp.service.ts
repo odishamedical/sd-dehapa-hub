@@ -30,6 +30,7 @@ export class WhatsAppService {
       if (!response.ok) {
         const errorData = await response.text();
         console.error('WhatsApp API Error:', errorData);
+        return { error: true, data: errorData };
       }
 
       return await response.json();
