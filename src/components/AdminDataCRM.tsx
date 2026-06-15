@@ -358,37 +358,37 @@ export default function AdminDataCRM() {
 
       {isDrawerOpen && selectedListing && (
         <div className="fixed inset-0 bg-slate-900/60 z-[100] flex justify-center items-center p-4">
-          <div className="bg-white w-full max-w-5xl max-h-full rounded-2xl flex flex-col overflow-hidden">
-            <div className="p-6 border-b flex justify-between items-center">
+          <div className="bg-white w-full max-w-5xl max-h-[90vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-6 border-b flex justify-between items-center shrink-0 bg-slate-50">
               <h3 className="font-bold text-xl">{isNewListing ? "New Record" : selectedListing.name}</h3>
-              <button onClick={() => setIsDrawerOpen(false)} className="text-slate-400">Close</button>
+              <button onClick={() => setIsDrawerOpen(false)} className="text-slate-400 hover:text-slate-600">Close</button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+            <div className="flex-1 overflow-y-auto p-8">
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Name</label>
-                  <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  <label className="form-label">Name</label>
+                  <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="form-input" />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Assigned Owner Email</label>
-                  <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" placeholder="e.g. user@example.com" />
+                  <label className="form-label">Assigned Owner Email</label>
+                  <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="form-input" placeholder="e.g. user@example.com" />
                 </div>
                 <div className="relative">
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Custom Slug</label>
+                  <label className="form-label">Custom Slug</label>
                   <div className="flex gap-2">
-                    <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
-                    <button onClick={checkSlugAvailability} className="bg-slate-800 text-white px-3 py-1 rounded text-xs">Check</button>
-                    <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-3 py-1 rounded text-xs whitespace-nowrap">Super Search</button>
+                    <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="form-input" />
+                    <button onClick={checkSlugAvailability} className="bg-slate-800 text-white px-4 py-1 rounded-lg text-sm font-bold">Check</button>
+                    <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold whitespace-nowrap">Super Search</button>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Phone</label>
-                  <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  <label className="form-label">Phone</label>
+                  <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="form-input" />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Category</label>
-                  <select value={selectedListing.category || ""} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all">
+                  <label className="form-label">Category</label>
+                  <select value={selectedListing.category || ""} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="form-select">
                     <option value="">Select Category</option>
                     <option value="Doctor">Doctor</option>
                     <option value="Hospital">Hospital</option>
@@ -397,37 +397,37 @@ export default function AdminDataCRM() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Sub-Category / Specialty</label>
-                  <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  <label className="form-label">Sub-Category / Specialty</label>
+                  <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="form-input" />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">City</label>
-                  <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  <label className="form-label">City</label>
+                  <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="form-input" />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Full Address</label>
-                  <textarea value={selectedListing.address || ""} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" rows={2} />
+                  <label className="form-label">Full Address</label>
+                  <textarea value={selectedListing.address || ""} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} className="form-input" rows={2} />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">About / Biography</label>
-                  <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" rows={4} />
+                  <label className="form-label">About / Biography</label>
+                  <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="form-input" rows={4} />
                 </div>
-                <div className="col-span-2 flex items-center gap-6 mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                  <div className="flex items-center gap-2">
-                    <input type="checkbox" id="verifiedCheck" checked={selectedListing.verified || false} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-5 h-5 text-teal-600 rounded" />
-                    <label htmlFor="verifiedCheck" className="text-sm font-bold text-slate-900 cursor-pointer">Verified Listing</label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input type="checkbox" id="featuredCheck" checked={selectedListing.featured || false} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-5 h-5 text-amber-500 rounded" />
-                    <label htmlFor="featuredCheck" className="text-sm font-bold text-slate-900 cursor-pointer">Featured / Sponsored</label>
-                  </div>
+                <div className="col-span-2 flex flex-wrap items-center gap-6 mt-2 p-5 bg-slate-50 border border-slate-200 rounded-xl">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="verifiedCheck" checked={selectedListing.verified || false} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-6 h-6 text-teal-600 rounded border-slate-300" />
+                    <span className="text-sm font-bold text-slate-900">Verified Listing</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="featuredCheck" checked={selectedListing.featured || false} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-6 h-6 text-amber-500 rounded border-slate-300" />
+                    <span className="text-sm font-bold text-slate-900">Featured / Sponsored</span>
+                  </label>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 border-t flex justify-end gap-3">
-              <button onClick={() => setIsDrawerOpen(false)} className="px-6 py-2 border rounded-xl">Cancel</button>
-              <button onClick={handleSave} className="px-6 py-2 bg-teal-600 text-white rounded-xl">Save Changes</button>
+            <div className="p-6 border-t flex justify-end gap-3 shrink-0 bg-slate-50">
+              <button onClick={() => setIsDrawerOpen(false)} className="px-6 py-2.5 border-2 border-slate-200 hover:border-slate-300 font-bold rounded-xl text-slate-600 transition-colors">Cancel</button>
+              <button onClick={handleSave} className="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-colors">Save Changes</button>
             </div>
           </div>
         </div>

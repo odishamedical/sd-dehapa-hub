@@ -140,23 +140,23 @@ function ClaimListingContent() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Legal Entity Name</label>
-                  <input type="text" required value={formData.legalName} onChange={e => setFormData({...formData, legalName: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="e.g. Apollo Hospitals" />
+                  <label className="form-label">Legal Entity Name</label>
+                  <input type="text" required value={formData.legalName} onChange={e => setFormData({...formData, legalName: e.target.value})} className="form-input" placeholder="e.g. Apollo Hospitals" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Contact Number</label>
-                  <input type="tel" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="+91" />
+                  <label className="form-label">Contact Number</label>
+                  <input type="tel" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="form-input" placeholder="+91" />
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Registration / License Number</label>
-                <input type="text" required value={formData.licenseNumber} onChange={e => setFormData({...formData, licenseNumber: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="Medical council registration or GSTIN" />
+                <label className="form-label">Registration / License Number</label>
+                <input type="text" required value={formData.licenseNumber} onChange={e => setFormData({...formData, licenseNumber: e.target.value})} className="form-input" placeholder="Medical council registration or GSTIN" />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-2">Location / Address</label>
-                <textarea required rows={3} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:border-tenant-accent focus:ring-1 focus:ring-tenant-accent outline-none" placeholder="Complete address including District and PIN code"></textarea>
+                <label className="form-label">Location / Address</label>
+                <textarea required rows={3} value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="form-input" placeholder="Complete address including District and PIN code"></textarea>
               </div>
 
               <div className="flex gap-4 pt-4 border-t border-slate-100">

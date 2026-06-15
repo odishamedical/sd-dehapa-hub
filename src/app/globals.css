@@ -38,3 +38,15 @@ body {
                     radial-gradient(circle at bottom left, rgba(6, 182, 212, 0.05), transparent 45%);
   min-height: 100vh;
 }
+
+@layer components {
+  .form-label {
+    @apply block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest;
+  }
+  .form-input {
+    @apply w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-tenant-accent outline-none transition-all focus:ring-4 focus:ring-tenant-accent/10;
+  }
+  .form-select {
+    @apply w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-tenant-accent outline-none transition-all focus:ring-4 focus:ring-tenant-accent/10 appearance-none bg-no-repeat bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%2364748b%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.5em_1.5em] bg-[right_1rem_center];
+  }
+}
