@@ -1,5 +1,5 @@
 export class WhatsAppService {
-  private static readonly API_VERSION = 'v19.0'; // Or whatever version
+  private static readonly API_VERSION = 'v25.0'; // Updated to match user's screenshot
   
   private static get accessToken() {
     return process.env.WHATSAPP_ACCESS_TOKEN;
