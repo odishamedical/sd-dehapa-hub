@@ -153,7 +153,7 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
 
             {/* Unverified Banner */}
             {!pharmacy.verified && (
-              <UnverifiedBanner entityType="doctor" claimUrl={`/portal/claim?id=${pharmacy.id}`} />
+              <UnverifiedBanner entityType="medical store" claimUrl={`/portal/claim?id=${pharmacy.id}`} />
             )}
 
             {/* 2-Column Content Grid */}

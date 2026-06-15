@@ -155,7 +155,7 @@ export default function AmbulanceProfileView({ id, customSlug }: { id?: string, 
 
             {/* Unverified Banner */}
             {!ambulance.verified && (
-              <UnverifiedBanner entityType="doctor" claimUrl={`/portal/claim?id=${ambulance.id}`} />
+              <UnverifiedBanner entityType="ambulance service" claimUrl={`/portal/claim?id=${ambulance.id}`} />
             )}
 
             {/* 2-Column Content Grid */}

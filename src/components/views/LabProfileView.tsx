@@ -154,7 +154,7 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
 
             {/* Unverified Banner */}
             {!lab.verified && (
-              <UnverifiedBanner entityType="doctor" claimUrl={`/portal/claim?id=${lab.id}`} />
+              <UnverifiedBanner entityType="diagnostic lab" claimUrl={`/portal/claim?id=${lab.id}`} />
             )}
 
             {/* 2-Column Content Grid */}

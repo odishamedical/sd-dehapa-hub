@@ -154,7 +154,7 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
 
             {/* Unverified Banner */}
             {!hospital.verified && (
-              <UnverifiedBanner entityType="doctor" claimUrl={`/portal/claim?id=${hospital.id}`} />
+              <UnverifiedBanner entityType="hospital" claimUrl={`/portal/claim?id=${hospital.id}`} />
             )}
 
             {/* 2-Column Content Grid */}
