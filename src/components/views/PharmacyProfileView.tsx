@@ -3,264 +3,451 @@
 import React from 'react';
 import Link from 'next/link';
 
-// Mock Data for Pharmacy
+import { db } from '@/lib/firebase';
+import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { useState, useEffect, use } from 'react';
+
+import CategoryNav from '@/components/CategoryNav';
+import Breadcrumb from '@/components/Breadcrumb';
+import UnverifiedBanner from '@/components/UnverifiedBanner';
+import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
+
 export default function PharmacyProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
-  const mockPharmacy = {
-    name: "Apollo Pharmacy",
-    type: "24/7 Medical Store & Pharmacy",
-    delivery: "Free Home Delivery",
-    discount: "Up to 15% Flat Discount",
-    speed: "2-Hour Express Delivery",
-    rating: 4.7,
-    reviews: 3241,
-    logo: "https://ui-avatars.com/api/?name=Apollo+Pharmacy&background=ecfdf5&color=059669&size=200&font-size=0.33",
-    gallery: [
-      "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1576602976047-174e57a47881?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=800&q=80",
-    ],
-    about: "Apollo Pharmacy is your trusted neighborhood medical store, offering 100% genuine medicines, healthcare devices, and daily essentials. We ensure strict cold-chain compliance for sensitive medications like insulin and vaccines.",
-    categories: [
-      { name: "Prescription Medicines", icon: "💊" },
-      { name: "OTC & Skincare", icon: "🧴" },
-      { name: "Baby & Mom Care", icon: "🍼" },
-      { name: "Ayurvedic & Herbal", icon: "🌿" },
-      { name: "Surgical & Devices", icon: "🩹" },
-      { name: "Nutrition & Supplements", icon: "💪" },
-    ],
-    subscriptions: [
-      { name: "Diabetes Refill Pack", items: "Insulin, Metformin, Test Strips", savings: "Save 20% Monthly" },
-      { name: "Cardiac Care Refill", items: "Statins, BP Monitors", savings: "Save 18% Monthly" },
-    ],
-    contact: {
-      address: "Shop No 14, Kharavela Nagar, Near Master Canteen, Bhubaneswar, Odisha 751001",
-      phone: "+91 77777 55555",
-      whatsapp: "+91 99999 88888",
-      email: "orders@apollopharmacy-bbsr.com",
-      website: "www.apollopharmacy.in",
-      mapUrl: "https://maps.google.com/maps?q=Kharavela+Nagar+Bhubaneswar&t=&z=15&ie=UTF8&iwloc=&output=embed"
-    },
-    hours: [
-      { day: "Store Walk-in", time: "Open 24/7" },
-      { day: "Home Delivery", time: "07:00 AM - 11:00 PM" },
-      { day: "Express Delivery", time: "Within 2 Hours (Local)" }
-    ]
-  };
+  const [pharmacy, setPharmacy] = useState<any>(null);
+  const [similarEntities, setSimilarEntities] = useState<any[]>([]);
+  const [topHospitals, setTopHospitals] = useState<any[]>([]);
+  const [nearbyCenters, setNearbyCenters] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctor = async () => {
+      try {
+        let docSnap: any;
+        let docId = id;
+        
+        if (customSlug) {
+          const q = query(collection(db, 'directory'), where('customSlug', '==', customSlug), limit(1));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            docSnap = querySnapshot.docs[0];
+            docId = docSnap.id;
+          }
+        } else if (id) {
+          const docRef = doc(db, 'directory', id);
+          docSnap = await getDoc(docRef);
+        }
+        
+        if (docSnap && docSnap.exists && docSnap.exists() || (docSnap && docSnap.data)) {
+          const rawData = docSnap.data();
+          const notVerified = "Not available (Not verified)";
+          const docData = {
+            id: docId,
+            name: rawData.name || "Unknown Doctor",
+            specialty: rawData.subCategory || rawData.category || "Specialist",
+            experience: rawData.experience || notVerified,
+            qualification: rawData.qualification || notVerified,
+            rating: rawData.rating || 4.5,
+            reviews: rawData.reviews || 0,
+            fee: rawData.fee || "Contact Pharmacy",
+            image: rawData.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Doc")}&background=0f766e&color=fff&size=150`,
+            verified: rawData.verified || false,
+            about: rawData.about || notVerified,
+            specialties: rawData.specialties || [rawData.subCategory || notVerified],
+            education: rawData.education || [{ degree: notVerified, institution: notVerified }],
+            languages: rawData.languages || [notVerified],
+            banner: "https://images.unsplash.com/photo-1551076805-e18690c5e53b?auto=format&fit=crop&w=1200&q=80",
+            clinic: {
+              name: rawData.clinicName || notVerified,
+              address: rawData.address || notVerified,
+              phone: rawData.phone || notVerified,
+              website: rawData.website || notVerified,
+              mapUrl: `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+            },
+            hours: rawData.hours || [
+              { day: "Operating Hours", time: notVerified }
+            ],
+            city: rawData.city || rawData.district || "Odisha",
+            
+            // New Advanced Array Fields
+            locations: rawData.locations || [],
+            experiences: rawData.experiences || [],
+            qualificationsList: rawData.qualificationsList || [],
+            research: rawData.research || [],
+            awards: rawData.awards || []
+          };
+          setPharmacy(docData);
+          
+          // Fetch sidebar widgets safely without needing complex indexes
+          try {
+            const cityQuery = query(
+              collection(db, 'directory'),
+              where("city", "==", rawData.city || ""),
+              limit(30)
+            );
+            const citySnap = await getDocs(cityQuery);
+            const allCityDocs = citySnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId);
+            
+            setSimilarEntities(allCityDocs.filter(d => d.subCategory === rawData.subCategory).slice(0, 3));
+            setTopHospitals(allCityDocs.filter(d => d.category === "Hospital").slice(0, 3));
+            setNearbyCenters(allCityDocs.filter(d => d.category !== "Pharmacy" && d.category !== "Hospital").slice(0, 3));
+          } catch (e) {
+            console.error("Failed to fetch sidebar widgets", e);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDoctor();
+  }, [id, customSlug]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]"><div className="animate-spin w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full"></div></div>;
+  }
+
+  if (!pharmacy) {
+    return <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]"><div className="text-center"><h2 className="text-2xl font-bold text-slate-900 mb-2">Pharmacy Not Found</h2><Link href="/pharmacies" className="text-teal-600 hover:underline">Return to Directory</Link></div></div>;
+  }
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] font-sans pb-20">
+      <CategoryNav />
       
-      {/* 1. Retail Hero Gallery */}
-      <div className="w-full h-72 md:h-96 bg-emerald-900 relative flex overflow-hidden">
-        {/* Back Button */}
-        <div className="absolute top-6 left-6 z-30">
-          <Link href="/portal/admin" className="text-white hover:text-emerald-200 flex items-center gap-2 text-sm font-bold bg-black/40 px-4 py-2 rounded-lg backdrop-blur-md transition-colors border border-white/10">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Back to Directory
-          </Link>
-        </div>
-
-        {/* Gallery Images */}
-        <div className="w-1/2 md:w-2/3 h-full relative">
-          <img src={mockPharmacy.gallery[0]} className="w-full h-full object-cover" alt="Pharmacy Storefront" />
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-transparent"></div>
-        </div>
-        <div className="w-1/2 md:w-1/3 h-full flex flex-col border-l-4 border-[#F9FAFB]">
-          <div className="h-1/2 w-full border-b-4 border-[#F9FAFB]">
-            <img src={mockPharmacy.gallery[1]} className="w-full h-full object-cover" alt="Medicine Shelves" />
-          </div>
-          <div className="h-1/2 w-full relative group cursor-pointer">
-            <img src={mockPharmacy.gallery[2]} className="w-full h-full object-cover" alt="Delivery Personnel" />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition-all">
-              <span className="text-white font-bold bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/20">View Store</span>
-            </div>
-          </div>
+      <div className="bg-white border-b border-slate-200 px-6 py-3">
+        <div className="w-full max-w-[1920px] mx-auto">
+          <Breadcrumb paths={[
+            { name: "Home", href: "/" },
+            { name: pharmacy.city || "Odisha", href: "/pharmacies" },
+            { name: "Pharmacies", href: "/pharmacies" },
+            { name: pharmacy.specialty || "Specialist", href: "/pharmacies" },
+            { name: pharmacy.name }
+          ]} />
         </div>
       </div>
-
-      {/* Trust Metrics Bar (Retail Focused) */}
-      <div className="w-full bg-slate-900 border-t border-slate-800">
-        <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-4 flex flex-wrap justify-center md:justify-end gap-6 md:gap-12 text-sm font-bold tracking-widest uppercase text-slate-300">
-          <span className="flex items-center gap-2"><span className="text-blue-400 text-lg">🚚</span> {mockPharmacy.delivery}</span>
-          <span className="flex items-center gap-2"><span className="text-emerald-400 text-lg">💊</span> {mockPharmacy.discount}</span>
-          <span className="flex items-center gap-2"><span className="text-amber-400 text-lg">⏱️</span> {mockPharmacy.speed}</span>
-        </div>
+      
+      {/* Banner Area */}
+      <div className="w-full h-64 md:h-80 relative bg-teal-900 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-900 to-teal-700 opacity-90 z-10"></div>
+        <img 
+          src={pharmacy.banner} 
+          alt="Clinic Banner" 
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
+        />
+        
       </div>
 
       {/* Main Content Container */}
-      <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 relative -mt-16 md:-mt-24 z-20">
+      <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 relative -mt-24 z-20">
         
-        {/* Header Card (Logo & High Level Info) */}
-        <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.06)] mb-8 flex flex-col md:flex-row items-start md:items-center gap-6 border border-slate-100">
-          {/* Corporate Logo */}
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl shadow-lg overflow-hidden shrink-0 bg-white border border-slate-100 p-2">
-            <img src={mockPharmacy.logo} alt={mockPharmacy.name} className="w-full h-full object-contain rounded-xl" />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           
-          {/* Main Info */}
-          <div className="flex-1 mt-2 md:mt-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">{mockPharmacy.name}</h1>
-            <p className="text-lg text-emerald-700 font-semibold mb-3">{mockPharmacy.type}</p>
+          {/* Left & Center Content (75% Width) */}
+          <div className="lg:col-span-3 space-y-8">
             
-            <div className="flex items-center gap-2">
-              <span className="flex items-center text-amber-400 bg-amber-50 px-2 py-1 rounded-md border border-amber-100">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <span className="text-sm font-bold text-amber-700">{mockPharmacy.rating}</span>
-              </span>
-              <span className="text-sm text-slate-500 font-medium">({mockPharmacy.reviews} Google Reviews)</span>
-              <span className="mx-2 text-slate-300">•</span>
-              <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
-                Verified Pharmacy
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Left Column: Details */}
-          <div className="lg:col-span-2 space-y-8">
-
-            {/* In-Content Prescription Banner */}
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 md:p-8 shadow-lg text-white flex flex-col md:flex-row items-center justify-between gap-6">
+            {/* Unified Header Card */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col md:flex-row items-center gap-8">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg overflow-hidden shrink-0 bg-slate-100">
+                <img src={pharmacy.image} alt={pharmacy.name} className="w-full h-full object-cover" />
+              </div>
               <div className="flex-1 text-center md:text-left">
-                <h2 className="text-2xl font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
-                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                  Quick Order via Prescription
-                </h2>
-                <p className="text-emerald-100 font-medium">Just upload a photo of your doctor's prescription, and our pharmacists will instantly pack and dispatch your order.</p>
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-2 mb-2">
+                  <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{pharmacy.name}</h1>
+                  {pharmacy.verified && (
+                    <span className="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 mt-1 md:mt-0">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                      Verified by DehaPa
+                    </span>
+                  )}
+                </div>
+                <p className="text-lg text-teal-700 font-semibold mb-2">{pharmacy.specialty}</p>
+                <p className="text-sm text-slate-500 mb-4">
+                  <span className="font-semibold text-slate-700">Qualification:</span> {pharmacy.qualification} <span className="mx-2">•</span> <span className="font-semibold text-slate-700">Experience:</span> {pharmacy.experience}
+                </p>
+                <div className="flex items-center justify-center md:justify-start gap-2">
+                  <span className="flex items-center text-amber-400">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    <span className="ml-1 text-sm font-bold text-slate-700">{pharmacy.rating}</span>
+                  </span>
+                  <span className="text-sm text-slate-400">({pharmacy.reviews} Reviews)</span>
+                </div>
               </div>
-              <button className="shrink-0 bg-white text-emerald-700 hover:bg-emerald-50 font-bold px-6 py-3 rounded-xl shadow-md transition-all">
-                Upload Prescription Now
-              </button>
+              <div className="w-full md:w-64 flex flex-col gap-3 shrink-0">
+                 <button className="w-full px-6 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg shadow-teal-500/30 transition-all text-sm">Book Appointment</button>
+                 <button className="w-full px-6 py-4 bg-white border border-slate-200 hover:border-teal-500 text-slate-700 hover:text-teal-600 font-bold rounded-xl transition-all flex justify-center items-center gap-2 text-sm">
+                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                   Call Clinic
+                 </button>
+              </div>
             </div>
 
-            {/* Product Categories */}
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                Available Categories
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {mockPharmacy.categories.map((cat, idx) => (
-                  <div key={idx} className="bg-slate-50 border border-slate-100 hover:border-emerald-300 hover:shadow-md transition-all rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer group">
-                    <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">{cat.icon}</span>
-                    <span className="font-semibold text-slate-800 text-sm">{cat.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Unverified Banner */}
+            {!pharmacy.verified && (
+              <UnverifiedBanner entityType="doctor" claimUrl={`/portal/claim?id=${pharmacy.id}`} />
+            )}
 
-            {/* Chronic Care Subscriptions */}
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                  <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                  Monthly Medicine Refills
-                </h2>
-                <span className="text-emerald-600 text-sm font-bold cursor-pointer hover:underline">Subscribe & Save</span>
-              </div>
+            {/* 2-Column Content Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {mockPharmacy.subscriptions.map((sub, idx) => (
-                  <div key={idx} className="border border-slate-200 rounded-xl p-5 hover:border-emerald-300 hover:shadow-md transition-all relative overflow-hidden group cursor-pointer bg-slate-50">
-                    <div className="absolute top-0 right-0 bg-amber-400 text-amber-900 text-[10px] font-bold px-3 py-1 rounded-bl-lg">SUBSCRIPTION</div>
-                    <h3 className="font-bold text-slate-900 mb-1 pr-16">{sub.name}</h3>
-                    <p className="text-xs text-slate-500 mb-4 h-8">{sub.items}</p>
-                    <div className="flex items-center gap-2 bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg w-max font-bold text-sm">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
-                      {sub.savings}
+              <div className="space-y-8">
+                {/* About */}
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                  <h2 className="text-xl font-bold text-slate-900 mb-4">About the Pharmacy</h2>
+                  <p className="text-slate-600 leading-relaxed text-sm">{pharmacy.about}</p>
+                </div>
+
+                {/* Specialties */}
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                  <h2 className="text-xl font-bold text-slate-900 mb-4">Specialties & Services</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {pharmacy.specialties.map((spec: string, idx: number) => (
+                      <span key={idx} className="bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1.5 rounded-lg text-xs font-semibold">
+                        {spec}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Detailed Qualifications */}
+                {pharmacy.qualificationsList?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                      Qualifications & Fellowships
+                    </h2>
+                    <div className="space-y-4">
+                      {pharmacy.qualificationsList.map((qual: any, idx: number) => (
+                        <div key={idx} className="flex flex-col bg-slate-50 border border-slate-100 p-4 rounded-xl">
+                          <h4 className="font-bold text-slate-900 text-sm">{qual.degree}</h4>
+                          <p className="text-xs text-slate-600 mt-1">{qual.institution}</p>
+                          {qual.year && <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider mt-2">{qual.year}</span>}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
+                
+                {/* Fallback Legacy Education */}
+                {!pharmacy.qualificationsList?.length && pharmacy.education.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6">Education & Training</h2>
+                    <div className="space-y-6">
+                      {pharmacy.education.map((edu: any, idx: number) => (
+                        <div key={idx} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <div className="w-3 h-3 bg-teal-500 rounded-full mt-1.5"></div>
+                            {idx !== pharmacy.education.length - 1 && <div className="w-0.5 h-full bg-slate-200 mt-2"></div>}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 text-sm">{edu.degree}</h4>
+                            <p className="text-xs text-slate-500 mt-1">{edu.institution}</p>
+                            {edu.year && <span className="text-xs font-bold text-slate-400 mt-1 block">{edu.year}</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Awards & Recognitions */}
+                {pharmacy.awards?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                      Awards & Recognitions
+                    </h2>
+                    <div className="space-y-4">
+                      {pharmacy.awards.map((award: any, idx: number) => (
+                        <div key={idx} className="flex gap-3 items-start">
+                          <div className="w-2 h-2 bg-amber-400 rounded-full mt-1.5 shrink-0"></div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 text-sm">{award.name}</h4>
+                            <p className="text-xs text-slate-600 mt-1">{award.organization} {award.year && `• ${award.year}`}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+
+              <div className="space-y-8">
+                
+                {/* Advanced Experience Timeline */}
+                {pharmacy.experiences?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                      Professional Experience
+                    </h2>
+                    <div className="space-y-0 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                      {pharmacy.experiences.map((exp: any, idx: number) => (
+                        <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active py-4">
+                          <div className="flex items-center justify-center w-6 h-6 rounded-full border border-white bg-slate-200 text-slate-500 group-[.is-active]:bg-teal-600 group-[.is-active]:text-emerald-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
+                          </div>
+                          <div className="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                            <h4 className="font-bold text-slate-900 text-sm">{exp.role}</h4>
+                            <p className="text-xs text-slate-600 mt-1">{exp.hospital}</p>
+                            {exp.duration && <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider mt-2 block">{exp.duration}</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Legacy Location Card (Primary) */}
+                <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
+                  <div className="w-full h-48 bg-slate-100 relative">
+                    <iframe 
+                      src={pharmacy.clinic.mapUrl} 
+                      width="100%" 
+                      height="100%" 
+                      style={{ border: 0 }} 
+                      allowFullScreen 
+                      loading="lazy" 
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-bold text-lg text-slate-900 mb-2">
+                    <span className="text-sm font-semibold text-slate-500 block mb-1">Primary Store</span>
+                    {pharmacy.clinic.name}
+                  </h3>
+                    <div className="space-y-4 mt-4">
+                      <div className="flex items-start gap-3">
+                        <svg className="w-5 h-5 text-teal-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <p className="text-sm text-slate-600 leading-relaxed">{pharmacy.clinic.address}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        <p className="text-sm text-slate-900 font-semibold">{pharmacy.clinic.phone}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Multiple Visiting Locations */}
+                {pharmacy.locations?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                      Also Visits
+                    </h2>
+                    <div className="grid grid-cols-1 gap-4">
+                      {pharmacy.locations.map((loc: any, idx: number) => (
+                        <div key={idx} className="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-white transition-colors">
+                          <h4 className="font-bold text-slate-900 text-sm mb-1">{loc.name}</h4>
+                          <p className="text-xs text-slate-500 mb-3">{loc.address}, {loc.city}</p>
+                          <div className="flex items-center justify-between text-xs font-semibold">
+                            <span className="text-teal-700 bg-teal-50 px-2 py-1 rounded">{loc.days}</span>
+                            <span className="text-slate-600">{loc.timings}</span>
+                          </div>
+                          {loc.fee && <div className="mt-3 pt-3 border-t border-slate-200 text-xs text-slate-600">Consultation Fee: <span className="font-bold text-slate-900">₹{loc.fee}</span></div>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Research & Publications */}
+                {pharmacy.research?.length > 0 && (
+                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                      Research & Publications
+                    </h2>
+                    <div className="space-y-4">
+                      {pharmacy.research.map((res: any, idx: number) => (
+                        <div key={idx} className="border-l-2 border-teal-500 pl-4 py-1">
+                          <h4 className="font-bold text-slate-900 text-sm leading-snug">{res.title}</h4>
+                          <p className="text-xs text-slate-600 mt-2 font-serif italic">{res.journal} {res.year && `(${res.year})`}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
-
-            {/* About */}
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                About {mockPharmacy.name}
-              </h2>
-              <p className="text-slate-600 leading-relaxed">{mockPharmacy.about}</p>
-            </div>
-
           </div>
 
-          {/* Right Column: Sticky Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6 space-y-6">
-              
-              {/* Primary Action Card (WhatsApp Focus) */}
-              <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-emerald-100 overflow-hidden relative">
-                <div className="absolute top-0 left-0 w-full h-1 bg-[#25D366]"></div>
-                <div className="p-6 space-y-4">
-                  <button className="w-full px-6 py-4 bg-[#25D366] hover:bg-[#1DA851] text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-3 text-lg group">
-                    <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                    Order via WhatsApp
-                  </button>
-                  <p className="text-center text-xs font-bold text-emerald-600 uppercase tracking-widest">Instant Response • 2-Hr Delivery</p>
-                  
-                  <hr className="border-slate-100" />
-                  
-                  <button className="w-full px-6 py-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold rounded-xl transition-all flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                    Call Pharmacy: {mockPharmacy.contact.phone}
-                  </button>
-                </div>
+          {/* Right Sidebar: Ecosystem (25% Width) */}
+          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-[100px]">
+            
+            {/* Advertisement Placeholder (Hidden until ads are injected) */}
+            {false && (
+              <div className="w-full h-64 bg-slate-100 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 text-center shadow-inner">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Advertisement</span>
+                <p className="text-sm text-slate-500 font-medium">Google AdSense / Internal Promo Block</p>
               </div>
-              
-              {/* Location Card */}
-              <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
-                {/* Map Box */}
-                <div className="w-full h-48 bg-slate-100 relative">
-                  <iframe 
-                    src={mockPharmacy.contact.mapUrl} 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="font-bold text-lg text-slate-900 mb-4 border-b border-slate-100 pb-2">Store Location</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <svg className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                      <p className="text-sm text-slate-600 leading-relaxed font-medium">{mockPharmacy.contact.address}</p>
-                    </div>
+            )}
 
-                    <div className="flex items-center gap-3">
-                      <svg className="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-                      <p className="text-sm text-emerald-600 hover:underline cursor-pointer font-medium">{mockPharmacy.contact.website}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Operating Hours */}
+            {/* Similar Doctors */}
+            {similarEntities.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
                 <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  Store Timings
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                  Recommended Pharmacies in {pharmacy.city}
                 </h3>
-                <div className="space-y-3">
-                  {mockPharmacy.hours.map((h, idx) => (
-                    <div key={idx} className="flex flex-col border-b border-slate-50 pb-2 last:border-0 last:pb-0">
-                      <span className="text-slate-500 font-medium text-xs uppercase tracking-wider mb-0.5">{h.day}</span>
-                      <span className={`font-bold text-sm ${h.time.includes('24/7') ? 'text-emerald-600' : 'text-slate-900'}`}>{h.time}</span>
+                <div className="flex flex-col gap-4">
+                  {similarEntities.map((sim, idx) => (
+                    <Link key={idx} href={generateUniversalSeoUrl(sim, 'pharmacies')} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
+                      <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Doc")}&background=0f766e&color=fff`} alt={sim.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{sim.name}</h4>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-[10px] font-bold text-yellow-600">⭐ {sim.rating || 4.5}</span>
+                          <span className="text-[10px] font-bold text-slate-400">({sim.reviews || 0})</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Top Hospitals */}
+            {topHospitals.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                  Top Hospitals in {pharmacy.city}
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {topHospitals.map((hosp, idx) => (
+                    <Link key={idx} href={`/hospitals/${hosp.id}`} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{hosp.name}</h4>
+                        <p className="text-xs text-slate-500 truncate mt-1">{hosp.address || hosp.district}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Nearby Care Centers */}
+            {nearbyCenters.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                  Nearby Care Centers
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {nearbyCenters.map((center, idx) => (
+                    <div key={idx} className="bg-slate-50 rounded-xl p-3 flex flex-col gap-1 border border-slate-100">
+                      <h4 className="font-bold text-sm text-slate-900 truncate">{center.name}</h4>
+                      <p className="text-xs text-slate-500 truncate">{center.category} • {center.address || center.district}</p>
                     </div>
                   ))}
                 </div>
               </div>
+            )}
 
-            </div>
           </div>
 
         </div>
