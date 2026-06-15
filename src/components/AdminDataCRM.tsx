@@ -170,6 +170,22 @@ export default function AdminDataCRM() {
   };
   const removeDynamicField = (index: number) => setDynamicFields(dynamicFields.filter((_, i) => i !== index));
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0] || !selectedListing) return;
+    const file = e.target.files[0];
+    setIsUploadingImage(true);
+    try {
+      const fileRef = ref(storage, `directory/${selectedListing.id || Date.now()}/${file.name}`);
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      setSelectedListing({ ...selectedListing, image: url });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload image");
+    }
+    setIsUploadingImage(false);
+  };
+
   const handleSave = async () => {
     if (!selectedListing) return;
     setIsSaving(true);
@@ -205,7 +221,8 @@ export default function AdminDataCRM() {
         experiences: cleanExperiences,
         qualificationsList: cleanQualifications,
         research: cleanResearch,
-        awards: cleanAwards
+        awards: cleanAwards,
+        image: selectedListing.image || ""
       };
 
       if (isNewListing) {
@@ -359,14 +376,43 @@ export default function AdminDataCRM() {
 
       {isDrawerOpen && selectedListing && (
         <div className="fixed inset-0 bg-slate-900/60 z-[100] flex justify-center items-center p-4">
-          <div className="bg-white w-full max-w-5xl max-h-[90vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
-            <div className="p-6 border-b flex justify-between items-center shrink-0 bg-slate-50">
-              <h3 className="font-bold text-xl">{isNewListing ? "New Record" : selectedListing.name}</h3>
-              <button onClick={() => setIsDrawerOpen(false)} className="text-slate-400 hover:text-slate-600">Close</button>
+          <div className="bg-white w-full max-w-5xl max-h-[90vh] rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-6 border-b flex justify-between items-center shrink-0 bg-gradient-to-r from-slate-900 to-teal-900 text-white shadow-md z-10">
+              <h3 className="font-bold text-2xl font-serif">{isNewListing ? "New Record" : selectedListing.name}</h3>
+              <button onClick={() => setIsDrawerOpen(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-8">
-              <div className="grid grid-cols-2 gap-6">
+            <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+              <div className="grid grid-cols-2 gap-8">
+                
+                <div className="col-span-2 flex items-start gap-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                  <div className="w-32 h-32 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-dashed border-slate-300 overflow-hidden shrink-0 relative">
+                    {selectedListing.image ? (
+                      <img src={selectedListing.image} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    )}
+                    {isUploadingImage && <div className="absolute inset-0 bg-white/80 flex items-center justify-center"><svg className="animate-spin w-6 h-6 text-teal-600" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>}
+                  </div>
+                  <div className="flex-1">
+                    <label className="form-label">Profile Image</label>
+                    <p className="text-xs text-slate-500 mb-3">Upload a high quality square image. Maximum 2MB.</p>
+                    <div className="flex gap-3">
+                      <label className="px-5 py-2.5 bg-white border-2 border-slate-200 hover:border-teal-500 rounded-xl text-sm font-bold text-slate-700 cursor-pointer transition-colors shadow-sm inline-block">
+                        {isUploadingImage ? 'Uploading...' : 'Upload Image'}
+                        <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={isUploadingImage} />
+                      </label>
+                      {selectedListing.image && (
+                        <button onClick={() => setSelectedListing({...selectedListing, image: null})} className="px-5 py-2.5 text-red-600 hover:bg-red-50 rounded-xl text-sm font-bold transition-colors">
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <label className="form-label">Name</label>
                   <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="form-input" />
@@ -482,9 +528,11 @@ export default function AdminDataCRM() {
               </div>
             </div>
 
-            <div className="p-6 border-t flex justify-end gap-3 shrink-0 bg-slate-50">
-              <button onClick={() => setIsDrawerOpen(false)} className="px-6 py-2.5 border-2 border-slate-200 hover:border-slate-300 font-bold rounded-xl text-slate-600 transition-colors">Cancel</button>
-              <button onClick={handleSave} className="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-colors">Save Changes</button>
+            <div className="p-6 border-t flex justify-end gap-4 shrink-0 bg-white shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] z-10">
+              <button onClick={() => setIsDrawerOpen(false)} disabled={isSaving} className="px-8 py-3.5 border-2 border-slate-200 hover:border-slate-300 bg-white font-bold rounded-xl text-slate-600 transition-all hover:bg-slate-50">Cancel</button>
+              <button onClick={handleSave} disabled={isSaving} className="px-8 py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-teal-600/30 transform hover:-translate-y-0.5 disabled:opacity-70 disabled:transform-none">
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
             </div>
           </div>
         </div>
