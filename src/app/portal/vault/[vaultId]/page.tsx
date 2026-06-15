@@ -176,23 +176,36 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-8">
-              <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                  <svg className="w-4 h-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <div className="bg-[#1e293b] border border-[#334155] rounded-xl p-4 mb-8">
+              <div className="flex flex-col md:flex-row gap-4 mb-4">
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                    <svg className="w-4 h-4 text-[#64748b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                  </div>
+                  <input type="text" placeholder="Search by doctor, diagnosis, facility or medicine..." className="w-full bg-[#0f172a] border border-[#334155] rounded-lg pl-9 pr-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none transition-colors" />
                 </div>
-                <input type="text" placeholder="Search by doctor, diagnosis, or facility..." className="w-full bg-[#1e293b] border border-[#334155] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none" />
+                <select className="bg-[#0f172a] border border-[#334155] rounded-lg px-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none cursor-pointer w-full md:w-auto">
+                  <option>All Record Types</option>
+                  <option>Prescriptions Only</option>
+                  <option>Lab Reports Only</option>
+                  <option>Hospital Admissions</option>
+                </select>
               </div>
-              <select className="bg-[#1e293b] border border-[#334155] rounded-xl px-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none cursor-pointer w-full sm:w-auto">
-                <option>All Record Types</option>
-                <option>Prescriptions Only</option>
-                <option>Lab Reports Only</option>
-                <option>Hospital Admissions</option>
-              </select>
-              <select className="bg-[#1e293b] border border-[#334155] rounded-xl px-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none cursor-pointer w-full sm:w-auto">
-                <option>Sort: Newest First</option>
-                <option>Sort: Oldest First</option>
-              </select>
+              <div className="flex flex-col md:flex-row gap-4 items-center">
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <span className="text-xs font-bold text-[#64748b] uppercase tracking-widest">From:</span>
+                  <input type="date" className="bg-[#0f172a] border border-[#334155] rounded-lg px-3 py-2 text-sm text-white focus:border-[#06b6d4] outline-none flex-1" />
+                </div>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <span className="text-xs font-bold text-[#64748b] uppercase tracking-widest">To:</span>
+                  <input type="date" className="bg-[#0f172a] border border-[#334155] rounded-lg px-3 py-2 text-sm text-white focus:border-[#06b6d4] outline-none flex-1" />
+                </div>
+                <div className="hidden md:block flex-1"></div>
+                <select className="bg-[#0f172a] border border-[#334155] rounded-lg px-4 py-2.5 text-sm text-white focus:border-[#06b6d4] outline-none cursor-pointer w-full md:w-auto">
+                  <option>Sort: Newest First</option>
+                  <option>Sort: Oldest First</option>
+                </select>
+              </div>
             </div>
 
             {records.length === 0 ? (

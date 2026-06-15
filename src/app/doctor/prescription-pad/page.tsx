@@ -24,6 +24,7 @@ function PrescriptionPadContent() {
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [doctorName, setDoctorName] = useState("");
+  const [allMedicinesList, setAllMedicinesList] = useState<string[]>(FAVORITE_MEDICINES);
 
   const [rxData, setRxData] = useState({
     history: "",
@@ -60,6 +61,16 @@ function PrescriptionPadContent() {
     }
 
     setDoctorName(name || "Dr. Authorized Provider");
+
+    // Load custom learned medicines from local storage
+    const savedMeds = localStorage.getItem("sd_custom_medicines");
+    if (savedMeds) {
+      try {
+        const parsedMeds = JSON.parse(savedMeds);
+        setAllMedicinesList([...FAVORITE_MEDICINES, ...parsedMeds]);
+      } catch (e) {}
+    }
+
     setAccessGranted(true);
     setLoading(false);
   }, []);
@@ -95,6 +106,24 @@ function PrescriptionPadContent() {
     if (!patientVaultId) {
       alert("Error: No patient selected.");
       return;
+    }
+
+    // Self-Learning Medicine Feature
+    const currentMeds = localStorage.getItem("sd_custom_medicines");
+    let customMedsArray = currentMeds ? JSON.parse(currentMeds) : [];
+    
+    rxData.medicines.forEach(m => {
+      const medString = m.name.trim();
+      if (medString && !allMedicinesList.includes(medString)) {
+        customMedsArray.push(medString);
+      }
+    });
+
+    if (customMedsArray.length > 0) {
+      // Remove duplicates
+      customMedsArray = Array.from(new Set(customMedsArray));
+      localStorage.setItem("sd_custom_medicines", JSON.stringify(customMedsArray));
+      setAllMedicinesList([...FAVORITE_MEDICINES, ...customMedsArray]);
     }
 
     // In production: write to Firestore
@@ -230,9 +259,9 @@ function PrescriptionPadContent() {
                       <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                         <span className="text-xs font-bold text-slate-300">{index + 1}.</span>
                       </div>
-                      {/* Datalist for Predefined Medicines */}
+                      {/* Datalist for Predefined & Learned Medicines */}
                       <datalist id="favorite-medicines">
-                        {FAVORITE_MEDICINES.map((m, i) => <option key={i} value={m} />)}
+                        {allMedicinesList.map((m, i) => <option key={i} value={m} />)}
                       </datalist>
                       <input list="favorite-medicines" type="text" placeholder="Medicine Name (e.g., Paracetamol 650mg)" value={med.name} onChange={e => handleMedicineChange(index, "name", e.target.value)} required className="w-full bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-sm focus:border-tenant-accent outline-none" />
                     </div>
