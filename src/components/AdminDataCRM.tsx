@@ -382,6 +382,46 @@ export default function AdminDataCRM() {
                     <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-3 py-1 rounded text-xs whitespace-nowrap">Super Search</button>
                   </div>
                 </div>
+                <div>
+                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Phone</label>
+                  <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Category</label>
+                  <select value={selectedListing.category || ""} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all">
+                    <option value="">Select Category</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Hospital">Hospital</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Lab">Lab</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Sub-Category / Specialty</label>
+                  <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">City</label>
+                  <input type="text" value={selectedListing.city || ""} onChange={e => setSelectedListing({...selectedListing, city: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">Full Address</label>
+                  <textarea value={selectedListing.address || ""} onChange={e => setSelectedListing({...selectedListing, address: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" rows={2} />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs uppercase font-bold text-slate-500 mb-1">About / Biography</label>
+                  <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" rows={4} />
+                </div>
+                <div className="col-span-2 flex items-center gap-6 mt-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" id="verifiedCheck" checked={selectedListing.verified || false} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-5 h-5 text-teal-600 rounded" />
+                    <label htmlFor="verifiedCheck" className="text-sm font-bold text-slate-900 cursor-pointer">Verified Listing</label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" id="featuredCheck" checked={selectedListing.featured || false} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-5 h-5 text-amber-500 rounded" />
+                    <label htmlFor="featuredCheck" className="text-sm font-bold text-slate-900 cursor-pointer">Featured / Sponsored</label>
+                  </div>
+                </div>
               </div>
             </div>
 
