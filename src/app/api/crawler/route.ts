@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ results, query: finalQuery });
+    return NextResponse.json({ results, query: finalQuery, nextPageToken: data.nextPageToken || null });
 
   } catch (error: any) {
     console.error("Crawler Error:", error);
