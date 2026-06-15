@@ -55,7 +55,18 @@ export class WhatsAppService {
     return this.sendRequest(payload);
   }
 
-  static async sendInteractiveButtons(to: string, bodyText: string, buttons: { id: string, title: string }[]) {
+  static async sendInteractiveButtons(to: string, text: string, buttons: {id: string, title: string}[]) {
+    console.log("sendInteractiveButtons called. to:", to, "buttons:", buttons.length);
+    const token = process.env.WHATSAPP_ACCESS_TOKEN;
+    const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+
+    if (!token || !phoneId) {
+      console.log("sendInteractiveButtons ERROR: Missing WHATSAPP_ACCESS_TOKEN or PHONE_NUMBER_ID");
+      console.log("Token length:", token ? token.length : 0, "PhoneId length:", phoneId ? phoneId.length : 0);
+      return;
+    }
+    
+    console.log("Token and PhoneId found. Building payload...");
     if (buttons.length > 3) {
       console.error("WhatsApp API only allows up to 3 buttons.");
       buttons = buttons.slice(0, 3);

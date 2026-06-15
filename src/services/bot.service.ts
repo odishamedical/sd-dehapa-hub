@@ -5,12 +5,17 @@ import { WhatsAppService } from './whatsapp.service';
 export class BotService {
   
   static async handleIncomingMessage(from: string, messageData: any) {
+    console.log("handleIncomingMessage starting for:", from);
     const sessionRef = doc(db, 'whatsapp_sessions', from);
     let state = 'NEW';
     try {
+      console.log("Attempting to read Firebase state...");
       const sessionSnap = await getDoc(sessionRef);
       if (sessionSnap.exists()) {
         state = sessionSnap.data().state || 'NEW';
+        console.log("Firebase read successful, state:", state);
+      } else {
+        console.log("Firebase document does not exist, state: NEW");
       }
     } catch (error) {
       console.error("Firebase read error (check rules):", error);
@@ -61,8 +66,15 @@ export class BotService {
   }
 
   private static async sendMainMenu(from: string, sessionRef: any) {
-    try { await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true }); } catch(e){}
+    console.log("sendMainMenu called for", from);
+    try { 
+      await setDoc(sessionRef, { state: 'MAIN_MENU', lastInteraction: new Date() }, { merge: true }); 
+      console.log("sendMainMenu: setDoc SUCCESS!");
+    } catch(e) {
+      console.log("sendMainMenu: setDoc FAILED silently:", e);
+    }
     
+    console.log("sendMainMenu: Calling WhatsAppService.sendInteractiveButtons...");
     await WhatsAppService.sendInteractiveButtons(
       from, 
       "👋 *Welcome to Dehapa Hub!*\n\nI am your virtual healthcare assistant. What would you like to find today?",
