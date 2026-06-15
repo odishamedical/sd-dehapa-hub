@@ -80,7 +80,7 @@ export class WhatsAppService {
       interactive: {
         type: "button",
         body: {
-          text: bodyText
+          text: text
         },
         action: {
           buttons: buttons.map(btn => ({
