@@ -8,6 +8,25 @@ import { useAutosave } from '@/hooks/useAutosave';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
 import ImageUpload from '@/components/ImageUpload';
 
+interface AuthorizedCompany {
+  id: string;
+  name: string;
+  address: string;
+}
+
+interface PharmaProduct {
+  id: string;
+  name: string;
+  composition: string;
+}
+
+interface Distributor {
+  id: string;
+  cfName: string;
+  superstockistName: string;
+  stockistName: string;
+}
+
 function PharmaHomeWidget({ businessName, businessType }: { businessName: string, businessType: string }) {
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
@@ -60,11 +79,11 @@ export default function PharmacyDashboard() {
     businessType: "Retail Pharmacy",
     logo: "",
     businessName: "",
-    pharmacistName: "", // For Retail
-    retailLicense: "", // For Retail
-    wholesaleLicense: "", // For Wholesaler
-    gstin: "", // For Wholesaler/Manufacturer
-    manufacturingLicense: "", // For Manufacturer
+    pharmacistName: "",
+    retailLicense: "",
+    wholesaleLicense: "",
+    gstin: "",
+    manufacturingLicense: "",
     phone: "",
     whatsappNumber: "",
     email: ""
@@ -87,9 +106,10 @@ export default function PharmacyDashboard() {
   const [servicesData, setServicesData] = useState({
     homeDeliveryRadius: "", // Retail
     bulkOrderCapacity: "", // Wholesaler
-    supplyChainAreas: "", // Wholesaler
+    authorizedCompanies: [] as AuthorizedCompany[], // Wholesaler Dynamic Array
     factoryLocations: "", // Manufacturer
-    drugCatalog: "" // Manufacturer
+    products: [] as PharmaProduct[], // Manufacturer Dynamic Array
+    distributors: [] as Distributor[] // Manufacturer Dynamic Array
   });
   const servicesSaveStatus = useAutosave(servicesData, 1000);
 
@@ -180,12 +200,38 @@ export default function PharmacyDashboard() {
       setServicesData({
         homeDeliveryRadius: "",
         bulkOrderCapacity: "",
-        supplyChainAreas: "",
+        authorizedCompanies: [],
         factoryLocations: "",
-        drugCatalog: ""
+        products: [],
+        distributors: []
       });
     }
   };
+
+  // --- Dynamic Array Handlers ---
+  const addCompany = () => setServicesData(prev => ({ ...prev, authorizedCompanies: [...prev.authorizedCompanies, { id: Date.now().toString(), name: "", address: "" }] }));
+  const updateCompany = (id: string, field: keyof AuthorizedCompany, value: string) => {
+    setServicesData(prev => ({
+      ...prev, authorizedCompanies: prev.authorizedCompanies.map(c => c.id === id ? { ...c, [field]: value } : c)
+    }));
+  };
+  const removeCompany = (id: string) => setServicesData(prev => ({ ...prev, authorizedCompanies: prev.authorizedCompanies.filter(c => c.id !== id) }));
+
+  const addProduct = () => setServicesData(prev => ({ ...prev, products: [...prev.products, { id: Date.now().toString(), name: "", composition: "" }] }));
+  const updateProduct = (id: string, field: keyof PharmaProduct, value: string) => {
+    setServicesData(prev => ({
+      ...prev, products: prev.products.map(p => p.id === id ? { ...p, [field]: value } : p)
+    }));
+  };
+  const removeProduct = (id: string) => setServicesData(prev => ({ ...prev, products: prev.products.filter(p => p.id !== id) }));
+
+  const addDistributor = () => setServicesData(prev => ({ ...prev, distributors: [...prev.distributors, { id: Date.now().toString(), cfName: "", superstockistName: "", stockistName: "" }] }));
+  const updateDistributor = (id: string, field: keyof Distributor, value: string) => {
+    setServicesData(prev => ({
+      ...prev, distributors: prev.distributors.map(d => d.id === id ? { ...d, [field]: value } : d)
+    }));
+  };
+  const removeDistributor = (id: string) => setServicesData(prev => ({ ...prev, distributors: prev.distributors.filter(d => d.id !== id) }));
 
   return (
     <DashboardLayout 
@@ -369,7 +415,8 @@ export default function PharmacyDashboard() {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Services & Logistics</h3>
             
-            <div className="space-y-6">
+            <div className="space-y-8">
+              {/* --- RETAIL --- */}
               {identityData.businessType === "Retail Pharmacy" && (
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Home Delivery Radius</label>
@@ -383,6 +430,7 @@ export default function PharmacyDashboard() {
                 </div>
               )}
 
+              {/* --- WHOLESALER --- */}
               {identityData.businessType === "Wholesaler / Distributor" && (
                 <>
                   <div>
@@ -395,19 +443,38 @@ export default function PharmacyDashboard() {
                       className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">Supply Chain Territories</label>
-                    <textarea 
-                      value={servicesData.supplyChainAreas}
-                      onChange={(e) => setServicesData(prev => ({...prev, supplyChainAreas: e.target.value}))}
-                      placeholder="e.g. All districts in Western Odisha..." 
-                      rows={3}
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all resize-none" 
-                    />
+                  
+                  <div className="pt-4 border-t border-slate-100">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-sm font-bold text-slate-900">Authorized Companies Network</h4>
+                      <button onClick={addCompany} className="text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg transition-colors">+ Add Company</button>
+                    </div>
+                    
+                    {servicesData.authorizedCompanies.length === 0 ? (
+                      <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
+                        <p className="text-sm font-bold text-slate-500">No companies added</p>
+                        <p className="text-xs text-slate-400">Add companies you are authorized to distribute for.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {servicesData.authorizedCompanies.map((comp, index) => (
+                          <div key={comp.id} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex gap-4">
+                            <div className="flex-1 space-y-3">
+                              <input type="text" value={comp.name} onChange={(e) => updateCompany(comp.id, "name", e.target.value)} placeholder="Company Name (e.g. Sun Pharma)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
+                              <input type="text" value={comp.address} onChange={(e) => updateCompany(comp.id, "address", e.target.value)} placeholder="Company Address / Region" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
+                            </div>
+                            <button onClick={() => removeCompany(comp.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg h-fit transition-colors">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </>
               )}
 
+              {/* --- MANUFACTURER --- */}
               {identityData.businessType === "Pharma Manufacturer" && (
                 <>
                   <div>
@@ -420,15 +487,62 @@ export default function PharmacyDashboard() {
                       className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all resize-none" 
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">Drug Catalog / Products</label>
-                    <textarea 
-                      value={servicesData.drugCatalog}
-                      onChange={(e) => setServicesData(prev => ({...prev, drugCatalog: e.target.value}))}
-                      placeholder="e.g. Paracetamol 500mg, Amoxicillin Syrups..." 
-                      rows={4}
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all resize-none" 
-                    />
+
+                  <div className="pt-4 border-t border-slate-100">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-sm font-bold text-slate-900">Product Catalog</h4>
+                      <button onClick={addProduct} className="text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg transition-colors">+ Add Product</button>
+                    </div>
+                    
+                    {servicesData.products.length === 0 ? (
+                      <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
+                        <p className="text-sm font-bold text-slate-500">No products added</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {servicesData.products.map((prod) => (
+                          <div key={prod.id} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex gap-4">
+                            <div className="flex-1 space-y-3">
+                              <input type="text" value={prod.name} onChange={(e) => updateProduct(prod.id, "name", e.target.value)} placeholder="Product Name (e.g. Para 500)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
+                              <input type="text" value={prod.composition} onChange={(e) => updateProduct(prod.id, "composition", e.target.value)} placeholder="Composition (e.g. Paracetamol 500mg)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
+                            </div>
+                            <button onClick={() => removeProduct(prod.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg h-fit transition-colors">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-sm font-bold text-slate-900">Distributor Network</h4>
+                      <button onClick={addDistributor} className="text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg transition-colors">+ Add Distributor</button>
+                    </div>
+                    
+                    {servicesData.distributors.length === 0 ? (
+                      <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
+                        <p className="text-sm font-bold text-slate-500">No distributors added</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {servicesData.distributors.map((dist) => (
+                          <div key={dist.id} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex gap-4">
+                            <div className="flex-1 space-y-3">
+                              <input type="text" value={dist.cfName} onChange={(e) => updateDistributor(dist.id, "cfName", e.target.value)} placeholder="C&F Name" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
+                              <div className="grid grid-cols-2 gap-3">
+                                <input type="text" value={dist.superstockistName} onChange={(e) => updateDistributor(dist.id, "superstockistName", e.target.value)} placeholder="Superstockist Name" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
+                                <input type="text" value={dist.stockistName} onChange={(e) => updateDistributor(dist.id, "stockistName", e.target.value)} placeholder="Stockist Name" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
+                              </div>
+                            </div>
+                            <button onClick={() => removeDistributor(dist.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg h-fit transition-colors">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </>
               )}
