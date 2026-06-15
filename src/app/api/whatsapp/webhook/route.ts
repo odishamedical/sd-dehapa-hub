@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { BotService } from '@/services/bot.service';
 import { WhatsAppService } from '@/services/whatsapp.service';
 
@@ -49,6 +51,12 @@ export async function POST(req: NextRequest) {
 
             console.log(`Received message from ${from}: ${change.value.messages[0].type}`);
             
+            // Log the raw payload to Firebase so we can inspect it!
+            try {
+              const debugRef = doc(db, 'whatsapp_debug_logs', Date.now().toString());
+              await setDoc(debugRef, { payload: JSON.stringify(change.value) });
+            } catch(e) {}
+
             try {
               await BotService.handleIncomingMessage(from, change.value.messages[0]);
             } catch (err: any) {
