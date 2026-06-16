@@ -111,9 +111,9 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
   const imageSrc = data.image || data.img || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'H')}&background=random`;
 
   return (
-    <Link href={generateUniversalSeoUrl(data, type)} className="relative h-auto sm:h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
-      {/* Background Metal Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#ffffff] via-[#e2e8f0] to-[#94a3b8] opacity-90 transition-colors"></div>
+    <Link href={generateUniversalSeoUrl(data, type)} className="relative h-auto sm:h-[220px] rounded-3xl shadow-[0_4px_10px_rgba(0,0,0,0.05)] hover:shadow-[0_10px_30px_rgba(20,184,166,0.15)] hover:-translate-y-1 hover:border-teal-400/50 transition-all duration-300 overflow-hidden group block border border-slate-300 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
+      {/* Background Metal Gradient Inner Shadow */}
+      <div className="absolute inset-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] pointer-events-none rounded-3xl"></div>
       
       {/* Subtle brushed texture */}
       <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
