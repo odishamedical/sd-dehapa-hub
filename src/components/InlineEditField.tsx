@@ -63,7 +63,7 @@ export default function InlineEditField({
           onChange={(e) => setCurrentValue(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          className={`w-full bg-white text-slate-800 border-2 border-teal-500 rounded-lg p-3 outline-none shadow-inner resize-y min-h-[120px] text-base font-sans ${inputClassName}`}
+          className={`w-full bg-white text-slate-800 border-2 border-teal-500 rounded-lg p-3 outline-none shadow-inner resize-y min-h-[60px] text-base font-sans ${inputClassName}`}
           placeholder={placeholder}
         />
       );
