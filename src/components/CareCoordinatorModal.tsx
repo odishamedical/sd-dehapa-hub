@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function CareCoordinatorModal({ isOpen, onClose, providerType }: { isOpen: boolean, onClose: () => void, providerType: string }) {
   const [query, setQuery] = useState('');
@@ -6,9 +8,22 @@ export default function CareCoordinatorModal({ isOpen, onClose, providerType }: 
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save to Firebase admin_support_tickets in a real environment
+    
+    try {
+      const email = localStorage.getItem("sd_current_user_email") || "anonymous";
+      await addDoc(collection(db, "admin_support_tickets"), {
+        patientEmail: email,
+        providerTypeRequested: providerType,
+        query: query,
+        status: "open",
+        timestamp: serverTimestamp()
+      });
+    } catch (err) {
+      console.error("Failed to submit support ticket", err);
+    }
+
     setSubmitted(true);
     setTimeout(() => {
       onClose();

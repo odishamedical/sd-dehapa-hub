@@ -14,6 +14,7 @@ import AdminDataCRM from '@/components/AdminDataCRM';
 import AdminSlugRegistry from '@/components/AdminSlugRegistry';
 import AdminWhatsAppDashboard from '@/components/AdminWhatsAppDashboard';
 import AdminAnalyticsOverview from '@/components/AdminAnalyticsOverview';
+import AdminSupportTickets from '@/components/AdminSupportTickets';
 
 interface StagedListing {
   id: string;
@@ -286,6 +287,12 @@ export default function AdminDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     },
     {
+      id: "support",
+      label: "Patient Support Tickets",
+      section: "User Management",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+    },
+    {
       id: "crawler",
       label: "Google Data Crawler",
       section: "Data Operations",
@@ -380,6 +387,10 @@ export default function AdminDashboard() {
                 <p className="text-sm text-slate-500 max-w-sm mx-auto">Users fetched from Firebase Auth will appear here.</p>
               </div>
             </div>
+          )}
+
+          {activeTab === "support" && (
+            <AdminSupportTickets />
           )}
 
           {activeTab === "verification" && (
