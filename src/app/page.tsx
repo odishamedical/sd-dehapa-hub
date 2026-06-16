@@ -23,11 +23,12 @@ export default function Home() {
       {/* Global Header is handled by layout.tsx -> GlobalHeader.tsx */}
 
       {/* Hero Section - DehaPa Web Marketplace Redesign */}
-      {/* Dark Teal Background Area with Glassmorphism floating panels */}
-      <div className="relative z-10 w-full bg-[#0d9488] text-white pt-8 pb-24 overflow-hidden">
+      {/* Premium Cinematic Background */}
+      <div className="relative z-10 w-full bg-gradient-to-b from-slate-900 via-teal-950 to-[#0d9488] text-white pt-12 pb-28 overflow-hidden border-b border-white/10">
         {/* Deep Glowing Background Accents */}
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-teal-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-teal-900/50 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+        <div className="absolute top-[-10%] right-[10%] w-[800px] h-[800px] bg-teal-500/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-teal-300/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay pointer-events-none"></div>
         
         {/* Animated Medical Floating Icons (Right Side) */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -56,8 +57,8 @@ export default function Home() {
           <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 pb-8 px-6 md:px-0 md:grid-cols-2 lg:grid-cols-5 mb-4 w-full [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
             {/* Card 1: Book Doctor Consultation */}
-            <Link href="/doctors" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
-              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+            <Link href="/doctors" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/doctor.png" alt="Doctor" className="w-full h-full object-cover" />
@@ -112,8 +113,8 @@ export default function Home() {
             </Link>
 
             {/* Card 2: Hospital & Facility Network */}
-            <Link href="/hospitals" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
-              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+            <Link href="/hospitals" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/hospital.png" alt="Hospital" className="w-full h-full object-cover" />
@@ -160,8 +161,8 @@ export default function Home() {
             </Link>
 
             {/* Card 3: Lab Services */}
-            <Link href="/labs" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
-              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+            <Link href="/labs" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/lab.png" alt="Lab" className="w-full h-full object-cover" />
@@ -225,8 +226,8 @@ export default function Home() {
             </Link>
 
             {/* Card 4: Prescription & Medication */}
-            <Link href="/pharmacies" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-100 to-slate-300 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(0,0,0,0.3)] transition-all duration-300 group flex flex-col h-[480px] border border-white/50 relative">
-              <div className="absolute inset-0 bg-white/40 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)] pointer-events-none rounded-[32px] z-10"></div>
+            <Link href="/pharmacies" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
                 <img src="/images/medicine.png" alt="Medicine" className="w-full h-full object-cover" />
@@ -276,7 +277,7 @@ export default function Home() {
             </Link>
 
             {/* Card 5: Emergency Services */}
-            <Link href="/ambulances" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-900 via-slate-800 to-black rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:-translate-y-2 hover:shadow-[0_30px_50px_rgba(220,38,38,0.2)] transition-all duration-300 group flex flex-col h-[480px] border border-slate-700 relative">
+            <Link href="/ambulances" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-900 via-slate-800 to-black rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(220,38,38,0.3)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-slate-600/80 border-r border-b border-black relative">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
               {/* Top Image Section */}
               <div className="h-44 relative w-full flex-shrink-0">
@@ -318,15 +319,15 @@ export default function Home() {
 
           </div>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto bg-white p-2 md:p-3 rounded-full flex items-center shadow-[0_10px_40px_rgba(0,0,0,0.08)] mb-8 border border-slate-100">
+          {/* Premium Glassmorphic Search Bar */}
+          <div className="max-w-2xl mx-auto bg-white/70 backdrop-blur-xl p-2 md:p-3 rounded-full flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.15)] mb-8 border-t-2 border-l-2 border-white/80 border-r border-b border-slate-200 group transition-all hover:shadow-[0_20px_50px_rgba(13,148,136,0.15)] relative z-30">
             <div className="flex-1 px-4 flex items-center gap-3 text-slate-500">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-              <input type="text" placeholder="Find Doctors, Hospitals, Labs near you" className="w-full bg-transparent border-none outline-none text-slate-900 text-sm md:text-base font-sans" />
+              <svg className="w-5 h-5 group-hover:text-teal-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <input type="text" placeholder="Find Doctors, Hospitals, Labs near you" className="w-full bg-transparent border-none outline-none text-slate-900 text-sm md:text-base font-sans placeholder:text-slate-400 focus:ring-0" />
             </div>
-            <button className="bg-[#0d9488] hover:bg-[#0f766e] text-white px-6 py-2 md:py-3 rounded-full font-bold text-sm transition-colors whitespace-nowrap">
+            <Link href="/portal" className="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white px-8 py-2 md:py-3 rounded-full font-bold text-sm transition-all shadow-[0_0_15px_rgba(13,148,136,0.4)] hover:shadow-[0_0_25px_rgba(13,148,136,0.6)] whitespace-nowrap uppercase tracking-widest hover:scale-105">
               Search
-            </button>
+            </Link>
           </div>
       </div>
 
