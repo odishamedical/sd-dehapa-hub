@@ -203,28 +203,29 @@ export default function DashboardLayout({
           {activeTab === "home" ? (
             <div className="max-w-6xl mx-auto">
               {homeWidget && (
-                <div className="mb-10">
+                <div className="mb-6">
                   {homeWidget}
                 </div>
               )}
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Welcome to {roleName}</h3>
-                <p className="text-slate-500">Select a module below to get started.</p>
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName}</h3>
+                <p className="text-sm text-slate-500">Select a module below to get started.</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {tabs.map(tab => (
                   <button 
                     key={tab.id} 
                     onClick={() => onTabChange(tab.id)} 
-                    className="bg-white p-6 border border-slate-200 hover:border-teal-500 rounded-2xl shadow-sm hover:shadow-xl transition-all text-left group flex flex-col items-start h-full"
+                    className="bg-white p-4 border border-slate-200 hover:border-teal-500 rounded-2xl shadow-sm hover:shadow-md transition-all text-left group flex flex-col items-start h-full relative overflow-hidden"
                   >
-                    <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-teal-50 rounded-bl-[100px] -z-0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="w-10 h-10 bg-slate-50 text-teal-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-teal-50 group-hover:scale-110 transition-all z-10">
                       {tab.icon}
                     </div>
-                    <h3 className="font-bold text-slate-900 text-lg mb-2">{tab.label}</h3>
-                    <p className="text-sm text-slate-500 flex-1">Access the {tab.label} module to manage your settings and data.</p>
-                    <div className="mt-6 flex items-center gap-2 text-teal-600 text-[10px] font-bold uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                      Open Module <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    <h3 className="font-bold text-slate-900 text-sm mb-1.5 z-10">{tab.label}</h3>
+                    <p className="text-[11px] text-slate-500 flex-1 leading-relaxed z-10">Access {tab.label} settings.</p>
+                    <div className="mt-4 flex items-center gap-1.5 text-teal-600 text-[9px] font-bold uppercase tracking-widest group-hover:translate-x-1 transition-transform z-10">
+                      Open <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </div>
                   </button>
                 ))}

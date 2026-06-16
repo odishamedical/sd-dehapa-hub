@@ -28,6 +28,11 @@ function PrescriptionPadContent() {
   const [allMedicinesList, setAllMedicinesList] = useState<string[]>(FAVORITE_MEDICINES);
 
   const [rxData, setRxData] = useState({
+    patientInfo: {
+      name: patientVaultId ? decodeURIComponent(patientVaultId).split("@")[0] : "",
+      age: "",
+      gender: ""
+    },
     history: "",
     diagnosis: "",
     medicines: [{ name: "", dosage: "", frequency: "", duration: "" }],
@@ -184,47 +189,92 @@ function PrescriptionPadContent() {
       <main className="max-w-4xl mx-auto px-6 py-12 print:hidden">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-xl">
           
+          {/* Action Header - Sticky */}
           <div className="sticky top-[73px] z-40 bg-slate-50/95 backdrop-blur-md border-b border-tenant-accent/20 p-6 flex justify-between items-center shadow-sm">
             <div>
-              <p className="text-xs uppercase font-bold text-tenant-accent tracking-widest mb-1">Prescribing To</p>
-              <h2 className="text-lg font-bold text-slate-900 font-mono">{decodeURIComponent(patientVaultId).split("@")[0] || "Unknown Patient"}</h2>
+              <h2 className="text-xl font-bold text-slate-900 font-serif">New e-Prescription</h2>
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mt-1">Date: {new Date().toLocaleDateString()}</p>
             </div>
-            <div className="text-right">
-              <p className="text-xs uppercase font-bold text-slate-500 tracking-widest mb-1">Date</p>
-              <h2 className="text-sm font-bold text-slate-900 font-mono">{new Date().toLocaleDateString()}</h2>
-            </div>
+            <button form="rx-form" type="submit" className="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl shadow-sm hover:shadow-md transition-all font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              Secure & Send
+            </button>
           </div>
 
-          <form onSubmit={handleSaveAndSend} className="p-8 space-y-8">
+          <form id="rx-form" onSubmit={handleSaveAndSend} className="p-8 space-y-8">
             
-            {/* Patient History */}
-            <div className="space-y-2">
-              <GlobalLabel className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Patient Medical History
-              </GlobalLabel>
-              <GlobalTextarea 
-                value={rxData.history}
-                onChange={e => setRxData({...rxData, history: e.target.value})}
-                placeholder="First time visit? Enter past medical history, allergies, surgeries, etc. (Optional)"
-                className="min-h-[80px]"
-              />
-            </div>
+            {/* Demographics */}
+            <GlobalFormCard className="space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-widest text-tenant-accent flex items-center gap-2 border-b border-slate-200 pb-3 mb-4">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                Patient Demographics
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <div className="md:col-span-6">
+                  <GlobalLabel>Full Name</GlobalLabel>
+                  <GlobalInput 
+                    required
+                    type="text" 
+                    placeholder="Patient Name" 
+                    value={rxData.patientInfo.name} 
+                    onChange={e => setRxData(prev => ({...prev, patientInfo: {...prev.patientInfo, name: e.target.value}}))} 
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <GlobalLabel>Age (Years)</GlobalLabel>
+                  <GlobalInput 
+                    required
+                    type="number" 
+                    placeholder="e.g. 34" 
+                    value={rxData.patientInfo.age} 
+                    onChange={e => setRxData(prev => ({...prev, patientInfo: {...prev.patientInfo, age: e.target.value}}))} 
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <GlobalLabel>Biological Sex</GlobalLabel>
+                  <GlobalSelect
+                    required
+                    value={rxData.patientInfo.gender} 
+                    onChange={e => setRxData(prev => ({...prev, patientInfo: {...prev.patientInfo, gender: e.target.value}}))}
+                  >
+                    <option value="">Select...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </GlobalSelect>
+                </div>
+              </div>
+            </GlobalFormCard>
 
-            {/* Diagnosis */}
-            <div className="space-y-2">
-              <GlobalLabel className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                Clinical Diagnosis
-              </GlobalLabel>
-              <GlobalTextarea 
-                required
-                value={rxData.diagnosis}
-                onChange={e => setRxData({...rxData, diagnosis: e.target.value})}
-                placeholder="Enter primary diagnosis and current symptoms..."
-                className="min-h-[100px]"
-              />
-            </div>
+            {/* Patient History & Diagnosis inside a Global Card */}
+            <GlobalFormCard className="space-y-6">
+              <div className="space-y-2">
+                <GlobalLabel className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Patient Medical History
+                </GlobalLabel>
+                <GlobalTextarea 
+                  value={rxData.history}
+                  onChange={e => setRxData({...rxData, history: e.target.value})}
+                  placeholder="First time visit? Enter past medical history, allergies, surgeries, etc. (Optional)"
+                  className="min-h-[80px]"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <GlobalLabel className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                  Clinical Diagnosis
+                </GlobalLabel>
+                <GlobalTextarea 
+                  required
+                  value={rxData.diagnosis}
+                  onChange={e => setRxData({...rxData, diagnosis: e.target.value})}
+                  placeholder="Enter primary diagnosis and current symptoms..."
+                  className="min-h-[100px]"
+                />
+              </div>
+            </GlobalFormCard>
 
             {/* Medicines */}
             <GlobalFormCard className="space-y-6">
