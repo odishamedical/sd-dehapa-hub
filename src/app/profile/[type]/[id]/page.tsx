@@ -6,6 +6,71 @@ import Link from 'next/link';
 // Mock DB Fetch
 const getMockProfile = (type: string, id: string) => {
   if (type === 'doctor') {
+    if (id === 'dr-deepak-kumar-mishra') {
+      return {
+        name: "Dr. Deepak Kumar Mishra",
+        subtitle: "Senior Consultant Surgical Oncology",
+        image: "/images/drdeepak.jpg",
+        verified: false,
+        stats: { patients: "1k+", experience: "5+ Yrs", rating: "4.9" },
+        about: "Dr. Deepak Kumar Mishra is a leading Surgical Oncologist based in Bhubaneswar, Odisha.",
+        details: [
+          { label: "Education", value: "MBBS, MS, MCh (Surgical Oncology)" },
+          { label: "Registration", value: "Medical Council of India" },
+          { label: "Languages", value: "English, Hindi, Odia" }
+        ],
+        roster: ["Apollo Hospital, Bhubaneswar", "Sparsh Hospital, Bhubaneswar"]
+      };
+    }
+    if (id === 'dr-satyabrata-das') {
+      return {
+        name: "Dr. Satyabrata Das",
+        subtitle: "Surgical Oncologist and General Surgeon",
+        image: "/images/drsatybrata.PNG",
+        verified: false,
+        stats: { patients: "10k+", experience: "18+ Yrs", rating: "4.8" },
+        about: "Dr. Satyabrata Das is a highly experienced Surgical Oncologist and General Surgeon based in Bhubaneswar, Odisha, with over 18 years of clinical experience. He is recognized for his expertise in complex laparoscopic and open cancer surgeries, particularly in head and neck, breast, gastrointestinal, and gynecological cancers.",
+        details: [
+          { label: "Education", value: "MBBS, MS (General Surgery), MCh (Surgical Oncology)" },
+          { label: "Specialty", value: "Oncoplastic, Thoracic, Hepatobiliary" },
+          { label: "Languages", value: "English, Hindi, Odia" }
+        ],
+        roster: ["Utkal Hospital, Bhubaneswar"]
+      };
+    }
+    if (id === 'dr-sunil-sharma') {
+      return {
+        name: "Dr. Sunil Kumar Sharma",
+        subtitle: "Professor & Senior Consultant Cardiologist",
+        image: "/images/drsunilsharma.PNG",
+        verified: false,
+        stats: { patients: "50k+", experience: "25+ Yrs", rating: "4.9" },
+        about: "Dr. Sunil Kumar Sharma is widely regarded as one of the most prominent, trusted, and experienced cardiology experts in Western Odisha. He holds advanced academic and super-specialty medical designations, practicing concurrently in both public healthcare and private consultation.",
+        details: [
+          { label: "Education", value: "MBBS, MD (General Medicine), DM (Cardiology)" },
+          { label: "Specialty", value: "Invasive Cardiology" },
+          { label: "Languages", value: "English, Hindi, Odia" }
+        ],
+        roster: ["VIMSAR, Burla", "Sambalpur Heart Clinic"]
+      };
+    }
+    if (id === 'dr-bansidhar-mulia') {
+      return {
+        name: "Dr. Bansidhar Mulia",
+        subtitle: "Plastic, Cosmetic, and Reconstructive Surgeon",
+        image: "/images/Dr banshidhara.PNG",
+        verified: false,
+        stats: { patients: "15k+", experience: "24+ Yrs", rating: "4.8" },
+        about: "Dr. Bansidhar Mulia is a highly experienced Plastic, Cosmetic, and Reconstructive Surgeon based in Bhubaneswar, Odisha. With over 24 years of overall medical experience, he is currently associated with the Kalinga Institute of Medical Sciences (KIMS) and Pradyumna Bal Memorial Hospital.",
+        details: [
+          { label: "Education", value: "MBBS, MS, MCh (Plastic Surgery)" },
+          { label: "Specialty", value: "Aesthetic Surgery, Trauma & Microsurgery" },
+          { label: "Languages", value: "English, Hindi, Odia" }
+        ],
+        roster: ["Pradyumna Bal Memorial Hospital", "KIMS, Bhubaneswar"]
+      };
+    }
+
     return {
       name: "Dr. A. K. Sharma",
       subtitle: "Senior Cardiologist",
@@ -102,11 +167,17 @@ export default function PublicProfile({ params }: { params: { type: string, id: 
           <div className="absolute top-0 left-0 w-full h-32 bg-slate-900 border-b border-slate-700"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-end mt-12">
-            <div className="w-32 h-32 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative">
-              <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl flex items-center justify-center text-5xl shadow-inner">
-                {params.type === 'doctor' && '👨‍⚕️'}
-                {params.type === 'hospital' && '🏥'}
-                {params.type !== 'doctor' && params.type !== 'hospital' && '⚕️'}
+            <div className="w-32 h-32 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative overflow-hidden">
+              <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl flex items-center justify-center text-5xl shadow-inner overflow-hidden">
+                {profile.image ? (
+                  <img src={profile.image} alt={profile.name} className="w-full h-full object-cover" />
+                ) : (
+                  <>
+                    {params.type === 'doctor' && '👨‍⚕️'}
+                    {params.type === 'hospital' && '🏥'}
+                    {params.type !== 'doctor' && params.type !== 'hospital' && '⚕️'}
+                  </>
+                )}
               </div>
             </div>
             
