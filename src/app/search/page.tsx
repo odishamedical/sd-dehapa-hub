@@ -5,6 +5,10 @@ import Link from 'next/link';
 
 // Mock Data
 const MOCK_RESULTS = [
+  { id: "dr-satyabrata-das", type: "doctor", name: "Dr. Satyabrata Das", subtitle: "Surgical Oncologist", location: "Bhubaneswar, Odisha", rating: 4.8, experience: "18 Yrs", verified: false },
+  { id: "dr-sunil-sharma", type: "doctor", name: "Dr. Sunil Kumar Sharma", subtitle: "Cardiologist", location: "Sambalpur, Odisha", rating: 4.9, experience: "25 Yrs", verified: false },
+  { id: "dr-bansidhar-mulia", type: "doctor", name: "Dr. Bansidhar Mulia", subtitle: "Plastic Surgeon", location: "Bhubaneswar, Odisha", rating: 4.8, experience: "24 Yrs", verified: false },
+  { id: "dr-deepak-kumar-parida", type: "doctor", name: "Dr. Deepak Kumar Parida", subtitle: "Surgical Oncologist", location: "Bhubaneswar, Odisha", rating: 4.9, experience: "5+ Yrs", verified: false },
   { id: "doc_1", type: "doctor", name: "Dr. A. K. Sharma", subtitle: "Cardiologist", location: "Sambalpur, Odisha", rating: 4.8, experience: "15 Yrs", verified: true },
   { id: "hosp_1", type: "hospital", name: "Apollo Super Specialty", subtitle: "NABH Accredited", location: "Bhubaneswar, Odisha", rating: 4.5, beds: "250 Beds", verified: true },
   { id: "lab_1", type: "lab", name: "SRL Diagnostics", subtitle: "NABL Certified", location: "Cuttack, Odisha", rating: 4.7, tests: "200+ Tests", verified: false },
