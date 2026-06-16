@@ -63,7 +63,7 @@ export default function InlineEditField({
           onChange={(e) => setCurrentValue(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          className={`w-full bg-white border-2 border-teal-500 rounded-lg p-2 outline-none shadow-inner resize-y min-h-[100px] ${inputClassName}`}
+          className={`w-full bg-white text-slate-800 border-2 border-teal-500 rounded-lg p-3 outline-none shadow-inner resize-y min-h-[120px] text-base font-sans ${inputClassName}`}
           placeholder={placeholder}
         />
       );
@@ -76,7 +76,7 @@ export default function InlineEditField({
         onChange={(e) => setCurrentValue(e.target.value)}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        className={`w-full bg-white border-2 border-teal-500 rounded-lg p-2 outline-none shadow-inner ${inputClassName}`}
+        className={`w-full bg-white text-slate-800 border-2 border-teal-500 rounded-lg px-2 py-1 outline-none shadow-inner bg-inherit font-inherit text-inherit leading-inherit ${inputClassName}`}
         placeholder={placeholder}
       />
     );

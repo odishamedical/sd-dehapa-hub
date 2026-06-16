@@ -1,8 +1,7 @@
 // src/components/TicketCard.tsx
-import React from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import { TicketConfigEntry } from '@/lib/ticketConfig';
-
 import InlineEditField from '@/components/InlineEditField';
 
 type Props = {
@@ -16,6 +15,19 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
   const subtitle = entity[config.subtitleField] || '';
   const leftMetric = config.leftMetric(entity);
   const rightMetric = config.rightMetric(entity);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onSave?.('image', reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-3xl p-6 md:p-8 border border-slate-300 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
@@ -26,14 +38,19 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
         <img src={entity.image} alt={entity.name} className="w-full h-full object-cover rounded-2xl" />
         {isEditMode && (
           <div className="absolute inset-0 bg-black/60 rounded-3xl flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-[10px] text-white font-bold mb-1">Image URL</span>
             <input 
-              type="text" 
-              defaultValue={entity.image}
-              onBlur={(e) => onSave?.('image', e.target.value)}
-              className="w-full text-[10px] p-1 rounded text-black"
-              placeholder="Paste URL"
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
             />
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="px-3 py-1.5 bg-white/20 hover:bg-white/40 text-white text-xs font-bold rounded-lg transition-colors border border-white/50 backdrop-blur-sm"
+            >
+              Upload Photo
+            </button>
           </div>
         )}
       </div>
