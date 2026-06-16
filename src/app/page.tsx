@@ -21,7 +21,7 @@ export default function DehapaHome() {
     <main className="min-h-screen bg-[#020810] font-sans selection:bg-teal-500/30 overflow-x-hidden text-slate-100">
       
       {/* 1. HERO SECTION (The Gateway) - Futuristic Edition */}
-      <section className="relative pt-24 pb-32 lg:pt-40 lg:pb-56 overflow-hidden">
+      <section className="relative pt-20 pb-24 lg:pt-28 lg:pb-36 overflow-hidden">
         {/* Dynamic Holographic Background Matrix */}
         <div className="absolute inset-0 bg-[#020810] z-0">
           {/* Animated Grid */}
@@ -87,7 +87,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 2. CORE SERVICE TICKETS (Futuristic Cards) */}
-      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-24 mb-32">
+      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-16 mb-16">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
           
           {[
@@ -134,7 +134,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 3. UBER-LIKE AMBULANCE PING (Holographic Map) */}
-      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-16 mb-32 scroll-mt-24 relative">
+      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-8 mb-16 scroll-mt-24 relative">
         {/* Background ambient glow for map section */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[500px] bg-red-900/10 blur-[150px] pointer-events-none rounded-full"></div>
 
@@ -246,7 +246,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 4. QR SMART CONNECTION (Cyber-Bridge) */}
-      <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-16 mb-32 relative">
+      <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-8 mb-16 relative">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/connected.png')] opacity-5 pointer-events-none"></div>
 
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 relative z-10">
@@ -329,7 +329,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 5. INSTRUCTION PORTAL (Glassmorphic Tabs) */}
-      <section className="relative z-20 bg-slate-900/50 backdrop-blur-3xl border-t border-slate-800 py-32 mb-24">
+      <section className="relative z-20 bg-slate-900/50 backdrop-blur-3xl border-t border-slate-800 py-16 mb-12">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 text-center">
           <h2 className="text-4xl sm:text-5xl font-black font-serif text-white mb-6">DehaPa Operating Protocols</h2>
           <p className="text-slate-400 mb-16 max-w-2xl mx-auto text-lg">Select your entity classification to download operational guidelines and access secure gateways.</p>
@@ -446,7 +446,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 6. TRUST & SECURITY FOOTER (Cyberpunk style) */}
-      <footer className="bg-[#020810] text-slate-400 pt-20 pb-10 border-t border-slate-800 relative overflow-hidden">
+      <footer className="bg-[#020810] text-slate-400 pt-12 pb-8 border-t border-slate-800 relative overflow-hidden">
         {/* Glowing top line */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-teal-500 to-transparent opacity-50"></div>
         
