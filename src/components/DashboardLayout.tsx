@@ -58,6 +58,17 @@ export default function DashboardLayout({
     });
   };
 
+  const [expandedHomeSections, setExpandedHomeSections] = useState<Record<string, boolean>>({});
+
+  const toggleHomeSection = (sectionName: string) => {
+    setExpandedHomeSections(prev => {
+      if (!prev[sectionName]) {
+        return { [sectionName]: true };
+      }
+      return { ...prev, [sectionName]: false };
+    });
+  };
+
   // Group tabs by section
   const sectionedTabs = tabs.reduce((acc, tab) => {
     const section = tab.section || "DEFAULT";
@@ -211,31 +222,63 @@ export default function DashboardLayout({
                 <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName}</h3>
                 <p className="text-sm text-slate-500">Select a module below to get started.</p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-                {tabs.map(tab => (
-                  <button 
-                    key={tab.id} 
-                    onClick={() => onTabChange(tab.id)} 
-                    className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 p-5 border border-slate-300 hover:border-teal-400/50 rounded-[24px] shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 text-left group flex flex-col items-start h-full relative overflow-hidden"
-                  >
-                    {/* Metallic Shine Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full duration-700 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
-                    
-                    <h3 className="font-bold text-slate-800 text-sm mb-1 z-10 group-hover:text-teal-700 transition-colors w-full">{tab.label}</h3>
-                    <p className="text-[10px] text-slate-500 mb-4 z-10 line-clamp-1 w-full">Manage {tab.label.toLowerCase()}</p>
-                    
-                    <div className="w-10 h-10 bg-white text-teal-600 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-teal-50 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm border border-slate-200">
-                      {tab.icon}
-                    </div>
-                    
-                    <div className="mt-auto pt-2 w-full flex items-center justify-between text-teal-600 text-[9px] font-bold uppercase tracking-widest z-10 border-t border-slate-300/50">
-                      <span className="group-hover:text-teal-700">Open</span>
-                      <div className="w-6 h-6 rounded-full bg-white group-hover:bg-teal-100 flex items-center justify-center group-hover:translate-x-1 transition-all shadow-sm">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              <div className="space-y-4">
+                {Object.entries(sectionedTabs).map(([sectionName, sectionTabs]) => {
+                  const isDefault = sectionName === "DEFAULT";
+                  const displayName = isDefault ? "General Modules" : sectionName;
+                  const isExpanded = isDefault || expandedHomeSections[sectionName];
+
+                  return (
+                    <div key={sectionName} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm transition-all duration-300">
+                      <button 
+                        onClick={() => toggleHomeSection(sectionName)}
+                        className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-slate-50 to-white hover:bg-slate-50 transition-colors"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${isExpanded ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20' : 'bg-slate-100 text-slate-500'}`}>
+                            {isExpanded ? (
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                            ) : (
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                            )}
+                          </div>
+                          <div className="text-left">
+                            <h3 className="text-lg font-bold text-slate-900">{displayName}</h3>
+                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{sectionTabs.length} Modules</p>
+                          </div>
+                        </div>
+                      </button>
+
+                      <div className={`transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+                        <div className="p-6 pt-0 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 bg-slate-50/50">
+                          {sectionTabs.map(tab => (
+                            <button 
+                              key={tab.id} 
+                              onClick={() => onTabChange(tab.id)} 
+                              className="bg-gradient-to-br from-white to-slate-50 p-5 border border-slate-200 hover:border-teal-400/50 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 text-left group flex flex-col items-start h-full relative overflow-hidden"
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-teal-50/30 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full duration-700 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
+                              
+                              <h4 className="font-bold text-slate-800 text-sm mb-1 z-10 group-hover:text-teal-700 transition-colors w-full">{tab.label}</h4>
+                              <p className="text-[10px] text-slate-500 mb-4 z-10 line-clamp-1 w-full">Manage {tab.label.toLowerCase()}</p>
+                              
+                              <div className="w-10 h-10 bg-slate-100 text-teal-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-teal-50 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm border border-slate-200/50">
+                                {tab.icon}
+                              </div>
+                              
+                              <div className="mt-auto pt-2 w-full flex items-center justify-between text-teal-600 text-[9px] font-bold uppercase tracking-widest z-10 border-t border-slate-100">
+                                <span className="group-hover:text-teal-700">Open</span>
+                                <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-teal-100 flex items-center justify-center group-hover:translate-x-1 transition-all shadow-sm">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ) : (
