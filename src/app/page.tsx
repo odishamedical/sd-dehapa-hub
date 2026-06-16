@@ -1,478 +1,401 @@
 "use client";
 
-import Image from "next/image";
-import EcosystemSwitcher from "../components/EcosystemSwitcher";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTenant } from "@/components/TenantContext";
+import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings } from "lucide-react";
 
-const DEPARTMENTS: any[] = [
-  // Zero Mock Data Protocol: Data will be fetched from Firestore CMS
-];
+export default function DehapaHome() {
+  const [activeTab, setActiveTab] = useState<"patients" | "doctors" | "hospitals">("patients");
+  const [isPinging, setIsPinging] = useState(false);
+  const [ambulanceETA, setAmbulanceETA] = useState<string | null>(null);
 
-export default function Home() {
-  const { activeTenant, isLoaded } = useTenant();
+  const handlePingAmbulance = () => {
+    setIsPinging(true);
+    // Simulate network delay and finding ambulance
+    setTimeout(() => {
+      setIsPinging(false);
+      setAmbulanceETA("3 mins away");
+    }, 2500);
+  };
 
   return (
-    <main className="relative min-h-screen bg-white text-slate-900 overflow-hidden font-sans selection:bg-tenant-accent/30 flex flex-col justify-between">
+    <main className="min-h-screen bg-slate-50 font-sans selection:bg-teal-500/30 overflow-x-hidden">
       
-      {/* Dark Theme Ambient Background */}
-      <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-tenant-accent/5 blur-[150px] rounded-full z-0 pointer-events-none transition-colors duration-500" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-tenant-accent/5 blur-[150px] rounded-full z-0 pointer-events-none transition-colors duration-500" />
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none z-0"></div>
+      {/* 1. HERO SECTION (The Gateway) */}
+      <section className="relative pt-24 pb-32 lg:pt-32 lg:pb-40 bg-gradient-to-b from-slate-900 via-teal-950 to-teal-900 overflow-hidden">
+        {/* Background Ambient Effects */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/20 rounded-full blur-[100px] pointer-events-none mix-blend-screen animate-[pulse_6s_ease-in-out_infinite]" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-teal-300/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
 
-      {/* Global Header is handled by layout.tsx -> GlobalHeader.tsx */}
-
-      {/* Hero Section - DehaPa Web Marketplace Redesign */}
-      {/* Premium Cinematic Background */}
-      <div className="relative z-10 w-full bg-gradient-to-b from-slate-900 via-teal-950 to-[#0d9488] text-white pt-12 pb-28 overflow-hidden border-b border-white/10">
-        {/* Deep Glowing Background Accents */}
-        <div className="absolute top-[-10%] right-[10%] w-[800px] h-[800px] bg-teal-500/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-teal-300/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen animate-[pulse_10s_ease-in-out_infinite_alternate]" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay pointer-events-none"></div>
-        
-        {/* Animated Medical Floating Icons (Right Side) */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-           {/* Cross */}
-           <div className="absolute top-[15%] right-[20%] text-white/10 text-6xl animate-[pulse_4s_ease-in-out_infinite] transform rotate-12 blur-[2px]">✚</div>
-           {/* Heartbeat */}
-           <div className="absolute top-[40%] right-[10%] text-white/10 text-8xl animate-[pulse_6s_ease-in-out_infinite] transform -rotate-12 blur-[3px]">💓</div>
-           {/* Shield */}
-           <div className="absolute top-[60%] right-[25%] text-white/5 text-7xl animate-[pulse_5s_ease-in-out_infinite] transform rotate-6 blur-[1px]">🛡️</div>
-           {/* Ambulance */}
-           <div className="absolute top-[25%] left-[10%] text-white/5 text-6xl animate-[pulse_7s_ease-in-out_infinite] transform -rotate-6 blur-[2px]">🚑</div>
+        {/* Floating Medical Icons */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
+           <Activity className="absolute top-[20%] right-[15%] text-white/5 w-24 h-24 transform rotate-12" />
+           <ShieldCheck className="absolute top-[60%] left-[10%] text-white/5 w-32 h-32 transform -rotate-12" />
         </div>
 
-        <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 text-center relative z-20">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif mb-4 leading-tight drop-shadow-md">
-            Your Gateway to Integrated Healthcare.
+        <div className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 text-center">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold font-serif text-white mb-6 leading-tight drop-shadow-lg">
+            Your Integrated <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-teal-100">Healthcare Ecosystem</span>
           </h1>
-          <p className="text-lg md:text-xl text-teal-50 max-w-2xl mx-auto font-medium drop-shadow-sm">
-            Your Health Our Mission
+          <p className="text-base sm:text-lg lg:text-xl text-teal-50 max-w-2xl mx-auto font-medium mb-12 drop-shadow-sm">
+            Search doctors, check live hospital beds, book lab tests, and ping emergency ambulances instantly across Odisha.
           </p>
-        </div>
-      </div>
 
-      {/* Overlapping Content: Hyper-Realistic Service Cards */}
-      <div className="relative z-20 w-full max-w-[1920px] mx-auto px-0 md:px-6 lg:px-12 xl:px-16 -mt-16">
-          <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 pb-8 px-6 md:px-0 md:grid-cols-2 lg:grid-cols-5 mb-4 w-full [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            
-            {/* Card 1: Book Doctor Consultation */}
-            <Link href="/doctors" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
-              {/* Top Image Section */}
-              <div className="h-44 relative w-full flex-shrink-0">
-                <img src="/images/doctor.png" alt="Doctor" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Book Doctor<br/>Consultation</h3>
-                </div>
-              </div>
-              
-              {/* Bottom Data Section */}
-              <div className="flex-1 px-5 pb-5 pt-2 flex flex-col gap-3 relative z-20">
-                {/* Rating */}
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-slate-600 uppercase">Rating</span>
-                  <div className="text-amber-400 text-[10px] tracking-widest drop-shadow-sm">⭐⭐⭐⭐⭐</div>
-                </div>
-                
-                {/* Verified Ratings Box */}
-                <div className="bg-gradient-to-r from-teal-50 to-white border border-teal-100/50 rounded-xl p-3 flex justify-between items-center shadow-sm">
-                  <div>
-                    <span className="text-[10px] font-bold text-teal-900 block mb-0.5">VERIFIED EXPERT RATINGS:</span>
-                    <span className="text-[10px] text-slate-600 font-medium">4.9 Stars from 230 Reviews</span>
-                  </div>
-                  <div className="text-2xl text-teal-600 drop-shadow-md">🎖️</div>
-                </div>
-
-                {/* Availability Section */}
-                <div className="bg-gradient-to-b from-slate-50 to-slate-200 border border-white rounded-xl p-3 shadow-inner">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] font-bold text-slate-800 uppercase">Availability</span>
-                    <div className="text-[9px] text-slate-500 font-mono tracking-widest font-bold">S M <span className="text-teal-600 border-b-2 border-teal-600 pb-0.5">T</span> W T F S</div>
-                  </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-slate-800 text-white text-[8px] px-2 py-1 rounded-full font-bold">NEXT SLOT: Today, 3:15 PM</span>
-                  </div>
-                  <div className="flex gap-1 justify-between mt-2">
-                    {['030', '9A3', '1:00', '1:00', 'PM', '2:M', 'AM'].map((time, i) => (
-                      <span key={i} className={`text-[8px] px-1.5 py-1 rounded-md font-bold ${time === 'PM' ? 'bg-teal-600 text-white shadow-sm' : 'bg-white text-slate-500 border border-slate-200 shadow-sm'}`}>{time}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Bottom Action */}
-                <div className="mt-auto flex justify-between items-end">
-                  <div className="flex items-center gap-1">
-                    <span className="text-[8px] font-bold text-slate-500 uppercase">Specialty Tags:</span>
-                    <span className="text-[8px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">Primary Care</span>
-                  </div>
-                  <button className="bg-teal-800 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-teal-700 transition-colors uppercase">Full Availability</button>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 2: Hospital & Facility Network */}
-            <Link href="/hospitals" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
-              {/* Top Image Section */}
-              <div className="h-44 relative w-full flex-shrink-0">
-                <img src="/images/hospital.png" alt="Hospital" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Hospital<br/>& Facility<br/>Network</h3>
-                </div>
-              </div>
-              
-              {/* Bottom Data Section */}
-              <div className="flex-1 px-5 pb-5 pt-0 flex flex-col gap-4 relative z-20">
-                {/* Map Box */}
-                <div className="bg-white rounded-2xl p-3 shadow-md border border-slate-200 relative overflow-hidden flex items-center justify-between -mt-6">
-                  <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')]"></div>
-                  <div className="relative z-10">
-                     <span className="text-teal-700 text-2xl drop-shadow-md">📍</span>
-                     <span className="text-[10px] font-bold text-slate-800 block mt-1">DehaPa Health</span>
-                  </div>
-                  <div className="relative z-10 flex flex-col gap-2">
-                     <span className="bg-white text-slate-700 text-[8px] font-bold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 border border-slate-100"><span className="text-[10px]">📍</span> 2 Nearby facilities</span>
-                     <span className="bg-white text-slate-700 text-[8px] font-bold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 border border-slate-100"><span className="text-[10px]">📍</span> 2 Nearby facilities</span>
-                  </div>
-                </div>
-
-                {/* Live Status */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-slate-800 uppercase">Live Status:</span>
-                  <div className="bg-teal-700 text-white text-[10px] font-medium px-3 py-1.5 rounded-lg shadow-sm">
-                    Live Capacity: ICU 12/20, General <span className="font-bold">45/60</span>
-                  </div>
-                </div>
-
-                {/* Bed Availability */}
-                <div className="mt-2 border-t border-slate-300/50 pt-3">
-                  <span className="text-[10px] font-bold text-slate-800 uppercase block mb-1">Real-Time Bed Availability Range:</span>
-                  <span className="text-lg font-bold text-slate-900">1 to 24 Beds</span>
-                </div>
-
-                {/* Bottom Action */}
-                <div className="mt-auto text-center">
-                  <button className="bg-teal-800 text-white text-[10px] font-bold px-6 py-2.5 rounded-full shadow-md hover:bg-teal-700 transition-colors uppercase w-[80%]">View Live Capacity</button>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 3: Lab Services */}
-            <Link href="/labs" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
-              {/* Top Image Section */}
-              <div className="h-44 relative w-full flex-shrink-0">
-                <img src="/images/lab.png" alt="Lab" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Lab Services<br/>& Test Panels</h3>
-                </div>
-              </div>
-              
-              {/* Bottom Data Section */}
-              <div className="flex-1 px-5 pb-5 pt-3 flex flex-col gap-3 relative z-20">
-                {/* Available Tests Title */}
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-slate-800 uppercase">Available Test Types</span>
-                  <span className="text-xl drop-shadow-sm transform -rotate-45 text-teal-600">💉</span>
-                </div>
-
-                {/* Test List */}
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <div className="w-1 h-10 bg-teal-500 rounded-full mt-0.5"></div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-800 block leading-none">Wellness</span>
-                      <span className="text-[8px] text-slate-500 leading-tight block mt-0.5">Categorize define ideologies, wellness, preparation and wellness.</span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-1 h-8 bg-sky-500 rounded-full mt-0.5"></div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-800 block leading-none">Diagnostic</span>
-                      <span className="text-[8px] text-slate-500 leading-tight block mt-0.5">Diagnostic class, diagnostic, and rewards modellanel spectromonis.</span>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-1 h-6 bg-red-500 rounded-full mt-0.5"></div>
-                    <div>
-                      <span className="text-[10px] font-bold text-slate-800 block leading-none">Blood Panels</span>
-                      <span className="text-[8px] text-slate-500 leading-tight block mt-0.5">Cateroper, vaystabite, Diagnostic, mancct and blood panels.</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Buttons */}
-                <div className="mt-auto space-y-2">
-                  <div className="bg-gradient-to-r from-white to-slate-100 border border-slate-300 rounded-xl p-2.5 shadow-sm flex items-center gap-3">
-                    <span className="text-2xl text-teal-700 drop-shadow-sm">📋</span>
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-800 uppercase block leading-tight">Integrated Results Portal</span>
-                      <span className="text-[8px] text-slate-500 block">Reach Filtered Results Portal</span>
-                    </div>
-                  </div>
-                  <div className="bg-transparent p-1 flex items-center gap-3 border-t border-slate-300/50 pt-2">
-                    <span className="text-2xl text-teal-700 drop-shadow-sm">🛵</span>
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-800 uppercase block leading-tight">Home Pickup Service</span>
-                      <span className="text-[8px] text-slate-500 block">New ocr on home pickup service</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 4: Prescription & Medication */}
-            <Link href="/pharmacies" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-50 to-slate-200 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(13,148,136,0.2)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-white/80 border-r border-b border-slate-300/50 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none rounded-[32px] z-10"></div>
-              {/* Top Image Section */}
-              <div className="h-44 relative w-full flex-shrink-0">
-                <img src="/images/medicine.png" alt="Medicine" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-100/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Prescription<br/>& Medication</h3>
-                </div>
-              </div>
-              
-              {/* Bottom Data Section */}
-              <div className="flex-1 px-5 pb-5 pt-3 flex flex-col gap-4 relative z-20">
-                
-                {/* Shopping List Box */}
-                <div className="bg-gradient-to-b from-white to-slate-50 border border-slate-200 rounded-xl p-3 shadow-sm">
-                  <span className="text-[10px] font-bold text-slate-800 uppercase block mb-2 border-b border-slate-200 pb-1">Basic Shopping List</span>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] text-slate-700 font-medium">Basic shopping list</span>
-                      <div className="w-3.5 h-3.5 border border-slate-400 bg-white rounded-sm shadow-inner"></div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] text-slate-700 font-medium">Medication</span>
-                      <div className="w-3.5 h-3.5 border border-slate-400 bg-white rounded-sm shadow-inner"></div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] text-slate-700 font-medium">Medication list</span>
-                      <div className="w-3.5 h-3.5 border border-slate-400 bg-white rounded-sm shadow-inner"></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Recent Prescriptions */}
-                <div>
-                  <span className="text-[10px] font-bold text-slate-800 uppercase block mb-2 border-b border-slate-300/50 pb-1">Recent Prescriptions</span>
-                  <div className="space-y-1.5 text-[9px] text-slate-700 font-medium">
-                    <div className="flex justify-between"><span>1. <strong className="text-slate-900">Metformin</strong> 500mg</span><span className="text-slate-500">Rx12345</span></div>
-                    <div className="flex justify-between"><span>2. <strong className="text-slate-900">Atorvastatin</strong> 20mg</span><span className="text-slate-500">Rx67890</span></div>
-                    <div className="flex justify-between"><span>3. <strong className="text-slate-900">Atorvastatin</strong> 20mg</span><span className="text-slate-500">Rx67890</span></div>
-                  </div>
-                </div>
-
-                {/* Bottom Action */}
-                <div className="mt-auto text-center">
-                  <button className="bg-teal-800 text-white text-[10px] font-bold px-6 py-2.5 rounded-full shadow-md hover:bg-teal-700 transition-colors uppercase w-[90%]">Refill Prescriptions</button>
-                </div>
-              </div>
-            </Link>
-
-            {/* Card 5: Emergency Services */}
-            <Link href="/ambulances" className="w-[80vw] md:w-auto flex-shrink-0 snap-center bg-gradient-to-b from-slate-900 via-slate-800 to-black rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:-translate-y-3 hover:shadow-[0_40px_60px_rgba(220,38,38,0.3)] transition-all duration-500 group flex flex-col h-[480px] border-t-2 border-l-2 border-slate-600/80 border-r border-b border-black relative">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
-              {/* Top Image Section */}
-              <div className="h-44 relative w-full flex-shrink-0">
-                <img src="/images/ambulance.png" alt="Ambulance" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
-                <div className="absolute top-4 left-4 bg-teal-800 rounded-md px-3 py-1.5 shadow-md border border-teal-700/50">
-                  <h3 className="text-white font-serif text-[15px] font-bold leading-tight drop-shadow-sm">Emergency<br/>Services</h3>
-                </div>
-              </div>
-              
-              {/* Bottom Data Section */}
-              <div className="flex-1 px-5 pb-5 pt-4 flex flex-col gap-4 relative z-20">
-                
-                {/* Huge Red Button */}
-                <button className="w-full bg-gradient-to-b from-red-600 to-red-800 border border-red-500/50 text-white text-xs font-bold py-3.5 rounded-2xl shadow-[0_0_20px_rgba(220,38,38,0.4),inset_0_2px_5px_rgba(255,255,255,0.3)] hover:brightness-110 transition-all uppercase tracking-wide">
-                  Request Immediate Help
-                </button>
-
-                {/* Live ETA Box */}
-                <div className="bg-black/40 border border-slate-700 rounded-2xl p-4 flex justify-between items-center backdrop-blur-md shadow-inner mt-4">
-                  <div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Live ETA:</span>
-                    <span className="text-2xl font-bold text-white leading-none block mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">3:55 Min</span>
-                    <span className="text-[9px] text-teal-400 border-b border-teal-400/50 hover:text-teal-300 cursor-pointer">Track Ambulance Live</span>
-                  </div>
-                  <div className="w-16 h-16 bg-slate-800 rounded-xl overflow-hidden border border-slate-600 relative shadow-inner">
-                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-30"></div>
-                     <span className="text-sky-400 text-xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]">📍</span>
-                  </div>
-                </div>
-
-                {/* Bottom Action */}
-                <div className="mt-auto flex justify-between items-end border-t border-slate-700/50 pt-3">
-                  <span className="text-[9px] text-slate-400">Dispatch type: <strong className="text-white">Advanced Life Support</strong></span>
-                  <span className="text-slate-500 text-lg">✨</span>
-                </div>
-              </div>
-            </Link>
-
-          </div>
-
-          {/* Premium Glassmorphic Search Bar */}
-          <div className="max-w-2xl mx-auto bg-white/70 backdrop-blur-xl p-2 md:p-3 rounded-full flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.15)] mb-8 border-t-2 border-l-2 border-white/80 border-r border-b border-slate-200 group transition-all hover:shadow-[0_20px_50px_rgba(13,148,136,0.15)] relative z-30">
-            <div className="flex-1 px-4 flex items-center gap-3 text-slate-500">
-              <svg className="w-5 h-5 group-hover:text-teal-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-              <input type="text" placeholder="Find Doctors, Hospitals, Labs near you" className="w-full bg-transparent border-none outline-none text-slate-900 text-sm md:text-base font-sans placeholder:text-slate-400 focus:ring-0" />
+          {/* Glass-morphic Unified Search Bar */}
+          <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-xl border border-white/20 p-2 sm:p-3 rounded-2xl flex flex-col sm:flex-row items-center gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all focus-within:bg-white/20 focus-within:border-teal-300/50">
+            <div className="flex-1 w-full flex items-center gap-3 px-4 py-2 sm:py-0">
+              <Search className="w-5 h-5 text-teal-300" />
+              <input 
+                type="text" 
+                placeholder="Search doctors, hospitals, specialties..." 
+                className="w-full bg-transparent border-none outline-none text-white text-base font-medium placeholder:text-teal-100/70 focus:ring-0" 
+              />
             </div>
-            <Link href="/portal" className="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white px-8 py-2 md:py-3 rounded-full font-bold text-sm transition-all shadow-[0_0_15px_rgba(13,148,136,0.4)] hover:shadow-[0_0_25px_rgba(13,148,136,0.6)] whitespace-nowrap uppercase tracking-widest hover:scale-105">
+            <div className="h-px sm:h-8 w-full sm:w-px bg-white/20 my-2 sm:my-0"></div>
+            <div className="flex-1 w-full flex items-center gap-3 px-4 py-2 sm:py-0">
+              <MapPin className="w-5 h-5 text-teal-300" />
+              <input 
+                type="text" 
+                placeholder="Location (e.g. Bhubaneswar)" 
+                className="w-full bg-transparent border-none outline-none text-white text-base font-medium placeholder:text-teal-100/70 focus:ring-0" 
+              />
+            </div>
+            <Link href="/portal" className="w-full sm:w-auto bg-gradient-to-r from-teal-400 to-teal-500 hover:from-teal-300 hover:to-teal-400 text-teal-950 px-8 py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:scale-[1.02] text-center mt-2 sm:mt-0">
               Search
             </Link>
           </div>
-      </div>
-
-      <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-16 bg-white relative z-10">
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold font-serif text-slate-900 mb-2">Verify Your Medical Facility</h3>
-          <p className="text-sm text-slate-500">This data was collected from reliable sources but has not yet been verified. Are you the owner? Verify your facility to build trust.</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      </section>
+
+      {/* 2. CORE SERVICE TICKETS (App-Like Navigation) */}
+      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-16 mb-24">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
+          
           {[
-            { title: "Doctors & Clinics", desc: "Build trust and attract new patients in your area.", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", btn: "Verify Now", role: "doctor" },
-            { title: "Hospitals", desc: "Showcase your facilities, beds, and specialists.", icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4", btn: "Verify Now", role: "hospital" },
-            { title: "Diagnostic Labs", desc: "Publish test pricing and home collection services.", icon: "M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z", btn: "Verify Now", role: "lab" },
-            { title: "Pharmacies", desc: "Highlight your fast delivery and medicine stock.", icon: "M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z", btn: "Verify Now", role: "pharmacy" },
+            { title: "Find Doctors", desc: "Book Specialists", icon: <Stethoscope className="w-8 h-8" />, href: "/doctors", color: "from-blue-500 to-blue-600", shadow: "shadow-blue-500/20" },
+            { title: "Hospitals", desc: "Live Bed Availability", icon: <Building2 className="w-8 h-8" />, href: "/hospitals", color: "from-teal-500 to-teal-600", shadow: "shadow-teal-500/20" },
+            { title: "Diagnostics", desc: "Lab Tests & Scans", icon: <TestTube2 className="w-8 h-8" />, href: "/labs", color: "from-purple-500 to-purple-600", shadow: "shadow-purple-500/20" },
+            { title: "Medicines", desc: "Fast Pharmacy Delivery", icon: <Pill className="w-8 h-8" />, href: "/pharmacies", color: "from-emerald-500 to-emerald-600", shadow: "shadow-emerald-500/20" },
+            { title: "Ambulance", desc: "1-Click Emergency", icon: <Ambulance className="w-8 h-8" />, href: "#ambulance-ping", color: "from-red-500 to-red-600", shadow: "shadow-red-500/20" },
+            { title: "Telemedicine", desc: "Launching Soon", icon: <Video className="w-8 h-8" />, href: "#", color: "from-slate-400 to-slate-500", shadow: "shadow-slate-500/10", disabled: true },
           ].map((item, i) => (
-            <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-start text-left">
-              <div className="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center mb-4 border border-teal-100">
-                 <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={item.icon}></path></svg>
+            <Link 
+              key={i} 
+              href={item.href}
+              className={`bg-white rounded-3xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:shadow-xl transition-all duration-300 group flex flex-col items-start justify-between border border-slate-100 min-h-[160px] sm:min-h-[180px] relative overflow-hidden ${item.disabled ? 'opacity-70 cursor-not-allowed grayscale' : 'hover:-translate-y-1 hover:border-teal-200'}`}
+              onClick={(e) => item.disabled && e.preventDefault()}
+            >
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} ${item.shadow} shadow-lg flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300 relative z-10`}>
+                {item.icon}
               </div>
-              <h4 className="text-slate-900 font-bold mb-1">{item.title}</h4>
-              <p className="text-xs text-slate-500 mb-6 flex-1">{item.desc}</p>
-              <Link href={`/login?redirect=/portal/verify?role=${item.role}`} className="mt-auto text-teal-600 font-bold text-xs uppercase tracking-widest border border-teal-200 hover:bg-teal-50 px-4 py-2 rounded-lg w-full text-center transition-colors">
-                {item.btn}
-              </Link>
-            </div>
+              <div className="relative z-10">
+                <h3 className="text-slate-900 font-bold text-base sm:text-lg leading-tight mb-1">{item.title}</h3>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">{item.desc}</p>
+              </div>
+              
+              {/* Decorative Background Blob */}
+              <div className={`absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-br ${item.color} opacity-[0.03] rounded-full blur-2xl group-hover:opacity-[0.08] transition-opacity`}></div>
+            </Link>
           ))}
+          
         </div>
-      </div>
+      </section>
 
-      {/* NEW SECTION 1: Advanced Medical Grid Departments */}
-      <section className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-16 border-t border-slate-200 bg-slate-50/50 rounded-3xl mb-16 backdrop-blur-sm">
-        <div className="mb-12 text-left">
-          <span className="text-[9px] font-mono tracking-widest text-tenant-accent uppercase font-bold block mb-1">Clinical Specialties</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-2">Advanced Medical Grid</h2>
-          <p className="text-slate-600 text-sm">Select a department to view online specialist schedules, fees, and diagnostic features.</p>
-        </div>
-
-        {DEPARTMENTS.length === 0 ? (
-          <div className="w-full text-center py-16 border-2 border-dashed border-tenant-accent/20 rounded-2xl bg-white shadow-sm">
-            <svg className="w-12 h-12 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-            <p className="text-slate-500 font-mono text-sm uppercase tracking-widest font-bold">No Specialties Configured</p>
-            <p className="text-xs text-slate-400 mt-2">Awaiting CMS Data Seeding via Firebase...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {DEPARTMENTS.map(dept => (
-              <div 
-                key={dept.id} 
-                className="bg-slate-50 border border-tenant-accent/15 rounded-2xl p-5 hover:border-tenant-accent/40 hover:shadow-[0_0_20px_var(--tenant-accent-glow)] transition-all flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="w-12 h-12 bg-tenant-accent/10 border border-tenant-accent/20 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-105 transition-transform">
-                    {dept.icon}
-                  </div>
-                  <h4 className="text-slate-900 font-bold text-base mb-1 group-hover:text-tenant-accent transition-colors text-left">{dept.name}</h4>
-                  <p className="text-[11px] text-slate-600 leading-relaxed mb-4 text-left">{dept.desc}</p>
+      {/* 3. UBER-LIKE AMBULANCE PING SYSTEM */}
+      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-16 mb-24 scroll-mt-24">
+        <div className="bg-slate-900 rounded-[40px] overflow-hidden shadow-2xl border border-slate-800 flex flex-col lg:flex-row relative">
+          
+          {/* Left Side: Content & Actions */}
+          <div className="w-full lg:w-5/12 p-8 sm:p-12 lg:p-16 flex flex-col justify-center relative z-20 bg-slate-900">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest mb-6 w-max">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+              Emergency Dispatch
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-serif text-white mb-4 leading-tight">
+              Get an Ambulance <br/><span className="text-red-400">in Minutes.</span>
+            </h2>
+            <p className="text-slate-400 text-sm sm:text-base mb-10 leading-relaxed">
+              Our Uber-like ping system instantly alerts all verified DehaPa ambulances within a 5km radius. Track your driver live on the map.
+            </p>
+            
+            <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">
+              <div className="flex items-center gap-4 mb-6 pb-6 border-b border-slate-700">
+                <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center shrink-0">
+                  <MapPin className="w-5 h-5 text-teal-400" />
                 </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest font-bold text-slate-500 block mb-1">Your Location</span>
+                  <span className="text-white font-medium text-sm">Patia, Bhubaneswar, Odisha</span>
+                </div>
+              </div>
+              
+              <button 
+                onClick={handlePingAmbulance}
+                disabled={isPinging || !!ambulanceETA}
+                className={`w-full py-4 rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2 ${
+                  ambulanceETA 
+                    ? 'bg-emerald-500 text-white shadow-emerald-500/20' 
+                    : isPinging 
+                      ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
+                      : 'bg-red-600 hover:bg-red-500 text-white shadow-red-600/30 hover:shadow-red-600/50 hover:-translate-y-1'
+                }`}
+              >
+                {ambulanceETA ? (
+                  <><ShieldCheck className="w-5 h-5" /> Driver Dispatched (ETA: {ambulanceETA})</>
+                ) : isPinging ? (
+                  <><div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div> Locating Vehicles...</>
+                ) : (
+                  <><PhoneCall className="w-5 h-5" /> PING NEAREST AMBULANCE</>
+                )}
+              </button>
+            </div>
+          </div>
 
-                <div className="pt-3 border-t border-slate-800/60">
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {dept.features.map((feat: string, idx: number) => (
-                      <span key={idx} className="bg-slate-900 text-[8px] font-mono px-2 py-0.5 rounded text-gray-400">
-                        {feat}
-                      </span>
-                    ))}
+          {/* Right Side: Map Visualization */}
+          <div className="w-full lg:w-7/12 min-h-[400px] lg:min-h-full bg-slate-800 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-40 mix-blend-luminosity bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=20.296,85.824&zoom=13&size=800x600&style=feature:all|element:labels.text.fill|color:0xffffff&style=feature:all|element:labels.text.stroke|color:0x000000&style=feature:all|element:labels.icon|visibility:off&style=feature:administrative|element:geometry.fill|color:0x000000&style=feature:administrative|element:geometry.stroke|color:0x144b53&style=feature:landscape|element:all|color:0x08304b&style=feature:poi|element:geometry|color:0x0c4152&style=feature:road.highway|element:geometry.fill|color:0x000000&style=feature:road.highway|element:geometry.stroke|color:0x0b434f&style=feature:water|element:geometry|color:0x021019')] bg-cover bg-center"></div>
+            
+            {/* User Pin */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
+              <div className="bg-teal-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full mb-2 shadow-lg whitespace-nowrap">You are here</div>
+              <div className="w-6 h-6 bg-teal-400 rounded-full border-4 border-slate-900 shadow-[0_0_0_2px_rgba(45,212,191,0.5)] relative">
+                <div className="absolute inset-0 bg-teal-400 rounded-full animate-ping opacity-75"></div>
+              </div>
+            </div>
+
+            {/* Radar Sweep Effect */}
+            {isPinging && (
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_270deg,rgba(239,68,68,0.4)_360deg)] rounded-full animate-[spin_2s_linear_infinite] z-10 pointer-events-none"></div>
+            )}
+
+            {/* Mock Ambulances */}
+            <div className="absolute top-[30%] left-[60%] w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-red-500 z-20">
+              <span className="text-lg">🚑</span>
+            </div>
+            <div className="absolute top-[70%] left-[20%] w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-red-500 z-20">
+              <span className="text-lg">🚑</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 4. QR SMART CONNECTION (Offline to Online) */}
+      <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-16 mb-24">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          {/* Graphic Side */}
+          <div className="w-full lg:w-1/2 relative">
+            <div className="aspect-[4/3] rounded-[40px] bg-gradient-to-br from-teal-100 to-teal-50 flex items-center justify-center border-4 border-white shadow-2xl relative overflow-hidden">
+               {/* Mockup Frame */}
+               <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
+               <div className="w-64 h-[500px] bg-slate-900 rounded-[40px] shadow-2xl border-8 border-slate-800 flex flex-col relative z-10 transform rotate-12 translate-x-12 translate-y-12">
+                 <div className="flex-1 bg-white rounded-[32px] overflow-hidden relative">
+                    {/* Scanner UI Mock */}
+                    <div className="absolute inset-0 bg-black/60 z-10">
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-teal-400 rounded-3xl">
+                        <div className="w-full h-0.5 bg-teal-400 absolute top-1/2 animate-[pulse_1s_ease-in-out_infinite]"></div>
+                      </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1551076805-e18690c5e53b?auto=format&fit=crop&w=800&q=80" className="w-full h-full object-cover" alt="Clinic Desk" />
+                 </div>
+               </div>
+               {/* Floating QR */}
+               <div className="absolute top-1/4 left-1/4 bg-white p-4 rounded-3xl shadow-2xl border border-slate-100 z-20 transform -rotate-6 hover:rotate-0 transition-transform">
+                 <QrCode className="w-24 h-24 text-slate-800" />
+                 <p className="text-center text-[8px] font-bold mt-2 uppercase tracking-widest text-slate-500">Scan to Connect</p>
+               </div>
+            </div>
+          </div>
+          
+          {/* Content Side */}
+          <div className="w-full lg:w-1/2">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-xs font-bold uppercase tracking-widest mb-6">
+              <QrCode className="w-4 h-4" /> Offline to Online
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-serif text-slate-900 mb-6 leading-tight">
+              Scan & Connect <br/><span className="text-teal-600">Instantly.</span>
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg mb-8 leading-relaxed">
+              Every DehaPa partner clinic has a unique Smart QR Code on their front desk. Simply open your phone camera and scan it to bridge the physical and digital world.
+            </p>
+            
+            <div className="space-y-6">
+              {[
+                { title: "Live Digital Queues", desc: "Scan to instantly join the doctor's queue and track your exact waiting number from your phone." },
+                { title: "Sovereign Health Vault", desc: "Grant the doctor temporary access to your digital health records directly from your vault." },
+                { title: "Instant Fee Payments", desc: "Pay consultation fees securely via UPI without waiting at the billing counter." }
+              ].map((feat, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center shrink-0">
+                    <span className="text-teal-600 font-bold font-serif">{i + 1}</span>
                   </div>
-                  <Link 
-                    href="/doctors"
-                    className="w-full py-2 bg-tenant-accent/10 text-tenant-accent hover:bg-tenant-accent hover:text-slate-800 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all text-center block"
-                  >
-                    Consult Specialists
+                  <div>
+                    <h4 className="font-bold text-slate-900 text-lg mb-1">{feat.title}</h4>
+                    <p className="text-sm text-slate-500">{feat.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. PARTNER & INSTRUCTION PORTAL */}
+      <section className="bg-white border-y border-slate-200 py-24 mb-24">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold font-serif text-slate-900 mb-4">How DehaPa Works</h2>
+          <p className="text-slate-500 mb-12 max-w-xl mx-auto">Select your profile below to see exactly how you can use the platform and access your dedicated gateways.</p>
+
+          {/* Tab Navigation */}
+          <div className="inline-flex bg-slate-100 p-1.5 rounded-full mb-12 overflow-x-auto max-w-full">
+            {[
+              { id: "patients", label: "For Patients", icon: <UserCircle className="w-4 h-4" /> },
+              { id: "doctors", label: "For Doctors", icon: <Stethoscope className="w-4 h-4" /> },
+              { id: "hospitals", label: "For Hospitals", icon: <Building2 className="w-4 h-4" /> }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                  activeTab === tab.id 
+                    ? 'bg-white text-teal-700 shadow-md' 
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
+              >
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="max-w-5xl mx-auto bg-slate-50 border border-slate-100 rounded-3xl p-8 sm:p-12 text-left shadow-sm min-h-[300px]">
+            {activeTab === "patients" && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Patient Journey</h3>
+                <div className="grid sm:grid-cols-3 gap-8 mb-8">
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">1. Find Care</h4>
+                    <p className="text-sm text-slate-600">Use the top search bar or service tickets to find the right specialist or hospital near you.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">2. Book & Track</h4>
+                    <p className="text-sm text-slate-600">Book appointments online or scan the clinic QR code to track your live queue status.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">3. Health Vault</h4>
+                    <p className="text-sm text-slate-600">All your prescriptions, lab reports, and consultation notes are automatically saved to your secure digital vault.</p>
+                  </div>
+                </div>
+                <div className="pt-8 border-t border-slate-200">
+                  <Link href="/portal" className="inline-flex items-center gap-2 text-teal-600 font-bold hover:text-teal-700 uppercase tracking-widest text-sm">
+                    Access Patient Portal <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
-            ))}
+            )}
+
+            {activeTab === "doctors" && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Doctor / Specialist Features</h3>
+                <div className="grid sm:grid-cols-3 gap-8 mb-8">
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">1. Claim Profile</h4>
+                    <p className="text-sm text-slate-600">Verify your facility to take control of your public page, update timings, and manage photos.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">2. Queue Management</h4>
+                    <p className="text-sm text-slate-600">Use our Admin CRM to manage daily patient queues. Patients can track their turn from their phone.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">3. Digital Rx</h4>
+                    <p className="text-sm text-slate-600">Write digital prescriptions that instantly sync to the patient's vault and connected pharmacies.</p>
+                  </div>
+                </div>
+                <div className="pt-8 border-t border-slate-200">
+                  <Link href="/login?redirect=/portal/verify?role=doctor" className="inline-flex items-center gap-2 text-teal-600 font-bold hover:text-teal-700 uppercase tracking-widest text-sm">
+                    Verify Your Facility / Login <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "hospitals" && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Hospital Network Portal</h3>
+                <div className="grid sm:grid-cols-3 gap-8 mb-8">
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">1. Infrastructure Panel</h4>
+                    <p className="text-sm text-slate-600">Publish your hospital infrastructure, ICUs, and specialized departments to attract patients.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">2. Live Bed Capacity</h4>
+                    <p className="text-sm text-slate-600">Update your live bed availability so patients and ambulances know exactly where to go during emergencies.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-teal-700 mb-2">3. Doctor Rosters</h4>
+                    <p className="text-sm text-slate-600">Link verified doctors to your hospital profile to showcase your elite medical staff.</p>
+                  </div>
+                </div>
+                <div className="pt-8 border-t border-slate-200">
+                  <Link href="/login?redirect=/portal/verify?role=hospital" className="inline-flex items-center gap-2 text-teal-600 font-bold hover:text-teal-700 uppercase tracking-widest text-sm">
+                    Hospital Admin Login <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </section>
 
-      {/* NEW SECTION 2: How it Works (1-2-3 Consultation Flow) */}
-      <section className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-16 mb-16">
-        <div className="mb-12 text-center">
-          <span className="text-[9px] font-mono tracking-widest text-tenant-accent uppercase font-bold block mb-1">Workflow Overview</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-2">HIPAA Secure Video Consults</h2>
-          <p className="text-slate-600 text-sm max-w-xl mx-auto">Get treated securely from home in three simple steps, connected to the central SD SSO identity.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { step: "01", title: "Single Sign-On", desc: "Sign in with Google. Complete your free WhatsApp contact profile to unlock clinical slots instantly." },
-            { step: "02", title: "Choose Specialist", desc: "Search the advanced grid. Filter by hospital (Apollo, KIMS, Care) or search by chief symptoms." },
-            { step: "03", title: "Video Consult & Rx", desc: "Join your secure telehealth waiting room. Write prescriptions dispatched directly to your vault." }
-          ].map((flow, idx) => (
-            <div key={idx} className="bg-white border border-slate-200 p-8 rounded-2xl flex flex-col items-start relative group hover:border-tenant-accent transition-colors shadow-sm hover:shadow-xl">
-              <span className="text-4xl font-serif font-black text-slate-100 group-hover:text-tenant-accent/20 transition-colors font-mono mb-4 block">
-                {flow.step}
-              </span>
-              <h4 className="text-slate-900 font-bold text-lg mb-2 font-serif text-left">{flow.title}</h4>
-              <p className="text-sm text-slate-600 leading-relaxed text-left">{flow.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* NEW SECTION 3: Medplum Trust Compliance Plaque */}
-      <section className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-4 mb-24">
-        <div className="bg-gradient-to-r from-tenant-accent/10 via-white to-tenant-accent/5 border border-tenant-accent/20 rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group shadow-xl">
-          <div className="absolute top-0 right-0 p-4 opacity-5 text-8xl leading-none pointer-events-none">
-            🛡️
-          </div>
-          <div className="space-y-4 max-w-2xl text-left relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-tenant-accent/10 border border-tenant-accent/20 text-tenant-accent text-[10px] font-bold uppercase tracking-widest font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-tenant-accent animate-pulse"></span>
-              <span>100% HIPAA & FHIR Certified</span>
-            </div>
+      {/* 6. TRUST & SECURITY FOOTER */}
+      <footer className="bg-slate-900 text-white pt-16 pb-8 border-t-4 border-teal-500">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             
-            <h3 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 leading-tight">
-              Sovereign Health Vaults <br />
-              <span className="text-tenant-accent">Secured via Medplum Infrastructure.</span>
-            </h3>
+            <div>
+              <h3 className="font-serif font-bold text-2xl mb-4 text-white flex items-center gap-2">
+                <Activity className="w-6 h-6 text-teal-400" /> DehaPa Health
+              </h3>
+              <p className="text-slate-400 text-sm mb-6 max-w-sm">
+                Sovereign Medical Network bridging offline clinical excellence with modern digital health infrastructure.
+              </p>
+            </div>
 
-            <p className="text-sm text-slate-600 leading-relaxed font-sans">
-              All health charts, diagnostics, and prescription dispatches are encrypted using industry-standard HL7 FHIR formats. Rest assured that your private medical data is restricted only to verified clinicians.
-            </p>
+            <div>
+              <h4 className="font-bold uppercase tracking-widest text-slate-500 text-xs mb-4">Security & Compliance</h4>
+              <div className="flex items-start gap-3 bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
+                <div>
+                  <h5 className="font-bold text-sm text-white">HIPAA Compliant Vaults</h5>
+                  <p className="text-[10px] text-slate-400 mt-1">All health records are encrypted via Medplum infrastructure and strictly adhere to HL7 FHIR standards.</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-bold uppercase tracking-widest text-slate-500 text-xs mb-4">Quick Links</h4>
+              <div className="grid grid-cols-2 gap-2 text-sm text-slate-300">
+                <Link href="/doctors" className="hover:text-teal-400">Find Doctors</Link>
+                <Link href="/hospitals" className="hover:text-teal-400">Hospitals</Link>
+                <Link href="/labs" className="hover:text-teal-400">Labs & Tests</Link>
+                <Link href="/pharmacies" className="hover:text-teal-400">Pharmacies</Link>
+                <Link href="/portal" className="hover:text-teal-400">Patient Portal</Link>
+                <Link href="/login" className="hover:text-teal-400">Partner Login</Link>
+              </div>
+            </div>
+
           </div>
-
-          <div className="relative z-10 shrink-0 w-full md:w-auto">
-            <Link 
-              href="/portal"
-              className="px-6 py-3.5 bg-tenant-accent hover:opacity-90 text-slate-800 font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_var(--tenant-accent-glow)] block text-center"
-            >
-              Access Patient Vault
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Simple Footer */}
-      <footer className="relative z-10 border-t border-slate-200 bg-white py-8 px-6 text-center w-full">
-        <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
-          <p>© 2026 Shyam Dash Creation. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-tenant-accent transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-tenant-accent transition-colors">HIPAA Disclosures</a>
-            <span className="flex items-center gap-1">Powered by <strong className="text-tenant-accent">SD IT Services</strong></span>
+          
+          <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>© 2026 Shyam Dash Creation. All rights reserved.</p>
+            <div className="flex gap-4">
+              <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link href="#" className="hover:text-white transition-colors">Contact Us</Link>
+            </div>
+            <p>Powered by <strong className="text-teal-400">SD IT Services</strong></p>
           </div>
         </div>
       </footer>
