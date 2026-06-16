@@ -8,6 +8,7 @@ import { useAutosave } from '@/hooks/useAutosave';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import ImageUpload from '@/components/ImageUpload';
+import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 
 function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void }) {
   return (
@@ -165,6 +166,12 @@ export default function DoctorDashboard() {
 
   const doctorTabs: DashboardTab[] = [
     {
+      id: "inquiries",
+      label: "Patient Inquiries",
+      section: "PATIENT INQUIRIES",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+    },
+    {
       id: "identity",
       label: "Identity & Bio",
       section: "PROFILE BUILDER",
@@ -248,6 +255,13 @@ export default function DoctorDashboard() {
             <p className="text-xs mt-1">The information you fill out here instantly maps to your public profile. Ensure it is accurate to maintain your "Verified" badge.</p>
           </div>
         </div>
+
+        {/* Tab: Patient Inquiries */}
+        {activeTab === "inquiries" && (
+          <div className="max-w-5xl mx-auto">
+             <PatientLeadsWidget providerId="doc-1" />
+          </div>
+        )}
 
         {/* Tab 1: Identity & Hero */}
         {activeTab === "identity" && (

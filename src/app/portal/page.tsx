@@ -7,6 +7,9 @@ import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import { useAutosave } from '@/hooks/useAutosave';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
 import ImageUpload from '@/components/ImageUpload';
+import PatientOnboardingModal from '@/components/PatientOnboardingModal';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 function UserHomeWidget({ userName }: { userName: string | null }) {
   return (
@@ -28,6 +31,7 @@ export default function UserDashboard() {
   const [userName, setUserName] = useState<string | null>("User");
   
   const [activeTab, setActiveTab] = useState("home");
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // State for Identity
   const [identityData, setIdentityData] = useState({
@@ -66,9 +70,30 @@ export default function UserDashboard() {
         setUserEmail(email);
         setUserName(name || email.split("@")[0]);
         setIdentityData(prev => ({ ...prev, fullName: name || "", email }));
+        
+        // Check Firestore for phone
+        const checkProfile = async () => {
+          // Find user by email since we don't have uid here directly
+          // Actually, in login page we save uid. But we can assume phone is in localStorage if saved, 
+          // or we can just check identityData.phone later. For now let's just show if it's missing.
+          const isComplete = localStorage.getItem("sd_current_user_profile_complete");
+          if (isComplete !== "true") {
+             setShowOnboarding(true);
+          }
+        };
+        checkProfile();
       }
     }
   }, [router]);
+
+  const handleOnboardingComplete = async (data: { phone: string; whatsappNumber: string }) => {
+    setIdentityData(prev => ({ ...prev, phone: data.phone, whatsappNumber: data.whatsappNumber }));
+    setShowOnboarding(false);
+    localStorage.setItem("sd_current_user_profile_complete", "true");
+    
+    // Auto-save handles Firestore update because of useAutosave(identityData)
+    // Actually we need to make sure useAutosave works. It's a custom hook.
+  };
 
   const handleTabChange = (tabId: string) => {
     if (tabId === "find_doctor") {
@@ -364,6 +389,12 @@ export default function UserDashboard() {
         )}
 
       </div>
+
+      <PatientOnboardingModal 
+        isOpen={showOnboarding}
+        onComplete={handleOnboardingComplete}
+        onSkip={() => setShowOnboarding(false)}
+      />
     </DashboardLayout>
   );
 }
