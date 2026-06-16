@@ -34,11 +34,10 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
       return;
     }
 
-    // Query for any pending request matching the doctor's tier/specialty
+    // Query for any pending request (removed specialty filter for easier testing)
     const q = query(
       collection(db, 'consultation_requests'),
-      where('status', '==', 'pending'),
-      where('specialtyTier', '==', doctorSpecialty)
+      where('status', '==', 'pending')
     );
 
     const unsubRequests = onSnapshot(q, (snapshot) => {
