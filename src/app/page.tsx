@@ -4,7 +4,12 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import QRCode from "react-qr-code";
 import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings, X } from "lucide-react";
-import QRScannerModal from "@/components/QRScannerModal";
+import dynamic from 'next/dynamic';
+
+const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
+  ssr: false
+});
+import PatientConsultWidget from '@/components/PatientConsultWidget';
 
 export default function DehapaHome() {
   const [activeTab, setActiveTab] = useState<"patients" | "doctors" | "hospitals">("patients");
@@ -112,6 +117,16 @@ export default function DehapaHome() {
               </div>
               <ChevronRight className="w-5 h-5 text-teal-400 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
             </button>
+          </div>
+
+          {/* Instant Consult Widget (Uber-style) */}
+          <div className="mt-12 max-w-4xl mx-auto relative z-20">
+            <h2 className="text-2xl font-black uppercase text-teal-400 mb-6 flex items-center justify-center gap-2">
+              <span className="w-2 h-2 bg-teal-400 rounded-full animate-ping"></span>
+              On-Demand Telemedicine
+              <span className="w-2 h-2 bg-teal-400 rounded-full animate-ping"></span>
+            </h2>
+            <PatientConsultWidget patientId={userUid || 'guest-patient'} />
           </div>
 
         </div>
