@@ -11,6 +11,7 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/portal';
+  const referralCode = searchParams.get('ref') || null;
 
   const [authMethod, setAuthMethod] = useState<'select' | 'email' | 'whatsapp'>('select');
   const [email, setEmail] = useState('');
@@ -29,7 +30,7 @@ function LoginContent() {
     let userName = user.displayName || 'New User';
     
     if (!userSnap.exists()) {
-      await setDoc(userRef, {
+      const newUserDoc: any = {
         uid: user.uid,
         email: user.email || '',
         phone: user.phoneNumber || additionalData.phone || '',
@@ -38,7 +39,13 @@ function LoginContent() {
         createdAt: serverTimestamp(),
         lastLogin: serverTimestamp(),
         linkedProjects: ['dehapa']
-      }, { merge: true });
+      };
+      
+      if (referralCode) {
+        newUserDoc.referredBy = referralCode;
+      }
+      
+      await setDoc(userRef, newUserDoc, { merge: true });
     } else {
       userRole = userSnap.data()?.role || 'user';
       userName = userSnap.data()?.displayName || userName;
@@ -172,11 +179,18 @@ function LoginContent() {
             <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain" />
           </div>
         </Link>
+        {referralCode && (
+          <div className="flex justify-center mb-4 animate-in fade-in slide-in-from-top-4">
+            <span className="bg-indigo-100 text-indigo-700 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest shadow-sm border border-indigo-200">
+              You've been invited!
+            </span>
+          </div>
+        )}
         <h2 className="text-center text-3xl font-serif font-bold text-slate-900 drop-shadow-sm">
           Welcome to DehaPa
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600 font-medium">
-          Sign in to access your healthcare portal
+          {referralCode ? 'Sign in to accept the invite and connect.' : 'Sign in to access your healthcare portal'}
         </p>
       </div>
 

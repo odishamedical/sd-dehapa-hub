@@ -12,16 +12,23 @@ import PatientVaultWidget from '@/components/PatientVaultWidget';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-function UserHomeWidget({ userName }: { userName: string | null }) {
+import InviteWidget from '@/components/InviteWidget';
+
+function UserHomeWidget({ userName, userUid }: { userName: string | null, userUid: string | null }) {
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-8 flex justify-between items-center relative overflow-hidden">
-      {/* Metallic Shine Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
-      <div className="z-10 relative">
-        <h2 className="text-2xl font-serif font-bold text-slate-900 mb-2">Welcome back, {userName}</h2>
-        <p className="text-slate-500 text-sm">Your FHIR-compliant medical records are up to date.</p>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="md:col-span-2 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-8 flex flex-col justify-center relative overflow-hidden">
+        {/* Metallic Shine Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
+        <div className="z-10 relative">
+          <h2 className="text-2xl font-serif font-bold text-slate-900 mb-2">Welcome back, {userName}</h2>
+          <p className="text-slate-500 text-sm">Your FHIR-compliant medical records are up to date.</p>
+        </div>
+        <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-tenant-accent/10 to-transparent pointer-events-none" />
       </div>
-      <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-tenant-accent/10 to-transparent pointer-events-none" />
+      <div className="md:col-span-1">
+        <InviteWidget userUid={userUid} userName={userName} />
+      </div>
     </div>
   );
 }
@@ -177,7 +184,7 @@ export default function UserDashboard() {
         name: userName || "User",
         subtitle: userEmail,
       }}
-      homeWidget={<UserHomeWidget userName={userName} />}
+      homeWidget={<UserHomeWidget userName={userName} userUid={userEmail} />}
     >
       <div className="max-w-4xl mx-auto pb-24">
         
