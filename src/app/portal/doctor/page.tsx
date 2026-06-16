@@ -91,13 +91,44 @@ export default function DoctorDashboard() {
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
 
   // Autosave State for Qualifications Tab
-  const [qualificationsData, setQualificationsData] = useState({
-    degreeName: "MBBS",
-    passingYear: "2010",
-    collegeId: "",
-    collegeName: "SCB Medical College"
-  });
+  const [qualificationsData, setQualificationsData] = useState([
+    {
+      degreeName: "MBBS",
+      passingYear: "2010",
+      collegeId: "",
+      collegeName: "SCB Medical College"
+    }
+  ]);
   const qualificationsSaveStatus = useAutosave(qualificationsData, 1000);
+
+  const addQualification = () => {
+    setQualificationsData(prev => [...prev, { degreeName: "", passingYear: "", collegeId: "", collegeName: "" }]);
+  };
+
+  const removeQualification = (index: number) => {
+    setQualificationsData(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const moveQualification = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === qualificationsData.length - 1) return;
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    setQualificationsData(prev => {
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[newIndex];
+      copy[newIndex] = temp;
+      return copy;
+    });
+  };
+
+  const updateQualification = (index: number, field: string, value: any) => {
+    setQualificationsData(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
 
   // Identity State
   const [identityData, setIdentityData] = useState({
@@ -375,55 +406,71 @@ export default function DoctorDashboard() {
                 <h3 className="text-xl font-bold text-slate-900">Qualifications</h3>
                 <p className="text-sm text-slate-500 mt-1">Add your degrees and link them to medical colleges.</p>
               </div>
-              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Qualification</button>
+              <button onClick={addQualification} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Qualification</button>
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
-                <div className="absolute top-4 right-4 flex gap-3 items-center">
-                  <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors" title="Toggle Public Visibility">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    Public
-                  </button>
-                  <div className="w-px h-4 bg-slate-300"></div>
-                  <button className="text-slate-400 hover:text-red-600"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Degree Name</label>
-                    <input 
-                      type="text" 
-                      value={qualificationsData.degreeName}
-                      onChange={(e) => setQualificationsData(prev => ({...prev, degreeName: e.target.value}))}
-                      placeholder="e.g. MBBS, MD" 
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
-                    />
+              {qualificationsData.map((qual, index) => (
+                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                  <div className="absolute top-4 right-4 flex gap-3 items-center">
+                    {/* Move Up/Down Buttons */}
+                    <div className="flex bg-white rounded-md border border-slate-200 overflow-hidden shadow-sm mr-2">
+                      <button onClick={() => moveQualification(index, 'up')} disabled={index === 0} className={`p-1.5 hover:bg-slate-50 transition-colors ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-600'}`} title="Move Up">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 15l7-7 7 7"></path></svg>
+                      </button>
+                      <div className="w-px bg-slate-200"></div>
+                      <button onClick={() => moveQualification(index, 'down')} disabled={index === qualificationsData.length - 1} className={`p-1.5 hover:bg-slate-50 transition-colors ${index === qualificationsData.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-600'}`} title="Move Down">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7"></path></svg>
+                      </button>
+                    </div>
+
+                    <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors" title="Toggle Public Visibility">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                      Public
+                    </button>
+                    <div className="w-px h-4 bg-slate-300"></div>
+                    <button onClick={() => removeQualification(index)} className="text-slate-400 hover:text-red-600"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                   </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Degree Name</label>
+                      <input 
+                        type="text" 
+                        value={qual.degreeName}
+                        onChange={(e) => updateQualification(index, 'degreeName', e.target.value)}
+                        placeholder="e.g. MBBS, MD" 
+                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Passing Year</label>
+                      <input 
+                        type="number" 
+                        value={qual.passingYear}
+                        onChange={(e) => updateQualification(index, 'passingYear', e.target.value)}
+                        placeholder="e.g. 2010" 
+                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
+                      />
+                    </div>
+                  </div>
+                  
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Passing Year</label>
-                    <input 
-                      type="number" 
-                      value={qualificationsData.passingYear}
-                      onChange={(e) => setQualificationsData(prev => ({...prev, passingYear: e.target.value}))}
-                      placeholder="e.g. 2010" 
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Medical College / University</label>
+                    <EntitySearchInput 
+                      category="college"
+                      placeholder="Search or add college name..."
+                      valueId={qual.collegeId}
+                      valueName={qual.collegeName}
+                      onChange={(id, name) => {
+                        updateQualification(index, 'collegeId', id);
+                        updateQualification(index, 'collegeName', name);
+                      }}
                     />
+                    <p className="text-xs text-slate-500 mt-2">Type to search the DehaPa network. If it doesn't exist, you can add it as a new entry.</p>
                   </div>
                 </div>
-                
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Medical College / University</label>
-                  <EntitySearchInput 
-                    category="college"
-                    placeholder="Search or add college name..."
-                    valueId={qualificationsData.collegeId}
-                    valueName={qualificationsData.collegeName}
-                    onChange={(id, name) => setQualificationsData(prev => ({...prev, collegeId: id, collegeName: name}))}
-                  />
-                  <p className="text-xs text-slate-500 mt-2">Type to search the DehaPa network. If it doesn't exist, you can add it as a new entry.</p>
-                </div>
-              </div>
+              ))}
 
               <div className="flex items-center justify-between pt-6 border-t border-slate-100 h-12">
                 <AutosaveIndicator status={qualificationsSaveStatus} />
