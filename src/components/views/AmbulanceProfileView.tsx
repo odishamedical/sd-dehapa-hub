@@ -12,6 +12,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import UnverifiedBanner from '@/components/UnverifiedBanner';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import { TicketConfig } from '@/lib/ticketConfig';
+import TicketCard from '@/components/TicketCard';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
