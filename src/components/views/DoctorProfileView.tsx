@@ -130,7 +130,8 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             // Fetch a broad pool of directory items to filter in memory (good for small/medium datasets)
             const broadQuery = query(collection(db, 'directory'), limit(50));
             const broadSnap = await getDocs(broadQuery);
-            const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId);
+            // Global Rule: Only include documents that have an image
+            const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId && !!d.image);
             
             // 1. Similar Doctors: Try same subCategory first, fallback to any Doctor
             let similarDocs = allDocs.filter(d => d.category === "Doctor" && d.subCategory === rawData.subCategory);
@@ -575,6 +576,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                 <div className="flex flex-col gap-4">
                   {topHospitals.map((hosp, idx) => (
                     <Link key={idx} href={`/hospitals/${hosp.id}`} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
+                      <img src={hosp.image} alt={hosp.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
                       <div className="min-w-0 flex-1">
                         <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{hosp.name}</h4>
                         <p className="text-xs text-slate-500 truncate mt-1">{hosp.address || hosp.district}</p>
@@ -594,9 +596,12 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                 </h3>
                 <div className="flex flex-col gap-4">
                   {nearbyCenters.map((center, idx) => (
-                    <div key={idx} className="bg-slate-50 rounded-xl p-3 flex flex-col gap-1 border border-slate-100">
-                      <h4 className="font-bold text-sm text-slate-900 truncate">{center.name}</h4>
-                      <p className="text-xs text-slate-500 truncate">{center.category} • {center.address || center.district}</p>
+                    <div key={idx} className="bg-slate-50 rounded-xl p-3 flex items-center gap-3 border border-slate-100 hover:bg-white hover:border-teal-100 transition-colors">
+                      <img src={center.image} alt={center.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
+                      <div className="min-w-0 flex-1 flex flex-col gap-1">
+                        <h4 className="font-bold text-sm text-slate-900 truncate">{center.name}</h4>
+                        <p className="text-[10px] text-slate-500 truncate">{center.category} • {center.address || center.district}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
