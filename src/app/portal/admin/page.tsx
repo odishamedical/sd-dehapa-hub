@@ -34,7 +34,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [userRole, setUserRole] = useState<string>("none");
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("home");
 
   // Crawler State
   const [crawlerAddress, setCrawlerAddress] = useState<AddressData>({
@@ -273,12 +273,6 @@ export default function AdminDashboard() {
 
   const allAdminTabs: DashboardTab[] = [
     {
-      id: "overview",
-      label: "System Analytics",
-      section: "Dashboard",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-    },
-    {
       id: "users",
       label: "User & Patient Directory",
       section: "User Management",
@@ -365,11 +359,8 @@ export default function AdminDashboard() {
       tabs={adminTabs} 
       activeTab={activeTab} 
       onTabChange={setActiveTab}
+      homeWidget={userRole === "super_admin" ? <AdminAnalyticsOverview /> : undefined}
     >
-
-          {activeTab === "overview" && (
-            <AdminAnalyticsOverview />
-          )}
 
           {activeTab === "users" && (
             <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
