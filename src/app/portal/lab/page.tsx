@@ -10,15 +10,16 @@ import ImageUpload from '@/components/ImageUpload';
 
 function LabHomeWidget({ labName }: { labName: string }) {
   return (
-    <div className="bg-white/80 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-6 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-teal-400/10 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-6 relative overflow-hidden">
+      {/* Metallic Shine Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
       
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-xl font-bold text-slate-800 tracking-tight">Lab Profile Strength</h3>
           <p className="text-xs text-slate-500 mt-1 max-w-sm">Complete your facility profile to rank higher in the public directory and unlock premium features.</p>
         </div>
-        <div className="relative w-14 h-14 flex items-center justify-center shrink-0 bg-white rounded-full shadow-sm">
+        <div className="relative w-14 h-14 flex items-center justify-center shrink-0 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-slate-200 z-10">
           <svg className="w-full h-full transform -rotate-90 absolute top-0 left-0" viewBox="0 0 36 36">
             <path className="text-slate-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" />
             <path className="text-teal-500" strokeDasharray="10, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
@@ -51,7 +52,7 @@ function LabHomeWidget({ labName }: { labName: string }) {
           </ul>
         </div>
         {/* Mock Chart */}
-        <div className="bg-white/50 backdrop-blur-md rounded-[20px] p-5 border border-white shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white/80 backdrop-blur-md rounded-[20px] p-5 border border-white shadow-sm hover:shadow-md transition-shadow z-10 relative">
           <h4 className="text-[11px] font-bold text-slate-800 mb-4 flex items-center gap-2 uppercase tracking-widest">
             <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>

@@ -216,21 +216,21 @@ export default function DashboardLayout({
                   <button 
                     key={tab.id} 
                     onClick={() => onTabChange(tab.id)} 
-                    className="bg-white/70 backdrop-blur-md p-5 border border-white hover:border-teal-400/50 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 text-left group flex flex-col items-start h-full relative overflow-hidden"
+                    className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 p-5 border border-slate-300 hover:border-teal-400/50 rounded-[24px] shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_10px_25px_rgba(0,0,0,0.1)] transition-all duration-300 text-left group flex flex-col items-start h-full relative overflow-hidden"
                   >
-                    {/* Decorative Blob */}
-                    <div className="absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-br from-teal-400/20 to-blue-500/20 rounded-full blur-2xl group-hover:scale-150 group-hover:bg-teal-400/30 transition-transform duration-700 z-0"></div>
+                    {/* Metallic Shine Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full duration-700 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
                     
-                    <div className="w-12 h-12 bg-gradient-to-br from-white to-slate-50 text-teal-600 rounded-2xl flex items-center justify-center mb-4 group-hover:from-teal-50 group-hover:to-teal-100 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm border border-slate-100">
+                    <h3 className="font-bold text-slate-800 text-sm mb-1 z-10 group-hover:text-teal-700 transition-colors w-full">{tab.label}</h3>
+                    <p className="text-[10px] text-slate-500 mb-4 z-10 line-clamp-1 w-full">Manage {tab.label.toLowerCase()}</p>
+                    
+                    <div className="w-10 h-10 bg-white text-teal-600 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-teal-50 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm border border-slate-200">
                       {tab.icon}
                     </div>
                     
-                    <h3 className="font-bold text-slate-800 text-sm mb-1.5 z-10 group-hover:text-teal-700 transition-colors">{tab.label}</h3>
-                    <p className="text-[11px] text-slate-500 flex-1 leading-relaxed z-10 line-clamp-2">Manage {tab.label.toLowerCase()} preferences and records.</p>
-                    
-                    <div className="mt-5 w-full flex items-center justify-between text-teal-600 text-[9px] font-bold uppercase tracking-widest z-10">
+                    <div className="mt-auto pt-2 w-full flex items-center justify-between text-teal-600 text-[9px] font-bold uppercase tracking-widest z-10 border-t border-slate-300/50">
                       <span className="group-hover:text-teal-700">Open</span>
-                      <div className="w-6 h-6 rounded-full bg-slate-50 group-hover:bg-teal-100 flex items-center justify-center group-hover:translate-x-1 transition-all">
+                      <div className="w-6 h-6 rounded-full bg-white group-hover:bg-teal-100 flex items-center justify-center group-hover:translate-x-1 transition-all shadow-sm">
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                       </div>
                     </div>

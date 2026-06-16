@@ -29,8 +29,10 @@ interface Distributor {
 
 function PharmaHomeWidget({ businessName, businessType }: { businessName: string, businessType: string }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-      <div className="flex justify-between items-end mb-3">
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-6 relative overflow-hidden">
+      {/* Metallic Shine Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
+      <div className="flex justify-between items-end mb-3 relative z-10">
         <div>
           <h3 className="text-lg font-bold text-slate-900">{businessType} Profile</h3>
           <p className="text-xs text-slate-500 mt-0.5">Complete your facility profile to rank higher in the public directory.</p>
@@ -40,11 +42,11 @@ function PharmaHomeWidget({ businessName, businessType }: { businessName: string
         </div>
       </div>
       
-      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-5">
+      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-5 relative z-10">
         <div className="bg-gradient-to-r from-teal-400 to-teal-600 h-full rounded-full w-[15%]"></div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
         <div>
           <h4 className="text-xs font-bold text-slate-900 mb-3 flex items-center gap-2">
             <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
