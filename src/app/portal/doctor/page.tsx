@@ -320,7 +320,7 @@ export default function DoctorDashboard() {
 
   return (
     <>
-      <IncomingPingWidget doctorId="doc-1" doctorSpecialty="Cardiology" />
+      <IncomingPingWidget doctorId="doc-1" doctorSpecialty="Super-specialist Doctor" />
       <DashboardLayout 
         roleName="Doctor Dashboard" 
         tabs={doctorTabs} 
