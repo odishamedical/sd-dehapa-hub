@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 import GlobalScannerController from "@/components/GlobalScannerController";
+import GlobalFooter from "@/components/GlobalFooter";
 
 export default function RootLayout({
   children,
@@ -23,7 +24,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
         <TenantProvider>
           <GlobalHeader activeProject="Telemedicine" />
-          {children}
+          <div className="flex-1">
+            {children}
+          </div>
+          <GlobalFooter />
           <GlobalScannerController />
         </TenantProvider>
       </body>

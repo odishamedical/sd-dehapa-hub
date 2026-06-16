@@ -479,58 +479,6 @@ export default function DehapaHome() {
         </div>
       </section>
 
-      {/* 6. TRUST & SECURITY FOOTER (Cyberpunk style) */}
-      <footer className="bg-[#020810] text-slate-400 pt-12 pb-8 border-t border-slate-800 relative overflow-hidden">
-        {/* Glowing top line */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-teal-500 to-transparent opacity-50"></div>
-        
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
-            
-            <div>
-              <h3 className="font-serif font-black text-3xl mb-6 text-white flex items-center gap-3">
-                <Activity className="w-8 h-8 text-teal-400" /> DehaPa.Core
-              </h3>
-              <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-                The centralized operating system bridging offline clinical execution with next-generation digital health telemetry.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-black uppercase tracking-[0.2em] text-slate-600 text-xs mb-6">Cryptographic Standards</h4>
-              <div className="flex items-start gap-4 bg-slate-900 p-6 rounded-3xl border border-slate-800 hover:border-emerald-500/30 transition-colors">
-                <ShieldCheck className="w-8 h-8 text-emerald-400 shrink-0" />
-                <div>
-                  <h5 className="font-black text-sm text-white mb-2">HIPAA Vault Encryption</h5>
-                  <p className="text-xs text-slate-500 leading-relaxed">All telemetry and biometric data is end-to-end encrypted via Medplum nodes executing standard HL7 FHIR protocols.</p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-black uppercase tracking-[0.2em] text-slate-600 text-xs mb-6">Network Navigation</h4>
-              <div className="grid grid-cols-2 gap-4 text-sm font-bold">
-                <Link href="/doctors" className="text-slate-400 hover:text-teal-400 transition-colors">Specialist Search</Link>
-                <Link href="/hospitals" className="text-slate-400 hover:text-teal-400 transition-colors">Hospital Matrix</Link>
-                <Link href="/labs" className="text-slate-400 hover:text-teal-400 transition-colors">Diagnostics</Link>
-                <Link href="/pharmacies" className="text-slate-400 hover:text-teal-400 transition-colors">Pharmacies</Link>
-                <Link href="/portal" className="text-slate-400 hover:text-teal-400 transition-colors">User Module</Link>
-                <Link href="/login" className="text-slate-400 hover:text-teal-400 transition-colors">Admin Login</Link>
-              </div>
-            </div>
-
-          </div>
-          
-          <div className="pt-10 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-bold tracking-widest uppercase text-slate-600">
-            <p>© 2026 Sovereign Health Network. Sequence Complete.</p>
-            <div className="flex gap-8">
-              <Link href="#" className="hover:text-teal-400 transition-colors">Privacy Auth</Link>
-              <Link href="#" className="hover:text-teal-400 transition-colors">Terms of Op</Link>
-            </div>
-            <p className="flex items-center gap-2">System Architect: <strong className="text-white bg-slate-800 px-3 py-1 rounded-md">SD IT Services</strong></p>
-          </div>
-        </div>
-      </footer>
 
       {/* QR Code Modal */}
       {isQrModalOpen && (
