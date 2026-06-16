@@ -66,9 +66,10 @@ export default function UserDashboard() {
 
   // State for Family Members
   const [familyMembers, setFamilyMembers] = useState<any[]>([]);
-  const familySaveStatus = useAutosave(familyMembers, 1000);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     if (typeof window !== "undefined") {
       const email = localStorage.getItem("sd_current_user_email");
       const name = localStorage.getItem("sd_current_user_name");
@@ -112,6 +113,7 @@ export default function UserDashboard() {
     setActiveTab(tabId);
   };
 
+  if (!isMounted) return null;
   if (!userEmail) return null;
 
   const userTabs: DashboardTab[] = [
