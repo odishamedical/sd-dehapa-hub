@@ -67,10 +67,10 @@ export default function DashboardLayout({
   }, {} as Record<string, DashboardTab[]>);
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-slate-900 font-sans selection:bg-teal-500/30 flex">
+    <div className="min-h-screen bg-slate-100 text-slate-900 font-sans selection:bg-teal-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
       
-      {/* Sidebar Navigation - Premium Dark */}
-      <aside className="w-64 bg-slate-900 text-white shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-y-auto">
+      {/* Sidebar Navigation - Floating Pill */}
+      <aside className="w-[280px] bg-slate-900 text-white shrink-0 hidden md:flex flex-col sticky top-4 h-[calc(100vh-32px)] overflow-y-auto rounded-3xl shadow-2xl shadow-slate-900/20 border border-slate-800">
         <div className="p-6 border-b border-slate-800">
           <button onClick={() => onTabChange("home")} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity">
              <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-[0_0_15px_var(--tenant-accent-glow)]">
@@ -144,10 +144,10 @@ export default function DashboardLayout({
                         <button 
                           key={tab.id}
                           onClick={() => onTabChange(tab.id)} 
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
                             isActive 
                               ? 'bg-teal-500/10 text-teal-400' 
-                              : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                           }`}
                         >
                           {tab.icon}
@@ -167,19 +167,19 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <header className="bg-white border-b border-slate-200 px-8 py-6 flex items-center justify-between sticky top-0 z-10">
-          <h2 className="text-2xl font-serif font-bold text-slate-900 capitalize">
+      <main className="flex-1 flex flex-col h-[calc(100vh-16px)] md:h-[calc(100vh-32px)] overflow-y-auto bg-white rounded-2xl md:rounded-3xl shadow-sm border border-slate-200 relative">
+        <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50">
+          <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
             {headerTitle || activeTab.replace("-", " ")}
           </h2>
           <div className="flex items-center gap-4">
-            <Link href="/portal" className="text-sm font-bold text-tenant-accent hover:underline">Exit to Portal</Link>
+            <Link href="/portal" className="text-sm font-bold text-tenant-accent hover:underline bg-teal-50 px-3 py-1.5 rounded-lg">Exit to Portal</Link>
           </div>
         </header>
 
         {/* Horizontal Top Menu for Active Section */}
         {activeSection && activeTab !== "home" && (
-          <div className="bg-white border-b border-slate-200 sticky top-[73px] z-40 px-4 sm:px-8">
+          <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200 sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8">
             <div className="flex overflow-x-auto hide-scrollbar gap-1 py-3">
               {sectionedTabs[activeSection].map(tab => (
                 <button
@@ -199,7 +199,7 @@ export default function DashboardLayout({
           </div>
         )}
 
-        <div className="p-8 flex-1">
+        <div className="p-6 md:p-8 flex-1 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
           {activeTab === "home" ? (
             <div className="max-w-6xl mx-auto">
               {homeWidget && (
