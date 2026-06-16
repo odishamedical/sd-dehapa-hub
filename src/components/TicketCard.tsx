@@ -1,5 +1,6 @@
 // src/components/TicketCard.tsx
 import React from 'react';
+import Link from 'next/link';
 import { TicketConfigEntry } from '@/lib/ticketConfig';
 
 type Props = {
