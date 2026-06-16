@@ -13,6 +13,7 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import AdminDataCRM from '@/components/AdminDataCRM';
 import AdminSlugRegistry from '@/components/AdminSlugRegistry';
 import AdminWhatsAppDashboard from '@/components/AdminWhatsAppDashboard';
+import AdminAnalyticsOverview from '@/components/AdminAnalyticsOverview';
 
 interface StagedListing {
   id: string;
@@ -32,7 +33,8 @@ export default function AdminDashboard() {
   const { activeTenant } = useTenant();
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
-  const [activeTab, setActiveTab] = useState("home");
+  const [userRole, setUserRole] = useState<string>("none");
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Crawler State
   const [crawlerAddress, setCrawlerAddress] = useState<AddressData>({
@@ -80,12 +82,19 @@ export default function AdminDashboard() {
   }, [activeTab]);
 
   useEffect(() => {
-    let role = localStorage.getItem("sd_current_user_role");
+    let role = localStorage.getItem("sd_current_user_role") || "none";
     const email = localStorage.getItem("sd_current_user_email");
     if (email === 'odishamedical@gmail.com') role = 'super_admin';
     
-    if (role === "super_admin") {
+    // Accept any admin role
+    if (["super_admin", "data_entry", "verification_officer", "auditor"].includes(role)) {
       setAccessGranted(true);
+      setUserRole(role);
+      
+      // Auto-set the active tab based on role if they enter with "overview" but don't have access
+      if (role === "data_entry") setActiveTab("data-crm");
+      if (role === "verification_officer") setActiveTab("verification");
+      if (role === "auditor") setActiveTab("audit");
     } else {
       setAccessGranted(false);
     }
@@ -262,7 +271,13 @@ export default function AdminDashboard() {
     }
   };
 
-  const adminTabs: DashboardTab[] = [
+  const allAdminTabs: DashboardTab[] = [
+    {
+      id: "overview",
+      label: "System Analytics",
+      section: "Dashboard",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+    },
     {
       id: "users",
       label: "User & Patient Directory",
@@ -307,12 +322,6 @@ export default function AdminDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
     },
     {
-      id: "slugs",
-      label: "Slug Registry",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>,
-      section: "System Controls"
-    },
-    {
       id: "whatsapp",
       label: "WhatsApp Bot",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
@@ -321,13 +330,46 @@ export default function AdminDashboard() {
     }
   ];
 
+  // RBAC Tab Filtering
+  const adminTabs = allAdminTabs.filter(tab => {
+    if (userRole === "super_admin") return true;
+    
+    if (userRole === "data_entry") {
+      return ["crawler", "data-crm"].includes(tab.id);
+    }
+    
+    if (userRole === "verification_officer") {
+      return ["verification"].includes(tab.id);
+    }
+
+    if (userRole === "auditor") {
+      return ["audit"].includes(tab.id);
+    }
+
+    return false;
+  });
+
+  const getRoleDisplayName = (role: string) => {
+    switch (role) {
+      case 'super_admin': return 'Super Admin';
+      case 'data_entry': return 'Data Manager';
+      case 'verification_officer': return 'Verification Officer';
+      case 'auditor': return 'System Auditor';
+      default: return 'Administrator';
+    }
+  };
+
   return (
     <DashboardLayout 
-      roleName="Super Admin" 
+      roleName={getRoleDisplayName(userRole)} 
       tabs={adminTabs} 
       activeTab={activeTab} 
       onTabChange={setActiveTab}
     >
+
+          {activeTab === "overview" && (
+            <AdminAnalyticsOverview />
+          )}
 
           {activeTab === "users" && (
             <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
