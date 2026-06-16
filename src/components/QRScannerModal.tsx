@@ -19,46 +19,44 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
 
     let scanner: Html5QrcodeScanner | null = null;
     
-    // Slight delay to ensure the modal DOM element exists
-    const timer = setTimeout(() => {
+    const initScanner = async () => {
       try {
-        scanner = new Html5QrcodeScanner(
-          "reader",
-          { fps: 10, qrbox: { width: 250, height: 250 } },
-          /* verbose= */ false
-        );
+        const { Html5Qrcode } = await import('html5-qrcode');
+        const cameras = await Html5Qrcode.getCameras();
+        
+        if (cameras && cameras.length > 0) {
+          scanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            /* verbose= */ false
+          );
 
-        scanner.render(
-          (decodedText) => {
-            // Success handler
-            if (scanner) {
-              scanner.clear();
+          scanner.render(
+            (decodedText) => {
+              if (scanner) scanner.clear();
+              onClose();
+              if (decodedText.startsWith("http")) {
+                 window.location.href = decodedText;
+              } else if (decodedText.length === 8) {
+                 router.push(`/invite/${decodedText}`);
+              } else {
+                 alert(`Scanned: ${decodedText}`);
+              }
+            },
+            (errorMessage) => {
+              // Ignore typical frame empty errors
             }
-            onClose();
-            // Try to navigate if it's a URL, otherwise alert
-            if (decodedText.startsWith("http")) {
-               window.location.href = decodedText;
-            } else if (decodedText.length === 8) {
-               // Might be a referral shortcode
-               router.push(`/invite/${decodedText}`);
-            } else {
-               alert(`Scanned: ${decodedText}`);
-            }
-          },
-          (errorMessage) => {
-            // Error handler (often just frame empty errors, ignore mostly)
-            if (errorMessage.includes("NotFound")) {
-              return;
-            }
-            // If camera fails to start, it usually throws a different error before scanning starts
-          }
-        );
-
+          );
+        } else {
+          setErrorMsg("No cameras found on your device.");
+        }
       } catch (err: any) {
-        console.error("Scanner init error:", err);
-        setErrorMsg("Camera not found or permission denied. Please ensure you have a working camera and granted browser permissions.");
+        console.error("Camera check error:", err);
+        setErrorMsg("Camera access denied or unavailable. Please check your browser permissions.");
       }
-    }, 100);
+    };
+
+    const timer = setTimeout(initScanner, 100);
 
     return () => {
       clearTimeout(timer);
