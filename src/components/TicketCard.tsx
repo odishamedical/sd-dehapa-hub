@@ -64,7 +64,7 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
                 value={entity.name} 
                 onSave={(val) => onSave?.('name', val)} 
                 isEditMode={isEditMode} 
-                inputClassName="!w-full !min-w-full text-2xl md:text-3xl font-serif font-bold"
+                inputClassName="!w-full"
               />
             </h1>
             {entity.verified && (
