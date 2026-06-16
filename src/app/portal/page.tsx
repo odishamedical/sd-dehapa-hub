@@ -66,6 +66,7 @@ export default function UserDashboard() {
 
   // State for Family Members
   const [familyMembers, setFamilyMembers] = useState<any[]>([]);
+  const familySaveStatus = useAutosave(familyMembers, 1000);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
