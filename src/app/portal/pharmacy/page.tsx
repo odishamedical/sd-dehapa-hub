@@ -246,6 +246,16 @@ export default function PharmacyDashboard() {
     }));
   };
   const removeCompany = (id: string) => setServicesData(prev => ({ ...prev, authorizedCompanies: prev.authorizedCompanies.filter(c => c.id !== id) }));
+  const moveCompany = (index: number, direction: 'up' | 'down') => {
+    setServicesData(prev => {
+      const arr = [...prev.authorizedCompanies];
+      if (direction === 'up' && index === 0) return prev;
+      if (direction === 'down' && index === arr.length - 1) return prev;
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+      const temp = arr[index]; arr[index] = arr[newIndex]; arr[newIndex] = temp;
+      return { ...prev, authorizedCompanies: arr };
+    });
+  };
 
   const addProduct = () => setServicesData(prev => ({ ...prev, products: [...prev.products, { id: Date.now().toString(), name: "", composition: "" }] }));
   const updateProduct = (id: string, field: keyof PharmaProduct, value: string) => {
@@ -254,6 +264,16 @@ export default function PharmacyDashboard() {
     }));
   };
   const removeProduct = (id: string) => setServicesData(prev => ({ ...prev, products: prev.products.filter(p => p.id !== id) }));
+  const moveProduct = (index: number, direction: 'up' | 'down') => {
+    setServicesData(prev => {
+      const arr = [...prev.products];
+      if (direction === 'up' && index === 0) return prev;
+      if (direction === 'down' && index === arr.length - 1) return prev;
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+      const temp = arr[index]; arr[index] = arr[newIndex]; arr[newIndex] = temp;
+      return { ...prev, products: arr };
+    });
+  };
 
   const addDistributor = () => setServicesData(prev => ({ ...prev, distributors: [...prev.distributors, { id: Date.now().toString(), cfName: "", superstockistName: "", stockistName: "" }] }));
   const updateDistributor = (id: string, field: keyof Distributor, value: string) => {
@@ -262,6 +282,16 @@ export default function PharmacyDashboard() {
     }));
   };
   const removeDistributor = (id: string) => setServicesData(prev => ({ ...prev, distributors: prev.distributors.filter(d => d.id !== id) }));
+  const moveDistributor = (index: number, direction: 'up' | 'down') => {
+    setServicesData(prev => {
+      const arr = [...prev.distributors];
+      if (direction === 'up' && index === 0) return prev;
+      if (direction === 'down' && index === arr.length - 1) return prev;
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+      const temp = arr[index]; arr[index] = arr[newIndex]; arr[newIndex] = temp;
+      return { ...prev, distributors: arr };
+    });
+  };
 
   return (
     <DashboardLayout 
@@ -495,14 +525,27 @@ export default function PharmacyDashboard() {
                     ) : (
                       <div className="space-y-4">
                         {servicesData.authorizedCompanies.map((comp, index) => (
-                          <div key={comp.id} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex gap-4">
-                            <div className="flex-1 space-y-3">
+                          <div key={comp.id} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                            <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
+                              <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <button onClick={() => moveCompany(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+                                </button>
+                                <div className="w-px bg-slate-300"></div>
+                                <button onClick={() => moveCompany(index, 'down')} disabled={index === servicesData.authorizedCompanies.length - 1} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === servicesData.authorizedCompanies.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Down">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                              </div>
+
+                              <button onClick={() => removeCompany(comp.id)} className="px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Company">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                Remove
+                              </button>
+                            </div>
+                            <div className="flex-1 space-y-3 mt-2 pr-48">
                               <input type="text" value={comp.name} onChange={(e) => updateCompany(comp.id, "name", e.target.value)} placeholder="Company Name (e.g. Sun Pharma)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
                               <input type="text" value={comp.address} onChange={(e) => updateCompany(comp.id, "address", e.target.value)} placeholder="Company Address / Region" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
                             </div>
-                            <button onClick={() => removeCompany(comp.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg h-fit transition-colors">
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
                           </div>
                         ))}
                       </div>
@@ -537,15 +580,28 @@ export default function PharmacyDashboard() {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {servicesData.products.map((prod) => (
-                          <div key={prod.id} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex gap-4">
-                            <div className="flex-1 space-y-3">
+                        {servicesData.products.map((prod, index) => (
+                          <div key={prod.id} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                            <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
+                              <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <button onClick={() => moveProduct(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+                                </button>
+                                <div className="w-px bg-slate-300"></div>
+                                <button onClick={() => moveProduct(index, 'down')} disabled={index === servicesData.products.length - 1} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === servicesData.products.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Down">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                              </div>
+
+                              <button onClick={() => removeProduct(prod.id)} className="px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Product">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                Remove
+                              </button>
+                            </div>
+                            <div className="flex-1 space-y-3 mt-2 pr-48">
                               <input type="text" value={prod.name} onChange={(e) => updateProduct(prod.id, "name", e.target.value)} placeholder="Product Name (e.g. Para 500)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
                               <input type="text" value={prod.composition} onChange={(e) => updateProduct(prod.id, "composition", e.target.value)} placeholder="Composition (e.g. Paracetamol 500mg)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
                             </div>
-                            <button onClick={() => removeProduct(prod.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg h-fit transition-colors">
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
                           </div>
                         ))}
                       </div>
@@ -564,18 +620,31 @@ export default function PharmacyDashboard() {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {servicesData.distributors.map((dist) => (
-                          <div key={dist.id} className="bg-slate-50 border border-slate-200 p-4 rounded-xl flex gap-4">
-                            <div className="flex-1 space-y-3">
+                        {servicesData.distributors.map((dist, index) => (
+                          <div key={dist.id} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                            <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
+                              <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <button onClick={() => moveDistributor(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+                                </button>
+                                <div className="w-px bg-slate-300"></div>
+                                <button onClick={() => moveDistributor(index, 'down')} disabled={index === servicesData.distributors.length - 1} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === servicesData.distributors.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Down">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                              </div>
+
+                              <button onClick={() => removeDistributor(dist.id)} className="px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Distributor">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                Remove
+                              </button>
+                            </div>
+                            <div className="flex-1 space-y-3 mt-2 pr-48">
                               <input type="text" value={dist.cfName} onChange={(e) => updateDistributor(dist.id, "cfName", e.target.value)} placeholder="C&F Name" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
                               <div className="grid grid-cols-2 gap-3">
                                 <input type="text" value={dist.superstockistName} onChange={(e) => updateDistributor(dist.id, "superstockistName", e.target.value)} placeholder="Superstockist Name" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
                                 <input type="text" value={dist.stockistName} onChange={(e) => updateDistributor(dist.id, "stockistName", e.target.value)} placeholder="Stockist Name" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-teal-500 outline-none" />
                               </div>
                             </div>
-                            <button onClick={() => removeDistributor(dist.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg h-fit transition-colors">
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
                           </div>
                         ))}
                       </div>

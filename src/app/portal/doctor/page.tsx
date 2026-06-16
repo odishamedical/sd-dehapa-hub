@@ -154,38 +154,83 @@ export default function DoctorDashboard() {
   const locationSaveStatus = useAutosave(locationAddress, 1000);
 
   // Experience State
-  const [experienceData, setExperienceData] = useState({
-    hospitalId: "",
-    hospitalName: "Apollo Hospitals",
-    position: "Head of Cardiology",
-    duration: "2015-2020"
-  });
+  const [experienceData, setExperienceData] = useState([
+    {
+      hospitalId: "",
+      hospitalName: "Apollo Hospitals",
+      position: "Head of Cardiology",
+      duration: "2015-2020"
+    }
+  ]);
   const experienceSaveStatus = useAutosave(experienceData, 1000);
 
+  const addExperience = () => setExperienceData(prev => [...prev, { hospitalId: "", hospitalName: "", position: "", duration: "" }]);
+  const removeExperience = (index: number) => setExperienceData(prev => prev.filter((_, i) => i !== index));
+  const moveExperience = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === experienceData.length - 1) return;
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    setExperienceData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
+  };
+  const updateExperience = (index: number, field: string, value: any) => setExperienceData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
+
   // Research State
-  const [researchData, setResearchData] = useState({
-    paperTitle: "",
-    journalId: "",
-    journalName: "",
-    publicationYear: ""
-  });
+  const [researchData, setResearchData] = useState([
+    {
+      paperTitle: "",
+      journalId: "",
+      journalName: "",
+      publicationYear: ""
+    }
+  ]);
   const researchSaveStatus = useAutosave(researchData, 1000);
+  const addResearch = () => setResearchData(prev => [...prev, { paperTitle: "", journalId: "", journalName: "", publicationYear: "" }]);
+  const removeResearch = (index: number) => setResearchData(prev => prev.filter((_, i) => i !== index));
+  const moveResearch = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === researchData.length - 1) return;
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    setResearchData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
+  };
+  const updateResearch = (index: number, field: string, value: any) => setResearchData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
 
   // Memberships State
-  const [membershipsData, setMembershipsData] = useState({
-    associationId: "",
-    associationName: "",
-    role: ""
-  });
+  const [membershipsData, setMembershipsData] = useState([
+    {
+      associationId: "",
+      associationName: "",
+      role: ""
+    }
+  ]);
   const membershipsSaveStatus = useAutosave(membershipsData, 1000);
+  const addMembership = () => setMembershipsData(prev => [...prev, { associationId: "", associationName: "", role: "" }]);
+  const removeMembership = (index: number) => setMembershipsData(prev => prev.filter((_, i) => i !== index));
+  const moveMembership = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === membershipsData.length - 1) return;
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    setMembershipsData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
+  };
+  const updateMembership = (index: number, field: string, value: any) => setMembershipsData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
 
   // Awards State
-  const [awardsData, setAwardsData] = useState({
-    awardName: "",
-    awardingBody: "",
-    year: ""
-  });
+  const [awardsData, setAwardsData] = useState([
+    {
+      awardName: "",
+      awardingBody: "",
+      year: ""
+    }
+  ]);
   const awardsSaveStatus = useAutosave(awardsData, 1000);
+  const addAward = () => setAwardsData(prev => [...prev, { awardName: "", awardingBody: "", year: "" }]);
+  const removeAward = (index: number) => setAwardsData(prev => prev.filter((_, i) => i !== index));
+  const moveAward = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === awardsData.length - 1) return;
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    setAwardsData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
+  };
+  const updateAward = (index: number, field: string, value: any) => setAwardsData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
 
   // Bookings State
   const [bookingsData, setBookingsData] = useState({
@@ -501,42 +546,61 @@ export default function DoctorDashboard() {
                 <h3 className="text-xl font-bold text-slate-900">Experience & Positions</h3>
                 <p className="text-sm text-slate-500 mt-1">List your past and current professional roles and hospital affiliations.</p>
               </div>
-              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Experience</button>
+              <button onClick={addExperience} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Experience</button>
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
-                <div className="absolute top-4 right-4 flex gap-3 items-center">
-                  <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors" title="Toggle Public Visibility">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    Public
-                  </button>
-                  <div className="w-px h-4 bg-slate-300"></div>
-                  <button className="text-slate-400 hover:text-red-600"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                </div>
-                
-                <div className="mb-4 mt-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Hospital or Institution</label>
-                  <EntitySearchInput 
-                    category="hospital"
-                    placeholder="Search or add hospital name..."
-                    valueId={experienceData.hospitalId}
-                    valueName={experienceData.hospitalName}
-                    onChange={(id, name) => setExperienceData(prev => ({...prev, hospitalId: id, hospitalName: name}))}
-                  />
-                </div>
+              {experienceData.map((exp, index) => (
+                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                  <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
+                    {/* Move Up/Down Buttons */}
+                    <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                      <button onClick={() => moveExperience(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+                      </button>
+                      <div className="w-px bg-slate-300"></div>
+                      <button onClick={() => moveExperience(index, 'down')} disabled={index === experienceData.length - 1} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === experienceData.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Down">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                      </button>
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Title / Position</label>
-                    <input type="text" value={experienceData.position} onChange={(e) => setExperienceData(prev => ({...prev, position: e.target.value}))} placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <button className="px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Profile is Public">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                      Public View
+                    </button>
+                    
+                    <button onClick={() => removeExperience(index)} className="px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Experience">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Remove
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Years (e.g. 2015-2020)</label>
-                    <input type="text" defaultValue="2018 - Present" placeholder="e.g. 2015 - Present" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  
+                  <div className="mb-4 mt-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Hospital or Institution</label>
+                    <EntitySearchInput 
+                      category="hospital"
+                      placeholder="Search or add hospital name..."
+                      valueId={exp.hospitalId}
+                      valueName={exp.hospitalName}
+                      onChange={(id, name) => {
+                        updateExperience(index, 'hospitalId', id);
+                        updateExperience(index, 'hospitalName', name);
+                      }}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Title / Position</label>
+                      <input type="text" value={exp.position} onChange={(e) => updateExperience(index, 'position', e.target.value)} placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Years (e.g. 2015-2020)</label>
+                      <input type="text" value={exp.duration} onChange={(e) => updateExperience(index, 'duration', e.target.value)} placeholder="e.g. 2015 - Present" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
 
               <div className="flex items-center justify-between pt-6 border-t border-slate-100">
                 <AutosaveIndicator status={experienceSaveStatus} />
@@ -605,37 +669,60 @@ export default function DoctorDashboard() {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <h3 className="text-xl font-bold text-slate-900">Research & Publications</h3>
-              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Publication</button>
+              <button onClick={addResearch} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Publication</button>
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
-                <div className="absolute top-4 right-4 flex gap-3 items-center">
-                  <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Public</button>
-                </div>
-                
-                <div className="mb-4 mt-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Paper Title</label>
-                  <input type="text" value={researchData.paperTitle} onChange={(e) => setResearchData(prev => ({...prev, paperTitle: e.target.value}))} placeholder="Title of your research paper" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
-                </div>
+              {researchData.map((research, index) => (
+                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                  <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                      <button onClick={() => moveResearch(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+                      </button>
+                      <div className="w-px bg-slate-300"></div>
+                      <button onClick={() => moveResearch(index, 'down')} disabled={index === researchData.length - 1} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === researchData.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Down">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                      </button>
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Journal Name</label>
-                    <EntitySearchInput 
-                      category="journal"
-                      placeholder="Search or add journal..."
-                      valueId={researchData.journalId}
-                      valueName={researchData.journalName}
-                      onChange={(id, name) => setResearchData(prev => ({...prev, journalId: id, journalName: name}))}
-                    />
+                    <button className="px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Profile is Public">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                      Public View
+                    </button>
+                    
+                    <button onClick={() => removeResearch(index)} className="px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Research">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Remove
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Publication Year</label>
-                    <input type="number" value={researchData.publicationYear} onChange={(e) => setResearchData(prev => ({...prev, publicationYear: e.target.value}))} placeholder="e.g. 2021" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  
+                  <div className="mb-4 mt-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Paper Title</label>
+                    <input type="text" value={research.paperTitle} onChange={(e) => updateResearch(index, 'paperTitle', e.target.value)} placeholder="Title of your research paper" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Journal Name</label>
+                      <EntitySearchInput 
+                        category="journal"
+                        placeholder="Search or add journal..."
+                        valueId={research.journalId}
+                        valueName={research.journalName}
+                        onChange={(id, name) => {
+                          updateResearch(index, 'journalId', id);
+                          updateResearch(index, 'journalName', name);
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Publication Year</label>
+                      <input type="number" value={research.publicationYear} onChange={(e) => updateResearch(index, 'publicationYear', e.target.value)} placeholder="e.g. 2021" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    </div>
                   </div>
                 </div>
-                </div>
+              ))}
               <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
                 <AutosaveIndicator status={researchSaveStatus} />
               </div>
@@ -648,32 +735,55 @@ export default function DoctorDashboard() {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <h3 className="text-xl font-bold text-slate-900">Memberships</h3>
-              <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Membership</button>
+              <button onClick={addMembership} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Membership</button>
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
-                <div className="absolute top-4 right-4 flex gap-3 items-center">
-                  <button className="text-slate-400 hover:text-teal-600 flex items-center gap-1 text-xs font-bold transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Public</button>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Association / Organization</label>
-                    <EntitySearchInput 
-                      category="association"
-                      placeholder="e.g. IMA, API..."
-                      valueId={membershipsData.associationId}
-                      valueName={membershipsData.associationName}
-                      onChange={(id, name) => setMembershipsData(prev => ({...prev, associationId: id, associationName: name}))}
-                    />
+              {membershipsData.map((membership, index) => (
+                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                  <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                      <button onClick={() => moveMembership(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+                      </button>
+                      <div className="w-px bg-slate-300"></div>
+                      <button onClick={() => moveMembership(index, 'down')} disabled={index === membershipsData.length - 1} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === membershipsData.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Down">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                      </button>
+                    </div>
+
+                    <button className="px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Profile is Public">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                      Public View
+                    </button>
+                    
+                    <button onClick={() => removeMembership(index)} className="px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Membership">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Remove
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Role / Status</label>
-                    <input type="text" value={membershipsData.role} onChange={(e) => setMembershipsData(prev => ({...prev, role: e.target.value}))} placeholder="e.g. Life Member, Secretary" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 mt-2">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Association / Organization</label>
+                      <EntitySearchInput 
+                        category="association"
+                        placeholder="e.g. IMA, API..."
+                        valueId={membership.associationId}
+                        valueName={membership.associationName}
+                        onChange={(id, name) => {
+                          updateMembership(index, 'associationId', id);
+                          updateMembership(index, 'associationName', name);
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Role / Status</label>
+                      <input type="text" value={membership.role} onChange={(e) => updateMembership(index, 'role', e.target.value)} placeholder="e.g. Life Member, Secretary" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    </div>
                   </div>
                 </div>
-                </div>
+              ))}
               <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
                 <AutosaveIndicator status={membershipsSaveStatus} />
               </div>
