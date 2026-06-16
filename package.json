@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@medplum/core": "^5.1.13",
+    "agora-react-uikit": "^1.2.0",
+    "agora-rtc-sdk-ng": "^4.24.4",
     "firebase": "^12.13.0",
     "firebase-admin": "^14.0.0",
     "html5-qrcode": "^2.3.8",
