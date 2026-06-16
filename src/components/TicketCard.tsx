@@ -13,26 +13,35 @@ export default function TicketCard({ entity, config }: Props) {
   const rightMetric = config.rightMetric(entity);
 
   return (
-    <div className="bg-white rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col md:flex-row items-center gap-8">
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-3xl p-6 md:p-8 border border-slate-300 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+      {/* Metallic Shine Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
       {/* Profile Image */}
-      <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-lg overflow-hidden shrink-0 bg-slate-100">
-        <img src={entity.image} alt={entity.name} className="w-full h-full object-cover" />
+      <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative z-10">
+        <img src={entity.image} alt={entity.name} className="w-full h-full object-cover rounded-2xl" />
       </div>
       {/* Textual Info */}
-      <div className="flex-1 text-center md:text-left">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-2 mb-2">
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{entity.name}</h1>
-          {entity.verified && (
-            <span className="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 mt-1 md:mt-0">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              {config.trustMarker}
-            </span>
+      <div className="flex-1 text-center md:text-left relative z-10 w-full">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-2">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-slate-900">{entity.name}</h1>
+            {entity.verified && (
+              <div className="flex items-center gap-1.5 bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 px-3 py-1.5 rounded-full shadow-sm">
+                <svg className="w-4 h-4 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                <span className="text-xs font-bold text-teal-700 uppercase tracking-widest">{config.trustMarker || "Dehapa Verified"}</span>
+              </div>
+            )}
+          </div>
+          
+          {/* Unverified Workflow Button */}
+          {!entity.verified && (
+            <Link href={`/portal/claim?id=${entity.id}`} className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 hover:text-rose-700 px-4 py-2 rounded-xl transition-all shadow-sm font-bold animate-pulse group">
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+              Verify your page
+            </Link>
           )}
         </div>
-        {subtitle && <p className="text-sm text-slate-500 mb-2">{subtitle}</p>
-        }
+        {subtitle && <p className="text-sm font-semibold text-teal-600 mb-2">{subtitle}</p>}
         {/* Metrics */}
         <div className="flex items-center space-x-6 mb-4">
           {leftMetric && (
@@ -54,7 +63,7 @@ export default function TicketCard({ entity, config }: Props) {
           )}
         </div>
         {/* CTA Button */}
-        <button className={`w-full px-6 py-4 bg-${config.cta.bgColor} hover:bg-${config.cta.bgColor.replace('600','700')} text-${config.cta.textColor} font-bold rounded-xl shadow-lg transition-all text-sm`}>{config.cta.label}</button>
+        <button className="w-full px-6 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-[0_8px_30px_rgba(13,148,136,0.3)] transition-all text-sm uppercase tracking-widest mt-2">{config.cta.label}</button>
       </div>
     </div>
   );

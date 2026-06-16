@@ -159,11 +159,6 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             {/* Unified Header Card */}
             <TicketCard entity={doctor} config={TicketConfig.doctor} />
 
-            {/* Unverified Banner */}
-            {!doctor.verified && (
-              <UnverifiedBanner entityType="doctor" claimUrl={`/portal/claim?id=${doctor.id}`} />
-            )}
-
             {/* 2-Column Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
