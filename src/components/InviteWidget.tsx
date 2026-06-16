@@ -11,17 +11,19 @@ interface InviteWidgetProps {
 export default function InviteWidget({ userUid, userName }: InviteWidgetProps) {
   const [copied, setCopied] = useState(false);
   const [referralCode, setReferralCode] = useState<string>('');
+  const [activeUid, setActiveUid] = useState<string | null>(null);
 
   useEffect(() => {
-    if (userUid) {
-      // In a real app, you might fetch this from Firestore, 
-      // but deriving a short deterministic code from UID is easiest for now:
-      const shortCode = userUid.substring(0, 8).toUpperCase();
+    const uidToUse = userUid || (typeof window !== 'undefined' ? localStorage.getItem("sd_current_user_email") : null);
+    setActiveUid(uidToUse);
+    
+    if (uidToUse) {
+      const shortCode = uidToUse.substring(0, 8).toUpperCase();
       setReferralCode(shortCode);
     }
   }, [userUid]);
 
-  if (!userUid) return null;
+  if (!activeUid) return null;
 
   const inviteLink = `https://dehapa.com/invite/${referralCode}`;
 
