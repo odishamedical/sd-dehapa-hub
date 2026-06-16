@@ -10,8 +10,10 @@ import ImageUpload from '@/components/ImageUpload';
 
 function UserHomeWidget({ userName }: { userName: string | null }) {
   return (
-    <div className="bg-gradient-to-r from-tenant-accent/10 to-teal-600/5 border border-tenant-accent/20 rounded-2xl p-8 flex justify-between items-center relative overflow-hidden shadow-sm">
-      <div className="z-10">
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-8 flex justify-between items-center relative overflow-hidden">
+      {/* Metallic Shine Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
+      <div className="z-10 relative">
         <h2 className="text-2xl font-serif font-bold text-slate-900 mb-2">Welcome back, {userName}</h2>
         <p className="text-slate-500 text-sm">Your FHIR-compliant medical records are up to date.</p>
       </div>

@@ -11,7 +11,9 @@ import ImageUpload from '@/components/ImageUpload';
 
 function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-8 relative overflow-hidden">
+      {/* Metallic Shine Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
       <div className="flex justify-between items-end mb-4">
         <div>
           <h3 className="text-xl font-bold text-slate-900">Profile Strength</h3>
