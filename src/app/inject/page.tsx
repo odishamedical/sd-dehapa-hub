@@ -26,6 +26,7 @@ export default function InjectDataPage() {
           state: "Odisha",
           country: "India",
           verified: false,
+          image: "/images/drjayant.PNG",
           customSlug: "dr-jayanta-kumar-panda-general-medicine",
           
           research: [
