@@ -307,27 +307,29 @@ export default function AdminDataCRM() {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[80vh]">
-      <div className="p-6 border-b border-slate-200 bg-slate-50 flex flex-col md:flex-row gap-4 items-center justify-between shrink-0">
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[80vh] relative">
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
+      
+      <div className="p-6 border-b border-slate-300 bg-white/40 backdrop-blur-md flex flex-col md:flex-row gap-4 items-center justify-between shrink-0 relative z-10">
         <div>
-          <h3 className="text-lg font-bold text-slate-900">Directory Data CRM</h3>
-          <p className="text-sm text-slate-500">Manage all {data.length} records</p>
+          <h3 className="text-xl font-bold text-slate-900 drop-shadow-sm">Directory Data CRM</h3>
+          <p className="text-sm font-semibold text-teal-600">Manage all {data.length} records in the ecosystem</p>
           {selectedIds.length > 0 && (
             <button 
               onClick={handleBulkDelete}
               disabled={isDeletingBulk}
-              className="mt-2 text-xs bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3 py-1.5 rounded flex items-center gap-1 font-bold transition-colors disabled:opacity-50"
+              className="mt-3 text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-4 py-2 rounded-lg flex items-center gap-2 font-bold transition-all shadow-sm disabled:opacity-50"
             >
-              {isDeletingBulk ? <span className="animate-spin">...</span> : "Delete Selected"}
+              {isDeletingBulk ? <span className="animate-spin">...</span> : "Delete Selected Entities"}
             </button>
           )}
         </div>
         
-        <div className="flex flex-wrap gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap gap-3 w-full md:w-auto relative z-10">
           <select 
             value={countryFilter} 
             onChange={e => { setCountryFilter(e.target.value); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); }}
-            className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-32 form-select"
+            className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-32 form-select bg-white/80 backdrop-blur-sm font-medium"
           >
             <option value="">All Countries</option>
             <option value="India">India</option>
@@ -340,7 +342,7 @@ export default function AdminDataCRM() {
             <select 
               value={stateFilter} 
               onChange={e => { setStateFilter(e.target.value); setDistrictFilter(""); setBlockFilter(""); }}
-              className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-32 form-select"
+              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-32 form-select bg-white/80 backdrop-blur-sm font-medium"
             >
               <option value="">All States</option>
               {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
@@ -350,7 +352,7 @@ export default function AdminDataCRM() {
             <select 
               value={districtFilter} 
               onChange={e => { setDistrictFilter(e.target.value); setBlockFilter(""); }}
-              className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-36 form-select"
+              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-white/80 backdrop-blur-sm font-medium"
             >
               <option value="">All Districts</option>
               {districtsByState[stateFilter].map(d => <option key={d} value={d}>{d}</option>)}
@@ -360,7 +362,7 @@ export default function AdminDataCRM() {
             <select 
               value={blockFilter} 
               onChange={e => setBlockFilter(e.target.value)}
-              className="border-2 border-slate-200 rounded-xl px-4 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none w-full md:w-36 form-select"
+              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-white/80 backdrop-blur-sm font-medium"
             >
               <option value="">All Blocks</option>
               {blocksByDistrict[districtFilter].map(b => <option key={b} value={b}>{b}</option>)}
@@ -371,54 +373,79 @@ export default function AdminDataCRM() {
             placeholder="Search name or phone..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 md:w-64 border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white"
+            className="flex-1 md:w-64 border border-slate-300 hover:border-teal-400 rounded-xl px-5 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white/80 backdrop-blur-sm"
           />
-          <button onClick={handleCreateNew} className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 whitespace-nowrap transition-colors">
+          <button onClick={handleCreateNew} className="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-5 py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2 whitespace-nowrap">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
             Create Record
           </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto bg-white">
+      <div className="flex-1 overflow-auto bg-white/70 backdrop-blur-md relative z-10">
         {loading ? (
-          <div className="flex items-center justify-center h-64">Loading...</div>
+          <div className="flex items-center justify-center h-64">
+            <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
+          </div>
         ) : filteredData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64">No records found.</div>
+          <div className="flex flex-col items-center justify-center h-64 text-slate-500 font-medium">No records found.</div>
         ) : (
           <table className="w-full text-left">
-            <thead className="bg-slate-50">
+            <thead className="bg-slate-100/80 backdrop-blur-sm sticky top-0 z-20 shadow-sm border-b border-slate-200">
               <tr>
-                <th className="px-6 py-4"><input type="checkbox" onChange={handleSelectAll} /></th>
-                <th className="px-6 py-4">Image</th>
-                <th className="px-6 py-4">Listing</th>
-                <th className="px-6 py-4">Contact</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Action</th>
+                <th className="px-6 py-4"><input type="checkbox" onChange={handleSelectAll} className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500" /></th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Image</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Entity</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Contact</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Status</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-200/60">
               {filteredData.map(item => (
-                <tr key={item.id}>
-                  <td className="px-6 py-4"><input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => handleSelectOne(item.id)} /></td>
+                <tr key={item.id} className="hover:bg-slate-50/80 transition-colors group">
+                  <td className="px-6 py-4"><input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => handleSelectOne(item.id)} className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500" /></td>
                   <td className="px-6 py-4">
                     {item.image ? (
-                      <img src={item.image} alt={item.name} className="w-10 h-10 rounded-full object-cover border border-slate-200" />
+                      <div className="w-12 h-12 rounded-xl bg-white p-0.5 shadow-sm border border-slate-200 overflow-hidden">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded-lg" />
+                      </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300 flex items-center justify-center text-slate-400 shadow-inner">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 font-bold text-sm">{item.name}</td>
-                  <td className="px-6 py-4 text-sm">{item.phone}</td>
-                  <td className="px-6 py-4">{item.verified ? <span className="text-green-600 font-bold text-xs uppercase tracking-widest bg-green-50 px-2 py-1 rounded">Verified</span> : <span className="text-slate-500 font-bold text-xs uppercase tracking-widest bg-slate-100 px-2 py-1 rounded">Unverified</span>}</td>
+                  <td className="px-6 py-4">
+                    <div className="font-bold text-sm text-slate-900 drop-shadow-sm">{item.name}</div>
+                    <div className="text-xs font-semibold text-teal-600 mt-0.5 uppercase tracking-wider">{item.category}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm font-medium text-slate-700 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> {item.phone || "N/A"}</div>
+                    <div className="text-[10px] text-slate-500 mt-1 max-w-[200px] truncate" title={item.city}>{item.city}, {item.district}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {item.verified ? (
+                      <span className="flex w-max items-center gap-1.5 text-teal-700 font-bold text-[10px] uppercase tracking-widest bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 px-2.5 py-1 rounded-md shadow-sm">
+                        <svg className="w-3 h-3 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                        Dehapa Verified
+                      </span>
+                    ) : (
+                      <span className="flex w-max items-center gap-1.5 text-amber-700 font-bold text-[10px] uppercase tracking-widest bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 px-2.5 py-1 rounded-md shadow-sm">
+                        Unverified
+                      </span>
+                    )}
+                  </td>
                   <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-4">
-                      <Link href={`/doctors/${item.customSlug || item.id}`} target="_blank" className="text-slate-500 hover:text-slate-900 font-bold text-xs uppercase tracking-widest flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Link href={`/doctors/${item.customSlug || item.id}`} target="_blank" className="text-slate-500 hover:text-slate-900 font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 bg-white border border-slate-200 px-2 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                         View Live
                       </Link>
-                      <button onClick={() => openDrawer(item)} className="text-teal-600 hover:text-teal-700 font-bold text-sm bg-teal-50 px-3 py-1.5 rounded-lg border border-teal-100">Edit Data</button>
+                      <button onClick={() => openDrawer(item)} className="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-bold text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-[0_2px_10px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        Edit Data
+                      </button>
                     </div>
                   </td>
                 </tr>
