@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import QRCode from "react-qr-code";
 import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings, X } from "lucide-react";
+import QRScannerModal from "@/components/QRScannerModal";
 
 export default function DehapaHome() {
   const [activeTab, setActiveTab] = useState<"patients" | "doctors" | "hospitals">("patients");
   const [isPinging, setIsPinging] = useState(false);
   const [ambulanceETA, setAmbulanceETA] = useState<string | null>(null);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [userUid, setUserUid] = useState<string | null>(null);
 
   useEffect(() => {
@@ -94,8 +96,8 @@ export default function DehapaHome() {
 
           {/* Special Ticket: QR Scanner */}
           <div className="mt-8 flex justify-center relative z-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-            <Link 
-              href="#scan"
+            <button 
+              onClick={() => setIsScannerOpen(true)}
               className="group relative flex items-center gap-4 bg-gradient-to-r from-teal-900/80 to-emerald-900/80 backdrop-blur-xl border border-teal-500/40 rounded-full py-3 px-6 sm:px-8 shadow-[0_10px_30px_rgba(20,184,166,0.3)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.5)] transition-all duration-500 hover:-translate-y-1 hover:border-teal-400/60 overflow-hidden"
             >
               {/* Shimmer effect */}
@@ -109,7 +111,7 @@ export default function DehapaHome() {
                 <p className="text-teal-200/70 text-xs sm:text-sm font-medium">Scan QR to connect with your doctor</p>
               </div>
               <ChevronRight className="w-5 h-5 text-teal-400 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
-            </Link>
+            </button>
           </div>
 
         </div>
@@ -521,6 +523,12 @@ export default function DehapaHome() {
           </div>
         </div>
       )}
+
+      {/* QR Scanner Modal */}
+      <QRScannerModal 
+        isOpen={isScannerOpen} 
+        onClose={() => setIsScannerOpen(false)} 
+      />
 
     </main>
   );
