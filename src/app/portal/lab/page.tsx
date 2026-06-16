@@ -150,6 +150,12 @@ export default function LabDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     },
     {
+      id: "inbox",
+      label: "Rx Inbox & Orders",
+      section: "ORDERS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"></path></svg>
+    },
+    {
       id: "vault",
       label: "Upload Report to Vault",
       section: "REPORTS",
@@ -360,6 +366,58 @@ export default function LabDashboard() {
                 Lookup Vault
               </button>
             </form>
+          </div>
+        )}
+
+        {/* Tab: Rx Inbox */}
+        {activeTab === "inbox" && (
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-end border-b border-slate-100 pb-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Incoming Lab Orders</h3>
+                <p className="text-sm text-slate-500 mt-1">Lab tests routed to your center by doctors or patients.</p>
+              </div>
+              <div className="text-right">
+                <span className="bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full text-xs">1 New Order</span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {/* Order 1 */}
+              <div className="border border-slate-200 rounded-xl p-5 hover:border-blue-400 hover:shadow-md transition-all">
+                <div className="flex justify-between items-start mb-4 border-b border-slate-100 pb-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-1 block">Home Collection Requested</span>
+                    <h4 className="text-lg font-bold text-slate-900">Patient: Amit Kumar</h4>
+                    <p className="text-sm text-slate-500">From: Dr. Rajesh Singh</p>
+                    <p className="text-xs text-slate-400 font-mono mt-1">Rx ID: LAB-1042-C</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Time Received</p>
+                    <p className="text-sm font-bold text-slate-900">Today, 08:30 AM</p>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Requested Tests:</p>
+                  <ul className="space-y-2">
+                    <li className="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <span className="font-semibold text-sm">1. Complete Blood Count (CBC)</span>
+                      <span className="text-xs font-mono text-slate-500">Fasting</span>
+                    </li>
+                    <li className="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <span className="font-semibold text-sm">2. Lipid Profile</span>
+                      <span className="text-xs font-mono text-slate-500">Fasting Required</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                  <button className="px-4 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Decline Order</button>
+                  <button className="px-6 py-2 text-sm font-bold text-white bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 hover:shadow-md transition-all">Accept & Schedule</button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

@@ -592,12 +592,84 @@ export default function PharmacyDashboard() {
 
         {/* Tab 5: Rx Inbox */}
         {activeTab === "inbox" && (
-          <div className="bg-white rounded-2xl p-8 text-center py-20 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"></path></svg>
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-end border-b border-slate-100 pb-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Incoming e-Prescriptions</h3>
+                <p className="text-sm text-slate-500 mt-1">Prescriptions routed to your pharmacy by doctors or patients.</p>
+              </div>
+              <div className="text-right">
+                <span className="bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full text-xs">2 New Orders</span>
+              </div>
             </div>
-            <p className="font-bold text-slate-900 mb-1">Inbox is Empty</p>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto">When patients share their digital prescriptions with your pharmacy for delivery or pickup, they will appear here.</p>
+
+            <div className="space-y-4">
+              {/* Order 1 */}
+              <div className="border border-slate-200 rounded-xl p-5 hover:border-teal-400 hover:shadow-md transition-all">
+                <div className="flex justify-between items-start mb-4 border-b border-slate-100 pb-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-1 block">Urgent Fulfillment</span>
+                    <h4 className="text-lg font-bold text-slate-900">Patient: Sandeep Sharma</h4>
+                    <p className="text-sm text-slate-500">From: Dr. Anjali Das (Apollo Hospital)</p>
+                    <p className="text-xs text-slate-400 font-mono mt-1">Rx ID: RX-9942-A</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Time Received</p>
+                    <p className="text-sm font-bold text-slate-900">Today, 10:45 AM</p>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Requested Medicines:</p>
+                  <ul className="space-y-2">
+                    <li className="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <span className="font-semibold text-sm">1. Azithromycin 500mg</span>
+                      <span className="text-xs font-mono text-slate-500">1-0-1 x 5 Days</span>
+                    </li>
+                    <li className="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <span className="font-semibold text-sm">2. Paracetamol 650mg</span>
+                      <span className="text-xs font-mono text-slate-500">SOS x 3 Days</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                  <button className="px-4 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Decline Order</button>
+                  <button className="px-6 py-2 text-sm font-bold text-white bg-teal-600 rounded-lg shadow-sm hover:bg-teal-700 hover:shadow-md transition-all">Accept & Prepare</button>
+                </div>
+              </div>
+
+              {/* Order 2 */}
+              <div className="border border-slate-200 rounded-xl p-5 hover:border-teal-400 hover:shadow-md transition-all opacity-80">
+                <div className="flex justify-between items-start mb-4 border-b border-slate-100 pb-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-1 block">Standard Fulfillment</span>
+                    <h4 className="text-lg font-bold text-slate-900">Patient: Priya Patel</h4>
+                    <p className="text-sm text-slate-500">From: Self-Routed via Patient Vault</p>
+                    <p className="text-xs text-slate-400 font-mono mt-1">Rx ID: RX-8812-B</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Time Received</p>
+                    <p className="text-sm font-bold text-slate-900">Yesterday, 4:20 PM</p>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Requested Medicines:</p>
+                  <ul className="space-y-2">
+                    <li className="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <span className="font-semibold text-sm">1. Amlodipine 5mg</span>
+                      <span className="text-xs font-mono text-slate-500">1-0-0 x 30 Days</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                  <button className="px-4 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Decline Order</button>
+                  <button className="px-6 py-2 text-sm font-bold text-white bg-teal-600 rounded-lg shadow-sm hover:bg-teal-700 hover:shadow-md transition-all">Accept & Prepare</button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
