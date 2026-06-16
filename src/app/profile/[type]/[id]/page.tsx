@@ -117,16 +117,17 @@ const getMockProfile = (type: string, id: string) => {
   };
 };
 
-export default function PublicProfile({ params }: { params: { type: string, id: string } }) {
+export default function PublicProfile({ params }: { params: Promise<{ type: string, id: string }> }) {
+  const unwrappedParams = React.use(params);
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
     // Simulate API delay
     const timer = setTimeout(() => {
-      setProfile(getMockProfile(params.type, params.id));
+      setProfile(getMockProfile(unwrappedParams.type, unwrappedParams.id));
     }, 500);
     return () => clearTimeout(timer);
-  }, [params.type, params.id]);
+  }, [unwrappedParams.type, unwrappedParams.id]);
 
   if (!profile) {
     return (
@@ -173,9 +174,9 @@ export default function PublicProfile({ params }: { params: { type: string, id: 
                   <img src={profile.image} alt={profile.name} className="w-full h-full object-cover" />
                 ) : (
                   <>
-                    {params.type === 'doctor' && '👨‍⚕️'}
-                    {params.type === 'hospital' && '🏥'}
-                    {params.type !== 'doctor' && params.type !== 'hospital' && '⚕️'}
+                    {unwrappedParams.type === 'doctor' && '👨‍⚕️'}
+                    {unwrappedParams.type === 'hospital' && '🏥'}
+                    {unwrappedParams.type !== 'doctor' && unwrappedParams.type !== 'hospital' && '⚕️'}
                   </>
                 )}
               </div>
@@ -231,7 +232,7 @@ export default function PublicProfile({ params }: { params: { type: string, id: 
             {profile.roster.length > 0 && (
               <section className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
                 <h3 className="text-xl font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3">
-                  {params.type === 'doctor' ? 'Associated Hospitals' : 'Available Departments / Doctors'}
+                  {unwrappedParams.type === 'doctor' ? 'Associated Hospitals' : 'Available Departments / Doctors'}
                 </h3>
                 <ul className="space-y-3">
                   {profile.roster.map((item: string, i: number) => (
@@ -250,12 +251,12 @@ export default function PublicProfile({ params }: { params: { type: string, id: 
             {/* Quick Actions */}
             <div className="bg-slate-900 rounded-2xl p-6 shadow-md text-center">
               <h3 className="text-white font-bold mb-4">Connect</h3>
-              {params.type === 'doctor' && (
+              {unwrappedParams.type === 'doctor' && (
                 <button className="w-full bg-tenant-accent hover:bg-teal-400 text-slate-900 font-bold py-3 rounded-xl transition-colors mb-3">
                   Book Appointment
                 </button>
               )}
-              {params.type === 'hospital' && (
+              {unwrappedParams.type === 'hospital' && (
                 <button className="w-full bg-red-500 hover:bg-red-400 text-white font-bold py-3 rounded-xl transition-colors mb-3">
                   Send Emergency Alert
                 </button>
