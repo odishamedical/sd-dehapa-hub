@@ -272,19 +272,20 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-[#020810]/80 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-6 lg:px-12 h-20 transition-all duration-300">
+    <header className="sticky top-0 z-[100] bg-[#020810]/80 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-6 lg:px-12 h-24 transition-all duration-300">
       {/* 1. Web Name / Logo */}
       <div className="flex items-center gap-4">
         <a href="/" className="flex items-center gap-4 group">
-          <div className="relative w-12 h-12 flex items-center justify-center transition-transform group-hover:scale-105">
+          <div className="relative w-16 h-16 flex items-center justify-center transition-transform group-hover:scale-105">
+            {/* Added unoptimized tag or use a regular img tag to prevent Next.js from breaking the path if not configured */}
             <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain relative z-10" />
             <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-xl group-hover:bg-teal-400/40 transition-colors pointer-events-none"></div>
           </div>
-          <div className="flex flex-col">
-            <span className="text-xl sm:text-2xl font-black tracking-widest text-white uppercase font-serif drop-shadow-md">
-              DehaPa <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-400">Health</span>
+          <div className="flex flex-col justify-center">
+            <span className="text-2xl sm:text-3xl font-black tracking-wide text-white font-serif drop-shadow-md">
+              DehaPa
             </span>
-            <span className="text-[8px] sm:text-[9px] text-slate-400 tracking-[0.2em] uppercase font-mono group-hover:text-cyan-300 transition-colors">Sovereign Medical Network</span>
+            <span className="text-xs sm:text-sm text-teal-300 tracking-[0.1em] font-medium group-hover:text-cyan-300 transition-colors">Your Health Our Mission</span>
           </div>
         </a>
       </div>

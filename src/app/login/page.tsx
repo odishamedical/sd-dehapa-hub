@@ -50,9 +50,16 @@ function LoginContent() {
       userRole = 'super_admin';
     }
     
+    const finalAvatar = user.photoURL || null;
+    
     localStorage.setItem("sd_current_user_email", userEmail);
     localStorage.setItem("sd_current_user_role", userRole);
     localStorage.setItem("sd_current_user_name", userName);
+    if (finalAvatar) {
+        localStorage.setItem("sd_current_user_avatar", finalAvatar);
+    } else {
+        localStorage.removeItem("sd_current_user_avatar");
+    }
     localStorage.setItem("sd_current_user_profile_complete", userSnap.exists() ? "true" : "false");
     
     // Notify GlobalHeader that auth state has changed
