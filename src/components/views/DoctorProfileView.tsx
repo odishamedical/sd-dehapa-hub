@@ -125,19 +125,34 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             }
           }
           
-          // Fetch sidebar widgets safely without needing complex indexes
+          // Fetch sidebar widgets safely with smart fallbacks
           try {
-            const cityQuery = query(
-              collection(db, 'directory'),
-              where("city", "==", rawData.city || ""),
-              limit(30)
-            );
-            const citySnap = await getDocs(cityQuery);
-            const allCityDocs = citySnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId);
+            // Fetch a broad pool of directory items to filter in memory (good for small/medium datasets)
+            const broadQuery = query(collection(db, 'directory'), limit(50));
+            const broadSnap = await getDocs(broadQuery);
+            const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId);
             
-            setSimilarDoctors(allCityDocs.filter(d => d.subCategory === rawData.subCategory).slice(0, 3));
-            setTopHospitals(allCityDocs.filter(d => d.category === "Hospital").slice(0, 3));
-            setNearbyCenters(allCityDocs.filter(d => d.category !== "Doctor" && d.category !== "Hospital").slice(0, 3));
+            // 1. Similar Doctors: Try same subCategory first, fallback to any Doctor
+            let similarDocs = allDocs.filter(d => d.category === "Doctor" && d.subCategory === rawData.subCategory);
+            if (similarDocs.length === 0) {
+              similarDocs = allDocs.filter(d => d.category === "Doctor"); // Fallback
+            }
+            
+            // 2. Top Hospitals: Try same city first, fallback to any Hospital
+            let hospitals = allDocs.filter(d => d.category === "Hospital" && d.city === rawData.city);
+            if (hospitals.length === 0) {
+              hospitals = allDocs.filter(d => d.category === "Hospital"); // Fallback
+            }
+            
+            // 3. Nearby Centers: Try same city first, fallback to any center
+            let centers = allDocs.filter(d => d.category !== "Doctor" && d.category !== "Hospital" && d.city === rawData.city);
+            if (centers.length === 0) {
+              centers = allDocs.filter(d => d.category !== "Doctor" && d.category !== "Hospital"); // Fallback
+            }
+            
+            setSimilarDoctors(similarDocs.slice(0, 3));
+            setTopHospitals(hospitals.slice(0, 3));
+            setNearbyCenters(centers.slice(0, 3));
           } catch (e) {
             console.error("Failed to fetch sidebar widgets", e);
           }
