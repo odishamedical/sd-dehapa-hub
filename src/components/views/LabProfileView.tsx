@@ -11,9 +11,11 @@ import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
 import UnverifiedBanner from '@/components/UnverifiedBanner';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
-import TicketCard from '@/components/TicketCard';
 import { TicketConfig } from '@/lib/ticketConfig';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
+import InlineEditField from '@/components/InlineEditField';
+import InlineEditArray from '@/components/InlineEditArray';
+import { updateDoc } from 'firebase/firestore';
 
 export default function LabProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [lab, setLab] = useState<any>(null);
@@ -21,6 +23,22 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
   const [topHospitals, setTopHospitals] = useState<any[]>([]);
   const [nearbyCenters, setNearbyCenters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Edit Mode State
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
+
+  const handleInlineSave = async (field: string, value: any) => {
+    if (!lab || !lab.id) return;
+    try {
+      const docRef = doc(db, 'directory', lab.id);
+      await updateDoc(docRef, { [field]: value });
+      setLab((prev: any) => ({ ...prev, [field]: value }));
+    } catch (err) {
+      console.error("Failed to save field:", err);
+      alert("Failed to save changes.");
+    }
+  };
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -76,9 +94,21 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
             experiences: rawData.experiences || [],
             qualificationsList: rawData.qualificationsList || [],
             research: rawData.research || [],
-            awards: rawData.awards || []
+            awards: rawData.awards || [],
+            
+            // Auth Check
+            ownerEmail: rawData.ownerEmail || null,
+            galleryImages: rawData.galleryImages || []
           };
           setLab(docData);
+
+          // Check if current user can edit
+          if (typeof window !== 'undefined') {
+            const currentUserEmail = localStorage.getItem("sd_current_user_email");
+            if (currentUserEmail === "odishamedical@gmail.com" || currentUserEmail === docData.ownerEmail) {
+              setCanEdit(true);
+            }
+          }
           
           // Fetch sidebar widgets safely without needing complex indexes
           try {
@@ -130,6 +160,21 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
         </div>
       </div>
       
+      {canEdit && (
+        <div className="bg-slate-900 text-white px-6 py-2 sticky top-[72px] z-40 flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            <span className="font-bold text-sm">You have access to edit this profile</span>
+          </div>
+          <button 
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${isEditMode ? 'bg-teal-500 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+          >
+            {isEditMode ? 'Disable Edit Mode' : 'Enable Edit Mode'}
+          </button>
+        </div>
+      )}
+
       {/* Banner Area */}
       <div className="w-full h-64 md:h-80 relative bg-teal-900 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-900 to-teal-700 opacity-90 z-10"></div>
@@ -150,7 +195,29 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
           <div className="lg:col-span-3 space-y-8">
             
             {/* Unified Header Card */}
-            <TicketCard entity={lab} config={TicketConfig.lab} />
+            <TicketCard 
+              entity={lab} 
+              config={TicketConfig.lab} 
+              isEditMode={isEditMode}
+              onSave={handleInlineSave}
+            />
+
+            {/* Google Extracted Image Gallery */}
+            {lab.galleryImages?.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  Lab Photos
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {lab.galleryImages.map((img: string, idx: number) => (
+                    <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                      <img src={img} alt={`Lab Photo ${idx + 1}`} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
 
             {/* Unverified Banner */}
@@ -163,21 +230,29 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
               
               <div className="space-y-8">
                 {/* About */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
                   <h2 className="text-xl font-bold text-slate-900 mb-4">About the Lab</h2>
-                  <p className="text-slate-600 leading-relaxed text-sm">{lab.about}</p>
+                  <div className="text-slate-600 leading-relaxed text-sm">
+                    <InlineEditField 
+                      value={lab.about} 
+                      onSave={(val) => handleInlineSave('about', val)} 
+                      isEditMode={isEditMode} 
+                      type="textarea"
+                    />
+                  </div>
                 </div>
 
                 {/* Specialties */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
                   <h2 className="text-xl font-bold text-slate-900 mb-4">Specialties & Services</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {lab.specialties.map((spec: string, idx: number) => (
-                      <span key={idx} className="bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1.5 rounded-lg text-xs font-semibold">
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
+                  <InlineEditArray 
+                    items={lab.specialties || []} 
+                    onSave={(newArr) => handleInlineSave('specialties', newArr)} 
+                    isEditMode={isEditMode} 
+                    placeholder="Add a service (e.g. Blood Test, MRI)"
+                  />
                 </div>
 
                 {/* Detailed Qualifications */}
@@ -288,10 +363,18 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
                     <span className="text-sm font-semibold text-slate-500 block mb-1">Primary Lab</span>
                     {lab.clinic.name}
                   </h3>
-                    <div className="space-y-4 mt-4">
+                    <div className="space-y-4 mt-4 relative">
+                      {isEditMode && <div className="absolute -top-12 right-0 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest hidden md:block">Editable</div>}
                       <div className="flex items-start gap-3">
                         <svg className="w-5 h-5 text-teal-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        <p className="text-sm text-slate-600 leading-relaxed">{lab.clinic.address}</p>
+                        <div className="text-sm text-slate-600 leading-relaxed">
+                          <InlineEditField 
+                            value={lab.clinic.address} 
+                            onSave={(val) => handleInlineSave('address', val)} 
+                            isEditMode={isEditMode} 
+                            type="textarea"
+                          />
+                        </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
