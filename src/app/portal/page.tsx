@@ -385,6 +385,12 @@ export default function UserDashboard() {
           </div>
         )}
 
+        {activeTab === "vault" && (
+          <div className="animate-in fade-in slide-in-from-bottom-4">
+            <PatientVaultWidget />
+          </div>
+        )}
+
       </div>
 
       <PatientOnboardingModal 
