@@ -15,6 +15,7 @@ import TicketCard from '@/components/TicketCard';
 import { TicketConfig } from '@/lib/ticketConfig';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
+import InlineEditArray from '@/components/InlineEditArray';
 import { updateDoc } from 'firebase/firestore';
 
 export default function DoctorProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
@@ -247,15 +248,15 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                 </div>
 
                 {/* Specialties */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
                   <h2 className="text-xl font-bold text-slate-900 mb-4">Specialties & Services</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {doctor.specialties.map((spec: string, idx: number) => (
-                      <span key={idx} className="bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1.5 rounded-lg text-xs font-semibold">
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
+                  <InlineEditArray 
+                    items={doctor.specialties || []} 
+                    onSave={(newArr) => handleInlineSave('specialties', newArr)} 
+                    isEditMode={isEditMode} 
+                    placeholder="Add a specialty (e.g. ENT Surgeon)"
+                  />
                 </div>
 
                 {/* Detailed Qualifications */}
