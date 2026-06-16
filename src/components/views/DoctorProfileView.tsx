@@ -99,12 +99,17 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             city: rawData.city || rawData.district || "Odisha",
             
             // New Advanced Array Fields
-            // New Advanced Array Fields
             locations: rawData.locations || [],
             experiences: rawData.experiences || [],
             qualificationsList: rawData.qualificationsList || [],
             research: rawData.research || [],
             awards: rawData.awards || [],
+            
+            // Personal & Registration
+            dob: rawData.dob || "",
+            maritalStatus: rawData.maritalStatus || "",
+            registrationNumber: rawData.registrationNumber || "",
+            showPersonalDetails: rawData.showPersonalDetails || false,
             
             // Auth Check
             ownerEmail: rawData.ownerEmail || null,
@@ -247,6 +252,66 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                   </div>
                 </div>
 
+                {/* Personal & Registration Details */}
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-slate-900">Personal & Registration</h2>
+                    {isEditMode && (
+                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                        <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Show Publicly</span>
+                        <input 
+                          type="checkbox" 
+                          checked={doctor.showPersonalDetails} 
+                          onChange={(e) => handleInlineSave('showPersonalDetails', e.target.checked)}
+                          className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
+                        />
+                      </label>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex flex-col bg-slate-50 p-3 rounded-xl border border-slate-100">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Medical Registration Number</span>
+                      <div className="text-sm font-semibold text-slate-900">
+                        <InlineEditField 
+                          value={doctor.registrationNumber} 
+                          onSave={(val) => handleInlineSave('registrationNumber', val)} 
+                          isEditMode={isEditMode} 
+                          placeholder="e.g. OMC-15243"
+                        />
+                      </div>
+                    </div>
+
+                    {(doctor.showPersonalDetails || isEditMode) && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col bg-slate-50 p-3 rounded-xl border border-slate-100 opacity-90">
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Date of Birth</span>
+                          <div className="text-sm font-semibold text-slate-900">
+                            <InlineEditField 
+                              value={doctor.dob} 
+                              onSave={(val) => handleInlineSave('dob', val)} 
+                              isEditMode={isEditMode} 
+                              placeholder="e.g. 22/04/1979"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col bg-slate-50 p-3 rounded-xl border border-slate-100 opacity-90">
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Marital Status</span>
+                          <div className="text-sm font-semibold text-slate-900">
+                            <InlineEditField 
+                              value={doctor.maritalStatus} 
+                              onSave={(val) => handleInlineSave('maritalStatus', val)} 
+                              isEditMode={isEditMode} 
+                              placeholder="e.g. Married"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Specialties */}
                 <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
                   {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
@@ -301,12 +366,18 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                 )}
 
                 {/* Awards & Recognitions */}
-                {doctor.awards?.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                      Awards & Recognitions
-                    </h2>
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable Array</div>}
+                  <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                    Awards & Recognitions
+                  </h2>
+                  
+                  {(!doctor.awards || doctor.awards.length === 0) ? (
+                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
+                      <p className="text-sm text-slate-500 font-semibold italic">Soon to update</p>
+                    </div>
+                  ) : (
                     <div className="space-y-4">
                       {doctor.awards.map((award: any, idx: number) => (
                         <div key={idx} className="flex gap-3 items-start">
@@ -318,8 +389,8 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
               </div>
 
@@ -417,12 +488,18 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                 )}
 
                 {/* Research & Publications */}
-                {doctor.research?.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                      Research & Publications
-                    </h2>
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable Array</div>}
+                  <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    Research & Publications
+                  </h2>
+                  
+                  {(!doctor.research || doctor.research.length === 0) ? (
+                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
+                      <p className="text-sm text-slate-500 font-semibold italic">Soon to update</p>
+                    </div>
+                  ) : (
                     <div className="space-y-4">
                       {doctor.research.map((res: any, idx: number) => (
                         <div key={idx} className="border-l-2 border-teal-500 pl-4 py-1">
@@ -431,8 +508,8 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
               </div>
             </div>
