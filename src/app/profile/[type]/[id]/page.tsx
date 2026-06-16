@@ -95,23 +95,39 @@ export default function PublicProfile({ params }: { params: { type: string, id: 
       <main className="max-w-4xl mx-auto px-6 py-8 mt-4">
         
         {/* Identity Card */}
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 mb-8 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-32 bg-slate-900"></div>
+        <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-3xl p-8 border border-slate-300 mb-8 relative overflow-hidden">
+          {/* Metallic Shine Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
+          
+          <div className="absolute top-0 left-0 w-full h-32 bg-slate-900 border-b border-slate-700"></div>
           
           <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-end mt-12">
-            <div className="w-32 h-32 rounded-2xl bg-white p-2 shadow-lg border border-slate-100 shrink-0">
-              <div className="w-full h-full bg-slate-100 rounded-xl flex items-center justify-center text-4xl">
+            <div className="w-32 h-32 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative">
+              <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl flex items-center justify-center text-5xl shadow-inner">
                 {params.type === 'doctor' && '👨‍⚕️'}
                 {params.type === 'hospital' && '🏥'}
                 {params.type !== 'doctor' && params.type !== 'hospital' && '⚕️'}
               </div>
             </div>
             
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-3xl font-serif font-bold text-slate-900">{profile.name}</h1>
-                {profile.verified && (
-                  <svg className="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+            <div className="flex-1 w-full">
+              <div className="flex items-center justify-between w-full flex-wrap gap-4 mb-2">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-serif font-bold text-slate-900">{profile.name}</h1>
+                  {profile.verified && (
+                    <div className="flex items-center gap-1.5 bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 px-3 py-1.5 rounded-full shadow-sm">
+                      <svg className="w-4 h-4 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+                      <span className="text-xs font-bold text-teal-700 uppercase tracking-widest">Dehapa Verified</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* The Unverified Workflow */}
+                {!profile.verified && (
+                  <Link href="/login" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 hover:text-rose-700 px-4 py-2 rounded-xl transition-all shadow-sm font-bold animate-pulse group">
+                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    Verify your page
+                  </Link>
                 )}
               </div>
               <p className="text-lg font-medium text-tenant-accent mb-6">{profile.subtitle}</p>
@@ -133,9 +149,12 @@ export default function PublicProfile({ params }: { params: { type: string, id: 
           
           {/* Main Info */}
           <div className="md:col-span-2 space-y-8">
-            <section className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-              <h3 className="text-xl font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3">About</h3>
-              <p className="text-slate-600 leading-relaxed">{profile.about}</p>
+            <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
+              <h3 className="text-xl font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                About
+              </h3>
+              <p className="text-slate-600 leading-relaxed text-lg">{profile.about}</p>
             </section>
 
             {profile.roster.length > 0 && (
