@@ -24,7 +24,7 @@ export default function InjectDataPage() {
       district: "Khordha",
       state: "Odisha",
       image: "/images/drdeepak.jpg",
-      verified: true,
+      verified: false,
       rating: 4.9,
       reviews: 124,
       customSlug: "dr-deepak-kumar-parida-neurosurgery",
