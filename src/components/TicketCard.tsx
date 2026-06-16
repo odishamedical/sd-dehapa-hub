@@ -3,12 +3,16 @@ import React from 'react';
 import Link from 'next/link';
 import { TicketConfigEntry } from '@/lib/ticketConfig';
 
+import InlineEditField from '@/components/InlineEditField';
+
 type Props = {
   entity: any;
   config: TicketConfigEntry;
+  isEditMode?: boolean;
+  onSave?: (field: string, value: any) => void;
 };
 
-export default function TicketCard({ entity, config }: Props) {
+export default function TicketCard({ entity, config, isEditMode = false, onSave }: Props) {
   const subtitle = entity[config.subtitleField] || '';
   const leftMetric = config.leftMetric(entity);
   const rightMetric = config.rightMetric(entity);
@@ -18,14 +22,33 @@ export default function TicketCard({ entity, config }: Props) {
       {/* Metallic Shine Overlay */}
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
       {/* Profile Image */}
-      <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative z-10">
+      <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative z-10 group">
         <img src={entity.image} alt={entity.name} className="w-full h-full object-cover rounded-2xl" />
+        {isEditMode && (
+          <div className="absolute inset-0 bg-black/60 rounded-3xl flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-[10px] text-white font-bold mb-1">Image URL</span>
+            <input 
+              type="text" 
+              defaultValue={entity.image}
+              onBlur={(e) => onSave?.('image', e.target.value)}
+              className="w-full text-[10px] p-1 rounded text-black"
+              placeholder="Paste URL"
+            />
+          </div>
+        )}
       </div>
       {/* Textual Info */}
       <div className="flex-1 text-center md:text-left relative z-10 w-full">
+        {isEditMode && <div className="absolute -top-4 right-0 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest hidden md:block">Header Editable</div>}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-2">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-slate-900">{entity.name}</h1>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-slate-900">
+              <InlineEditField 
+                value={entity.name} 
+                onSave={(val) => onSave?.('name', val)} 
+                isEditMode={isEditMode} 
+              />
+            </h1>
             {entity.verified && (
               <div className="flex items-center gap-1.5 bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 px-3 py-1.5 rounded-full shadow-sm">
                 <svg className="w-4 h-4 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
@@ -42,7 +65,26 @@ export default function TicketCard({ entity, config }: Props) {
             </Link>
           )}
         </div>
-        {subtitle && <p className="text-sm font-semibold text-teal-600 mb-2">{subtitle}</p>}
+        
+        {/* Subtitle / Specialty editable */}
+        {config.subtitleField && (
+          <p className="text-sm font-semibold text-teal-600 mb-2">
+            <InlineEditField 
+              value={subtitle} 
+              onSave={(val) => onSave?.(config.subtitleField, val)} 
+              isEditMode={isEditMode} 
+            />
+          </p>
+        )}
+        
+        {/* Owner Details (Front-End Display) */}
+        {entity.ownerName && (
+          <p className="text-xs font-semibold text-slate-500 mb-2 flex items-center gap-1.5 justify-center md:justify-start">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Managed by: <span className="text-slate-800">{entity.ownerName}</span>
+          </p>
+        )}
+
         {/* Metrics */}
         <div className="flex items-center space-x-6 mb-4">
           {leftMetric && (

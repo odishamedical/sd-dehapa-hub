@@ -14,6 +14,8 @@ import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import TicketCard from '@/components/TicketCard';
 import { TicketConfig } from '@/lib/ticketConfig';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
+import InlineEditField from '@/components/InlineEditField';
+import { updateDoc } from 'firebase/firestore';
 
 export default function DoctorProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [doctor, setDoctor] = useState<any>(null);
@@ -21,6 +23,22 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
   const [topHospitals, setTopHospitals] = useState<any[]>([]);
   const [nearbyCenters, setNearbyCenters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Edit Mode State
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
+
+  const handleInlineSave = async (field: string, value: any) => {
+    if (!doctor || !doctor.id) return;
+    try {
+      const docRef = doc(db, 'directory', doctor.id);
+      await updateDoc(docRef, { [field]: value });
+      setDoctor((prev: any) => ({ ...prev, [field]: value }));
+    } catch (err) {
+      console.error("Failed to save field:", err);
+      alert("Failed to save changes.");
+    }
+  };
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -80,13 +98,26 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             city: rawData.city || rawData.district || "Odisha",
             
             // New Advanced Array Fields
+            // New Advanced Array Fields
             locations: rawData.locations || [],
             experiences: rawData.experiences || [],
             qualificationsList: rawData.qualificationsList || [],
             research: rawData.research || [],
-            awards: rawData.awards || []
+            awards: rawData.awards || [],
+            
+            // Auth Check
+            ownerEmail: rawData.ownerEmail || null,
+            galleryImages: rawData.galleryImages || []
           };
           setDoctor(docData);
+
+          // Check if current user can edit
+          if (typeof window !== 'undefined') {
+            const currentUserEmail = localStorage.getItem("sd_current_user_email");
+            if (currentUserEmail === "odishamedical@gmail.com" || currentUserEmail === docData.ownerEmail) {
+              setCanEdit(true);
+            }
+          }
           
           // Fetch sidebar widgets safely without needing complex indexes
           try {
@@ -137,6 +168,21 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
           ]} />
         </div>
       </div>
+
+      {canEdit && (
+        <div className="bg-slate-900 text-white px-6 py-2 sticky top-[72px] z-40 flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            <span className="font-bold text-sm">You have access to edit this profile</span>
+          </div>
+          <button 
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${isEditMode ? 'bg-teal-500 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+          >
+            {isEditMode ? 'Disable Edit Mode' : 'Enable Edit Mode'}
+          </button>
+        </div>
+      )}
       
       {/* Banner Area */}
       <div className="w-full h-64 md:h-80 relative bg-teal-900 overflow-hidden">
@@ -158,16 +204,46 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
           <div className="lg:col-span-3 space-y-8">
             
             {/* Unified Header Card */}
-            <TicketCard entity={doctor} config={TicketConfig.doctor} />
+            <TicketCard 
+              entity={doctor} 
+              config={TicketConfig.doctor} 
+              isEditMode={isEditMode}
+              onSave={handleInlineSave}
+            />
+
+            {/* Google Extracted Image Gallery */}
+            {doctor.galleryImages?.length > 0 && (
+              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  Clinic Photos
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {doctor.galleryImages.map((img: string, idx: number) => (
+                    <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                      <img src={img} alt={`Clinic Photo ${idx + 1}`} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* 2-Column Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
               <div className="space-y-8">
                 {/* About */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
                   <h2 className="text-xl font-bold text-slate-900 mb-4">About the Doctor</h2>
-                  <p className="text-slate-600 leading-relaxed text-sm">{doctor.about}</p>
+                  <div className="text-slate-600 leading-relaxed text-sm">
+                    <InlineEditField 
+                      value={doctor.about} 
+                      onSave={(val) => handleInlineSave('about', val)} 
+                      isEditMode={isEditMode} 
+                      type="textarea"
+                    />
+                  </div>
                 </div>
 
                 {/* Specialties */}
