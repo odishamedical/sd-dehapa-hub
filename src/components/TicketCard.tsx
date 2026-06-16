@@ -31,11 +31,11 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-3xl p-6 md:p-8 border border-slate-300 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-300 flex flex-col md:flex-row items-center gap-6 md:gap-8 relative overflow-hidden">
       {/* Metallic Shine Overlay */}
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
       {/* Profile Image */}
-      <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative z-10 group">
+      <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-40 md:h-40 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative z-10 group">
         <img src={entity.image} alt={entity.name} className="w-full h-full object-cover rounded-2xl" />
         {isEditMode && (
           <div className="absolute inset-0 bg-black/60 rounded-3xl flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity">

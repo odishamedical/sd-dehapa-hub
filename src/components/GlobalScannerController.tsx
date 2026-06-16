@@ -34,7 +34,10 @@ export default function GlobalScannerController() {
   };
 
   const openScanner = () => {
-    window.location.hash = 'scan';
+    setIsScannerOpen(true);
+    if (window.location.hash !== '#scan') {
+      window.location.hash = 'scan';
+    }
   };
 
   return (

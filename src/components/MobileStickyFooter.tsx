@@ -55,12 +55,12 @@ export default function MobileStickyFooter({ onScanClick }: Props) {
         </button>
 
         {/* Right Nav */}
-        <Link href="/portal" className={`flex flex-col items-center gap-1 ml-16 ${pathname.includes('/portal') && !pathname.includes('profile') ? 'text-teal-400' : 'text-slate-500'}`}>
+        <Link href="/portal/vault/12345" className={`flex flex-col items-center gap-1 ml-16 ${pathname.includes('/vault') ? 'text-teal-400' : 'text-slate-500'}`}>
           <FileText className="w-6 h-6" />
           <span className="text-[10px] font-bold tracking-wider">Vault</span>
         </Link>
 
-        <Link href="/portal/patient" className={`flex flex-col items-center gap-1 ${pathname.includes('patient') ? 'text-teal-400' : 'text-slate-500'}`}>
+        <Link href="/portal" className={`flex flex-col items-center gap-1 ${pathname === '/portal' ? 'text-teal-400' : 'text-slate-500'}`}>
           <User className="w-6 h-6" />
           <span className="text-[10px] font-bold tracking-wider">Profile</span>
         </Link>
