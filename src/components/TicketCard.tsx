@@ -58,12 +58,13 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
       <div className="flex-1 text-center md:text-left relative z-10 w-full">
         {isEditMode && <div className="absolute -top-4 right-0 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest hidden md:block">Header Editable</div>}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-2">
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-slate-900">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 w-full">
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-slate-900 flex-1 min-w-[250px]">
               <InlineEditField 
                 value={entity.name} 
                 onSave={(val) => onSave?.('name', val)} 
                 isEditMode={isEditMode} 
+                inputClassName="!w-full !min-w-full text-2xl md:text-3xl font-serif font-bold"
               />
             </h1>
             {entity.verified && (
@@ -85,11 +86,12 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
         
         {/* Subtitle / Specialty editable */}
         {config.subtitleField && (
-          <p className="text-sm font-semibold text-teal-600 mb-2">
+          <p className="text-sm font-semibold text-teal-600 mb-2 w-full max-w-xl">
             <InlineEditField 
               value={subtitle} 
               onSave={(val) => onSave?.(config.subtitleField, val)} 
               isEditMode={isEditMode} 
+              inputClassName="!w-full text-sm font-semibold"
             />
           </p>
         )}
