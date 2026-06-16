@@ -64,8 +64,6 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
                 value={entity.name} 
                 onSave={(val) => onSave?.('name', val)} 
                 isEditMode={isEditMode} 
-                type="textarea"
-                inputClassName="!w-full !min-h-[60px] !p-2 !text-xl"
               />
             </h1>
             {entity.verified && (
@@ -92,8 +90,6 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
               value={subtitle} 
               onSave={(val) => onSave?.(config.subtitleField, val)} 
               isEditMode={isEditMode} 
-              type="textarea"
-              inputClassName="!w-full !min-h-[60px] !p-2 text-sm font-semibold"
             />
           </p>
         )}

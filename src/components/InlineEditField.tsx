@@ -50,12 +50,11 @@ export default function InlineEditField({
     }
   };
 
-  if (!isEditMode) {
-    return <span className={className}>{value || placeholder}</span>;
-  }
-
-  if (isEditing) {
-    if (type === 'textarea') {
+  if (type === 'textarea') {
+    if (!isEditMode) {
+      return <span className={className}>{value || placeholder}</span>;
+    }
+    if (isEditing) {
       return (
         <textarea
           ref={inputRef as React.RefObject<HTMLTextAreaElement>}
@@ -65,30 +64,63 @@ export default function InlineEditField({
           onKeyDown={handleKeyDown}
           className={`w-full bg-white text-slate-800 border-2 border-teal-500 rounded-lg p-3 outline-none shadow-inner resize-y min-h-[60px] text-base font-sans ${inputClassName}`}
           placeholder={placeholder}
+          autoFocus
         />
       );
     }
     return (
-      <input
-        ref={inputRef as React.RefObject<HTMLInputElement>}
-        type={type}
-        value={currentValue}
-        onChange={(e) => setCurrentValue(e.target.value)}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        className={`w-full bg-white text-slate-800 border-2 border-teal-500 rounded-lg px-3 py-2 outline-none shadow-inner text-base font-sans font-normal leading-normal ${inputClassName}`}
-        placeholder={placeholder}
-      />
+      <span 
+        className={`cursor-pointer hover:bg-teal-50 hover:ring-2 hover:ring-teal-200 rounded px-1 -mx-1 transition-all block ${!value ? 'text-slate-400 italic' : ''} ${className}`}
+        onClick={() => setIsEditing(true)}
+        title="Click to edit"
+      >
+        {value || placeholder}
+      </span>
     );
+  }
+
+  // Seamless contentEditable for text and number types
+  if (!isEditMode) {
+    return <span className={className}>{value || placeholder}</span>;
   }
 
   return (
     <span 
-      className={`cursor-pointer hover:bg-teal-50 hover:ring-2 hover:ring-teal-200 rounded px-1 -mx-1 transition-all ${!value ? 'text-slate-400 italic' : ''} ${className}`}
-      onClick={() => setIsEditing(true)}
-      title="Click to edit"
+      contentEditable={isEditing}
+      suppressContentEditableWarning={true}
+      ref={inputRef as React.RefObject<HTMLSpanElement>}
+      onBlur={(e) => {
+        setIsEditing(false);
+        const val = e.currentTarget.textContent || '';
+        if (val !== value) {
+          onSave(val);
+        }
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          e.currentTarget.blur();
+        }
+        if (e.key === 'Escape') {
+          e.currentTarget.textContent = value || placeholder;
+          setIsEditing(false);
+        }
+      }}
+      onClick={() => {
+        if (!isEditing) {
+          setIsEditing(true);
+          // Focus is handled by contentEditable natively when clicked, 
+          // but we might need to set cursor position if triggered programmatically
+        }
+      }}
+      className={
+        isEditing 
+          ? `bg-white text-slate-900 border-b-2 border-teal-500 outline-none shadow-sm px-1 min-w-[20px] inline-block cursor-text ${inputClassName}` 
+          : `cursor-pointer hover:bg-teal-50 hover:ring-2 hover:ring-teal-200 rounded px-1 -mx-1 transition-all ${!value ? 'text-slate-400 italic' : ''} ${className}`
+      }
+      title={isEditing ? "" : "Click to edit"}
     >
-      {value || placeholder}
+      {value || (isEditing ? '' : placeholder)}
     </span>
   );
 }
