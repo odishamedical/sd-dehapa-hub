@@ -6,14 +6,14 @@ import Link from 'next/link';
 // Mock DB Fetch
 const getMockProfile = (type: string, id: string) => {
   if (type === 'doctor') {
-    if (id === 'dr-deepak-kumar-mishra') {
+    if (id === 'dr-deepak-kumar-parida') {
       return {
-        name: "Dr. Deepak Kumar Mishra",
+        name: "Dr. Deepak Kumar Parida",
         subtitle: "Senior Consultant Surgical Oncology",
         image: "/images/drdeepak.jpg",
         verified: false,
         stats: { patients: "1k+", experience: "5+ Yrs", rating: "4.9" },
-        about: "Dr. Deepak Kumar Mishra is a leading Surgical Oncologist based in Bhubaneswar, Odisha.",
+        about: "Dr. Deepak Kumar Parida is a leading Surgical Oncologist based in Bhubaneswar, Odisha.",
         details: [
           { label: "Education", value: "MBBS, MS, MCh (Surgical Oncology)" },
           { label: "Registration", value: "Medical Council of India" },
