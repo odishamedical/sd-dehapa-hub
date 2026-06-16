@@ -272,25 +272,29 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-white/90 backdrop-blur-2xl border-b-[3px] border-slate-200 shadow-[0_10px_30px_rgba(0,0,0,0.08)] flex items-center justify-between px-6 lg:px-12 h-20 transition-all duration-300">
+    <header className="sticky top-0 z-[100] bg-[#020810]/80 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-6 lg:px-12 h-20 transition-all duration-300">
       {/* 1. Web Name / Logo */}
       <div className="flex items-center gap-4">
-        <a href="/" className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-xl shadow-[0_0_20px_rgba(20,184,166,0.4)]">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+        <a href="/" className="flex items-center gap-4 group">
+          <div className="relative w-12 h-12 flex items-center justify-center transition-transform group-hover:scale-105">
+            <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain relative z-10" />
+            <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-xl group-hover:bg-teal-400/40 transition-colors pointer-events-none"></div>
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-widest text-slate-900 uppercase font-serif">
-              DehaPa <span className="text-teal-600">Health</span>
+            <span className="text-xl sm:text-2xl font-black tracking-widest text-white uppercase font-serif drop-shadow-md">
+              DehaPa <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-400">Health</span>
             </span>
-            <span className="text-[9px] text-teal-600/80 tracking-[0.2em] uppercase font-mono">Sovereign Medical Network</span>
+            <span className="text-[8px] sm:text-[9px] text-slate-400 tracking-[0.2em] uppercase font-mono group-hover:text-cyan-300 transition-colors">Sovereign Medical Network</span>
           </div>
         </a>
       </div>
 
       {/* 2. Menu */}
       <nav className="hidden md:flex items-center gap-3">
-        <a href="/doctors" className="bg-teal-700 hover:bg-teal-800 text-white transition-all rounded-xl border border-teal-600 px-6 py-2.5 font-bold text-sm capitalize shadow-[0_4px_12px_rgba(15,118,110,0.3)] hover:shadow-[0_6px_16px_rgba(15,118,110,0.4)] hover:-translate-y-0.5">Find Specialists</a>
+        <a href="/doctors" className="relative group bg-slate-900 border border-teal-500/30 hover:border-cyan-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-teal-300 hover:text-cyan-200 transition-all shadow-[0_0_15px_rgba(20,184,166,0.1)] hover:shadow-[0_0_25px_rgba(34,211,238,0.3)] overflow-hidden">
+          <span className="relative z-10">Find Specialists</span>
+          <div className="absolute inset-0 h-full w-full bg-cyan-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+        </a>
       </nav>
 
       {/* 3. User Menu / Auth */}
@@ -299,7 +303,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
         {/* Hamburger Button (Mobile Only) */}
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+          className="md:hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
         >
           {mobileMenuOpen ? (
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -312,74 +316,107 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
           <div className="relative">
             <button 
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-2 focus:outline-none cursor-pointer"
+              className="flex items-center gap-3 focus:outline-none cursor-pointer bg-slate-800/50 hover:bg-slate-700/80 border border-slate-700 hover:border-teal-500/50 rounded-full py-1.5 px-2 pr-4 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] group"
             >
               {userAvatar ? (
-                <img src={userAvatar} alt="" className="w-8 h-8 rounded-full object-cover border-2 border-teal-500 hover:scale-105 transition-transform" />
+                <img src={userAvatar} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-teal-500/50 group-hover:shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all" />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-teal-500 text-white flex items-center justify-center font-bold text-xs border-2 border-teal-600 hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-600 to-cyan-600 text-white flex items-center justify-center font-black text-xs shadow-[0_0_10px_rgba(20,184,166,0.5)]">
                   {userName ? userName.charAt(0).toUpperCase() : userEmail.charAt(0).toUpperCase()}
                 </div>
               )}
-              <svg className={`w-4 h-4 text-slate-500 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
+              <div className="hidden sm:flex flex-col text-left">
+                 <span className="text-xs font-bold text-white tracking-wide max-w-[120px] truncate">{userName || "User"}</span>
+                 {userRole && <span className="text-[9px] text-cyan-400 font-mono uppercase tracking-widest leading-none mt-0.5">{userRole.replace("_", " ")}</span>}
+              </div>
+              <svg className={`w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
             </button>
+            
+            {/* The Dropdown Menu */}
             {dropdownOpen && (
-              <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-200 rounded-xl shadow-xl py-2 z-[110] text-left">
-                <div className="px-4 py-3 border-b border-slate-100">
-                  <p className="text-sm font-bold text-slate-900 truncate">{userName || userEmail.split("@")[0]}</p>
-                  <p className="text-xs text-slate-500 truncate mt-0.5">{userEmail}</p>
-                  {userRole && (
-                    <span className="inline-block text-[10px] font-mono font-bold bg-teal-50 text-teal-700 px-2 py-1 rounded mt-2 uppercase tracking-widest border border-teal-100">
-                      {userRole.replace("_", " ")}
-                    </span>
-                  )}
+              <div className="absolute right-0 mt-4 w-72 bg-[#0a111a]/95 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] py-3 z-[110] text-left overflow-hidden">
+                <div className="px-5 py-4 border-b border-slate-800/50 bg-slate-800/20">
+                  <p className="text-sm font-black text-white truncate">{userName || userEmail.split("@")[0]}</p>
+                  <p className="text-xs text-slate-400 truncate mt-1 font-mono">{userEmail}</p>
                 </div>
-                {(userRole === "super_admin" || userRole === "admin") && (
-                  <a href="/portal/admin" className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-100">
-                    <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    <span className="font-bold">Super Admin Dashboard</span>
+                
+                <div className="py-2">
+                  <a href="/portal/profile" className="flex items-center gap-3 px-5 py-3 text-sm text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group">
+                    <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <span className="font-bold">My Profile & Vault</span>
                   </a>
+                  <a href="/portal/appointments" className="flex items-center gap-3 px-5 py-3 text-sm text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group">
+                    <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span className="font-bold">My Appointments</span>
+                  </a>
+                  <a href="/portal/reports" className="flex items-center gap-3 px-5 py-3 text-sm text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group">
+                    <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span className="font-bold">Lab Reports</span>
+                  </a>
+                  <a href="/portal/settings" className="flex items-center gap-3 px-5 py-3 text-sm text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group">
+                    <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span className="font-bold">Settings</span>
+                  </a>
+                </div>
+
+                {(userRole === "super_admin" || userRole === "admin") && (
+                  <div className="py-2 border-t border-slate-800">
+                    <a href="/portal/admin" className="flex items-center gap-3 px-5 py-3 text-sm text-yellow-500 hover:bg-yellow-500/10 transition-colors group">
+                      <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                      <span className="font-bold uppercase tracking-widest text-[10px]">Super Admin Panel</span>
+                    </a>
+                  </div>
                 )}
-                <a href="/login/launcher" className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-100">
-                  <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-                  <span>Ecosystem Launcher</span>
-                </a>
-                <button onClick={handleSignOut} className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors text-left font-bold border-t border-slate-100">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1" /></svg>
-                  <span>Sign Out</span>
-                </button>
+                
+                <div className="py-2 border-t border-slate-800">
+                  <a href="/login/launcher" className="flex items-center gap-3 px-5 py-3 text-sm text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group">
+                    <svg className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    <span className="font-bold">Ecosystem Launcher</span>
+                  </a>
+                </div>
+
+                <div className="py-2 border-t border-slate-800/50 bg-red-900/10">
+                  <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-5 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-colors text-left group">
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1" /></svg>
+                    <span className="font-bold uppercase tracking-widest text-[10px]">Disconnect</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
         ) : (
-          <a href={getAuthCenterUrl()} className="text-[10px] font-bold uppercase tracking-widest bg-teal-700 hover:bg-teal-800 text-white border border-teal-600 px-5 py-2.5 rounded-xl transition-all shadow-[0_4px_12px_rgba(15,118,110,0.3)] hidden sm:inline-block">
-            Sign In
+          <a href={getAuthCenterUrl()} className="relative group bg-teal-600 border border-teal-400 hover:bg-teal-500 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-white transition-all shadow-[0_0_15px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] overflow-hidden hidden sm:inline-flex items-center justify-center">
+            <span className="relative z-10 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1"></path></svg>
+              Access Portal
+            </span>
+            <div className="absolute inset-0 h-full w-full bg-white/20 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
           </a>
         )}
       </div>
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-2xl md:hidden flex flex-col z-[90]">
-          <a href="/doctors" className="px-6 py-4 border-b border-slate-50 text-slate-800 font-bold flex items-center gap-3 hover:bg-slate-50">
+        <div className="absolute top-20 left-0 w-full bg-slate-900 border-b border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.8)] md:hidden flex flex-col z-[90]">
+          <a href="/doctors" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
             <span className="text-xl">🩺</span> Find Specialists
           </a>
-          <a href="/hospitals" className="px-6 py-4 border-b border-slate-50 text-slate-800 font-bold flex items-center gap-3 hover:bg-slate-50">
+          <a href="/hospitals" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
             <span className="text-xl">🏥</span> Hospitals
           </a>
-          <a href="/labs" className="px-6 py-4 border-b border-slate-50 text-slate-800 font-bold flex items-center gap-3 hover:bg-slate-50">
+          <a href="/labs" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
             <span className="text-xl">🔬</span> Labs
           </a>
-          <a href="/pharmacies" className="px-6 py-4 border-b border-slate-50 text-slate-800 font-bold flex items-center gap-3 hover:bg-slate-50">
+          <a href="/pharmacies" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
             <span className="text-xl">💊</span> Pharmacies
           </a>
-          <a href="/ambulances" className="px-6 py-4 text-slate-800 font-bold flex items-center gap-3 hover:bg-slate-50">
+          <a href="/ambulances" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
             <span className="text-xl">🚑</span> Ambulances
           </a>
           {!userEmail && (
-            <div className="p-6 bg-slate-50 border-t border-slate-200">
-               <a href={getAuthCenterUrl()} className="block w-full text-center font-bold bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-xl shadow-md">
-                 Sign In / Register
+            <div className="p-6 bg-slate-950 border-t border-slate-800">
+               <a href={getAuthCenterUrl()} className="block w-full text-center font-bold bg-teal-600 hover:bg-teal-500 text-white px-5 py-3 rounded-xl shadow-[0_0_15px_rgba(20,184,166,0.3)]">
+                 Initialize Access
                </a>
             </div>
           )}
