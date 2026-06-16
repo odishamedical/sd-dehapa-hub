@@ -3,6 +3,7 @@ import React, { useRef } from 'react';
 import Link from 'next/link';
 import { TicketConfigEntry } from '@/lib/ticketConfig';
 import InlineEditField from '@/components/InlineEditField';
+import ShareButtons from '@/components/ShareButtons';
 
 type Props = {
   entity: any;
@@ -122,6 +123,12 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
             </div>
           )}
         </div>
+        
+        {/* Share Buttons */}
+        <div className="mb-4">
+          <ShareButtons title={entity.name || "Dehapa Hub"} />
+        </div>
+
         {/* CTA Button */}
         <button className="w-full px-6 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-[0_8px_30px_rgba(13,148,136,0.3)] transition-all text-sm uppercase tracking-widest mt-2">{config.cta.label}</button>
       </div>

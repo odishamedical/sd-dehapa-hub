@@ -2,12 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings } from "lucide-react";
+import QRCode from "react-qr-code";
+import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings, X } from "lucide-react";
 
 export default function DehapaHome() {
   const [activeTab, setActiveTab] = useState<"patients" | "doctors" | "hospitals">("patients");
   const [isPinging, setIsPinging] = useState(false);
   const [ambulanceETA, setAmbulanceETA] = useState<string | null>(null);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [userUid, setUserUid] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only access localStorage on client
+    setUserUid(localStorage.getItem("sd_current_user_email") || "guest");
+  }, []);
 
   const handlePingAmbulance = () => {
     setIsPinging(true);
@@ -96,13 +104,18 @@ export default function DehapaHome() {
             { title: "Diagnostics", desc: "Digital Lab Scans", icon: <TestTube2 className="w-10 h-10" />, href: "/labs", color: "from-purple-600 to-pink-400", glow: "shadow-pink-500/50" },
             { title: "Medicines", desc: "Drone Pharmacy", icon: <Pill className="w-10 h-10" />, href: "/pharmacies", color: "from-orange-600 to-yellow-400", glow: "shadow-yellow-500/50" },
             { title: "Ambulance", desc: "Hyper-Dispatch", icon: <Ambulance className="w-10 h-10" />, href: "#ambulance-ping", color: "from-red-600 to-rose-400", glow: "shadow-rose-500/50" },
-            { title: "Telemedicine", desc: "Offline Nodes", icon: <Video className="w-10 h-10" />, href: "#", color: "from-slate-700 to-slate-500", glow: "shadow-slate-500/20", disabled: true },
+            { title: "Health QR", desc: "Patient Identity", icon: <QrCode className="w-10 h-10" />, href: "#qr-code", action: () => setIsQrModalOpen(true), color: "from-fuchsia-600 to-purple-400", glow: "shadow-purple-500/50" },
           ].map((item, i) => (
             <Link 
               key={i} 
               href={item.href}
-              className={`group relative flex flex-col items-start justify-between min-h-[220px] sm:min-h-[260px] bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-8 overflow-hidden transition-all duration-700 ${item.disabled ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:-translate-y-4 hover:bg-slate-800/80 hover:border-slate-500 hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.1)]'}`}
-              onClick={(e) => item.disabled && e.preventDefault()}
+              className={`group relative flex flex-col items-start justify-between min-h-[220px] sm:min-h-[260px] bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-8 overflow-hidden transition-all duration-700 hover:-translate-y-4 hover:bg-slate-800/80 hover:border-slate-500 hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.1)]`}
+              onClick={(e) => {
+                if (item.action) {
+                  e.preventDefault();
+                  item.action();
+                }
+              }}
             >
               {/* Dynamic Glow Behind Card on Hover */}
               <div className={`absolute -inset-0.5 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-700 rounded-[2.5rem] pointer-events-none`}></div>
@@ -111,14 +124,14 @@ export default function DehapaHome() {
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 group-hover:opacity-30 transition-opacity duration-700 mix-blend-overlay"></div>
 
               {/* Icon Orb */}
-              <div className={`relative z-10 w-20 h-20 rounded-[1.5rem] bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-6 shadow-2xl transition-all duration-700 ${item.disabled ? '' : 'group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]'}`}>
+              <div className={`relative z-10 w-20 h-20 rounded-[1.5rem] bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-6 shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]`}>
                 {item.icon}
                 {/* Floating inner glow */}
                 <div className="absolute inset-0 bg-white/20 rounded-[1.5rem] blur-md mix-blend-overlay"></div>
               </div>
               
               <div className="relative z-10 w-full">
-                <h3 className={`font-black text-xl sm:text-2xl mb-2 tracking-tight text-white transition-all duration-500 ${!item.disabled && 'group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400'}`}>
+                <h3 className={`font-black text-xl sm:text-2xl mb-2 tracking-tight text-white transition-all duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400`}>
                   {item.title}
                 </h3>
                 <p className="text-sm sm:text-base text-slate-400 font-medium group-hover:text-slate-300 transition-colors">
@@ -488,7 +501,7 @@ export default function DehapaHome() {
           </div>
           
           <div className="pt-10 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-bold tracking-widest uppercase text-slate-600">
-            <p>© 2026 Shyam Dash Creation. Sequence Complete.</p>
+            <p>© 2026 Sovereign Health Network. Sequence Complete.</p>
             <div className="flex gap-8">
               <Link href="#" className="hover:text-teal-400 transition-colors">Privacy Auth</Link>
               <Link href="#" className="hover:text-teal-400 transition-colors">Terms of Op</Link>
@@ -497,6 +510,48 @@ export default function DehapaHome() {
           </div>
         </div>
       </footer>
+
+      {/* QR Code Modal */}
+      {isQrModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-[#020810]/80 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="relative bg-slate-900 border border-slate-700/50 shadow-2xl rounded-3xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300">
+            {/* Glowing top border */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-fuchsia-500 to-purple-500" />
+            
+            <button 
+              onClick={() => setIsQrModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors bg-slate-800 hover:bg-slate-700 rounded-full p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="p-8 text-center flex flex-col items-center">
+              <div className="w-12 h-12 bg-fuchsia-500/20 rounded-full flex items-center justify-center mb-4">
+                <QrCode className="w-6 h-6 text-fuchsia-400" />
+              </div>
+              
+              <h2 className="text-xl font-black text-white mb-1">My Health QR</h2>
+              <p className="text-xs text-slate-400 mb-8 max-w-[250px]">
+                Show this code at any Sovereign Network hospital or clinic for instant identity verification.
+              </p>
+              
+              <div className="bg-white p-4 rounded-2xl shadow-[0_0_40px_rgba(192,38,211,0.2)] mb-6 ring-4 ring-slate-800">
+                <QRCode 
+                  value={`dehapa-auth://scan?uid=${encodeURIComponent(userUid || "guest")}`}
+                  size={200}
+                  level="H"
+                />
+              </div>
+              
+              <div className="inline-block bg-slate-800 px-4 py-2 rounded-full border border-slate-700">
+                <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold font-mono">
+                  ID: {userUid ? userUid.split('@')[0] : "UNVERIFIED"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </main>
   );
