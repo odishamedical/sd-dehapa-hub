@@ -149,7 +149,8 @@ export default function DoctorsDirectory({
           phone: d.phone,
           district: d.district || "Unknown",
           state: d.state || "Odisha",
-          country: d.country || "India"
+          country: d.country || "India",
+          customSlug: d.customSlug
         }));
 
         setDoctors(mappedData);
