@@ -91,6 +91,27 @@ export default function DehapaHome() {
               <div className="absolute inset-0 h-full w-full bg-white/20 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
             </Link>
           </div>
+
+          {/* Special Ticket: QR Scanner */}
+          <div className="mt-8 flex justify-center relative z-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+            <Link 
+              href="#scan"
+              className="group relative flex items-center gap-4 bg-gradient-to-r from-teal-900/80 to-emerald-900/80 backdrop-blur-xl border border-teal-500/40 rounded-full py-3 px-6 sm:px-8 shadow-[0_10px_30px_rgba(20,184,166,0.3)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.5)] transition-all duration-500 hover:-translate-y-1 hover:border-teal-400/60 overflow-hidden"
+            >
+              {/* Shimmer effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+              
+              <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center shadow-[0_0_15px_rgba(20,184,166,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">
+                <QrCode className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-white font-black uppercase tracking-wider text-sm sm:text-base group-hover:text-teal-300 transition-colors">Scan &amp; Connect</h3>
+                <p className="text-teal-200/70 text-xs sm:text-sm font-medium">Scan QR to connect with your doctor</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-teal-400 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+            </Link>
+          </div>
+
         </div>
       </section>
 

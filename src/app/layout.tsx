@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Next-Gen Telemedicine & Patient Portal",
 };
 
+import GlobalScannerController from "@/components/GlobalScannerController";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,6 +24,7 @@ export default function RootLayout({
         <TenantProvider>
           <GlobalHeader activeProject="Telemedicine" />
           {children}
+          <GlobalScannerController />
         </TenantProvider>
       </body>
     </html>
