@@ -4,73 +4,106 @@ import { db } from '@/lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
 export default function InjectDataPage() {
-  const [status, setStatus] = useState("Injecting data...");
+  const [status, setStatus] = useState("Injecting data... Do not close window.");
 
   useEffect(() => {
-    const doctorData = {
-      id: "dr-deepak-parida",
-      category: "Doctor",
-      subCategory: "Neurosurgery",
-      name: "Dr. Deepak Kumar Parida",
-      experience: "8+ Years",
-      qualification: "M.Ch. (Neurosurgery), M.S.",
-      about: "Eight years experience in operative neurosurgery with a log of more than 3000 surgical procedures. Honest, hard working, punctual and sincere.",
-      specialties: ["Neurotrauma", "Neurooncology", "Spine Surgery", "Cerebrovascular Surgery", "Skull Base Surgery", "Epilepsy Surgery", "Pediatric Neurosurgery", "Peripheral Nerve Surgery"],
-      clinicName: "Care Hospital",
-      address: "Flat No.:102, 1st Floor, Block-C, Lifestyle Green Apartment, KIITS Square, Patia, Bhubaneswar, Odisha, Pin-751024",
-      phone: "09654340633, 9439828381",
-      email: "deepak7077@gmail.com",
-      city: "Bhubaneswar",
-      district: "Khordha",
-      state: "Odisha",
-      image: "/images/drdeepak.jpg",
-      verified: false,
-      rating: 4.9,
-      reviews: 124,
-      customSlug: "dr-deepak-kumar-parida-neurosurgery",
-      ownerEmail: "deepak7077@gmail.com",
-      
-      // Advanced Fields
-      experiences: [
-        { role: "Consultant, Neurosurgery", hospital: "Care Hospital, Bhubaneswar", duration: "Oct 2018 - Present" },
-        { role: "Consultant, Neurosurgery", hospital: "Sunshine Hospital, Bhubaneswar", duration: "May 2018 - Present" },
-        { role: "Consultant, Neurosurgery", hospital: "Ashwini Hospital, Cuttack", duration: "Mar 2017 - Apr 2018" },
-        { role: "Consultant, Neurosurgery", hospital: "Max Superspeciality Hospital, New Delhi", duration: "Feb 2016 - Feb 2017" }
-      ],
-      qualificationsList: [
-        { degree: "Neurointerventional Surgery", institution: "Max Superspeciality Hospital, New Delhi", year: "2016-2017" },
-        { degree: "Post Doctoral Fellow, Cerebrovascular Surgery", institution: "Sree Chitra Tirunal Institute", year: "2015" },
-        { degree: "M.Ch (Neurosurgery)", institution: "S.C.B Medical College & Hospitals, Cuttack", year: "2010-2013" },
-        { degree: "M.S (Gen. Surgery)", institution: "V.S.S. Medical College & Hospitals, Burla", year: "2006-2009" },
-        { degree: "MBBS", institution: "V.S.S. Medical College & Hospitals, Burla", year: "1999-2004" }
-      ],
-      locations: [
-        { name: "Care Hospital", address: "Bhubaneswar", city: "Bhubaneswar", days: "Mon-Sat", timings: "Soon to update", fee: "Contact Admin" },
-        { name: "Sunshine Hospital", address: "Bhubaneswar", city: "Bhubaneswar", days: "Mon-Sat", timings: "Soon to update", fee: "Contact Admin" }
-      ],
-      
-      // Personal & Registration Fields
-      dob: "22/04/1979",
-      maritalStatus: "Married",
-      registrationNumber: "OMC-15243 | DMC-68932",
-      showPersonalDetails: true,
-      
-      // Missing info that shouldn't crash the array mapping
-      research: [],
-      awards: []
-    };
-
-    async function doInsert() {
+    async function injectData() {
       try {
-        await setDoc(doc(db, 'directory', doctorData.id), doctorData);
-        setStatus("SUCCESS! Dr. Deepak is injected.");
-        window.location.href = "/doctors/" + doctorData.id;
-      } catch (err: any) {
-        setStatus("Error: " + err.message);
+        const doctorData = {
+          id: "dr-jayanta-panda",
+          category: "Doctor",
+          subCategory: "General Medicine",
+          name: "Dr. Jayanta Kumar Panda",
+          experience: "27 Years Experience",
+          degree: "MBBS, MD (General Medicine)",
+          registration: "11524 (OCMR)",
+          email: "drjayantpanda@gmail.com",
+          about: "Professor of General Medicine. Dedicated to comprehensive patient care and advancing medical education.",
+          clinicName: "Dr. Jayanta Clinic",
+          address: "Ashrusudh, Bijupatnaik Square, Tulsipur, Cuttack-753008",
+          city: "Cuttack",
+          district: "Cuttack",
+          state: "Odisha",
+          country: "India",
+          verified: false,
+          customSlug: "dr-jayanta-kumar-panda-general-medicine",
+          
+          research: [
+            {
+              title: "Consensus recommendations on exploring effective solutions for the rising cost of diabetes",
+              year: "2017",
+              journal: "Diabetes Metab Syndr",
+              link: "https://pubmed.ncbi.nlm.nih.gov/28325543/"
+            },
+            {
+              title: "Trial design and baseline data for LIRA-PRIME: A randomized trial investigating the efficacy of liraglutide in controlling glycaemia in type 2 diabetes",
+              year: "2019",
+              journal: "Diabetes Obes Metab",
+              link: "https://pubmed.ncbi.nlm.nih.gov/30828917/"
+            },
+            {
+              title: "Consensus on Initiation and Intensification of Premix Insulin in Type 2 Diabetes Management",
+              year: "2017",
+              journal: "J Assoc Physicians India",
+              link: "https://pubmed.ncbi.nlm.nih.gov/28527166/"
+            }
+          ],
+          
+          awards: [
+            {
+              title: "Fellow of Indian and American Colleges of Physicians, IMAAMS, RSSDI and Diabetes India",
+              year: "Various"
+            },
+            {
+              title: "Young Achievers Award - NCCD",
+              year: "2018",
+              organization: "Kolkata"
+            },
+            {
+              title: "Awarded DMDSC honour",
+              year: "2014",
+              organization: "Dr. Mohan's Diabetes Specialty Centre, Chennai"
+            },
+            {
+              title: "Editor, Orissa Physician Journal",
+              year: "2017-2019"
+            },
+            {
+              title: "Editor, Orissa Medical Journal",
+              year: "2010-2016"
+            }
+          ]
+        };
+
+        // Write to Firestore
+        await setDoc(doc(db, "directory", doctorData.id), doctorData);
+        
+        setStatus("SUCCESS! Dr. Jayanta is injected.");
+        
+        // Redirect to new premium profile
+        window.location.href = `/doctors/${doctorData.customSlug}`;
+
+      } catch (error: any) {
+        console.error("Injection failed:", error);
+        setStatus("Error: " + error.message);
       }
     }
-    doInsert();
+
+    injectData();
   }, []);
 
-  return <div className="p-20 text-center font-bold text-2xl">{status}</div>;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md w-full">
+        <h1 className="text-2xl font-black text-slate-800 mb-4">Database Injection</h1>
+        <div className={`p-4 rounded-xl font-bold ${
+          status.includes("SUCCESS") ? "bg-emerald-50 text-emerald-600" :
+          status.includes("Error") ? "bg-red-50 text-red-600" :
+          "bg-blue-50 text-blue-600 animate-pulse"
+        }`}>
+          {status}
+        </div>
+      </div>
+    </div>
+  );
 }
