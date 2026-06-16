@@ -10,19 +10,21 @@ import ImageUpload from '@/components/ImageUpload';
 
 function LabHomeWidget({ labName }: { labName: string }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-      <div className="flex justify-between items-end mb-3">
-        <div>
-          <h3 className="text-lg font-bold text-slate-900">Lab Profile Strength</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Complete your facility profile to rank higher in the public directory.</p>
-        </div>
-        <div className="text-right">
-          <span className="text-2xl font-bold text-teal-600">10%</span>
-        </div>
-      </div>
+    <div className="bg-white/80 backdrop-blur-xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] p-6 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-teal-400/10 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
       
-      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-5">
-        <div className="bg-gradient-to-r from-teal-400 to-teal-600 h-full rounded-full w-[10%]"></div>
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h3 className="text-xl font-bold text-slate-800 tracking-tight">Lab Profile Strength</h3>
+          <p className="text-xs text-slate-500 mt-1 max-w-sm">Complete your facility profile to rank higher in the public directory and unlock premium features.</p>
+        </div>
+        <div className="relative w-14 h-14 flex items-center justify-center shrink-0 bg-white rounded-full shadow-sm">
+          <svg className="w-full h-full transform -rotate-90 absolute top-0 left-0" viewBox="0 0 36 36">
+            <path className="text-slate-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" />
+            <path className="text-teal-500" strokeDasharray="10, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+          </svg>
+          <span className="text-xs font-black text-slate-700">10%</span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -48,23 +50,24 @@ function LabHomeWidget({ labName }: { labName: string }) {
             </li>
           </ul>
         </div>
-        
         {/* Mock Chart */}
-        <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-          <h4 className="text-xs font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        <div className="bg-white/50 backdrop-blur-md rounded-[20px] p-5 border border-white shadow-sm hover:shadow-md transition-shadow">
+          <h4 className="text-[11px] font-bold text-slate-800 mb-4 flex items-center gap-2 uppercase tracking-widest">
+            <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            </div>
             Monthly Tests Processed
           </h4>
-          <div className="h-24 flex items-end justify-between gap-2 px-2">
+          <div className="h-28 flex items-end justify-between gap-2 px-1">
             {[30, 45, 25, 60, 80, 50, 95].map((val, i) => (
-              <div key={i} className="w-full bg-teal-100 hover:bg-teal-400 transition-all rounded-t-sm relative group cursor-pointer" style={{ height: `${val}%` }}>
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div key={i} className="w-full bg-gradient-to-t from-blue-100 to-blue-50 hover:from-blue-400 hover:to-blue-300 transition-all rounded-t-md relative group cursor-pointer border border-blue-200/50 hover:border-blue-400" style={{ height: `${val}%` }}>
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold py-1 px-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
                   {val}0
                 </div>
               </div>
             ))}
           </div>
-          <div className="flex justify-between mt-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest px-2">
+          <div className="flex justify-between mt-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest px-1">
             <span>Mon</span>
             <span>Sun</span>
           </div>
