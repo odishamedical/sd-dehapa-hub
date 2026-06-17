@@ -284,7 +284,7 @@ export default function GlobalTelemedicineFAB() {
                   <h3 className="text-xl font-bold text-white mb-6 text-center">Select Department</h3>
                   
                   <div className="grid grid-cols-2 gap-3">
-                    {["Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Dermatology", "Psychiatry", "Neurosurgery"].map(dept => (
+                    {["Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Gynecology", "General Surgery"].map(dept => (
                       <button 
                         key={dept}
                         onClick={() => handleDepartmentSelect(dept)}
@@ -293,6 +293,37 @@ export default function GlobalTelemedicineFAB() {
                         {dept}
                       </button>
                     ))}
+                  </div>
+                  
+                  <div className="mt-6">
+                    <label className="block text-[10px] font-bold text-cyan-500 mb-2 uppercase tracking-widest text-center">Or Select Other Department</label>
+                    <div className="relative">
+                      <select 
+                        onChange={(e) => {
+                          if (e.target.value) handleDepartmentSelect(e.target.value);
+                        }}
+                        className="w-full appearance-none bg-[#0a1229] border border-slate-800 text-white rounded-xl py-4 px-5 pr-10 font-bold focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 cursor-pointer hover:border-cyan-500/50 transition-colors"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Select from all departments...</option>
+                        <option value="Dermatology">Dermatology</option>
+                        <option value="Psychiatry">Psychiatry</option>
+                        <option value="Neurosurgery">Neurosurgery</option>
+                        <option value="Oncology">Oncology</option>
+                        <option value="Urology">Urology</option>
+                        <option value="Gastroenterology">Gastroenterology</option>
+                        <option value="Endocrinology">Endocrinology</option>
+                        <option value="Ophthalmology">Ophthalmology</option>
+                        <option value="ENT">ENT</option>
+                        <option value="Pulmonology">Pulmonology</option>
+                        <option value="Rheumatology">Rheumatology</option>
+                        <option value="Nephrology">Nephrology</option>
+                        <option value="Plastic Surgery">Plastic Surgery</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-cyan-500">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -380,8 +411,10 @@ export default function GlobalTelemedicineFAB() {
             </div>
             
             {/* Footer */}
-            <div className="p-4 bg-white border-t border-slate-100 text-center text-xs text-slate-400 font-semibold uppercase tracking-widest">
-              Secure Telemedicine Link
+            <div className="bg-gradient-to-r from-teal-500 to-cyan-500 p-4 text-center mt-auto shadow-[0_-5px_20px_rgba(6,182,212,0.3)] border-t border-cyan-400">
+              <p className="text-xs font-black text-white uppercase tracking-widest drop-shadow-md">
+                Secure Video Consultation
+              </p>
             </div>
           </div>
         </div>
