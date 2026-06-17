@@ -41,9 +41,12 @@ In our next session, we can immediately pick up from here to tackle the followin
 
 ### D. Video Consult Architecture (Ping & Scheduled)
 - **Goal:** Build the backend infrastructure and WebRTC integration for both instant "Ping" video consults (Emergency response) and Scheduled Telemedicine appointments.
-- **Where We Are Currently:** We have built the stunning UI for the "Video Consult" module (the massive radar ping effect button on the home page) and wired it up to dispatch a global `open-telemedicine-fab` event. 
+- **Where We Are Currently:** 
+  - We have built the stunning UI for the "Video Consult" module (the massive radar ping effect button on the home page) and wired it up to dispatch a global `open-telemedicine-fab` event. 
+  - The **Agora Web SDK** (`agora-rtc-sdk-ng` and `agora-react-uikit`) is already installed in `package.json`.
+  - We have a baseline `<VideoRoom />` component ready in `src/components/VideoRoom.tsx`, and a dedicated route at `src/app/consultation/[id]/page.tsx` that uses the appointment ID as the secure Agora Channel Name.
+  - The **Agora App Key** is securely stored in `.env.local` as `NEXT_PUBLIC_AGORA_APP_ID`.
 - **What Is Pending:** 
-  1. We need to build the actual floating action button (FAB) modal that listens for this event.
-  2. Implement the logic to distinguish between an immediate "Emergency Ping" (connecting to any available on-call doctor in a pool) versus a "Scheduled Consult" (connecting to a specific booked doctor at a specific time).
-  3. Integrate the WebRTC or third-party video SDK (like Twilio, ZegoCloud, or Agora) to handle the live video and audio streaming.
-  4. Ensure all sessions are securely logged in the patient's Medical Vault.
+  1. We need to build the actual floating action button (FAB) modal component that listens for this event and pops up over the screen.
+  2. Implement the logic to distinguish between an immediate "Emergency Ping" versus a "Scheduled Consult".
+  3. Ensure all sessions and medical notes are securely logged in the patient's Medical Vault.
