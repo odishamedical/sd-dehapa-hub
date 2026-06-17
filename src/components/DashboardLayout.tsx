@@ -132,11 +132,17 @@ export default function DashboardLayout({
             return (
               <React.Fragment key={sectionName}>
                 {!isDefault && (
-                  <div className={`mt-3 ${index === 0 ? 'mt-0' : ''}`}>
+                  <div className="mb-2">
                     <button 
-                      onClick={() => toggleSection(sectionName)}
+                      onClick={() => {
+                        toggleSection(sectionName);
+                        // Also trigger navigation to the first tab instantly when opening the group
+                        if (!isExpanded) {
+                           onTabChange(sectionTabs[0].id);
+                        }
+                      }}
                       className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all border ${
-                        isExpanded 
+                        isExpanded
                           ? 'bg-cyan-950/40 border-cyan-500/30 text-cyan-50 shadow-[0_0_15px_rgba(6,182,212,0.15)]' 
                           : 'bg-transparent border-transparent text-slate-400 hover:bg-[#040815] hover:border-cyan-500/20 hover:text-slate-200'
                       }`}
@@ -180,64 +186,70 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0 flex flex-col bg-gradient-to-br from-[#cbd5e1] via-[#e2e8f0] to-[#94a3b8] rounded-[24px] md:rounded-[32px] shadow-2xl shadow-cyan-900/5 border border-slate-300 relative">
-        <header className="bg-white/60 backdrop-blur-2xl border-b border-white/50 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 shadow-sm rounded-t-[24px] md:rounded-t-[32px]">
+      <main className="flex-1 min-w-0 flex flex-col bg-[#aab6c4] bg-gradient-to-br from-[#c6d1dd] via-[#d4dde8] to-[#92a1b5] rounded-[24px] md:rounded-[32px] shadow-[inset_0_1px_3px_rgba(255,255,255,0.8),0_20px_50px_rgba(0,0,0,0.2)] border border-[#e2e8f0] relative overflow-hidden relative">
+        
+        {/* Subtle Brushed Metal Texture Overlay */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
+        <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
+
+        <header className="bg-transparent border-b border-white/30 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
           <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
-            {headerTitle || activeTab.replace("-", " ")}
+            {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
           </h2>
           <div className="flex items-center gap-4">
             <Link href="/portal" className="text-sm font-bold text-tenant-accent hover:underline bg-teal-50 px-3 py-1.5 rounded-lg">Exit to Portal</Link>
           </div>
         </header>
 
-        {/* Horizontal Top Menu for Active Section (Centered Stepper) */}
+        {/* Horizontal Top Stepper (Mockup Style) */}
         {activeSection && activeTab !== "home" && (
-          <div className="bg-white/60 backdrop-blur-2xl border-b border-white/50 sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8 shadow-sm">
-            <div className="flex overflow-x-auto scrollbar-hide gap-3 py-3 items-center justify-center">
+          <div className="bg-transparent sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8 pt-4 pb-2">
+            <div className="flex justify-start md:justify-start">
               {(() => {
                 const tabs = sectionedTabs[activeSection] || [];
                 const currentIndex = tabs.findIndex(t => t.id === activeTab);
                 if (currentIndex === -1) return null;
                 
                 const totalTabs = tabs.length;
-                
-                // Show ONLY the active tab to keep it ultra-clean and centered
                 const visibleTabs = [tabs[currentIndex]];
                 const hasPrev = currentIndex > 0;
                 const hasNext = currentIndex < totalTabs - 1;
                 
                 return (
-                  <>
+                  <div className="flex items-center bg-white/20 backdrop-blur-[30px] p-1.5 rounded-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_10px_20px_rgba(0,0,0,0.05)] border border-white/60">
                     {hasPrev && (
                       <button
                         onClick={() => onTabChange(tabs[currentIndex - 1].id)}
-                        className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all bg-white/90 text-slate-700 border border-slate-300 hover:bg-slate-100 hover:text-slate-900 shadow-sm mr-2"
+                        className="px-6 py-2.5 bg-transparent hover:bg-white/40 rounded-xl text-slate-600 font-bold text-sm transition-all border-r border-slate-400/20 mr-1"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                         Previous
                       </button>
                     )}
                     
-                    {visibleTabs.map(tab => (
+                    {visibleTabs.map((tab, idx) => (
                       <div
                         key={tab.id}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all bg-[#0a1229] text-cyan-400 shadow-[0_4px_15px_rgba(6,182,212,0.2)] border border-cyan-500/30 cursor-default"
+                        className="px-6 sm:px-10 py-2.5 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)] rounded-xl text-slate-900 font-black text-sm relative z-10 flex items-center gap-2"
                       >
-                        {tab.icon}
-                        {tab.label}
+                        {currentIndex + 1}. {tab.label}
                       </div>
                     ))}
                     
                     {hasNext && (
                       <button
                         onClick={() => onTabChange(tabs[currentIndex + 1].id)}
-                        className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all bg-slate-900 text-white border border-slate-800 hover:bg-slate-800 shadow-md ml-2"
+                        className="px-8 py-2.5 bg-[#0f172a] text-white rounded-xl shadow-[0_4px_15px_rgba(15,23,42,0.3)] font-bold text-sm ml-2 transition-all hover:bg-[#1e293b]"
                       >
                         Next
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                       </button>
                     )}
-                  </>
+
+                    {!hasNext && (
+                      <button className="px-6 py-2.5 bg-transparent hover:bg-white/40 rounded-xl text-slate-600 font-bold text-sm transition-all border-l border-slate-400/20 ml-1">
+                        Review
+                      </button>
+                    )}
+                  </div>
                 );
               })()}
             </div>

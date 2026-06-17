@@ -35,12 +35,11 @@ export default function PatientLeadsWidget({ providerId }: { providerId: string 
   }, [providerId]);
 
   return (
-    <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-8 shadow-lg shadow-teal-900/5 border border-white/40 relative overflow-hidden animate-in fade-in slide-in-from-bottom-4">
+    <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 relative overflow-hidden animate-in fade-in slide-in-from-bottom-4">
       {/* Metallic/Glassmorphic Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-transparent pointer-events-none"></div>
-      <div className="absolute inset-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] pointer-events-none rounded-2xl"></div>
-
-      <div className="relative z-10 flex justify-between items-center border-b border-slate-200/60 pb-5 mb-6">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent pointer-events-none"></div>
+      
+      <div className="relative z-10 flex justify-between items-center border-b border-white/30 pb-5 mb-6">
         <div>
           <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -59,12 +58,12 @@ export default function PatientLeadsWidget({ providerId }: { providerId: string 
             <div className="animate-spin w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full"></div>
           </div>
         ) : leads.length === 0 ? (
-          <div className="text-center py-16 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-             <div className="w-16 h-16 bg-white shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+          <div className="text-center py-16 bg-white/20 backdrop-blur-md rounded-[24px] shadow-[inset_0_2px_4px_rgba(255,255,255,0.5),0_10px_30px_rgba(0,0,0,0.05)] border border-white/50">
+             <div className="w-16 h-16 bg-white/50 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
              </div>
              <p className="text-slate-900 font-bold text-lg mb-1">No Inquiries Yet</p>
-             <p className="text-sm text-slate-500 max-w-sm mx-auto">When a patient clicks to reveal your phone number, they will appear here.</p>
+             <p className="text-sm text-slate-600 max-w-sm mx-auto">When a patient clicks to reveal your phone number, they will appear here.</p>
           </div>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-slate-200/60 shadow-sm bg-white/50 backdrop-blur-sm">
