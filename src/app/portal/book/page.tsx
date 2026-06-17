@@ -58,12 +58,12 @@ function BookAppointmentForm() {
   if (!userEmail) return null;
 
   return (
-    <div className="min-h-screen bg-black/80 backdrop-blur-md text-[#f8fafc] font-sans flex flex-col items-center justify-center p-4 selection:bg-[#06b6d4]/30">
+    <div className="min-h-screen bg-black/80 backdrop-blur-md text-[#f8fafc] font-sans flex flex-col items-center justify-start md:justify-center p-4 py-8 overflow-y-auto selection:bg-[#06b6d4]/30">
       
-      <main className="w-full max-w-lg mx-auto flex flex-col justify-center animate-in zoom-in-95 duration-300">
+      <main className="w-full max-w-lg mx-auto flex flex-col justify-center animate-in zoom-in-95 duration-300 my-auto">
         
         {!bookingSuccess ? (
-          <div className="bg-[#040815] border border-cyan-500/30 rounded-3xl shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col overflow-hidden">
+          <div className="bg-[#040815] border border-cyan-500/30 rounded-3xl shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col overflow-hidden max-h-[90vh]">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#0a1229] to-[#040815] border-b border-cyan-500/20 p-6 flex justify-between items-center text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-50"></div>
