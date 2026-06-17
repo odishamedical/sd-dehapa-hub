@@ -3,10 +3,37 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getFirestore, collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
+  authDomain: "sd-auth-center.firebaseapp.com",
+  projectId: "sd-auth-center",
+  storageBucket: "sd-auth-center.firebasestorage.app",
+  messagingSenderId: "393346058191",
+  appId: "1:393346058191:web:a5e96e1c481a72f86db4ba"
+};
 export default function GlobalTelemedicineFAB() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<"urgency" | "triage_general" | "triage_specialist" | "availability" | "fallback">("urgency");
+  const [step, setStep] = useState<"urgency" | "triage_general" | "triage_specialist" | "availability" | "fallback" | "auth_gate" | "connecting">("urgency");
+  
+  const [foundDoctorId, setFoundDoctorId] = useState<string | null>(null);
+  const [userUid, setUserUid] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserUid(localStorage.getItem("sd_current_user_uid"));
+      setUserName(localStorage.getItem("sd_current_user_name"));
+    }
+  }, []);
   
   // State for selections
   const [selectedUrgency, setSelectedUrgency] = useState<"urgent" | "schedule" | null>(null);
@@ -52,18 +79,89 @@ export default function GlobalTelemedicineFAB() {
     checkAvailability(doctorType!, dept);
   };
 
-  const checkAvailability = (type: string, dept: string) => {
-    // Mocking an availability check
-    setTimeout(() => {
-      // Fake logic: Neurosurgery is never available
-      if (dept === "Neurosurgery") {
-        setStep("fallback");
+  const checkAvailability = async (type: string, dept: string) => {
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const db = getFirestore(app, "default");
+    
+    try {
+      // Find ANY online doctor for testing (In prod, filter by department)
+      const q = query(collection(db, "doctor_status"), where("isOnline", "==", true));
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
+        // Doctor found!
+        const docId = snapshot.docs[0].id;
+        setFoundDoctorId(docId);
+        
+        // If user is already logged in, skip auth gate
+        if (userUid) {
+          initiateConnection(docId, userUid, userName || "Patient");
+        } else {
+          setStep("auth_gate");
+        }
       } else {
-        // Proceed to payment / connection mock
-        alert(`Connecting you to an available ${dept || type} doctor... (Auth & Payment coming in Phase 3)`);
-        setIsOpen(false);
+        setStep("fallback");
       }
-    }, 1500);
+    } catch (err) {
+      console.error("Availability check failed", err);
+      setStep("fallback");
+    }
+  };
+
+  const handleFastTrackAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phone || !whatsapp) return alert("Phone and WhatsApp are mandatory for urgent calls.");
+    
+    setIsAuthenticating(true);
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      // Save locally to match our ecosystem
+      localStorage.setItem("sd_current_user_uid", user.uid);
+      localStorage.setItem("sd_current_user_email", user.email || "");
+      localStorage.setItem("sd_current_user_name", user.displayName || "Patient");
+      localStorage.setItem("sd_current_user_role", "patient");
+      
+      setUserUid(user.uid);
+      setUserName(user.displayName);
+      
+      if (foundDoctorId) {
+        initiateConnection(foundDoctorId, user.uid, user.displayName || "Patient");
+      }
+    } catch (err) {
+      console.error("Auth failed", err);
+      alert("Authentication failed. Please try again.");
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
+  const initiateConnection = async (doctorId: string, patientId: string, pName: string) => {
+    setStep("connecting");
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const db = getFirestore(app, "default");
+    
+    try {
+      await addDoc(collection(db, "consultation_requests"), {
+        doctorId: doctorId,
+        patientId: patientId,
+        patientName: pName,
+        type: doctorType,
+        department: department,
+        status: "pending",
+        createdAt: new Date().toISOString()
+      });
+      // In a real flow, we'd listen to this doc for status="accepted"
+    } catch (err) {
+      console.error("Failed to create request", err);
+      alert("Failed to connect. Please try again.");
+      setStep("urgency");
+    }
   };
 
   return (
@@ -198,27 +296,70 @@ export default function GlobalTelemedicineFAB() {
                 </div>
               )}
 
-              {step === "fallback" && (
-                <div className="h-full flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-bottom-4">
-                  <div className="w-20 h-20 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mb-6">
-                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              {step === "auth_gate" && (
+                <div className="h-full flex flex-col items-center justify-center animate-in fade-in slide-in-from-bottom-4">
+                  <div className="w-16 h-16 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">No Doctors Available</h3>
-                  <p className="text-slate-500 mb-8 max-w-xs mx-auto">There are currently no {department} specialists online for an urgent call.</p>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Doctor Available!</h3>
+                  <p className="text-slate-500 mb-6 text-center text-sm">To connect immediately, please verify your identity. <br/><span className="text-xs text-red-500 font-bold">(Profile builder skipped for urgent calls)</span></p>
                   
-                  <div className="space-y-3 w-full">
-                    {department === "Neurosurgery" && (
-                      <button onClick={() => handleDepartmentSelect("Neurology")} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 rounded-xl transition-colors shadow-sm">
-                        Consult Neurology Instead
+                  <form onSubmit={handleFastTrackAuth} className="w-full space-y-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number *</label>
+                      <input 
+                        type="tel" 
+                        required 
+                        value={phone}
+                        onChange={e => setPhone(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all outline-none"
+                        placeholder="+1 234 567 8900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">WhatsApp Number *</label>
+                      <input 
+                        type="tel" 
+                        required 
+                        value={whatsapp}
+                        onChange={e => setWhatsapp(e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all outline-none"
+                        placeholder="+1 234 567 8900"
+                      />
+                    </div>
+                    
+                    <div className="pt-4">
+                      <button 
+                        type="submit" 
+                        disabled={isAuthenticating}
+                        className="w-full flex items-center justify-center gap-3 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-all"
+                      >
+                        {isAuthenticating ? (
+                          <div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <>
+                            <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"></path></svg>
+                            Continue with Google
+                          </>
+                        )}
                       </button>
-                    )}
-                    <button onClick={() => handleUrgencySelect("schedule")} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors shadow-sm">
-                      Schedule an Appointment
-                    </button>
-                    <button onClick={handleClose} className="w-full bg-transparent hover:bg-slate-200 text-slate-600 font-bold py-4 rounded-xl transition-colors">
-                      Cancel
-                    </button>
+                    </div>
+                  </form>
+                  
+                  <button onClick={() => setStep("urgency")} className="mt-4 text-sm font-bold text-slate-400 hover:text-slate-600">
+                    Cancel
+                  </button>
+                </div>
+              )}
+
+              {step === "connecting" && (
+                <div className="h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500">
+                  <div className="w-24 h-24 bg-teal-50 rounded-full flex items-center justify-center mb-6 relative">
+                    <div className="absolute inset-0 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                    <svg className="w-10 h-10 text-teal-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                   </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Connecting...</h3>
+                  <p className="text-slate-500 text-center max-w-xs">Please wait while the doctor accepts your call. Do not close this window.</p>
                 </div>
               )}
 

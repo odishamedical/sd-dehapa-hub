@@ -1,175 +1,184 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { doc, getDoc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from "react";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getFirestore, doc, setDoc, onSnapshot, query, collection, where, updateDoc } from "firebase/firestore";
 
-interface DoctorStatusToggleProps {
-  doctorId: string;
-}
+const firebaseConfig = {
+  apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
+  authDomain: "sd-auth-center.firebaseapp.com",
+  projectId: "sd-auth-center",
+  storageBucket: "sd-auth-center.firebasestorage.app",
+  messagingSenderId: "393346058191",
+  appId: "1:393346058191:web:a5e96e1c481a72f86db4ba"
+};
 
-export default function DoctorStatusToggle({ doctorId }: DoctorStatusToggleProps) {
+export default function DoctorStatusToggle() {
   const [isOnline, setIsOnline] = useState(false);
-  const [hasOptedIn, setHasOptedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [userUid, setUserUid] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [incomingPing, setIncomingPing] = useState<any | null>(null);
 
-  // Listen to doctor's online status in Firestore
   useEffect(() => {
-    if (!doctorId) return;
+    // Check if user is doctor
+    if (typeof window !== "undefined") {
+      const role = localStorage.getItem("sd_current_user_role");
+      const uid = localStorage.getItem("sd_current_user_uid");
+      
+      setUserRole(role);
+      setUserUid(uid);
+    }
+  }, []);
 
-    const docRef = doc(db, 'doctor_status', doctorId);
-    
-    // Check if doc exists first, if not create it
-    getDoc(docRef).then((docSnap) => {
-      if (!docSnap.exists()) {
-        setDoc(docRef, {
-          isOnline: false,
-          hasOptedIn: false,
-          lastUpdated: new Date()
-        });
-      }
-    }).catch((err) => {
-      console.error("Error fetching doctor status:", err);
-      // Suppress error so it doesn't crash the app
-    });
+  useEffect(() => {
+    if (userRole !== "doctor" || !userUid) return;
 
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const db = getFirestore(app, "default");
+
+    // 1. Listen to own status in Firestore to sync across tabs
+    const statusRef = doc(db, "doctor_status", userUid);
+    const unsubStatus = onSnapshot(statusRef, (docSnap) => {
       if (docSnap.exists()) {
-        const data = docSnap.data();
-        setIsOnline(data.isOnline || false);
-        setHasOptedIn(data.hasOptedIn || false);
+        setIsOnline(docSnap.data().isOnline === true);
       }
-      setIsLoading(false);
-    }, (error) => {
-      console.error("Error listening to doctor status:", error);
-      setIsLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [doctorId]);
+    // 2. Listen for incoming pings (consultation requests)
+    const pingsRef = collection(db, "consultation_requests");
+    const q = query(pingsRef, where("doctorId", "==", userUid), where("status", "==", "pending"));
+    
+    const unsubPings = onSnapshot(q, (snap) => {
+      if (!snap.empty) {
+        // Just take the first pending request
+        const req = snap.docs[0];
+        setIncomingPing({ id: req.id, ...req.data() });
+        
+        // Play sound
+        try {
+          const audio = new Audio('/ping-sound.mp3'); // We'll assume this exists or fails gracefully
+          audio.play();
+        } catch(e) {}
+      } else {
+        setIncomingPing(null);
+      }
+    });
+
+    return () => {
+      unsubStatus();
+      unsubPings();
+    };
+  }, [userRole, userUid]);
 
   const toggleStatus = async () => {
-    setIsLoading(true);
-    const newStatus = !isOnline;
+    if (!userUid) return;
     
-    // Update local state immediately for snappy UI
-    setIsOnline(newStatus);
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const db = getFirestore(app, "default");
+    const statusRef = doc(db, "doctor_status", userUid);
+    
+    const newStatus = !isOnline;
+    setIsOnline(newStatus); // Optimistic update
     
     try {
-      const docRef = doc(db, 'doctor_status', doctorId);
-      await updateDoc(docRef, {
+      await setDoc(statusRef, { 
         isOnline: newStatus,
-        lastUpdated: new Date()
-      });
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
     } catch (err) {
       console.error("Failed to update status", err);
-      setIsOnline(!newStatus); // revert on failure
-    } finally {
-      setIsLoading(false);
+      setIsOnline(!newStatus); // Revert
     }
   };
 
-  const handleOptIn = async () => {
-    setIsLoading(true);
+  const acceptPing = async () => {
+    if (!incomingPing || !userUid) return;
+    
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const db = getFirestore(app, "default");
+    const reqRef = doc(db, "consultation_requests", incomingPing.id);
+    
     try {
-      const docRef = doc(db, 'doctor_status', doctorId);
-      await updateDoc(docRef, {
-        hasOptedIn: true,
-        lastUpdated: new Date()
+      await updateDoc(reqRef, {
+        status: "accepted",
+        acceptedAt: new Date().toISOString()
       });
+      alert(`Connecting to patient: ${incomingPing.patientName}...`);
+      setIncomingPing(null);
+      // In Phase 4, we will route to the secure video room
     } catch (err) {
-      console.error("Failed to opt in", err);
-    } finally {
-      setIsLoading(false);
+      console.error("Failed to accept ping", err);
     }
   };
 
-  if (!hasOptedIn && !isLoading) {
-    return (
-      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden h-full flex flex-col justify-between">
-        <div className="flex flex-col h-full z-10 relative">
-          <div>
-            <h2 className="text-xl font-black uppercase tracking-wide text-slate-800">
-              On-Demand Telemedicine
-            </h2>
-            <p className="text-sm font-medium text-slate-500 mt-1 max-w-lg">
-              Earn extra income by receiving instant "Uber-style" consultation requests from patients. You decide when you are online and available. Do you want to opt-in to this service?
-            </p>
-          </div>
-          <div className="mt-auto pt-4">
-            <button
-              onClick={handleOptIn}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm shadow-indigo-600/30"
-            >
-              Yes, Opt-In Now
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const declinePing = async () => {
+    if (!incomingPing || !userUid) return;
+    
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const db = getFirestore(app, "default");
+    const reqRef = doc(db, "consultation_requests", incomingPing.id);
+    
+    try {
+      await updateDoc(reqRef, {
+        status: "declined",
+        declinedAt: new Date().toISOString()
+      });
+      setIncomingPing(null);
+    } catch (err) {
+      console.error("Failed to decline ping", err);
+    }
+  };
+
+  if (userRole !== "doctor") return null;
 
   return (
-    <div className={`relative overflow-hidden rounded-[24px] p-6 shadow-sm border transition-colors duration-500 h-full flex flex-col justify-between ${isOnline ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200' : 'bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200'}`}>
-      <div className="flex flex-col h-full z-10 relative">
-        <div className="flex items-center gap-4 mb-4">
-          {/* Status Indicator Dot */}
-          <div className="relative flex h-5 w-5">
-            {isOnline && (
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            )}
-            <span className={`relative inline-flex rounded-full h-5 w-5 ${isOnline ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
-          </div>
-          
-          <div>
-            <h2 className={`text-xl font-black uppercase tracking-wide ${isOnline ? 'text-emerald-800' : 'text-slate-600'}`}>
-              {isOnline ? "You are Online" : "You are Offline"}
-            </h2>
-            <p className={`text-sm font-medium ${isOnline ? 'text-emerald-600' : 'text-slate-500'}`}>
-              {isOnline 
-                ? "Ready to receive instant Uber-style consultation pings." 
-                : "You are hidden from the instant consultation network."}
-            </p>
-          </div>
-        </div>
-        {/* Big Toggle Button */}
-        <div className="mt-auto pt-4 flex justify-between items-center border-t border-slate-200/50">
-          <span className="text-sm font-bold text-slate-700">Telemedicine Status</span>
-          <button
-            onClick={toggleStatus}
-            disabled={isLoading}
-            className={`relative inline-flex h-10 w-20 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-opacity-75 shadow-inner ${
-              isOnline ? 'bg-emerald-500' : 'bg-slate-300'
-            } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            <span className="sr-only">Toggle Online Status</span>
-            <span
-              aria-hidden="true"
-              className={`pointer-events-none absolute left-1 flex h-8 w-8 transform items-center justify-center rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                isOnline ? 'translate-x-10' : 'translate-x-0'
-              }`}
-            >
-              {isOnline ? (
-                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              )}
-            </span>
-          </button>
-        </div>
+    <>
+      <div className="hidden sm:flex items-center gap-3 mr-4 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700 shadow-inner">
+        <span className="text-xs font-bold text-slate-300">Status:</span>
+        <button 
+          onClick={toggleStatus}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isOnline ? 'bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.5)]' : 'bg-slate-600'}`}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isOnline ? 'translate-x-6' : 'translate-x-1'}`} />
+        </button>
+        <span className={`text-[10px] font-black uppercase tracking-widest ${isOnline ? 'text-teal-400' : 'text-slate-500'}`}>
+          {isOnline ? 'Online' : 'Offline'}
+        </span>
       </div>
 
-      {/* Decorative Background Waves when Online */}
-      {isOnline && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-          <div className="absolute -left-10 top-0 h-64 w-64 rounded-full bg-emerald-400 mix-blend-multiply blur-3xl animate-[pulse_4s_ease-in-out_infinite]" />
-          <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-teal-400 mix-blend-multiply blur-3xl animate-[pulse_5s_ease-in-out_infinite_alternate]" />
+      {/* Global Incoming Ping Modal */}
+      {incomingPing && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border-4 border-red-500 animate-in zoom-in duration-300 relative overflow-hidden text-center">
+            <div className="absolute inset-0 bg-red-500/10 animate-pulse pointer-events-none"></div>
+            
+            <div className="w-20 h-20 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner relative z-10">
+              <svg className="w-10 h-10 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </div>
+            
+            <h2 className="text-2xl font-black text-slate-900 mb-2 relative z-10">Incoming Urgent Call!</h2>
+            <p className="text-slate-500 font-medium mb-8 relative z-10">
+              Patient: <span className="font-bold text-slate-900">{incomingPing.patientName || "Unknown"}</span><br/>
+              Urgency: <span className="text-red-500 font-bold uppercase">High</span>
+            </p>
+            
+            <div className="flex gap-4 relative z-10">
+              <button 
+                onClick={declinePing}
+                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-4 rounded-2xl transition-colors"
+              >
+                Decline
+              </button>
+              <button 
+                onClick={acceptPing}
+                className="flex-[2] bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-2xl shadow-[0_10px_20px_rgba(239,68,68,0.3)] hover:shadow-[0_10px_25px_rgba(239,68,68,0.5)] hover:-translate-y-1 transition-all"
+              >
+                ACCEPT & CONNECT
+              </button>
+            </div>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
