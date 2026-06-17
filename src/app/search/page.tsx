@@ -21,11 +21,13 @@ function SearchResultsContent() {
   const searchParams = useSearchParams();
   
   const initialType = searchParams.get('type') || 'all';
+  const initialQuery = searchParams.get('q') || '';
   const initialCountry = searchParams.get('country') || 'India';
   const initialState = searchParams.get('state') || '';
   const initialDistrict = searchParams.get('district') || '';
 
   const [type, setType] = useState(initialType);
+  const [query, setQuery] = useState(initialQuery);
   const [country, setCountry] = useState(initialCountry);
   const [state, setState] = useState(initialState);
   const [district, setDistrict] = useState(initialDistrict);
@@ -33,14 +35,31 @@ function SearchResultsContent() {
   // Update state when URL params change
   useEffect(() => {
     setType(searchParams.get('type') || 'all');
+    setQuery(searchParams.get('q') || '');
     setCountry(searchParams.get('country') || 'India');
     setState(searchParams.get('state') || '');
     setDistrict(searchParams.get('district') || '');
   }, [searchParams]);
 
+  const handleCountryChange = (val: string) => {
+    setCountry(val);
+    if (val !== 'India') {
+      setState('');
+      setDistrict('');
+    }
+  };
+
+  const handleStateChange = (val: string) => {
+    setState(val);
+    if (val !== 'Odisha') {
+      setDistrict('');
+    }
+  };
+
   const handleUpdateFilter = () => {
     const params = new URLSearchParams();
     if (type !== 'all') params.append('type', type);
+    if (query) params.append('q', query);
     if (country) params.append('country', country);
     if (state) params.append('state', state);
     if (district) params.append('district', district);
@@ -50,6 +69,7 @@ function SearchResultsContent() {
 
   const filteredResults = MOCK_RESULTS.filter(item => {
     if (type !== "all" && item.type !== type) return false;
+    if (query && !item.name.toLowerCase().includes(query.toLowerCase()) && !item.subtitle.toLowerCase().includes(query.toLowerCase())) return false;
     if (district && !item.location.toLowerCase().includes(district.toLowerCase())) return false;
     // For now, mock state/country as matching if district matches or is empty
     return true;
@@ -77,6 +97,11 @@ function SearchResultsContent() {
               <MapPin className="w-4 h-4 text-teal-300" />
               <span>{district ? district + ', ' : ''}{state ? state + ', ' : ''}{country}</span>
             </div>
+            {query && (
+              <div className="bg-teal-800/50 border border-teal-700/50 px-4 py-2 rounded-full text-sm font-medium">
+                "{query}"
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -106,30 +131,64 @@ function SearchResultsContent() {
                 </div>
 
                 <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Search</label>
+                  <input 
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Name, specialty..."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+                  />
+                </div>
+
+                <div className="space-y-3">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Location</label>
                   <div className="space-y-2">
-                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
+                    <select value={country} onChange={(e) => handleCountryChange(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
                       <option value="India">India</option>
                       <option value="USA">USA</option>
                       <option value="UK">United Kingdom</option>
                       <option value="UAE">UAE</option>
                       <option value="Australia">Australia</option>
                       <option value="Canada">Canada</option>
+                      <option value="Other">Other</option>
                     </select>
-                    <select value={state} onChange={(e) => setState(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
-                      <option value="">Any State</option>
-                      <option value="Odisha">Odisha</option>
-                      <option value="Maharashtra">Maharashtra</option>
-                      <option value="Karnataka">Karnataka</option>
-                      <option value="Delhi">Delhi</option>
-                    </select>
-                    <select value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
-                      <option value="">Any District</option>
-                      <option value="Bhubaneswar">Bhubaneswar</option>
-                      <option value="Cuttack">Cuttack</option>
-                      <option value="Puri">Puri</option>
-                      <option value="Rourkela">Rourkela</option>
-                    </select>
+                    
+                    {country === 'India' ? (
+                      <select value={state} onChange={(e) => handleStateChange(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
+                        <option value="">Any State</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Delhi">Delhi</option>
+                      </select>
+                    ) : (
+                      <input 
+                        type="text"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        placeholder="Enter State"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+                      />
+                    )}
+
+                    {country === 'India' && state === 'Odisha' ? (
+                      <select value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
+                        <option value="">Any District</option>
+                        <option value="Bhubaneswar">Bhubaneswar</option>
+                        <option value="Cuttack">Cuttack</option>
+                        <option value="Puri">Puri</option>
+                        <option value="Rourkela">Rourkela</option>
+                      </select>
+                    ) : (
+                      <input 
+                        type="text"
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                        placeholder="Enter District/City"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+                      />
+                    )}
                   </div>
                 </div>
 
