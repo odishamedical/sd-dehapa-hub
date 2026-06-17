@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import QRCode from "react-qr-code";
-import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings, X } from "lucide-react";
+import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings, X, HeartPulse } from "lucide-react";
 import dynamic from 'next/dynamic';
+import Footer from '@/components/Footer';
 
 const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
   ssr: false
 });
-import PatientConsultWidget from '@/components/PatientConsultWidget';
 
 export default function DehapaHome() {
   const [activeTab, setActiveTab] = useState<"patients" | "doctors" | "hospitals">("patients");
@@ -100,34 +100,37 @@ export default function DehapaHome() {
             </Link>
           </div>
 
-          {/* Special Ticket: QR Scanner */}
-          <div className="mt-8 flex justify-center relative z-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-            <button 
-              onClick={() => setIsScannerOpen(true)}
-              className="group relative flex items-center gap-4 bg-gradient-to-r from-teal-900/80 to-emerald-900/80 backdrop-blur-xl border border-teal-500/40 rounded-full py-3 px-6 sm:px-8 shadow-[0_10px_30px_rgba(20,184,166,0.3)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.5)] transition-all duration-500 hover:-translate-y-1 hover:border-teal-400/60 overflow-hidden"
-            >
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+          {/* Giant Living Consult Button */}
+          <div className="mt-16 flex flex-col items-center justify-center relative z-20 animate-in zoom-in duration-1000 delay-300">
+            <div className="relative group">
+              {/* Massive radar ping effect */}
+              <div className="absolute -inset-10 bg-red-500/20 rounded-full blur-2xl animate-pulse group-hover:bg-red-500/30 transition-all duration-500"></div>
+              <div className="absolute -inset-4 border-2 border-red-500/50 rounded-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+              <div className="absolute -inset-8 border border-red-500/30 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
               
-              <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center shadow-[0_0_15px_rgba(20,184,166,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500">
-                <QrCode className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-left">
-                <h3 className="text-white font-black uppercase tracking-wider text-sm sm:text-base group-hover:text-teal-300 transition-colors">Scan &amp; Connect</h3>
-                <p className="text-teal-200/70 text-xs sm:text-sm font-medium">Scan QR to connect with your doctor</p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-teal-400 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
-            </button>
-          </div>
-
-          {/* Instant Consult Widget (Uber-style) */}
-          <div className="mt-12 max-w-4xl mx-auto relative z-20">
-            <h2 className="text-2xl font-black uppercase text-teal-400 mb-6 flex items-center justify-center gap-2">
-              <span className="w-2 h-2 bg-teal-400 rounded-full animate-ping"></span>
-              On-Demand Telemedicine
-              <span className="w-2 h-2 bg-teal-400 rounded-full animate-ping"></span>
-            </h2>
-            <PatientConsultWidget patientId={userUid} />
+              <button 
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.dispatchEvent(new Event('open-telemedicine-fab'));
+                  }
+                }}
+                className="relative flex items-center gap-4 bg-gradient-to-br from-[#040815] to-[#1a0b12] border border-red-500/50 rounded-full py-5 px-10 shadow-[0_0_40px_rgba(239,68,68,0.3)] hover:shadow-[0_0_60px_rgba(239,68,68,0.5)] transition-all duration-500 hover:scale-105 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+                
+                <div className="relative flex items-center justify-center w-14 h-14 bg-red-500 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.8)] group-hover:scale-110 transition-transform">
+                  <Video className="w-7 h-7 text-white" />
+                </div>
+                
+                <div className="text-left">
+                  <h3 className="text-white font-black uppercase tracking-widest text-xl sm:text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">Video Consult</h3>
+                  <p className="text-red-400 font-bold tracking-widest text-xs sm:text-sm uppercase flex items-center gap-2 mt-1">
+                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    Live Doctors Online
+                  </p>
+                </div>
+              </button>
+            </div>
           </div>
 
         </div>

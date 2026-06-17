@@ -32,6 +32,10 @@ export default function GlobalTelemedicineFAB() {
     if (typeof window !== "undefined") {
       setUserUid(localStorage.getItem("sd_current_user_uid"));
       setUserName(localStorage.getItem("sd_current_user_name"));
+      
+      const listener = () => handleOpen();
+      window.addEventListener('open-telemedicine-fab', listener);
+      return () => window.removeEventListener('open-telemedicine-fab', listener);
     }
   }, []);
   
@@ -177,106 +181,114 @@ export default function GlobalTelemedicineFAB() {
 
       {/* Slide-over Modal Backdrop */}
       {isOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex justify-end" onClick={handleClose}>
-          {/* Modal Panel */}
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center p-4" onClick={handleClose}>
+          {/* Modal Panel - Centered HUD Style */}
           <div 
-            className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300"
+            className="w-full max-w-lg bg-[#040815] border border-cyan-500/30 rounded-3xl shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-6 flex justify-between items-center text-white">
+            <div className="bg-gradient-to-r from-[#0a1229] to-[#040815] border-b border-cyan-500/20 p-6 flex justify-between items-center text-white relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-50"></div>
               <div>
-                <h2 className="text-xl font-bold">Video Consult</h2>
-                <p className="text-sm text-slate-300 mt-1">Connect with a doctor instantly</p>
+                <h2 className="text-2xl font-black tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-200">Video Consult</h2>
+                <p className="text-xs text-cyan-500/70 uppercase tracking-widest mt-1">Encrypted Telemedicine Link</p>
               </div>
-              <button onClick={handleClose} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
+              <button onClick={handleClose} className="p-2 bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-full transition-colors border border-white/5">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
+            <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gradient-to-b from-[#040815] to-[#0a1229]">
               
               {step === "urgency" && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                  <h3 className="text-lg font-bold text-slate-900 mb-6">What type of consultation do you need?</h3>
+                <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
+                  <h3 className="text-xl font-bold text-white text-center mb-8">What type of consultation do you need?</h3>
                   
                   <button 
                     onClick={() => handleUrgencySelect("urgent")}
-                    className="w-full bg-white border-2 border-red-100 hover:border-red-500 rounded-2xl p-6 text-left flex items-start gap-4 transition-all shadow-sm group"
+                    className="w-full bg-[#0a1229]/80 backdrop-blur-md border border-red-500/30 hover:border-red-400 hover:bg-red-950/20 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-[0_0_20px_rgba(239,68,68,0.05)] hover:shadow-[0_0_30px_rgba(239,68,68,0.2)] group relative overflow-hidden"
                   >
-                    <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-red-500 group-hover:scale-110 transition-transform">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 translate-x-[-100%] group-hover:animate-[shimmer_2s_infinite]"></div>
+                    <div className="w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center text-red-400 group-hover:scale-110 group-hover:bg-red-500/20 transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] relative">
+                      <div className="absolute inset-0 rounded-full animate-ping bg-red-500/20 opacity-75"></div>
+                      <svg className="w-8 h-8 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     </div>
                     <div>
-                      <h4 className="font-bold text-slate-900 text-lg">Urgent Call (Now)</h4>
-                      <p className="text-sm text-slate-500 mt-1">Connect with an available doctor immediately via video call.</p>
+                      <h4 className="font-black uppercase tracking-wider text-white text-xl group-hover:text-red-400 transition-colors">Urgent Video Call</h4>
+                      <p className="text-sm text-slate-400 mt-2 font-medium">Connect with an available doctor immediately.</p>
                     </div>
                   </button>
 
                   <button 
                     onClick={() => handleUrgencySelect("schedule")}
-                    className="w-full bg-white border-2 border-blue-100 hover:border-blue-500 rounded-2xl p-6 text-left flex items-start gap-4 transition-all shadow-sm group"
+                    className="w-full bg-[#0a1229]/80 backdrop-blur-md border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-950/20 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-[0_0_20px_rgba(6,182,212,0.05)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)] group relative overflow-hidden"
                   >
-                    <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] group-hover:animate-[shimmer_2s_infinite]"></div>
+                    <div className="w-16 h-16 bg-cyan-500/10 border border-cyan-500/30 rounded-full flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
                     <div>
-                      <h4 className="font-bold text-slate-900 text-lg">Schedule Call</h4>
-                      <p className="text-sm text-slate-500 mt-1">Book an appointment for a specific date and time.</p>
+                      <h4 className="font-black uppercase tracking-wider text-white text-xl group-hover:text-cyan-400 transition-colors">Schedule Appointment</h4>
+                      <p className="text-sm text-slate-400 mt-2 font-medium">Book a specific date and time for a consult.</p>
                     </div>
                   </button>
                 </div>
               )}
 
               {step === "triage_general" && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-                  <button onClick={() => setStep("urgency")} className="text-sm font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 mb-4">
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-300">
+                  <button onClick={() => setStep("urgency")} className="text-xs uppercase tracking-widest font-bold text-cyan-500 hover:text-cyan-300 flex items-center gap-2 mb-6 transition-colors">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                     Back
                   </button>
-                  <h3 className="text-lg font-bold text-slate-900 mb-6">Select Provider Type</h3>
+                  <h3 className="text-xl font-bold text-white mb-6 text-center">Select Provider Type</h3>
                   
-                  <button onClick={() => handleDoctorTypeSelect("general")} className="w-full bg-white border-2 border-slate-200 hover:border-teal-500 rounded-2xl p-4 text-left flex items-center justify-between transition-all group">
+                  <button onClick={() => handleDoctorTypeSelect("general")} className="w-full bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 text-left flex items-center justify-between transition-all group hover:bg-[#0f172a]">
                     <div>
-                      <h4 className="font-bold text-slate-900">General Physician</h4>
-                      <p className="text-xs text-slate-500 mt-1">Fever, cold, general health issues</p>
+                      <h4 className="font-bold text-white text-lg">General Physician</h4>
+                      <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider">Fever, cold, general health</p>
                     </div>
-                    <svg className="w-5 h-5 text-slate-300 group-hover:text-teal-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    <div className="w-10 h-10 rounded-full bg-slate-800/50 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                      <svg className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
                   </button>
 
-                  <button onClick={() => handleDoctorTypeSelect("specialist")} className="w-full bg-white border-2 border-slate-200 hover:border-teal-500 rounded-2xl p-4 text-left flex items-center justify-between transition-all group">
+                  <button onClick={() => handleDoctorTypeSelect("specialist")} className="w-full bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 text-left flex items-center justify-between transition-all group hover:bg-[#0f172a]">
                     <div>
-                      <h4 className="font-bold text-slate-900">Specialist</h4>
+                      <h4 className="font-bold text-white text-lg">Specialist</h4>
                       <p className="text-xs text-slate-500 mt-1">Cardiology, Orthopedics, etc.</p>
                     </div>
                     <svg className="w-5 h-5 text-slate-300 group-hover:text-teal-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                   </button>
 
-                  <button onClick={() => handleDoctorTypeSelect("super")} className="w-full bg-white border-2 border-slate-200 hover:border-teal-500 rounded-2xl p-4 text-left flex items-center justify-between transition-all group">
+                  <button onClick={() => handleDoctorTypeSelect("super")} className="w-full bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 text-left flex items-center justify-between transition-all group hover:bg-[#0f172a]">
                     <div>
-                      <h4 className="font-bold text-slate-900">Super Specialist</h4>
-                      <p className="text-xs text-slate-500 mt-1">Neurosurgery, Oncology, etc.</p>
+                      <h4 className="font-bold text-white text-lg">Super Specialist</h4>
+                      <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider">Neurosurgery, Oncology, etc.</p>
                     </div>
-                    <svg className="w-5 h-5 text-slate-300 group-hover:text-teal-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    <div className="w-10 h-10 rounded-full bg-slate-800/50 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                      <svg className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
                   </button>
                 </div>
               )}
 
               {step === "triage_specialist" && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-right">
-                  <button onClick={() => setStep("triage_general")} className="text-sm font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 mb-4">
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-300">
+                  <button onClick={() => setStep("triage_general")} className="text-xs uppercase tracking-widest font-bold text-cyan-500 hover:text-cyan-300 flex items-center gap-2 mb-6 transition-colors">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                     Back
                   </button>
-                  <h3 className="text-lg font-bold text-slate-900 mb-6">Select Department</h3>
+                  <h3 className="text-xl font-bold text-white mb-6 text-center">Select Department</h3>
                   
                   <div className="grid grid-cols-2 gap-3">
                     {["Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Dermatology", "Psychiatry", "Neurosurgery"].map(dept => (
                       <button 
                         key={dept}
                         onClick={() => handleDepartmentSelect(dept)}
-                        className="bg-white border-2 border-slate-200 hover:border-teal-500 hover:bg-teal-50 rounded-xl p-3 text-center transition-colors text-sm font-bold text-slate-700"
+                        className="bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-900/20 rounded-xl p-4 text-center transition-all text-sm font-bold text-slate-300 hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)]"
                       >
                         {dept}
                       </button>
@@ -287,44 +299,45 @@ export default function GlobalTelemedicineFAB() {
 
               {step === "availability" && (
                 <div className="h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500">
-                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6 relative">
-                    <div className="absolute inset-0 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                    <svg className="w-8 h-8 text-teal-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                  <div className="w-24 h-24 bg-cyan-950/30 rounded-full flex items-center justify-center mb-8 relative border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
+                    <div className="absolute inset-0 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="absolute inset-2 border-4 border-teal-500/50 border-b-transparent rounded-full animate-[spin_2s_reverse_infinite]"></div>
+                    <svg className="w-10 h-10 text-cyan-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">Checking Availability...</h3>
-                  <p className="text-slate-500 text-center">Pinging online {department || "General"} doctors in our network.</p>
+                  <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-2">Checking Availability...</h3>
+                  <p className="text-cyan-500/80 text-center font-medium">Pinging online <span className="text-cyan-400 font-bold">{department || "General"}</span> doctors in our network.</p>
                 </div>
               )}
 
               {step === "auth_gate" && (
-                <div className="h-full flex flex-col items-center justify-center animate-in fade-in slide-in-from-bottom-4">
-                  <div className="w-16 h-16 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <div className="h-full flex flex-col items-center justify-center animate-in fade-in slide-in-from-bottom-8 duration-500">
+                  <div className="w-20 h-20 bg-emerald-950/40 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Doctor Available!</h3>
-                  <p className="text-slate-500 mb-6 text-center text-sm">To connect immediately, please verify your identity. <br/><span className="text-xs text-red-500 font-bold">(Profile builder skipped for urgent calls)</span></p>
+                  <h3 className="text-3xl font-black text-white mb-2 tracking-wide">Doctor Available!</h3>
+                  <p className="text-slate-400 mb-8 text-center text-sm font-medium">To connect immediately, please verify your identity. <br/><span className="text-xs text-red-400 font-bold tracking-widest uppercase mt-2 block bg-red-950/30 py-1 px-3 rounded-full border border-red-500/20 inline-block">(Profile builder skipped for urgent calls)</span></p>
                   
-                  <form onSubmit={handleFastTrackAuth} className="w-full space-y-4">
+                  <form onSubmit={handleFastTrackAuth} className="w-full space-y-5 bg-[#0a1229] p-6 rounded-2xl border border-slate-800">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number *</label>
+                      <label className="block text-xs font-bold text-cyan-500 mb-2 uppercase tracking-wider">Phone Number *</label>
                       <input 
                         type="tel" 
                         required 
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all outline-none"
-                        placeholder="+1 234 567 8900"
+                        className="w-full px-4 py-3 bg-[#040815] rounded-xl border border-slate-700 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none placeholder:text-slate-600"
+                        placeholder="+91 98765 43210"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">WhatsApp Number *</label>
+                      <label className="block text-xs font-bold text-cyan-500 mb-2 uppercase tracking-wider">WhatsApp Number *</label>
                       <input 
                         type="tel" 
                         required 
                         value={whatsapp}
                         onChange={e => setWhatsapp(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all outline-none"
-                        placeholder="+1 234 567 8900"
+                        className="w-full px-4 py-3 bg-[#040815] rounded-xl border border-slate-700 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none placeholder:text-slate-600"
+                        placeholder="+91 98765 43210"
                       />
                     </div>
                     
@@ -332,13 +345,13 @@ export default function GlobalTelemedicineFAB() {
                       <button 
                         type="submit" 
                         disabled={isAuthenticating}
-                        className="w-full flex items-center justify-center gap-3 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-all"
+                        className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-200 text-slate-900 font-bold py-4 px-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all"
                       >
                         {isAuthenticating ? (
-                          <div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+                          <div className="w-6 h-6 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
                         ) : (
                           <>
-                            <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"></path></svg>
+                            <svg className="w-6 h-6 text-red-500" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"></path></svg>
                             Continue with Google
                           </>
                         )}
@@ -346,20 +359,21 @@ export default function GlobalTelemedicineFAB() {
                     </div>
                   </form>
                   
-                  <button onClick={() => setStep("urgency")} className="mt-4 text-sm font-bold text-slate-400 hover:text-slate-600">
-                    Cancel
+                  <button onClick={() => setStep("urgency")} className="mt-6 text-xs uppercase tracking-widest font-bold text-slate-500 hover:text-white transition-colors">
+                    Cancel & Go Back
                   </button>
                 </div>
               )}
 
               {step === "connecting" && (
                 <div className="h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500">
-                  <div className="w-24 h-24 bg-teal-50 rounded-full flex items-center justify-center mb-6 relative">
+                  <div className="w-32 h-32 bg-teal-950/30 rounded-full flex items-center justify-center mb-8 relative border border-teal-500/20 shadow-[0_0_40px_rgba(20,184,166,0.15)]">
                     <div className="absolute inset-0 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                    <svg className="w-10 h-10 text-teal-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <div className="absolute inset-[-10px] border border-teal-500/30 rounded-full animate-ping opacity-50"></div>
+                    <svg className="w-14 h-14 text-teal-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Connecting...</h3>
-                  <p className="text-slate-500 text-center max-w-xs">Please wait while the doctor accepts your call. Do not close this window.</p>
+                  <h3 className="text-3xl font-black text-white mb-3 tracking-wide">Connecting...</h3>
+                  <p className="text-teal-500/80 text-center font-medium max-w-xs">Establishing encrypted video link. Do not close this window.</p>
                 </div>
               )}
 
