@@ -38,3 +38,12 @@ In our next session, we can immediately pick up from here to tackle the followin
 ### C. Patient Medical Vault
 - **Goal:** Build out the secure patient side (`/portal/patient`).
 - **Action:** Create the UI for patients to securely view their prescriptions, lab results, and booked appointments, following the Medplum/FHIR compliance standards outlined in the platform rules.
+
+### D. Video Consult Architecture (Ping & Scheduled)
+- **Goal:** Build the backend infrastructure and WebRTC integration for both instant "Ping" video consults (Emergency response) and Scheduled Telemedicine appointments.
+- **Where We Are Currently:** We have built the stunning UI for the "Video Consult" module (the massive radar ping effect button on the home page) and wired it up to dispatch a global `open-telemedicine-fab` event. 
+- **What Is Pending:** 
+  1. We need to build the actual floating action button (FAB) modal that listens for this event.
+  2. Implement the logic to distinguish between an immediate "Emergency Ping" (connecting to any available on-call doctor in a pool) versus a "Scheduled Consult" (connecting to a specific booked doctor at a specific time).
+  3. Integrate the WebRTC or third-party video SDK (like Twilio, ZegoCloud, or Agora) to handle the live video and audio streaming.
+  4. Ensure all sessions are securely logged in the patient's Medical Vault.
