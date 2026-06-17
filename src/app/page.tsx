@@ -21,7 +21,8 @@ export default function DehapaHome() {
 
   useEffect(() => {
     // Only access localStorage on client
-    setUserUid(localStorage.getItem("sd_current_user_email") || "guest");
+    const uid = localStorage.getItem("sd_current_user_uid") || localStorage.getItem("sd_current_user_email");
+    setUserUid(uid); // Will be null if not logged in
   }, []);
 
   const handlePingAmbulance = () => {
@@ -126,7 +127,7 @@ export default function DehapaHome() {
               On-Demand Telemedicine
               <span className="w-2 h-2 bg-teal-400 rounded-full animate-ping"></span>
             </h2>
-            <PatientConsultWidget patientId={userUid || 'guest-patient'} />
+            <PatientConsultWidget patientId={userUid} />
           </div>
 
         </div>

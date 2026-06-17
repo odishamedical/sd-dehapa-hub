@@ -5,7 +5,7 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 
-export default function PatientConsultWidget({ patientId }: { patientId: string }) {
+export default function PatientConsultWidget({ patientId }: { patientId: string | null }) {
   const [step, setStep] = useState<'tier' | 'payment' | 'pinging'>('tier');
   const [selectedTier, setSelectedTier] = useState<string>('');
   const [requestId, setRequestId] = useState<string | null>(null);
@@ -33,6 +33,10 @@ export default function PatientConsultWidget({ patientId }: { patientId: string 
   }, [requestId, step, router]);
 
   const handleSelectTier = (tier: any) => {
+    if (!patientId) {
+      window.location.href = '/login?redirect_uri=' + encodeURIComponent(window.location.href);
+      return;
+    }
     setSelectedTier(tier.id);
     setPrice(tier.price);
     setStep('payment');

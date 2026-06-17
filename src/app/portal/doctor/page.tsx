@@ -13,10 +13,11 @@ import InviteWidget from '@/components/InviteWidget';
 import DoctorStatusToggle from '@/components/DoctorStatusToggle';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
 
-function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void }) {
+function DoctorHomeWidget({ onNavigate, doctorUid }: { onNavigate: (tabId: string) => void, doctorUid: string }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-8 relative overflow-hidden">
+      <div className="md:col-span-1 flex flex-col gap-6">
+        <div className="flex-1 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-6 sm:p-8 relative overflow-hidden">
         {/* Metallic Shine Overlay */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
         <div className="flex justify-between items-end mb-4">
@@ -34,7 +35,7 @@ function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void 
           <div className="bg-gradient-to-r from-teal-400 to-teal-600 h-full rounded-full w-[35%]"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <div>
             <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
               <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
@@ -86,10 +87,15 @@ function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void 
             </ul>
           </div>
         </div>
+        </div>
       </div>
       
       <div className="md:col-span-1">
         <InviteWidget userUid={null} />
+      </div>
+
+      <div className="md:col-span-1">
+        <DoctorStatusToggle doctorId={doctorUid} />
       </div>
     </div>
   );
@@ -98,6 +104,20 @@ function DoctorHomeWidget({ onNavigate }: { onNavigate: (tabId: string) => void 
 export default function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
+  const [doctorUid, setDoctorUid] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const uid = localStorage.getItem("sd_current_user_uid") || localStorage.getItem("sd_current_user_email");
+      if (!uid) {
+        window.location.href = "/login";
+      } else {
+        setDoctorUid(uid);
+      }
+    }
+  }, []);
+
+  if (!doctorUid) return null;
 
   // Autosave State for Qualifications Tab
   const [qualificationsData, setQualificationsData] = useState([
@@ -320,7 +340,7 @@ export default function DoctorDashboard() {
 
   return (
     <>
-      <IncomingPingWidget doctorId="doc-1" doctorSpecialty="Super-specialist Doctor" />
+      <IncomingPingWidget doctorId={doctorUid} doctorSpecialty="Super-specialist Doctor" />
       <DashboardLayout 
         roleName="Doctor Dashboard" 
         tabs={doctorTabs} 
@@ -331,10 +351,9 @@ export default function DoctorDashboard() {
           subtitle: "MBBS, MD - Cardiology",
           image: "https://i.pravatar.cc/150?u=a042581f4e29026704d" // Mock image
         }}
-        homeWidget={<DoctorHomeWidget onNavigate={setActiveTab} />}
+        homeWidget={<DoctorHomeWidget onNavigate={setActiveTab} doctorUid={doctorUid} />}
       >
         <div className="max-w-4xl mx-auto">
-          <DoctorStatusToggle doctorId="doc-1" />
         {/* Header Alert */}
         <div className="bg-sky-50 border border-sky-200 text-sky-800 rounded-xl p-4 mb-8 flex items-start gap-3">
           <svg className="w-5 h-5 text-sky-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -347,7 +366,7 @@ export default function DoctorDashboard() {
         {/* Tab: Patient Inquiries */}
         {activeTab === "inquiries" && (
           <div className="max-w-5xl mx-auto">
-             <PatientLeadsWidget providerId="doc-1" />
+             <PatientLeadsWidget providerId={doctorUid} />
           </div>
         )}
 
