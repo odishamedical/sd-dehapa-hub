@@ -10,6 +10,8 @@ import ImageUpload from '@/components/ImageUpload';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
 
+import DashboardHomeGrid from '@/components/DashboardHomeGrid';
+
 interface AuthorizedCompany {
   id: string;
   name: string;
@@ -27,73 +29,6 @@ interface Distributor {
   cfName: string;
   superstockistName: string;
   stockistName: string;
-}
-
-function PharmaHomeWidget({ businessName, businessType }: { businessName: string, businessType: string }) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-6 relative overflow-hidden">
-        {/* Metallic Shine Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
-        <div className="flex justify-between items-end mb-3 relative z-10">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">{businessType} Profile</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Complete your facility profile to rank higher in the public directory.</p>
-          </div>
-          <div className="text-right">
-            <span className="text-2xl font-bold text-teal-600">15%</span>
-          </div>
-        </div>
-        
-        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-5 relative z-10">
-          <div className="bg-gradient-to-r from-teal-400 to-teal-600 h-full rounded-full w-[15%]"></div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
-          <div>
-            <h4 className="text-xs font-bold text-slate-900 mb-3 flex items-center gap-2">
-              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-              Pending Actions
-            </h4>
-            <ul className="space-y-3">
-              <li className="flex items-center justify-between bg-amber-50 border border-amber-100 p-3 rounded-xl">
-                <span className="text-sm text-amber-900 font-medium flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-400"></div>
-                  Add valid License Number
-                </span>
-                <button className="text-xs font-bold text-amber-700 bg-amber-100/50 px-3 py-1.5 rounded-lg hover:bg-amber-200 transition-colors">Complete</button>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Mock Chart */}
-          <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-            <h4 className="text-xs font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-              Weekly Prescriptions Filled
-            </h4>
-            <div className="h-24 flex items-end justify-between gap-2 px-2">
-              {[40, 20, 65, 80, 55, 90, 70].map((val, i) => (
-                <div key={i} className="w-full bg-teal-100 hover:bg-teal-400 transition-all rounded-t-sm relative group cursor-pointer" style={{ height: `${val}%` }}>
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    {val}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest px-2">
-              <span>Mon</span>
-              <span>Sun</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="md:col-span-1">
-        <InviteWidget userUid={null} />
-      </div>
-    </div>
-  );
 }
 
 export default function PharmacyDashboard() {
@@ -310,7 +245,41 @@ export default function PharmacyDashboard() {
         name: businessName,
         subtitle: identityData.businessType,
       }}
-      homeWidget={<PharmaHomeWidget businessName={businessName} businessType={identityData.businessType} />}
+      homeWidget={
+        <DashboardHomeGrid
+          onNavigate={setActiveTab}
+          tabs={pharmaTabs}
+          profileStrength={15}
+          profileTitle={`${identityData.businessType} Profile`}
+          profileSubtitle="Complete your facility profile to rank higher in the public directory."
+          pendingActions={[
+            { id: '1', label: 'Add valid License Number', tabId: 'identity' }
+          ]}
+          topRightWidget={<InviteWidget userUid={null} />}
+          extraContent={
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 mt-6">
+              <h4 className="text-xs font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Weekly Prescriptions Filled
+              </h4>
+              <div className="h-24 flex items-end justify-between gap-2 px-2">
+                {[40, 20, 65, 80, 55, 90, 70].map((val, i) => (
+                  <div key={i} className="w-full bg-teal-100 hover:bg-teal-400 transition-all rounded-t-sm relative group cursor-pointer" style={{ height: `${val}%` }}>
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      {val}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between mt-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest px-2">
+                <span>Mon</span>
+                <span>Sun</span>
+              </div>
+            </div>
+          }
+        />
+      }
+      hideDefaultModulesList={true}
     >
       <div className="max-w-4xl mx-auto pb-24">
         
