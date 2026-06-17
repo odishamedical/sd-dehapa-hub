@@ -3,18 +3,9 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Activity, MapPin, Filter, ShieldCheck, Star } from "lucide-react";
-
-// Mock Data
-const MOCK_RESULTS = [
-  { id: "dr-satyabrata-das", type: "doctor", name: "Dr. Satyabrata Das", subtitle: "Surgical Oncologist", location: "Bhubaneswar, Odisha", rating: 4.8, experience: "18 Yrs", verified: false },
-  { id: "dr-sunil-sharma", type: "doctor", name: "Dr. Sunil Kumar Sharma", subtitle: "Cardiologist", location: "Sambalpur, Odisha", rating: 4.9, experience: "25 Yrs", verified: false },
-  { id: "dr-bansidhar-mulia", type: "doctor", name: "Dr. Bansidhar Mulia", subtitle: "Plastic Surgeon", location: "Bhubaneswar, Odisha", rating: 4.8, experience: "24 Yrs", verified: false },
-  { id: "hosp_1", type: "hospital", name: "Apollo Super Specialty", subtitle: "NABH Accredited", location: "Bhubaneswar, Odisha", rating: 4.5, beds: "250 Beds", verified: true },
-  { id: "lab_1", type: "lab", name: "SRL Diagnostics", subtitle: "NABL Certified", location: "Cuttack, Odisha", rating: 4.7, tests: "200+ Tests", verified: false },
-  { id: "rx_1", type: "pharmacy", name: "LifeCare Pharmacy", subtitle: "Retail & 24/7", location: "Jharsuguda, Odisha", rating: 4.9, delivery: "Free Delivery", verified: true },
-  { id: "amb_1", type: "ambulance", name: "Speed Rescue EMS", subtitle: "ALS/BLS Fleet", location: "Rourkela, Odisha", rating: 4.6, response: "10 Min ETA", verified: false }
-];
+import { Activity, MapPin, Filter, ShieldCheck, Star, AlertCircle } from "lucide-react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, query } from "firebase/firestore";
 
 function SearchResultsContent() {
   const router = useRouter();
@@ -27,19 +18,67 @@ function SearchResultsContent() {
   const initialDistrict = searchParams.get('district') || '';
 
   const [type, setType] = useState(initialType);
-  const [query, setQuery] = useState(initialQuery);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [country, setCountry] = useState(initialCountry);
   const [state, setState] = useState(initialState);
   const [district, setDistrict] = useState(initialDistrict);
 
+  // Firebase Data States
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   // Update state when URL params change
   useEffect(() => {
     setType(searchParams.get('type') || 'all');
-    setQuery(searchParams.get('q') || '');
+    setSearchQuery(searchParams.get('q') || '');
     setCountry(searchParams.get('country') || 'India');
     setState(searchParams.get('state') || '');
     setDistrict(searchParams.get('district') || '');
   }, [searchParams]);
+
+  // Fetch from Firebase
+  useEffect(() => {
+    const fetchResults = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const q = query(collection(db, 'directory'));
+        const querySnapshot = await getDocs(q);
+        const docsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        const mappedData = docsData.map((d: any) => ({
+          id: d.id,
+          type: d.category ? d.category.toLowerCase() : 'unknown',
+          name: d.name || "Unknown Entity",
+          subtitle: d.subCategory || d.specialty || d.category || "Service Provider",
+          location: `${d.city || d.district || "Unknown"}, ${d.state || "Odisha"}`,
+          rating: d.rating || 0,
+          verified: d.verified || false,
+          experience: d.experience,
+          beds: d.beds,
+          tests: d.tests,
+          delivery: d.delivery,
+          response: d.response,
+          country: d.country || "India",
+          state: d.state || "Odisha",
+          district: d.district || "Unknown",
+        }));
+
+        setResults(mappedData);
+      } catch (err: any) {
+        console.error("Error fetching search results:", err);
+        setError(err.message || "Failed to load data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, []);
 
   const handleCountryChange = (val: string) => {
     setCountry(val);
@@ -59,7 +98,7 @@ function SearchResultsContent() {
   const handleUpdateFilter = () => {
     const params = new URLSearchParams();
     if (type !== 'all') params.append('type', type);
-    if (query) params.append('q', query);
+    if (searchQuery) params.append('q', searchQuery);
     if (country) params.append('country', country);
     if (state) params.append('state', state);
     if (district) params.append('district', district);
@@ -67,11 +106,15 @@ function SearchResultsContent() {
     router.push(`/search?${params.toString()}`);
   };
 
-  const filteredResults = MOCK_RESULTS.filter(item => {
+  const filteredResults = results.filter(item => {
     if (type !== "all" && item.type !== type) return false;
-    if (query && !item.name.toLowerCase().includes(query.toLowerCase()) && !item.subtitle.toLowerCase().includes(query.toLowerCase())) return false;
-    if (district && !item.location.toLowerCase().includes(district.toLowerCase())) return false;
-    // For now, mock state/country as matching if district matches or is empty
+    if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && !item.subtitle.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    
+    // Cascading Location Logic Match
+    if (district && item.district.toLowerCase() !== district.toLowerCase()) return false;
+    if (state && item.state.toLowerCase() !== state.toLowerCase()) return false;
+    if (country && item.country.toLowerCase() !== country.toLowerCase()) return false;
+
     return true;
   });
 
@@ -97,9 +140,9 @@ function SearchResultsContent() {
               <MapPin className="w-4 h-4 text-teal-300" />
               <span>{district ? district + ', ' : ''}{state ? state + ', ' : ''}{country}</span>
             </div>
-            {query && (
+            {searchQuery && (
               <div className="bg-teal-800/50 border border-teal-700/50 px-4 py-2 rounded-full text-sm font-medium">
-                "{query}"
+                "{searchQuery}"
               </div>
             )}
           </div>
@@ -134,8 +177,8 @@ function SearchResultsContent() {
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Search</label>
                   <input 
                     type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Name, specialty..."
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
                   />
@@ -203,12 +246,24 @@ function SearchResultsContent() {
           <div className="lg:col-span-3">
             
             <div className="mb-6 flex justify-between items-center">
-              <p className="text-slate-500 font-medium">Found {filteredResults.length} result(s) for your search.</p>
+              <p className="text-slate-500 font-medium">Found {loading ? "..." : filteredResults.length} result(s) for your search.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
-              {filteredResults.length === 0 ? (
+              {loading ? (
+                <div className="col-span-full py-20 flex justify-center items-center">
+                  <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : error ? (
+                <div className="col-span-full py-20 text-center bg-red-50 rounded-3xl border border-red-100 shadow-sm">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-red-400">
+                    <AlertCircle className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-red-900 mb-2">Database Error</h3>
+                  <p className="text-red-500 max-w-sm mx-auto">{error}</p>
+                </div>
+              ) : filteredResults.length === 0 ? (
                 <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
                   <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -226,6 +281,7 @@ function SearchResultsContent() {
                         {result.type === 'lab' && '🔬'}
                         {result.type === 'pharmacy' && '💊'}
                         {result.type === 'ambulance' && '🚑'}
+                        {result.type === 'unknown' && '✨'}
                       </div>
                       <div className="bg-amber-50 text-amber-600 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-amber-100">
                         <Star className="w-3 h-3 fill-current" /> {result.rating}
