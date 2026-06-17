@@ -281,7 +281,7 @@ export default function DoctorDashboard() {
               { id: 'c2', label: 'Qualifications Saved' }
             ]}
             topRightWidget={<InviteWidget userUid={null} />}
-            middleRightWidget={<DoctorStatusToggle doctorId={doctorUid} />}
+            middleRightWidget={<DoctorStatusToggle />}
           />
         }
         hideDefaultModulesList={true}
