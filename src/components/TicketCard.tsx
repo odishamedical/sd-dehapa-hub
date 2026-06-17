@@ -130,7 +130,11 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
         </div>
 
         {/* CTA Button */}
-        <button className="w-full px-6 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-[0_8px_30px_rgba(13,148,136,0.3)] transition-all text-sm uppercase tracking-widest mt-2">{config.cta.label}</button>
+        {config.cta && (
+          <Link href={`/portal/book?doctor=${entity.id}`} className="w-full px-6 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-[0_8px_30px_rgba(13,148,136,0.3)] transition-all text-sm uppercase tracking-widest mt-2 flex items-center justify-center">
+            {config.cta.label}
+          </Link>
+        )}
       </div>
     </div>
   );
