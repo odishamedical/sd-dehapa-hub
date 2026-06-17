@@ -10,7 +10,15 @@ const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
   ssr: false
 });
 
+import { useRouter } from "next/navigation";
+
 export default function DehapaHome() {
+  const router = useRouter();
+  const [searchType, setSearchType] = useState('doctor');
+  const [searchCountry, setSearchCountry] = useState('India');
+  const [searchState, setSearchState] = useState('');
+  const [searchDistrict, setSearchDistrict] = useState('');
+
   const [activeTab, setActiveTab] = useState<"patients" | "doctors" | "hospitals">("patients");
   const [isPinging, setIsPinging] = useState(false);
   const [ambulanceETA, setAmbulanceETA] = useState<string | null>(null);
@@ -30,6 +38,16 @@ export default function DehapaHome() {
       setIsPinging(false);
       setAmbulanceETA("3 mins away");
     }, 3500);
+  };
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (searchType) params.append('type', searchType);
+    if (searchCountry) params.append('country', searchCountry);
+    if (searchState) params.append('state', searchState);
+    if (searchDistrict) params.append('district', searchDistrict);
+    
+    router.push(`/search?${params.toString()}`);
   };
 
   return (
@@ -69,34 +87,87 @@ export default function DehapaHome() {
           </p>
 
           {/* Holographic Search Console */}
-          <div className="max-w-4xl mx-auto bg-slate-900/60 backdrop-blur-2xl border border-teal-500/30 p-3 sm:p-4 rounded-3xl flex flex-col sm:flex-row items-center gap-3 shadow-[0_0_50px_rgba(20,184,166,0.15)] relative group transition-all duration-500 hover:shadow-[0_0_80px_rgba(20,184,166,0.25)] hover:bg-slate-900/80">
+          <div className="max-w-5xl mx-auto bg-slate-900/60 backdrop-blur-2xl border border-teal-500/30 p-4 sm:p-6 rounded-3xl flex flex-col gap-4 shadow-[0_0_50px_rgba(20,184,166,0.15)] relative group transition-all duration-500 hover:shadow-[0_0_80px_rgba(20,184,166,0.25)] hover:bg-slate-900/80">
             {/* Glowing borders effect */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-3xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-500"></div>
             
-            <div className="flex-1 w-full flex items-center gap-4 px-6 py-3 relative z-10 bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors">
-              <Search className="w-6 h-6 text-teal-400" />
-              <input 
-                type="text" 
-                placeholder="Search doctors, hospitals, specialties..." 
-                className="w-full bg-transparent border-none outline-none text-white text-lg font-medium placeholder:text-slate-500 focus:ring-0" 
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10 w-full">
+              
+              {/* Type Dropdown */}
+              <div className="w-full flex items-center gap-3 px-4 py-3 bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors relative">
+                <Search className="w-5 h-5 text-teal-400 shrink-0" />
+                <select 
+                  value={searchType}
+                  onChange={(e) => setSearchType(e.target.value)}
+                  className="w-full bg-transparent border-none outline-none text-white font-medium appearance-none cursor-pointer"
+                >
+                  <option value="" className="bg-slate-800 text-slate-400">All Services</option>
+                  <option value="doctor" className="bg-slate-800 text-white">Doctors</option>
+                  <option value="hospital" className="bg-slate-800 text-white">Hospitals</option>
+                  <option value="ambulance" className="bg-slate-800 text-white">Ambulances</option>
+                  <option value="pharmacy" className="bg-slate-800 text-white">Pharmacies</option>
+                  <option value="lab" className="bg-slate-800 text-white">Pathology Labs</option>
+                </select>
+              </div>
+              
+              {/* Country Dropdown */}
+              <div className="w-full flex items-center gap-3 px-4 py-3 bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors relative">
+                <MapPin className="w-5 h-5 text-teal-400 shrink-0" />
+                <select 
+                  value={searchCountry}
+                  onChange={(e) => setSearchCountry(e.target.value)}
+                  className="w-full bg-transparent border-none outline-none text-white font-medium appearance-none cursor-pointer"
+                >
+                  <option value="India" className="bg-slate-800 text-white">India</option>
+                  <option value="USA" className="bg-slate-800 text-white">USA</option>
+                  <option value="UK" className="bg-slate-800 text-white">United Kingdom</option>
+                  <option value="UAE" className="bg-slate-800 text-white">UAE</option>
+                  <option value="Australia" className="bg-slate-800 text-white">Australia</option>
+                  <option value="Canada" className="bg-slate-800 text-white">Canada</option>
+                </select>
+              </div>
+
+              {/* State Dropdown */}
+              <div className="w-full flex items-center gap-3 px-4 py-3 bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors relative">
+                <MapPin className="w-5 h-5 text-teal-400/50 shrink-0" />
+                <select 
+                  value={searchState}
+                  onChange={(e) => setSearchState(e.target.value)}
+                  className="w-full bg-transparent border-none outline-none text-white font-medium appearance-none cursor-pointer"
+                >
+                  <option value="" className="bg-slate-800 text-slate-400">Any State</option>
+                  <option value="Odisha" className="bg-slate-800 text-white">Odisha</option>
+                  <option value="Maharashtra" className="bg-slate-800 text-white">Maharashtra</option>
+                  <option value="Karnataka" className="bg-slate-800 text-white">Karnataka</option>
+                  <option value="Delhi" className="bg-slate-800 text-white">Delhi</option>
+                </select>
+              </div>
+
+              {/* District Dropdown */}
+              <div className="w-full flex items-center gap-3 px-4 py-3 bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors relative">
+                <MapPin className="w-5 h-5 text-teal-400/50 shrink-0" />
+                <select 
+                  value={searchDistrict}
+                  onChange={(e) => setSearchDistrict(e.target.value)}
+                  className="w-full bg-transparent border-none outline-none text-white font-medium appearance-none cursor-pointer"
+                >
+                  <option value="" className="bg-slate-800 text-slate-400">Any District</option>
+                  <option value="Bhubaneswar" className="bg-slate-800 text-white">Bhubaneswar</option>
+                  <option value="Cuttack" className="bg-slate-800 text-white">Cuttack</option>
+                  <option value="Puri" className="bg-slate-800 text-white">Puri</option>
+                  <option value="Rourkela" className="bg-slate-800 text-white">Rourkela</option>
+                </select>
+              </div>
             </div>
-            
-            <div className="flex-1 w-full flex items-center gap-4 px-6 py-3 relative z-10 bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors">
-              <MapPin className="w-6 h-6 text-teal-400" />
-              <input 
-                type="text" 
-                placeholder="Location (e.g. Bhubaneswar)" 
-                className="w-full bg-transparent border-none outline-none text-white text-lg font-medium placeholder:text-slate-500 focus:ring-0" 
-              />
+
+            <div className="flex items-center justify-end relative z-10 w-full mt-2">
+              <button onClick={handleSearch} className="w-full sm:w-auto relative bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white px-12 py-4 rounded-xl font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_0_30px_rgba(20,184,166,0.4)] hover:shadow-[0_0_50px_rgba(20,184,166,0.6)] hover:scale-105 flex items-center justify-center gap-2 overflow-hidden">
+                <span className="relative z-10">Search</span>
+                <ChevronRight className="w-5 h-5 relative z-10" />
+                {/* Sweep effect on button */}
+                <div className="absolute inset-0 h-full w-full bg-white/20 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+              </button>
             </div>
-            
-            <Link href="/doctors" className="w-full sm:w-auto relative z-10 bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_0_30px_rgba(20,184,166,0.4)] hover:shadow-[0_0_50px_rgba(20,184,166,0.6)] hover:scale-105 flex items-center justify-center gap-2 overflow-hidden">
-              <span className="relative z-10">Search</span>
-              <ChevronRight className="w-5 h-5 relative z-10" />
-              {/* Sweep effect on button */}
-              <div className="absolute inset-0 h-full w-full bg-white/20 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
-            </Link>
           </div>
 
           {/* Giant Living Consult Button */}
