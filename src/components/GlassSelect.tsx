@@ -49,7 +49,7 @@ export default function GlassSelect({ options, value, onChange, placeholder = "S
 
       {isOpen && (
         <div className="absolute z-50 w-full mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          <div className="max-h-60 overflow-y-auto">
+          <div className="max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-teal-500/30 scrollbar-track-transparent hover:scrollbar-thumb-teal-500/50">
             {options.map((opt) => (
               <div 
                 key={opt.value}

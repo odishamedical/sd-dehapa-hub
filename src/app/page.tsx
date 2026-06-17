@@ -106,7 +106,7 @@ export default function DehapaHome() {
           </p>
 
           {/* Holographic Search Console (2-Row Layout) */}
-          <div className="max-w-5xl mx-auto bg-slate-900/60 backdrop-blur-2xl border border-teal-500/30 p-4 sm:p-6 rounded-3xl flex flex-col gap-4 shadow-[0_0_50px_rgba(20,184,166,0.15)] relative group transition-all duration-500 hover:shadow-[0_0_80px_rgba(20,184,166,0.25)] hover:bg-slate-900/80">
+          <div className="max-w-5xl mx-auto bg-slate-900/60 backdrop-blur-2xl border border-teal-500/30 p-4 sm:p-6 rounded-3xl flex flex-col gap-4 shadow-[0_0_50px_rgba(20,184,166,0.15)] relative z-40 group transition-all duration-500 hover:shadow-[0_0_80px_rgba(20,184,166,0.25)] hover:bg-slate-900/80">
             {/* Glowing borders effect */}
             <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-3xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-500 pointer-events-none"></div>
             
@@ -166,10 +166,41 @@ export default function DehapaHome() {
                     placeholder="Any State"
                     options={[
                       { value: '', label: 'Any State' },
-                      { value: 'Odisha', label: 'Odisha' },
-                      { value: 'Maharashtra', label: 'Maharashtra' },
+                      { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+                      { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+                      { value: 'Assam', label: 'Assam' },
+                      { value: 'Bihar', label: 'Bihar' },
+                      { value: 'Chhattisgarh', label: 'Chhattisgarh' },
+                      { value: 'Goa', label: 'Goa' },
+                      { value: 'Gujarat', label: 'Gujarat' },
+                      { value: 'Haryana', label: 'Haryana' },
+                      { value: 'Himachal Pradesh', label: 'Himachal Pradesh' },
+                      { value: 'Jharkhand', label: 'Jharkhand' },
                       { value: 'Karnataka', label: 'Karnataka' },
+                      { value: 'Kerala', label: 'Kerala' },
+                      { value: 'Madhya Pradesh', label: 'Madhya Pradesh' },
+                      { value: 'Maharashtra', label: 'Maharashtra' },
+                      { value: 'Manipur', label: 'Manipur' },
+                      { value: 'Meghalaya', label: 'Meghalaya' },
+                      { value: 'Mizoram', label: 'Mizoram' },
+                      { value: 'Nagaland', label: 'Nagaland' },
+                      { value: 'Odisha', label: 'Odisha' },
+                      { value: 'Punjab', label: 'Punjab' },
+                      { value: 'Rajasthan', label: 'Rajasthan' },
+                      { value: 'Sikkim', label: 'Sikkim' },
+                      { value: 'Tamil Nadu', label: 'Tamil Nadu' },
+                      { value: 'Telangana', label: 'Telangana' },
+                      { value: 'Tripura', label: 'Tripura' },
+                      { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+                      { value: 'Uttarakhand', label: 'Uttarakhand' },
+                      { value: 'West Bengal', label: 'West Bengal' },
+                      { value: 'Andaman and Nicobar', label: 'Andaman and Nicobar' },
+                      { value: 'Chandigarh', label: 'Chandigarh' },
+                      { value: 'Dadra and Nagar Haveli', label: 'Dadra and Nagar Haveli' },
+                      { value: 'Daman and Diu', label: 'Daman and Diu' },
                       { value: 'Delhi', label: 'Delhi' },
+                      { value: 'Lakshadweep', label: 'Lakshadweep' },
+                      { value: 'Puducherry', label: 'Puducherry' },
                     ]}
                   />
                 ) : (
@@ -192,10 +223,36 @@ export default function DehapaHome() {
                     placeholder="Any District"
                     options={[
                       { value: '', label: 'Any District' },
-                      { value: 'Bhubaneswar', label: 'Bhubaneswar' },
+                      { value: 'Angul', label: 'Angul' },
+                      { value: 'Balangir', label: 'Balangir' },
+                      { value: 'Balasore', label: 'Balasore' },
+                      { value: 'Bargarh', label: 'Bargarh' },
+                      { value: 'Bhadrak', label: 'Bhadrak' },
+                      { value: 'Boudh', label: 'Boudh' },
                       { value: 'Cuttack', label: 'Cuttack' },
+                      { value: 'Deogarh', label: 'Deogarh' },
+                      { value: 'Dhenkanal', label: 'Dhenkanal' },
+                      { value: 'Gajapati', label: 'Gajapati' },
+                      { value: 'Ganjam', label: 'Ganjam' },
+                      { value: 'Jagatsinghpur', label: 'Jagatsinghpur' },
+                      { value: 'Jajpur', label: 'Jajpur' },
+                      { value: 'Jharsuguda', label: 'Jharsuguda' },
+                      { value: 'Kalahandi', label: 'Kalahandi' },
+                      { value: 'Kandhamal', label: 'Kandhamal' },
+                      { value: 'Kendrapara', label: 'Kendrapara' },
+                      { value: 'Kendujhar', label: 'Kendujhar (Keonjhar)' },
+                      { value: 'Khordha', label: 'Khordha (Bhubaneswar)' },
+                      { value: 'Koraput', label: 'Koraput' },
+                      { value: 'Malkangiri', label: 'Malkangiri' },
+                      { value: 'Mayurbhanj', label: 'Mayurbhanj' },
+                      { value: 'Nabarangpur', label: 'Nabarangpur' },
+                      { value: 'Nayagarh', label: 'Nayagarh' },
+                      { value: 'Nuapada', label: 'Nuapada' },
                       { value: 'Puri', label: 'Puri' },
-                      { value: 'Rourkela', label: 'Rourkela' },
+                      { value: 'Rayagada', label: 'Rayagada' },
+                      { value: 'Sambalpur', label: 'Sambalpur' },
+                      { value: 'Subarnapur', label: 'Subarnapur (Sonepur)' },
+                      { value: 'Sundargarh', label: 'Sundargarh (Rourkela)' },
                     ]}
                   />
                 ) : (
