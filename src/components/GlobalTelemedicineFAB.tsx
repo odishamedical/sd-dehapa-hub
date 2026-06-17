@@ -26,6 +26,7 @@ export default function GlobalTelemedicineFAB() {
   const [userName, setUserName] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [symptoms, setSymptoms] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   React.useEffect(() => {
@@ -54,6 +55,14 @@ export default function GlobalTelemedicineFAB() {
 
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handleBack = () => {
+    if (step === "triage_general") setStep("urgency");
+    else if (step === "triage_specialist") setStep("triage_general");
+    else if (step === "availability") setStep(doctorType === "general" ? "triage_general" : "triage_specialist");
+    else if (step === "auth_gate") setStep(doctorType === "general" ? "triage_general" : "triage_specialist");
+    else if (step === "fallback") setStep("urgency");
   };
 
   const handleUrgencySelect = (urgency: "urgent" | "schedule") => {
@@ -157,6 +166,7 @@ export default function GlobalTelemedicineFAB() {
         patientName: pName,
         type: doctorType,
         department: department,
+        symptoms: symptoms,
         status: "pending",
         createdAt: new Date().toISOString()
       });
@@ -202,6 +212,13 @@ export default function GlobalTelemedicineFAB() {
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gradient-to-b from-[#040815] to-[#0a1229]">
               
+              {step !== "urgency" && step !== "connecting" && (
+                <button onClick={handleBack} className="text-xs uppercase tracking-widest font-bold text-cyan-500 hover:text-cyan-300 flex items-center gap-2 mb-6 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                  BACK
+                </button>
+              )}
+
               {step === "urgency" && (
                 <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
                   <h3 className="text-xl font-bold text-white text-center mb-8">What type of consultation do you need?</h3>
@@ -239,10 +256,6 @@ export default function GlobalTelemedicineFAB() {
 
               {step === "triage_general" && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-300">
-                  <button onClick={() => setStep("urgency")} className="text-xs uppercase tracking-widest font-bold text-cyan-500 hover:text-cyan-300 flex items-center gap-2 mb-6 transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-                    Back
-                  </button>
                   <h3 className="text-xl font-bold text-white mb-6 text-center">Select Provider Type</h3>
                   
                   <button onClick={() => handleDoctorTypeSelect("general")} className="w-full bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 text-left flex items-center justify-between transition-all group hover:bg-[#0f172a]">
@@ -277,10 +290,6 @@ export default function GlobalTelemedicineFAB() {
 
               {step === "triage_specialist" && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-300">
-                  <button onClick={() => setStep("triage_general")} className="text-xs uppercase tracking-widest font-bold text-cyan-500 hover:text-cyan-300 flex items-center gap-2 mb-6 transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-                    Back
-                  </button>
                   <h3 className="text-xl font-bold text-white mb-6 text-center">Select Department</h3>
                   
                   <div className="grid grid-cols-2 gap-3">
@@ -350,6 +359,16 @@ export default function GlobalTelemedicineFAB() {
                   
                   <form onSubmit={handleFastTrackAuth} className="w-full space-y-5 bg-[#0a1229] p-6 rounded-2xl border border-slate-800">
                     <div>
+                      <label className="block text-xs font-bold text-cyan-500 mb-2 uppercase tracking-wider">Chief Symptoms / Reason *</label>
+                      <textarea 
+                        required 
+                        value={symptoms}
+                        onChange={e => setSymptoms(e.target.value)}
+                        className="w-full px-4 py-3 bg-[#040815] rounded-xl border border-slate-700 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none placeholder:text-slate-600 resize-none h-24"
+                        placeholder="e.g. Mild fever since yesterday, headache..."
+                      ></textarea>
+                    </div>
+                    <div>
                       <label className="block text-xs font-bold text-cyan-500 mb-2 uppercase tracking-wider">Phone Number *</label>
                       <input 
                         type="tel" 
@@ -389,10 +408,6 @@ export default function GlobalTelemedicineFAB() {
                       </button>
                     </div>
                   </form>
-                  
-                  <button onClick={() => setStep("urgency")} className="mt-6 text-xs uppercase tracking-widest font-bold text-slate-500 hover:text-white transition-colors">
-                    Cancel & Go Back
-                  </button>
                 </div>
               )}
 
