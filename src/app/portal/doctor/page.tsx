@@ -22,11 +22,11 @@ function DoctorHomeWidget({ onNavigate, doctorUid, tabs }: { onNavigate: (tabId:
     return acc;
   }, {} as Record<string, DashboardTab[]>);
 
-  const renderFolder = (sectionName: string, icon: React.ReactNode, bgColor: string, textColor: string) => (
-    <div className={`md:col-span-1 bg-white border border-slate-200 rounded-[24px] p-6 shadow-sm relative overflow-hidden h-full flex flex-col group hover:border-${textColor.split('-')[1]}-200 transition-colors`}>
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50/50 pointer-events-none z-0"></div>
-      <div className="flex items-center gap-3 mb-4 relative z-10">
-        <div className={`w-10 h-10 rounded-xl ${bgColor} ${textColor} flex items-center justify-center`}>
+  const renderFolder = (sectionName: string, icon: React.ReactNode, bgGradient: string, iconBgColor: string, textColor: string) => (
+    <div className={`md:col-span-1 ${bgGradient} border border-${textColor.split('-')[1]}-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden h-full flex flex-col justify-between group`}>
+      <div className="flex flex-col h-full z-10 relative">
+      <div className="flex items-center gap-3 mb-5 relative z-10">
+        <div className={`w-10 h-10 rounded-xl ${iconBgColor} ${textColor} flex items-center justify-center shadow-sm`}>
           {icon}
         </div>
         <div>
@@ -35,20 +35,23 @@ function DoctorHomeWidget({ onNavigate, doctorUid, tabs }: { onNavigate: (tabId:
         </div>
       </div>
       <div className="flex-1 relative z-10 overflow-y-auto pr-2 custom-scrollbar">
-        <ul className="space-y-1">
+        <ul className="space-y-2">
           {sectionedTabs[sectionName]?.map((tab, index) => (
             <li key={tab.id}>
               <button 
                 onClick={() => onNavigate(tab.id)}
-                className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors group/item"
+                className={`w-full text-left px-4 py-3 rounded-xl bg-white/70 hover:bg-white text-sm text-slate-700 font-bold flex items-center gap-3 transition-all group/item shadow-sm border border-white/50 hover:shadow hover:border-${textColor.split('-')[1]}-200`}
               >
-                <span className="text-slate-300 font-mono text-xs group-hover/item:text-teal-400 transition-colors w-4">{index + 1}.</span>
+                <span className={`text-${textColor.split('-')[1]}-400/50 font-black text-xs w-5 text-right`}>{index + 1}.</span>
                 <span className="truncate flex-1">{tab.label}</span>
-                <svg className="w-3 h-3 text-slate-300 opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                <div className={`w-6 h-6 rounded-full bg-${textColor.split('-')[1]}-50 flex items-center justify-center opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all`}>
+                  <svg className={`w-3 h-3 text-${textColor.split('-')[1]}-500`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
+                </div>
               </button>
             </li>
           ))}
         </ul>
+      </div>
       </div>
     </div>
   );
@@ -139,14 +142,16 @@ function DoctorHomeWidget({ onNavigate, doctorUid, tabs }: { onNavigate: (tabId:
       {renderFolder(
         "PATIENT INQUIRIES", 
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
-        "bg-amber-50",
+        "bg-gradient-to-br from-amber-50 to-orange-50",
+        "bg-white",
         "text-amber-600"
       )}
 
       {renderFolder(
         "PROFILE BUILDER", 
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>,
-        "bg-sky-50",
+        "bg-gradient-to-br from-sky-50 to-blue-50",
+        "bg-white",
         "text-sky-600"
       )}
 
