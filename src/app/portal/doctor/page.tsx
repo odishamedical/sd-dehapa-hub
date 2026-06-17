@@ -13,10 +13,48 @@ import InviteWidget from '@/components/InviteWidget';
 import DoctorStatusToggle from '@/components/DoctorStatusToggle';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
 
-function DoctorHomeWidget({ onNavigate, doctorUid }: { onNavigate: (tabId: string) => void, doctorUid: string }) {
+function DoctorHomeWidget({ onNavigate, doctorUid, tabs }: { onNavigate: (tabId: string) => void, doctorUid: string, tabs: DashboardTab[] }) {
+  // Group tabs by section
+  const sectionedTabs = tabs.reduce((acc, tab) => {
+    const section = tab.section || "DEFAULT";
+    if (!acc[section]) acc[section] = [];
+    acc[section].push(tab);
+    return acc;
+  }, {} as Record<string, DashboardTab[]>);
+
+  const renderFolder = (sectionName: string, icon: React.ReactNode, bgColor: string, textColor: string) => (
+    <div className={`md:col-span-1 bg-white border border-slate-200 rounded-[24px] p-6 shadow-sm relative overflow-hidden h-full flex flex-col group hover:border-${textColor.split('-')[1]}-200 transition-colors`}>
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50/50 pointer-events-none z-0"></div>
+      <div className="flex items-center gap-3 mb-4 relative z-10">
+        <div className={`w-10 h-10 rounded-xl ${bgColor} ${textColor} flex items-center justify-center`}>
+          {icon}
+        </div>
+        <div>
+          <h3 className="font-bold text-slate-900 text-sm">{sectionName}</h3>
+          <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest">{sectionedTabs[sectionName]?.length || 0} MODULES</p>
+        </div>
+      </div>
+      <div className="flex-1 relative z-10 overflow-y-auto pr-2 custom-scrollbar">
+        <ul className="space-y-1">
+          {sectionedTabs[sectionName]?.map((tab, index) => (
+            <li key={tab.id}>
+              <button 
+                onClick={() => onNavigate(tab.id)}
+                className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-600 font-medium hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors group/item"
+              >
+                <span className="text-slate-300 font-mono text-xs group-hover/item:text-teal-400 transition-colors w-4">{index + 1}.</span>
+                <span className="truncate flex-1">{tab.label}</span>
+                <svg className="w-3 h-3 text-slate-300 opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-1 flex flex-col gap-6">
+      <div className="md:col-span-1 md:row-span-2 flex flex-col gap-6">
         <div className="flex-1 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-6 sm:p-8 relative overflow-hidden">
         {/* Metallic Shine Overlay */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
@@ -97,6 +135,21 @@ function DoctorHomeWidget({ onNavigate, doctorUid }: { onNavigate: (tabId: strin
       <div className="md:col-span-1">
         <DoctorStatusToggle doctorId={doctorUid} />
       </div>
+
+      {renderFolder(
+        "PATIENT INQUIRIES", 
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
+        "bg-amber-50",
+        "text-amber-600"
+      )}
+
+      {renderFolder(
+        "PROFILE BUILDER", 
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>,
+        "bg-sky-50",
+        "text-sky-600"
+      )}
+
     </div>
   );
 }
@@ -351,7 +404,8 @@ export default function DoctorDashboard() {
           subtitle: "MBBS, MD - Cardiology",
           image: "https://i.pravatar.cc/150?u=a042581f4e29026704d" // Mock image
         }}
-        homeWidget={<DoctorHomeWidget onNavigate={setActiveTab} doctorUid={doctorUid} />}
+        homeWidget={<DoctorHomeWidget onNavigate={setActiveTab} doctorUid={doctorUid} tabs={doctorTabs} />}
+        hideDefaultModulesList={true}
       >
         <div className="max-w-4xl mx-auto">
         {/* Header Alert */}

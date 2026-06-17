@@ -23,6 +23,7 @@ interface DashboardLayoutProps {
     subtitle: string;
   };
   homeWidget?: React.ReactNode;
+  hideDefaultModulesList?: boolean;
 }
 
 export default function DashboardLayout({
@@ -33,7 +34,8 @@ export default function DashboardLayout({
   children,
   headerTitle,
   userProfile,
-  homeWidget
+  homeWidget,
+  hideDefaultModulesList
 }: DashboardLayoutProps) {
   // Find which section the active tab belongs to
   const activeTabDetails = tabs.find(t => t.id === activeTab);
@@ -222,7 +224,8 @@ export default function DashboardLayout({
                 <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName}</h3>
                 <p className="text-sm text-slate-500">Select a module below to get started.</p>
               </div>
-              <div className="space-y-4">
+              {!hideDefaultModulesList && (
+                <div className="space-y-4">
                 {Object.entries(sectionedTabs).map(([sectionName, sectionTabs]) => {
                   const isDefault = sectionName === "DEFAULT";
                   const displayName = isDefault ? "General Modules" : sectionName;
@@ -280,6 +283,7 @@ export default function DashboardLayout({
                   );
                 })}
               </div>
+              )}
             </div>
           ) : (
             children

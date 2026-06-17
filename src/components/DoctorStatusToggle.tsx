@@ -86,8 +86,8 @@ export default function DoctorStatusToggle({ doctorId }: DoctorStatusToggleProps
 
   if (!hasOptedIn && !isLoading) {
     return (
-      <div className="relative overflow-hidden rounded-2xl p-6 shadow-sm border border-slate-200 bg-white mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 z-10 relative">
+      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-[24px] p-6 shadow-sm relative overflow-hidden h-full flex flex-col justify-between">
+        <div className="flex flex-col h-full z-10 relative">
           <div>
             <h2 className="text-xl font-black uppercase tracking-wide text-slate-800">
               On-Demand Telemedicine
@@ -96,21 +96,23 @@ export default function DoctorStatusToggle({ doctorId }: DoctorStatusToggleProps
               Earn extra income by receiving instant "Uber-style" consultation requests from patients. You decide when you are online and available. Do you want to opt-in to this service?
             </p>
           </div>
-          <button
-            onClick={handleOptIn}
-            className="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full transition-colors"
-          >
-            Yes, Opt-In Now
-          </button>
+          <div className="mt-auto pt-4">
+            <button
+              onClick={handleOptIn}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full transition-colors shadow-sm shadow-indigo-600/30"
+            >
+              Yes, Opt-In Now
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl p-6 shadow-sm border transition-colors duration-500 mb-8 ${isOnline ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-200'}`}>
-      <div className="flex items-center justify-between z-10 relative">
-        <div className="flex items-center gap-4">
+    <div className={`relative overflow-hidden rounded-[24px] p-6 shadow-sm border transition-colors duration-500 h-full flex flex-col justify-between ${isOnline ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200' : 'bg-gradient-to-br from-slate-50 to-gray-100 border-slate-200'}`}>
+      <div className="flex flex-col h-full z-10 relative">
+        <div className="flex items-center gap-4 mb-4">
           {/* Status Indicator Dot */}
           <div className="relative flex h-5 w-5">
             {isOnline && (
@@ -130,34 +132,35 @@ export default function DoctorStatusToggle({ doctorId }: DoctorStatusToggleProps
             </p>
           </div>
         </div>
-
         {/* Big Toggle Button */}
-        <button
-          onClick={toggleStatus}
-          disabled={isLoading}
-          className={`relative inline-flex h-12 w-24 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-opacity-75 ${
-            isOnline ? 'bg-emerald-500' : 'bg-slate-300'
-          } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          <span className="sr-only">Toggle Online Status</span>
-          <span
-            aria-hidden="true"
-            className={`pointer-events-none absolute left-1 flex h-10 w-10 transform items-center justify-center rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-              isOnline ? 'translate-x-12' : 'translate-x-0'
-            }`}
+        <div className="mt-auto pt-4 flex justify-between items-center border-t border-slate-200/50">
+          <span className="text-sm font-bold text-slate-700">Telemedicine Status</span>
+          <button
+            onClick={toggleStatus}
+            disabled={isLoading}
+            className={`relative inline-flex h-10 w-20 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-opacity-75 shadow-inner ${
+              isOnline ? 'bg-emerald-500' : 'bg-slate-300'
+            } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {/* Inner Icon */}
-            {isOnline ? (
-              <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            )}
-          </span>
-        </button>
+            <span className="sr-only">Toggle Online Status</span>
+            <span
+              aria-hidden="true"
+              className={`pointer-events-none absolute left-1 flex h-8 w-8 transform items-center justify-center rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                isOnline ? 'translate-x-10' : 'translate-x-0'
+              }`}
+            >
+              {isOnline ? (
+                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Decorative Background Waves when Online */}
