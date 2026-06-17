@@ -345,10 +345,10 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
                 </div>
                 
                 <div className="py-2">
-                  {(userRole === "doctor" || userRole === "hospital" || userRole === "pharmacy" || userRole === "lab" || userRole === "ambulance" || userEmail === "shyamdash@gmail.com") && (
-                    <a href={`/portal/${userRole === "doctor" ? "doctor" : userRole === "hospital" ? "hospital" : userRole === "pharmacy" ? "pharmacy" : userRole === "lab" ? "lab" : userRole === "ambulance" ? "ambulance" : "doctor"}`} className="flex items-center gap-3 px-5 py-3 text-sm text-teal-400 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group border-b border-slate-800/50">
+                  {(userRole === "doctor" || userRole === "hospital" || userRole === "pharmacy" || userRole === "lab" || userRole === "ambulance") && (
+                    <a href={`/portal/${userRole}`} className="flex items-center gap-3 px-5 py-3 text-sm text-teal-400 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group border-b border-slate-800/50">
                       <svg className="w-4 h-4 text-teal-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                      <span className="font-bold uppercase tracking-widest text-[11px]">{userEmail === "shyamdash@gmail.com" ? "Doctor Workspace" : userRole.charAt(0).toUpperCase() + userRole.slice(1) + " Workspace"}</span>
+                      <span className="font-bold uppercase tracking-widest text-[11px]">{userRole.charAt(0).toUpperCase() + userRole.slice(1)} Workspace</span>
                     </a>
                   )}
                   <a href="/portal/profile" className="flex items-center gap-3 px-5 py-3 text-sm text-slate-300 hover:text-cyan-300 hover:bg-cyan-500/10 transition-colors group">
