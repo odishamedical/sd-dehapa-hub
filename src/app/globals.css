@@ -71,3 +71,12 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(20, 184, 166, 0.3) transparent;
 }
+
+/* Hide scrollbar for clean UI elements */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
