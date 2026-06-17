@@ -5,7 +5,6 @@ import Link from "next/link";
 import QRCode from "react-qr-code";
 import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, Video, QrCode, ShieldCheck, PhoneCall, ChevronRight, UserCircle, Settings, X, HeartPulse } from "lucide-react";
 import dynamic from 'next/dynamic';
-import Footer from '@/components/Footer';
 
 const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
   ssr: false
