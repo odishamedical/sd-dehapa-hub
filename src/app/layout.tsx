@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 
 import GlobalScannerController from "@/components/GlobalScannerController";
 import GlobalFooter from "@/components/GlobalFooter";
+import GlobalTelemedicineFAB from "@/components/GlobalTelemedicineFAB";
 
 export default function RootLayout({
   children,
@@ -29,6 +30,7 @@ export default function RootLayout({
           </div>
           <GlobalFooter />
           <GlobalScannerController />
+          <GlobalTelemedicineFAB />
         </TenantProvider>
       </body>
     </html>
