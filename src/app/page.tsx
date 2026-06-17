@@ -91,8 +91,8 @@ export default function DehapaHome() {
               />
             </div>
             
-            <Link href="/portal" className="w-full sm:w-auto relative z-10 bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_0_30px_rgba(20,184,166,0.4)] hover:shadow-[0_0_50px_rgba(20,184,166,0.6)] hover:scale-105 flex items-center justify-center gap-2 overflow-hidden">
-              <span className="relative z-10">Initialize</span>
+            <Link href="/doctors" className="w-full sm:w-auto relative z-10 bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-400 hover:to-blue-500 text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_0_30px_rgba(20,184,166,0.4)] hover:shadow-[0_0_50px_rgba(20,184,166,0.6)] hover:scale-105 flex items-center justify-center gap-2 overflow-hidden">
+              <span className="relative z-10">Search</span>
               <ChevronRight className="w-5 h-5 relative z-10" />
               {/* Sweep effect on button */}
               <div className="absolute inset-0 h-full w-full bg-white/20 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
