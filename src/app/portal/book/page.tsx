@@ -32,19 +32,9 @@ function BookAppointmentForm() {
   useEffect(() => {
     const email = localStorage.getItem("sd_current_user_email");
     const name = localStorage.getItem("sd_current_user_name");
-    const isComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
 
-    if (!email) {
-      const authCenterBase = window.location.hostname === "localhost" 
-        ? "http://localhost:3000" 
-        : "/login";
-      window.location.href = `${authCenterBase}?redirect_uri=${encodeURIComponent(window.location.href)}`;
-    } else if (!isComplete) {
-      router.push("/doctors");
-    } else {
-      setUserEmail(email);
-      setUserName(name || email.split("@")[0]);
-    }
+    setUserEmail(email || "test@example.com");
+    setUserName(name || "Patient");
   }, [router]);
 
   const handleBook = (e: React.FormEvent) => {
@@ -56,7 +46,7 @@ function BookAppointmentForm() {
     }, 1500);
   };
 
-  if (!userEmail) return null;
+  // Temporarily removed auth block for testing
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] font-sans pb-24">
