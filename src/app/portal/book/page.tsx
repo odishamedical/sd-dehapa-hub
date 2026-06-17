@@ -18,7 +18,8 @@ function BookAppointmentForm() {
   const searchParams = useSearchParams();
   const docId = searchParams.get("doctor") || "dr-01";
   
-  const doctor = DOCTORS.find(d => d.id === docId) || DOCTORS[0];
+  const [selectedDocId, setSelectedDocId] = useState(docId);
+  const doctor = DOCTORS.find(d => d.id === selectedDocId) || DOCTORS[0];
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -71,6 +72,26 @@ function BookAppointmentForm() {
             <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2">Book Appointment</h1>
             <p className="text-teal-100/80 text-sm md:text-base max-w-xl">Complete your secure booking for a video consultation. All sessions are fully encrypted and HIPAA/FHIR-compliant.</p>
           </div>
+
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 mt-4 md:mt-0 animate-in fade-in duration-500">
+            <div className="text-center sm:text-left">
+              <p className="text-white font-bold text-sm uppercase tracking-wider">Need Urgent Help?</p>
+              <p className="text-teal-200 text-xs">Connect instantly with available doctors</p>
+            </div>
+            <button 
+              onClick={() => {
+                const fabEvent = new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent' } });
+                window.dispatchEvent(fabEvent);
+              }}
+              className="shrink-0 bg-red-600 hover:bg-red-500 text-white px-5 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(220,38,38,0.5)] group relative w-full sm:w-auto"
+            >
+              <div className="absolute inset-0 rounded-xl animate-ping bg-red-500/40 opacity-75"></div>
+              <span className="relative z-10 animate-pulse group-hover:animate-none flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                Call Urgent
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -80,6 +101,25 @@ function BookAppointmentForm() {
             {/* Left Column: Doctor Summary */}
             <div className="lg:col-span-4 space-y-6">
               <div className="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col items-center text-center">
+                
+                <div className="w-full mb-6">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-left block mb-2">Select a Provider</label>
+                  <div className="relative">
+                    <select 
+                      value={selectedDocId}
+                      onChange={(e) => setSelectedDocId(e.target.value)}
+                      className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 rounded-xl py-3 px-4 pr-10 font-bold text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 shadow-sm"
+                    >
+                      {DOCTORS.map(d => (
+                        <option key={d.id} value={d.id}>{d.name} ({d.specialty})</option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-teal-50 shadow-md mb-4">
                   <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=0f766e&color=fff&size=150`} alt={doctor.name} className="w-full h-full object-cover" />
                 </div>

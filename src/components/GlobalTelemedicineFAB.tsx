@@ -34,7 +34,12 @@ export default function GlobalTelemedicineFAB() {
       setUserUid(localStorage.getItem("sd_current_user_uid"));
       setUserName(localStorage.getItem("sd_current_user_name"));
       
-      const listener = () => handleOpen();
+      const listener = (e: any) => {
+        handleOpen();
+        if (e.detail?.action === 'urgent') {
+          setStep('triage_general');
+        }
+      };
       window.addEventListener('open-telemedicine-fab', listener);
       return () => window.removeEventListener('open-telemedicine-fab', listener);
     }
