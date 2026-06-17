@@ -180,8 +180,8 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-[calc(100vh-16px)] md:h-[calc(100vh-32px)] overflow-y-auto bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] md:rounded-[32px] shadow-2xl shadow-cyan-900/5 border border-slate-200/60 relative">
-        <header className="bg-white/60 backdrop-blur-2xl border-b border-slate-200/60 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+      <main className="flex-1 flex flex-col h-[calc(100vh-16px)] md:h-[calc(100vh-32px)] overflow-y-auto scrollbar-hide bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300 rounded-[24px] md:rounded-[32px] shadow-2xl shadow-cyan-900/5 border border-slate-300 relative">
+        <header className="bg-white/60 backdrop-blur-2xl border-b border-white/50 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
           <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
             {headerTitle || activeTab.replace("-", " ")}
           </h2>
@@ -192,8 +192,8 @@ export default function DashboardLayout({
 
         {/* Horizontal Top Menu for Active Section */}
         {activeSection && activeTab !== "home" && (
-          <div className="bg-white/60 backdrop-blur-2xl border-b border-slate-200/60 sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8 shadow-sm">
-            <div className="flex overflow-x-auto hide-scrollbar gap-1 py-3">
+          <div className="bg-white/60 backdrop-blur-2xl border-b border-white/50 sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8 shadow-sm">
+            <div className="flex overflow-x-auto scrollbar-hide gap-1 py-3">
               {sectionedTabs[activeSection].map(tab => (
                 <button
                   key={tab.id}

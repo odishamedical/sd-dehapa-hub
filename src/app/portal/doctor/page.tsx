@@ -288,11 +288,11 @@ export default function DoctorDashboard() {
       >
         <div className="max-w-4xl mx-auto">
         {/* Header Alert */}
-        <div className="bg-sky-50 border border-sky-200 text-sky-800 rounded-xl p-4 mb-8 flex items-start gap-3">
-          <svg className="w-5 h-5 text-sky-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div className="bg-cyan-50/80 backdrop-blur-xl border border-cyan-100 text-cyan-900 rounded-2xl p-5 mb-8 flex items-start gap-4 shadow-sm">
+          <svg className="w-6 h-6 text-cyan-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           <div>
-            <h4 className="font-bold text-sm">Welcome to your Portal</h4>
-            <p className="text-xs mt-1">The information you fill out here instantly maps to your public profile. Ensure it is accurate to maintain your "Verified" badge.</p>
+            <h4 className="font-bold text-sm tracking-wide">Welcome to your Portal</h4>
+            <p className="text-xs mt-1.5 opacity-80 leading-relaxed">The information you fill out here instantly maps to your public profile. Ensure it is accurate to maintain your "Verified" badge.</p>
           </div>
         </div>
 
@@ -305,7 +305,7 @@ export default function DoctorDashboard() {
 
         {/* Tab 1: Identity & Hero */}
         {activeTab === "identity" && (
-          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
             
             {/* Premium Ticket Call to Action */}
             <div 
@@ -409,7 +409,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Qualifications */}
         {activeTab === "qualifications" && (
-          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Qualifications</h3>
@@ -504,7 +504,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Experience & Positions */}
         {activeTab === "experience" && (
-          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Experience & Positions</h3>
@@ -575,7 +575,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Practice Locations */}
         {activeTab === "locations" && (
-          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Practice Locations</h3>
@@ -630,7 +630,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Research & Publications */}
         {activeTab === "research" && (
-          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <h3 className="text-xl font-bold text-slate-900">Research & Publications</h3>
               <button onClick={addResearch} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Publication</button>
