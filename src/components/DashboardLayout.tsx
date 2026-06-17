@@ -80,11 +80,11 @@ export default function DashboardLayout({
   }, {} as Record<string, DashboardTab[]>);
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 font-sans selection:bg-teal-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
+    <div className="min-h-screen bg-[#040815] text-slate-900 font-sans selection:bg-cyan-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
       
       {/* Sidebar Navigation - Floating Pill */}
-      <aside className="w-[280px] bg-slate-900 text-white shrink-0 hidden md:flex flex-col sticky top-4 h-[calc(100vh-32px)] overflow-y-auto rounded-3xl shadow-2xl shadow-slate-900/20 border border-slate-800">
-        <div className="p-6 border-b border-slate-800">
+      <aside className="w-[280px] bg-[#0a1229] text-slate-200 shrink-0 hidden md:flex flex-col sticky top-4 h-[calc(100vh-32px)] overflow-y-auto rounded-[24px] shadow-2xl shadow-cyan-900/10 border border-cyan-500/20">
+        <div className="p-6 border-b border-cyan-500/10">
           <button onClick={() => onTabChange("home")} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity">
              <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-[0_0_15px_var(--tenant-accent-glow)]">
                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
@@ -96,7 +96,7 @@ export default function DashboardLayout({
         </div>
 
         {userProfile && (
-          <div className="p-6 border-b border-slate-800 bg-slate-900/50">
+          <div className="p-6 border-b border-cyan-500/10 bg-[#040815]/50">
             <div className="flex flex-col items-center text-center">
               <div className="w-20 h-20 rounded-full border-2 border-teal-500 p-1 mb-3">
                 {userProfile.image ? (
@@ -137,8 +137,8 @@ export default function DashboardLayout({
                       onClick={() => toggleSection(sectionName)}
                       className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all border ${
                         isExpanded 
-                          ? 'bg-slate-800 border-slate-700 text-white shadow-lg shadow-black/20' 
-                          : 'bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-800 hover:text-white'
+                          ? 'bg-cyan-950/40 border-cyan-500/30 text-cyan-50 shadow-[0_0_15px_rgba(6,182,212,0.15)]' 
+                          : 'bg-transparent border-transparent text-slate-400 hover:bg-[#040815] hover:border-cyan-500/20 hover:text-slate-200'
                       }`}
                     >
                       <span className="text-xs font-bold tracking-widest uppercase flex items-center gap-3">
@@ -159,8 +159,8 @@ export default function DashboardLayout({
                           onClick={() => onTabChange(tab.id)} 
                           className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
                             isActive 
-                              ? 'bg-teal-500/10 text-teal-400' 
-                              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                              ? 'bg-cyan-500/20 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' 
+                              : 'text-slate-400 hover:bg-cyan-950/30 hover:text-cyan-100'
                           }`}
                         >
                           {tab.icon}
@@ -180,8 +180,8 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-[calc(100vh-16px)] md:h-[calc(100vh-32px)] overflow-y-auto bg-white rounded-2xl md:rounded-3xl shadow-sm border border-slate-200 relative">
-        <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50">
+      <main className="flex-1 flex flex-col h-[calc(100vh-16px)] md:h-[calc(100vh-32px)] overflow-y-auto bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] md:rounded-[32px] shadow-2xl shadow-cyan-900/5 border border-slate-200/60 relative">
+        <header className="bg-white/60 backdrop-blur-2xl border-b border-slate-200/60 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
           <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
             {headerTitle || activeTab.replace("-", " ")}
           </h2>
@@ -192,7 +192,7 @@ export default function DashboardLayout({
 
         {/* Horizontal Top Menu for Active Section */}
         {activeSection && activeTab !== "home" && (
-          <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200 sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8">
+          <div className="bg-white/60 backdrop-blur-2xl border-b border-slate-200/60 sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8 shadow-sm">
             <div className="flex overflow-x-auto hide-scrollbar gap-1 py-3">
               {sectionedTabs[activeSection].map(tab => (
                 <button
@@ -200,8 +200,8 @@ export default function DashboardLayout({
                   onClick={() => onTabChange(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                     activeTab === tab.id
-                      ? 'bg-slate-900 text-white shadow-md'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                      ? 'bg-[#0a1229] text-cyan-400 shadow-[0_4px_15px_rgba(6,182,212,0.2)] border border-cyan-500/30'
+                      : 'bg-white/80 text-slate-600 border border-slate-200/50 hover:bg-white hover:text-slate-900 shadow-sm'
                   }`}
                 >
                   {tab.icon}
@@ -232,13 +232,13 @@ export default function DashboardLayout({
                   const isExpanded = isDefault || expandedHomeSections[sectionName];
 
                   return (
-                    <div key={sectionName} className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm transition-all duration-300">
+                    <div key={sectionName} className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-[24px] overflow-hidden shadow-xl shadow-slate-200/50 transition-all duration-300">
                       <button 
                         onClick={() => toggleHomeSection(sectionName)}
-                        className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-slate-50 to-white hover:bg-slate-50 transition-colors"
+                        className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-white/60 to-white/90 hover:from-white/80 hover:to-white transition-colors"
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${isExpanded ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20' : 'bg-slate-100 text-slate-500'}`}>
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${isExpanded ? 'bg-[#0a1229] text-cyan-400 shadow-lg shadow-cyan-900/20 border border-cyan-500/30' : 'bg-slate-100/80 text-slate-500'}`}>
                             {isExpanded ? (
                               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                             ) : (
@@ -258,20 +258,20 @@ export default function DashboardLayout({
                             <button 
                               key={tab.id} 
                               onClick={() => onTabChange(tab.id)} 
-                              className="bg-gradient-to-br from-white to-slate-50 p-5 border border-slate-200 hover:border-teal-400/50 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 text-left group flex flex-col items-start h-full relative overflow-hidden"
+                              className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] p-5 border border-slate-200/60 hover:border-cyan-400/50 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-cyan-900/10 transition-all duration-300 text-left group flex flex-col items-start h-full relative overflow-hidden"
                             >
                               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-teal-50/30 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full duration-700 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
                               
                               <h4 className="font-bold text-slate-800 text-sm mb-1 z-10 group-hover:text-teal-700 transition-colors w-full">{tab.label}</h4>
                               <p className="text-[10px] text-slate-500 mb-4 z-10 line-clamp-1 w-full">Manage {tab.label.toLowerCase()}</p>
                               
-                              <div className="w-10 h-10 bg-slate-100 text-teal-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-teal-50 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm border border-slate-200/50">
+                              <div className="w-10 h-10 bg-white/80 text-cyan-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#0a1229] group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm border border-slate-200/50 group-hover:border-cyan-500/30 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.2)]">
                                 {tab.icon}
                               </div>
                               
-                              <div className="mt-auto pt-2 w-full flex items-center justify-between text-teal-600 text-[9px] font-bold uppercase tracking-widest z-10 border-t border-slate-100">
-                                <span className="group-hover:text-teal-700">Open</span>
-                                <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-teal-100 flex items-center justify-center group-hover:translate-x-1 transition-all shadow-sm">
+                              <div className="mt-auto pt-2 w-full flex items-center justify-between text-cyan-600 text-[9px] font-bold uppercase tracking-widest z-10 border-t border-slate-200/50">
+                                <span className="group-hover:text-cyan-700">Open</span>
+                                <div className="w-6 h-6 rounded-full bg-white group-hover:bg-cyan-100 flex items-center justify-center group-hover:translate-x-1 transition-all shadow-sm">
                                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                                 </div>
                               </div>

@@ -305,7 +305,7 @@ export default function DoctorDashboard() {
 
         {/* Tab 1: Identity & Hero */}
         {activeTab === "identity" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
             
             {/* Premium Ticket Call to Action */}
             <div 
@@ -347,7 +347,7 @@ export default function DoctorDashboard() {
                     value={identityData.fullName}
                     onChange={(e) => setIdentityData(prev => ({...prev, fullName: e.target.value}))}
                     placeholder="e.g. Dr. Sandeep Sharma" 
-                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
+                    className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
                   />
                 </div>
                 <div>
@@ -371,7 +371,7 @@ export default function DoctorDashboard() {
                     value={identityData.phone}
                     onChange={(e) => setIdentityData(prev => ({...prev, phone: e.target.value}))}
                     placeholder="e.g. +91 9876543210" 
-                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
+                    className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
                   />
                 </div>
                 <div>
@@ -384,7 +384,7 @@ export default function DoctorDashboard() {
                     value={identityData.whatsappNumber}
                     onChange={(e) => setIdentityData(prev => ({...prev, whatsappNumber: e.target.value}))}
                     placeholder="e.g. +91 9876543210" 
-                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
+                    className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
                   />
                 </div>
               </div>
@@ -392,16 +392,16 @@ export default function DoctorDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Degrees</label>
-                  <input type="text" placeholder="e.g. MBBS, MD (Medicine)" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. MBBS, MD (Medicine)" className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-1.5">Medical Registration No.</label>
-                  <input type="text" placeholder="e.g. MCI-12345" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" />
+                  <input type="text" placeholder="e.g. MCI-12345" className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" />
                 </div>
               </div>
 
               <div className="flex justify-end pt-4 border-t border-slate-100">
-                <button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-lg transition-all">Save Identity Info</button>
+                <button className="px-6 py-3 bg-[#0a1229] hover:bg-[#040815] text-cyan-400 border border-cyan-500/30 hover:border-cyan-400/50 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] font-bold rounded-xl shadow-lg transition-all">Save Identity Info</button>
               </div>
             </div>
           </div>
@@ -409,7 +409,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Qualifications */}
         {activeTab === "qualifications" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Qualifications</h3>
@@ -420,7 +420,7 @@ export default function DoctorDashboard() {
             
             <div className="space-y-6">
               {qualificationsData.map((qual, index) => (
-                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                <div key={index} className="border border-slate-200/60 rounded-[20px] p-6 relative bg-white/40 backdrop-blur-xl shadow-sm hover:border-cyan-400/50 hover:shadow-xl hover:shadow-cyan-900/10 transition-all duration-300">
                   <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
                     {/* Move Up/Down Buttons */}
                     <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
@@ -452,7 +452,7 @@ export default function DoctorDashboard() {
                         value={qual.degreeName}
                         onChange={(e) => updateQualification(index, 'degreeName', e.target.value)}
                         placeholder="e.g. MBBS, MD" 
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
+                        className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
                       />
                     </div>
                     <div>
@@ -462,7 +462,7 @@ export default function DoctorDashboard() {
                         value={qual.passingYear}
                         onChange={(e) => updateQualification(index, 'passingYear', e.target.value)}
                         placeholder="e.g. 2010" 
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" 
+                        className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
                       />
                     </div>
                   </div>
@@ -490,8 +490,8 @@ export default function DoctorDashboard() {
                 <button 
                   className={`px-6 py-2.5 font-bold rounded-xl shadow-sm transition-all text-sm ${
                     qualificationsSaveStatus === 'saving' 
-                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
-                      : 'bg-teal-600 hover:bg-teal-700 text-white'
+                      ? 'bg-slate-100/50 text-slate-400 cursor-not-allowed' 
+                      : 'bg-[#0a1229] hover:bg-[#040815] text-cyan-400 border border-cyan-500/30 hover:border-cyan-400/50 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)]'
                   }`}
                   disabled={qualificationsSaveStatus === 'saving'}
                 >
@@ -504,7 +504,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Experience & Positions */}
         {activeTab === "experience" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Experience & Positions</h3>
@@ -515,7 +515,7 @@ export default function DoctorDashboard() {
             
             <div className="space-y-6">
               {experienceData.map((exp, index) => (
-                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                <div key={index} className="border border-slate-200/60 rounded-[20px] p-6 relative bg-white/40 backdrop-blur-xl shadow-sm hover:border-cyan-400/50 hover:shadow-xl hover:shadow-cyan-900/10 transition-all duration-300">
                   <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
                     {/* Move Up/Down Buttons */}
                     <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
@@ -556,11 +556,11 @@ export default function DoctorDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                     <div className="md:col-span-2">
                       <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Title / Position</label>
-                      <input type="text" value={exp.position} onChange={(e) => updateExperience(index, 'position', e.target.value)} placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                      <input type="text" value={exp.position} onChange={(e) => updateExperience(index, 'position', e.target.value)} placeholder="e.g. HOD, Senior Consultant" className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Years (e.g. 2015-2020)</label>
-                      <input type="text" value={exp.duration} onChange={(e) => updateExperience(index, 'duration', e.target.value)} placeholder="e.g. 2015 - Present" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                      <input type="text" value={exp.duration} onChange={(e) => updateExperience(index, 'duration', e.target.value)} placeholder="e.g. 2015 - Present" className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" />
                     </div>
                   </div>
                 </div>
@@ -575,7 +575,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Practice Locations */}
         {activeTab === "locations" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Practice Locations</h3>
@@ -585,7 +585,7 @@ export default function DoctorDashboard() {
             </div>
             
             <div className="space-y-6">
-              <div className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+              <div className="border border-slate-200/60 rounded-[20px] p-6 relative bg-white/40 backdrop-blur-xl shadow-sm hover:border-cyan-400/50 hover:shadow-xl hover:shadow-cyan-900/10 transition-all duration-300">
                 <div className="absolute top-4 right-4 flex gap-3 items-center">
                   <span className="bg-teal-100 text-teal-800 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Mandatory Public</span>
                 </div>
@@ -612,11 +612,11 @@ export default function DoctorDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Timings</label>
-                    <input type="text" defaultValue="Mon-Sat, 10 AM - 2 PM" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" defaultValue="Mon-Sat, 10 AM - 2 PM" className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Consultation Fee (₹)</label>
-                    <input type="number" defaultValue="800" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="number" defaultValue="800" className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" />
                   </div>
                 </div>
               </div>
@@ -630,7 +630,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Research & Publications */}
         {activeTab === "research" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] rounded-[24px] p-8 shadow-xl shadow-cyan-900/5 border border-slate-200/60 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <h3 className="text-xl font-bold text-slate-900">Research & Publications</h3>
               <button onClick={addResearch} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Publication</button>
@@ -638,7 +638,7 @@ export default function DoctorDashboard() {
             
             <div className="space-y-6">
               {researchData.map((research, index) => (
-                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                <div key={index} className="border border-slate-200/60 rounded-[20px] p-6 relative bg-white/40 backdrop-blur-xl shadow-sm hover:border-cyan-400/50 hover:shadow-xl hover:shadow-cyan-900/10 transition-all duration-300">
                   <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
                       <button onClick={() => moveResearch(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
@@ -663,7 +663,7 @@ export default function DoctorDashboard() {
                   
                   <div className="mb-4 mt-2">
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Paper Title</label>
-                    <input type="text" value={research.paperTitle} onChange={(e) => updateResearch(index, 'paperTitle', e.target.value)} placeholder="Title of your research paper" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <input type="text" value={research.paperTitle} onChange={(e) => updateResearch(index, 'paperTitle', e.target.value)} placeholder="Title of your research paper" className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
