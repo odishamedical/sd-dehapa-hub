@@ -23,6 +23,8 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
       if (snap.exists()) {
         setIsOnline(snap.data().isOnline === true);
       }
+    }, (error) => {
+      console.error("Error listening to doctor status in ping widget:", error);
     });
     return () => unsubStatus();
   }, [doctorId]);
@@ -58,6 +60,8 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
       } else {
         setIncomingRequest(null);
       }
+    }, (error) => {
+      console.error("Error listening for incoming requests:", error);
     });
 
     return () => unsubRequests();

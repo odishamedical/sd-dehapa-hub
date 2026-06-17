@@ -28,6 +28,9 @@ export default function DoctorStatusToggle({ doctorId }: DoctorStatusToggleProps
           lastUpdated: new Date()
         });
       }
+    }).catch((err) => {
+      console.error("Error fetching doctor status:", err);
+      // Suppress error so it doesn't crash the app
     });
 
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
@@ -36,6 +39,9 @@ export default function DoctorStatusToggle({ doctorId }: DoctorStatusToggleProps
         setIsOnline(data.isOnline || false);
         setHasOptedIn(data.hasOptedIn || false);
       }
+      setIsLoading(false);
+    }, (error) => {
+      console.error("Error listening to doctor status:", error);
       setIsLoading(false);
     });
 
