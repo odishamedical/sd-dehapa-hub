@@ -80,10 +80,10 @@ export default function DashboardLayout({
   }, {} as Record<string, DashboardTab[]>);
 
   return (
-    <div className="h-[calc(100vh-80px)] bg-[#040815] text-slate-900 font-sans selection:bg-cyan-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
+    <div className="min-h-screen bg-[#040815] text-slate-900 font-sans selection:bg-cyan-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
       
       {/* Sidebar Navigation - Floating Pill */}
-      <aside className="w-[280px] bg-[#0a1229] text-slate-200 shrink-0 hidden md:flex flex-col h-full overflow-y-auto scrollbar-hide rounded-[24px] shadow-2xl shadow-cyan-900/10 border border-cyan-500/20">
+      <aside className="w-[280px] bg-[#0a1229] text-slate-200 shrink-0 hidden md:flex flex-col h-[calc(100vh-32px)] sticky top-4 overflow-y-auto scrollbar-hide rounded-[24px] shadow-2xl shadow-cyan-900/10 border border-cyan-500/20">
         <div className="p-6 border-b border-cyan-500/10">
           <button onClick={() => onTabChange("home")} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity">
              <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-[0_0_15px_var(--tenant-accent-glow)]">
@@ -180,8 +180,8 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-y-auto scrollbar-hide bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300 rounded-[24px] md:rounded-[32px] shadow-2xl shadow-cyan-900/5 border border-slate-300 relative">
-        <header className="bg-white/60 backdrop-blur-2xl border-b border-white/50 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+      <main className="flex-1 min-w-0 flex flex-col bg-gradient-to-br from-[#cbd5e1] via-[#e2e8f0] to-[#94a3b8] rounded-[24px] md:rounded-[32px] shadow-2xl shadow-cyan-900/5 border border-slate-300 relative">
+        <header className="bg-white/60 backdrop-blur-2xl border-b border-white/50 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 shadow-sm rounded-t-[24px] md:rounded-t-[32px]">
           <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
             {headerTitle || activeTab.replace("-", " ")}
           </h2>
@@ -190,24 +190,56 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* Horizontal Top Menu for Active Section */}
+        {/* Horizontal Top Menu for Active Section (Centered Stepper) */}
         {activeSection && activeTab !== "home" && (
           <div className="bg-white/60 backdrop-blur-2xl border-b border-white/50 sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8 shadow-sm">
-            <div className="flex overflow-x-auto scrollbar-hide gap-1 py-3">
-              {sectionedTabs[activeSection].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-[#0a1229] text-cyan-400 shadow-[0_4px_15px_rgba(6,182,212,0.2)] border border-cyan-500/30'
-                      : 'bg-white/80 text-slate-600 border border-slate-200/50 hover:bg-white hover:text-slate-900 shadow-sm'
-                  }`}
-                >
-                  {tab.icon}
-                  {tab.label}
-                </button>
-              ))}
+            <div className="flex overflow-x-auto scrollbar-hide gap-3 py-3 items-center justify-center">
+              {(() => {
+                const tabs = sectionedTabs[activeSection] || [];
+                const currentIndex = tabs.findIndex(t => t.id === activeTab);
+                if (currentIndex === -1) return null;
+                
+                const totalTabs = tabs.length;
+                
+                // Show ONLY the active tab to keep it ultra-clean and centered
+                const visibleTabs = [tabs[currentIndex]];
+                const hasPrev = currentIndex > 0;
+                const hasNext = currentIndex < totalTabs - 1;
+                
+                return (
+                  <>
+                    {hasPrev && (
+                      <button
+                        onClick={() => onTabChange(tabs[currentIndex - 1].id)}
+                        className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all bg-white/90 text-slate-700 border border-slate-300 hover:bg-slate-100 hover:text-slate-900 shadow-sm mr-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                        Previous
+                      </button>
+                    )}
+                    
+                    {visibleTabs.map(tab => (
+                      <div
+                        key={tab.id}
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all bg-[#0a1229] text-cyan-400 shadow-[0_4px_15px_rgba(6,182,212,0.2)] border border-cyan-500/30 cursor-default"
+                      >
+                        {tab.icon}
+                        {tab.label}
+                      </div>
+                    ))}
+                    
+                    {hasNext && (
+                      <button
+                        onClick={() => onTabChange(tabs[currentIndex + 1].id)}
+                        className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap transition-all bg-slate-900 text-white border border-slate-800 hover:bg-slate-800 shadow-md ml-2"
+                      >
+                        Next
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           </div>
         )}

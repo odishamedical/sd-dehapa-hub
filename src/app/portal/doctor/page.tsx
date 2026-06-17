@@ -286,26 +286,26 @@ export default function DoctorDashboard() {
         }
         hideDefaultModulesList={true}
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="w-full">
         {/* Header Alert */}
-        <div className="bg-cyan-50/80 backdrop-blur-xl border border-cyan-100 text-cyan-900 rounded-2xl p-5 mb-8 flex items-start gap-4 shadow-sm">
-          <svg className="w-6 h-6 text-cyan-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div className="bg-gradient-to-r from-[#0f172a] to-cyan-950 backdrop-blur-xl border border-cyan-800 text-white rounded-2xl p-6 mb-8 flex items-start gap-4 shadow-xl shadow-cyan-900/20">
+          <svg className="w-8 h-8 text-cyan-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           <div>
-            <h4 className="font-bold text-sm tracking-wide">Welcome to your Portal</h4>
-            <p className="text-xs mt-1.5 opacity-80 leading-relaxed">The information you fill out here instantly maps to your public profile. Ensure it is accurate to maintain your "Verified" badge.</p>
+            <h4 className="font-serif font-bold text-lg tracking-wide text-cyan-50">Welcome to your Portal</h4>
+            <p className="text-sm mt-1.5 opacity-80 leading-relaxed text-cyan-100/80">The information you fill out here instantly maps to your public profile. Ensure it is accurate to maintain your "Verified" badge.</p>
           </div>
         </div>
 
         {/* Tab: Patient Inquiries */}
         {activeTab === "inquiries" && (
-          <div className="max-w-5xl mx-auto">
+          <div className="w-full">
              <PatientLeadsWidget providerId={doctorUid} />
           </div>
         )}
 
         {/* Tab 1: Identity & Hero */}
         {activeTab === "identity" && (
-          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white animate-in fade-in slide-in-from-bottom-4">
             
             {/* Premium Ticket Call to Action */}
             <div 
@@ -409,7 +409,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Qualifications */}
         {activeTab === "qualifications" && (
-          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Qualifications</h3>
@@ -504,7 +504,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Experience & Positions */}
         {activeTab === "experience" && (
-          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Experience & Positions</h3>
@@ -575,7 +575,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Practice Locations */}
         {activeTab === "locations" && (
-          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Practice Locations</h3>
@@ -630,7 +630,7 @@ export default function DoctorDashboard() {
 
         {/* Tab: Research & Publications */}
         {activeTab === "research" && (
-          <div className="bg-white/70 backdrop-blur-xl rounded-[24px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <h3 className="text-xl font-bold text-slate-900">Research & Publications</h3>
               <button onClick={addResearch} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Publication</button>
@@ -830,3 +830,5 @@ export default function DoctorDashboard() {
     </>
   );
 }
+
+// Trigger HMR
