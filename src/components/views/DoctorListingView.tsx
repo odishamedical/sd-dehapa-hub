@@ -143,7 +143,7 @@ export default function DoctorsDirectory({
           hospital: d.clinicName || d.city || d.district || "Odisha",
           address: d.address || "No Address Provided",
           fee: d.fee || "Contact Clinic", 
-          image: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Doc")}&background=0f766e&color=fff&size=150`,
+          image: d.image || (d.rawImages && d.rawImages.length > 0 ? d.rawImages[0] : null) || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Doc")}&background=0f766e&color=fff&size=150`,
           verified: d.verified || false,
           available: true,
           phone: d.phone,

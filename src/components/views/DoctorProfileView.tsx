@@ -78,7 +78,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             rating: rawData.rating || 4.8,
             reviews: rawData.reviews || 0,
             fee: rawData.fee || "Contact Clinic",
-            image: rawData.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Doc")}&background=0f766e&color=fff&size=150`,
+            image: rawData.image || (rawData.rawImages && rawData.rawImages.length > 0 ? rawData.rawImages[0] : null) || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Doc")}&background=0f766e&color=fff&size=150`,
             verified: rawData.verified || false,
             about: rawData.about || notVerified,
             specialties: rawData.specialties || [rawData.subCategory || notVerified],
