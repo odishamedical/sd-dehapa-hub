@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locationS
         doctorData = docSnap.data();
       }
     } else if (slug.length === 1) {
-      if (slug[0].startsWith('ChIJ') || slug[0].length > 20) {
+      if (slug[0].startsWith('ChIJ') || (slug[0].length === 20 && !slug[0].includes('-'))) {
         const docRef = doc(db, 'directory', slug[0]);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -88,7 +88,7 @@ export default async function DoctorsRoute({ params }: { params: Promise<{ locat
 
   if (slug.length === 1 && !["india", "usa", "uae", "australia", "england"].includes(slug[0].toLowerCase())) {
     // It could be a Google Place ID (starts with ChIJ) or a custom slug
-    if (slug[0].startsWith('ChIJ') || slug[0].length > 20) {
+    if (slug[0].startsWith('ChIJ') || (slug[0].length === 20 && !slug[0].includes('-'))) {
       return <DoctorProfileView id={slug[0]} />;
     }
     // Premium Custom Slug detected! (e.g., /doctors/dr-milan)
