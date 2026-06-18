@@ -48,15 +48,15 @@ export default function PremiumHeroSearch({
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
       <div className="max-w-7xl mx-auto text-center relative z-10">
-        <h1 className="text-2xl md:text-5xl font-serif font-bold text-white mb-3 md:mb-4 drop-shadow-lg tracking-tight md:whitespace-nowrap">
-          {titlePrefix} <span className="text-teal-400">{titleHighlight}</span>
+        <h1 className="text-2xl md:text-5xl font-serif font-black text-white mb-3 md:mb-4 drop-shadow-lg tracking-tight md:whitespace-nowrap">
+          {titlePrefix} <span className="text-cyan-400">{titleHighlight}</span>
         </h1>
         <p className="text-slate-300 text-sm md:text-lg mb-6 md:mb-8 max-w-5xl mx-auto font-medium md:whitespace-nowrap">
           {description}
         </p>
         
         {/* Floating Expanded Search Bar */}
-        <div className="bg-white/95 backdrop-blur-xl border-4 border-white/40 rounded-2xl p-2 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex flex-col md:flex-row gap-2 max-w-6xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
+        <div className="bg-slate-900/60 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(34,211,238,0.1)] flex flex-col md:flex-row gap-2 max-w-6xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
            
            {/* Country */}
            <CustomDropdown 
@@ -118,18 +118,18 @@ export default function PremiumHeroSearch({
 
            {/* Free Text Search */}
            <div className="flex-1 relative px-2 py-1 flex flex-col justify-center">
-              <svg className="w-6 h-6 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <svg className="w-6 h-6 text-cyan-500 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
               <input 
                 type="text" 
                 placeholder={searchPlaceholder}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-transparent border-none pl-12 pr-4 py-3 text-lg text-slate-900 focus:outline-none focus:ring-0 placeholder:text-slate-400 font-bold"
+                className="w-full bg-transparent border-none pl-12 pr-4 py-3 text-lg text-white focus:outline-none focus:ring-0 placeholder:text-slate-500 font-bold"
               />
            </div>
 
            {/* Search Button */}
-           <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold px-10 py-4 rounded-xl text-base transition-all shadow-lg hidden md:block border border-teal-600 shrink-0">
+           <button className="bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-bold px-10 py-4 rounded-xl text-base transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hidden md:block shrink-0 border border-cyan-400/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.5)]">
              Search
            </button>
         </div>

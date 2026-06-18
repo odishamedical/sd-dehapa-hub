@@ -206,9 +206,9 @@ export default function DoctorsDirectory({
       </div>
 
       <PremiumHeroSearch 
-        titlePrefix="DehaPa.com :"
-        titleHighlight="Your Health Our Mission"
-        description="Connect with renowned specialists through secure video consultations or physical appointments."
+        titlePrefix="Find Top"
+        titleHighlight="Specialists in Odisha"
+        description="Connect with renowned medical experts through secure video consultations or physical appointments."
         searchPlaceholder="e.g. Dr Abhishek, Kalinga Hospital..."
         search={search}
         setSearch={setSearch}
