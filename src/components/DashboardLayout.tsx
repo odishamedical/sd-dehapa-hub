@@ -274,6 +274,9 @@ export default function DashboardLayout({
                   const isDefault = sectionName === "DEFAULT";
                   const displayName = isDefault ? "General Modules" : sectionName;
                   const isExpanded = isDefault || expandedHomeSections[sectionName];
+                  
+                  const displayTabs = sectionTabs.filter(t => t.id !== "home");
+                  if (displayTabs.length === 0) return null;
 
                   return (
                     <div key={sectionName} className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-[24px] overflow-hidden shadow-xl shadow-slate-200/50 transition-all duration-300">
@@ -298,7 +301,7 @@ export default function DashboardLayout({
 
                       <div className={`transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                         <div className="p-6 pt-0 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 bg-slate-50/50">
-                          {sectionTabs.map(tab => (
+                          {displayTabs.map(tab => (
                             <button 
                               key={tab.id} 
                               onClick={() => onTabChange(tab.id)} 
