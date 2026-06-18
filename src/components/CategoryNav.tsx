@@ -16,7 +16,7 @@ export default function CategoryNav() {
   ];
 
   return (
-    <div className="bg-transparent relative z-20 -mb-16 pt-6">
+    <div className="bg-[#040815] py-2 border-b border-cyan-900/30 relative z-40">
       <div className="max-w-6xl mx-auto px-6">
         <nav className="flex items-center md:justify-center gap-2 overflow-x-auto no-scrollbar py-3">
           <div className="flex items-center gap-2 bg-[#0a1229]/80 backdrop-blur-xl border border-slate-700/50 p-1.5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
