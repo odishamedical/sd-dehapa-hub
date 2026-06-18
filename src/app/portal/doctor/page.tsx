@@ -58,6 +58,7 @@ export default function DoctorDashboard() {
           if (data.memberships) setMembershipsData(data.memberships);
           if (data.awards) setAwardsData(data.awards);
           if (data.specialties) setSpecialtiesData(data.specialties);
+          if (data.galleryImages) setGalleryData(data.galleryImages);
           // bindings
         }
       } catch (err) {
@@ -112,6 +113,10 @@ export default function DoctorDashboard() {
     specialityName: ""
   });
   const identitySaveStatus = useAutosave(identityData, doctorUid, "basicInfo", 1000);
+
+  // Gallery State
+  const [galleryData, setGalleryData] = useState<string[]>([]);
+  const gallerySaveStatus = useAutosave(galleryData, doctorUid, "galleryImages", 1000);
 
   // Practice Location State
   const [locationAddress, setLocationAddress] = useState<AddressData>({
@@ -442,6 +447,15 @@ export default function DoctorDashboard() {
               <div className="flex justify-end pt-4 border-t border-slate-100">
                 <button className="px-6 py-3 bg-[#0a1229] hover:bg-[#040815] text-cyan-400 border border-cyan-500/30 hover:border-cyan-400/50 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] font-bold rounded-xl shadow-lg transition-all">Save Identity Info</button>
               </div>
+            </div>
+            
+            {/* Gallery Uploader */}
+            <div className="mt-12 border-t border-slate-200/60 pt-8">
+              <MultiImageUploader 
+                initialImages={galleryData} 
+                providerId={doctorUid || ''}
+                onUpload={(newUrls) => setGalleryData(prev => [...prev, ...newUrls])}
+              />
             </div>
           </div>
         )}
