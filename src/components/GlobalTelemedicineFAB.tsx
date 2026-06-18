@@ -107,7 +107,10 @@ export default function GlobalTelemedicineFAB() {
   const handleBack = () => {
     if (step === "triage_tier") setStep("urgency");
     else if (step === "triage_dept") setStep("triage_tier");
-    else if (step === "doctor_list") setStep(selectedTier === "General" ? "triage_tier" : "triage_dept");
+    else if (step === "doctor_list") {
+      if (!selectedTier) setStep("urgency");
+      else setStep(selectedTier === "General" ? "triage_tier" : "triage_dept");
+    }
     else if (step === "datetime_picker") setStep("doctor_list");
     else if (step === "payment_gate") setStep(urgencyMode === "schedule" ? "datetime_picker" : "doctor_list");
     else if (step === "auth_gate") setStep("payment_gate");
@@ -387,8 +390,8 @@ export default function GlobalTelemedicineFAB() {
               <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
               <div className="relative z-10">
                 <h2 className="text-2xl font-black tracking-wider uppercase flex items-center gap-3">
-                  <div className="bg-white p-1 rounded border border-white/30 shadow-sm">
-                    <img src="/logo.png" alt="Dehapa Logo" className="h-6 object-contain" />
+                  <div className="bg-white/10 backdrop-blur-sm p-1.5 rounded-xl border border-white/30 shadow-sm flex items-center justify-center">
+                    <img src="/logo.png" alt="Dehapa Logo" className="h-10 object-contain drop-shadow-md" />
                   </div>
                   {urgencyMode === 'schedule' ? 'Schedule Consult' : 'Instant Consult'}
                 </h2>
@@ -446,7 +449,7 @@ export default function GlobalTelemedicineFAB() {
                         <button 
                           key={dept.name}
                           onClick={() => handleQuickJump(dept.name)}
-                          className="bg-white border-2 border-slate-100 hover:border-red-500 hover:shadow-[0_4px_15px_rgba(239,68,68,0.15)] rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition-all group"
+                          className="bg-white/40 backdrop-blur-md border border-white/60 hover:bg-white/60 hover:border-red-400 hover:shadow-[0_4px_15px_rgba(239,68,68,0.2)] rounded-2xl p-3 flex flex-col items-center justify-center gap-2 transition-all group shadow-sm"
                         >
                           <div className="p-2 bg-red-50 text-red-500 rounded-full group-hover:scale-110 transition-transform">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={dept.icon}></path></svg>
@@ -467,7 +470,7 @@ export default function GlobalTelemedicineFAB() {
                   <div className="space-y-4">
                     <button 
                       onClick={() => handleUrgencySelect("urgent")}
-                      className="w-full bg-white border-2 border-slate-200 hover:border-red-500 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-sm hover:shadow-md group relative overflow-hidden"
+                      className="w-full bg-white/40 backdrop-blur-md border border-white/60 hover:bg-white/60 hover:border-red-400 rounded-3xl p-6 text-left flex items-center gap-6 transition-all shadow-sm hover:shadow-lg group relative overflow-hidden"
                     >
                       <div className="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
@@ -480,7 +483,7 @@ export default function GlobalTelemedicineFAB() {
 
                     <button 
                       onClick={() => handleUrgencySelect("schedule")}
-                      className="w-full bg-white border-2 border-slate-200 hover:border-teal-500 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-sm hover:shadow-md group relative overflow-hidden"
+                      className="w-full bg-white/40 backdrop-blur-md border border-white/60 hover:bg-white/60 hover:border-teal-400 rounded-3xl p-6 text-left flex items-center gap-6 transition-all shadow-sm hover:shadow-lg group relative overflow-hidden"
                     >
                       <div className="w-14 h-14 bg-teal-50 text-teal-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
