@@ -8,7 +8,15 @@ import { useAutosave } from '@/hooks/useAutosave';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import ImageUpload from '@/components/ImageUpload';
+import MultiImageUploader from '@/components/MultiImageUploader';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
+import TelemedicineSettings from '@/components/TelemedicineSettings';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
+import AvailabilitySettings from '@/components/AvailabilitySettings';
+import SecureMedicalVault from '@/components/SecureMedicalVault';
+import DoctorAppointments from '@/components/DoctorAppointments';
+import PatientRecordsCRM from '@/components/PatientRecordsCRM';
 import InviteWidget from '@/components/InviteWidget';
 import DoctorStatusToggle from '@/components/DoctorStatusToggle';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
@@ -39,7 +47,7 @@ export default function DoctorDashboard() {
       collegeName: "SCB Medical College"
     }
   ]);
-  const qualificationsSaveStatus = useAutosave(qualificationsData, 1000);
+  const qualificationsSaveStatus = useAutosave(qualificationsData, doctorUid, "qualifications", 1000);
 
   const addQualification = () => {
     setQualificationsData(prev => [...prev, { degreeName: "", passingYear: "", collegeId: "", collegeName: "" }]);
@@ -79,7 +87,7 @@ export default function DoctorDashboard() {
     specialityId: "",
     specialityName: ""
   });
-  const identitySaveStatus = useAutosave(identityData, 1000);
+  const identitySaveStatus = useAutosave(identityData, doctorUid, "basicInfo", 1000);
 
   // Practice Location State
   const [locationAddress, setLocationAddress] = useState<AddressData>({
@@ -91,7 +99,7 @@ export default function DoctorDashboard() {
     pincode: "751001",
     localAddress: "Unit 15, Near Sainik School"
   });
-  const locationSaveStatus = useAutosave(locationAddress, 1000);
+  const locationSaveStatus = useAutosave(locationAddress, doctorUid, "locationAddress", 1000);
 
   // Experience State
   const [experienceData, setExperienceData] = useState([
@@ -102,7 +110,7 @@ export default function DoctorDashboard() {
       duration: "2015-2020"
     }
   ]);
-  const experienceSaveStatus = useAutosave(experienceData, 1000);
+  const experienceSaveStatus = useAutosave(experienceData, doctorUid, "experience", 1000);
 
   const addExperience = () => setExperienceData(prev => [...prev, { hospitalId: "", hospitalName: "", position: "", duration: "" }]);
   const removeExperience = (index: number) => setExperienceData(prev => prev.filter((_, i) => i !== index));
@@ -123,7 +131,7 @@ export default function DoctorDashboard() {
       publicationYear: ""
     }
   ]);
-  const researchSaveStatus = useAutosave(researchData, 1000);
+  const researchSaveStatus = useAutosave(researchData, doctorUid, "research", 1000);
   const addResearch = () => setResearchData(prev => [...prev, { paperTitle: "", journalId: "", journalName: "", publicationYear: "" }]);
   const removeResearch = (index: number) => setResearchData(prev => prev.filter((_, i) => i !== index));
   const moveResearch = (index: number, direction: 'up' | 'down') => {
@@ -142,7 +150,7 @@ export default function DoctorDashboard() {
       role: ""
     }
   ]);
-  const membershipsSaveStatus = useAutosave(membershipsData, 1000);
+  const membershipsSaveStatus = useAutosave(membershipsData, doctorUid, "memberships", 1000);
   const addMembership = () => setMembershipsData(prev => [...prev, { associationId: "", associationName: "", role: "" }]);
   const removeMembership = (index: number) => setMembershipsData(prev => prev.filter((_, i) => i !== index));
   const moveMembership = (index: number, direction: 'up' | 'down') => {
@@ -161,7 +169,7 @@ export default function DoctorDashboard() {
       year: ""
     }
   ]);
-  const awardsSaveStatus = useAutosave(awardsData, 1000);
+  const awardsSaveStatus = useAutosave(awardsData, doctorUid, "awards", 1000);
   const addAward = () => setAwardsData(prev => [...prev, { awardName: "", awardingBody: "", year: "" }]);
   const removeAward = (index: number) => setAwardsData(prev => prev.filter((_, i) => i !== index));
   const moveAward = (index: number, direction: 'up' | 'down') => {
@@ -171,6 +179,17 @@ export default function DoctorDashboard() {
     setAwardsData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
   };
   const updateAward = (index: number, field: string, value: any) => setAwardsData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
+
+  // Specialties State
+  const [specialtiesData, setSpecialtiesData] = useState<{ id: string; name: string; isPrimary: boolean }[]>([
+    { id: '1', name: 'Cardiology', isPrimary: true },
+    { id: '2', name: 'Interventional Cardiology', isPrimary: false }
+  ]);
+  const specialtiesSaveStatus = useAutosave(specialtiesData, doctorUid, "specialties", 1000);
+  const addSpecialty = () => setSpecialtiesData(prev => [...prev, { id: Math.random().toString(), name: "", isPrimary: prev.length === 0 }]);
+  const removeSpecialty = (id: string) => setSpecialtiesData(prev => prev.filter(s => s.id !== id));
+  const updateSpecialty = (id: string, name: string) => setSpecialtiesData(prev => prev.map(s => s.id === id ? { ...s, name } : s));
+  const setPrimarySpecialty = (id: string) => setSpecialtiesData(prev => prev.map(s => ({ ...s, isPrimary: s.id === id })));
 
   // Bookings State
   const [bookingsData, setBookingsData] = useState({
@@ -198,9 +217,8 @@ export default function DoctorDashboard() {
     { id: "experience", label: "Experience & Positions", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> },
     { id: "locations", label: "Practice Locations", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> },
     { id: "research", label: "Research & Publications", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> },
-    { id: "memberships", label: "Memberships", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> },
     { id: "awards", label: "Awards & Achievements", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg> },
-    { id: "techniques", label: "Special Techniques", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg> },
+    { id: "specialties", label: "Specialties & Services", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg> },
 
     // 4. REPUTATION & REVENUE
     { id: "reviews", label: "Reviews & Ratings", section: "REPUTATION & REVENUE", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg> },
@@ -262,6 +280,41 @@ export default function DoctorDashboard() {
         {activeTab === "inquiries" && (
           <div className="w-full">
              <PatientLeadsWidget providerId={doctorUid} />
+          </div>
+        )}
+
+        {/* Tab: Patient Records (CRM) */}
+        {activeTab === "records" && (
+          <div className="w-full">
+             <PatientRecordsCRM providerId={doctorUid || ''} />
+          </div>
+        )}
+
+        {/* Tab: Appointments */}
+        {activeTab === "appointments" && (
+          <div className="w-full">
+             <DoctorAppointments providerId={doctorUid || ''} />
+          </div>
+        )}
+
+        {/* Tab: Telemedicine Clinic */}
+        {activeTab === "telemedicine" && (
+          <div className="w-full">
+             <TelemedicineSettings providerId={doctorUid} />
+          </div>
+        )}
+
+        {/* Tab: Secure Medical Vault */}
+        {activeTab === "vault" && (
+          <div className="w-full">
+             <SecureMedicalVault providerId={doctorUid || ''} />
+          </div>
+        )}
+
+        {/* Tab: Availability Settings */}
+        {activeTab === "settings" && (
+          <div className="w-full">
+             <AvailabilitySettings providerId={doctorUid || ''} />
           </div>
         )}
 
@@ -581,6 +634,25 @@ export default function DoctorDashboard() {
                     <input type="number" defaultValue="800" className="w-full bg-slate-900/5 backdrop-blur-md shadow-[inset_0_4px_8px_rgba(0,0,0,0.08),0_1px_1px_rgba(255,255,255,0.6)] border border-slate-900/5 rounded-xl px-5 py-3.5 text-sm text-slate-800 focus:bg-slate-900/10 focus:ring-2 focus:ring-slate-900/20 outline-none transition-all" />
                   </div>
                 </div>
+
+                <div className="mt-10 border-t border-slate-200/60 pt-8">
+                  <MultiImageUploader 
+                    providerId={doctorUid || undefined}
+                    initialImages={[
+                      "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                      "https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    ]}
+                    onUpload={async (urls) => {
+                      if (doctorUid) {
+                        try {
+                          await updateDoc(doc(db, 'directory', doctorUid), { galleryImages: urls });
+                        } catch (e) {
+                          console.error("Failed to save gallery URLs to directory:", e);
+                        }
+                      }
+                    }}
+                  />
+                </div>
               </div>
 
               <div className="flex items-center justify-between pt-6 border-t border-slate-100">
@@ -769,14 +841,145 @@ export default function DoctorDashboard() {
           </div>
         )}
 
-        {/* Catch-all for remaining tabs */}
-        {["awards", "techniques", "hobbies"].includes(activeTab) && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4 text-center py-20">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+        {/* Tab: Specialties & Services */}
+        {activeTab === "specialties" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Specialties & Services</h3>
+                <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">
+                  <AutosaveIndicator status={specialtiesSaveStatus} />
+                  Add specific treatments and surgeries you perform.
+                </p>
+              </div>
+              <button onClick={addSpecialty} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Service</button>
             </div>
-            <h3 className="font-bold text-slate-900 mb-1 capitalize">{activeTab} Modulue Skeleton</h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto">This section uses the exact same UI structure as the other tabs. You can easily duplicate the array field components here.</p>
+            
+            <div className="space-y-4">
+              {specialtiesData.map((spec) => (
+                <div key={spec.id} className="flex flex-col md:flex-row md:items-center gap-4 bg-white/50 backdrop-blur-md p-4 rounded-xl border border-white/60 shadow-sm transition-all group hover:bg-white hover:shadow-md">
+                  <div className="flex-1 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <input 
+                      type="text" 
+                      value={spec.name}
+                      onChange={(e) => updateSpecialty(spec.id, e.target.value)}
+                      placeholder="e.g. Knee Replacement Surgery" 
+                      className="w-full bg-transparent border-none focus:ring-0 outline-none font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-normal text-sm md:text-base" 
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto shrink-0 border-t md:border-t-0 border-slate-200 pt-3 md:pt-0">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="primarySpecialty" 
+                        checked={spec.isPrimary}
+                        onChange={() => setPrimarySpecialty(spec.id)}
+                        className="w-4 h-4 text-cyan-600 focus:ring-cyan-500 border-slate-300" 
+                      />
+                      <span className={`text-xs font-bold uppercase tracking-widest ${spec.isPrimary ? 'text-cyan-700' : 'text-slate-400'}`}>
+                        {spec.isPrimary ? 'Primary' : 'Make Primary'}
+                      </span>
+                    </label>
+                    <button 
+                      onClick={() => removeSpecialty(spec.id)} 
+                      className="text-slate-400 hover:text-red-500 p-2 transition-colors rounded-lg hover:bg-red-50"
+                      title="Remove Service"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+              
+              {specialtiesData.length === 0 && (
+                <div className="text-center py-10 bg-slate-50/50 rounded-xl border border-dashed border-slate-300">
+                  <p className="text-sm text-slate-500 mb-4">No specialties or services added yet.</p>
+                  <button onClick={addSpecialty} className="text-cyan-600 font-bold text-sm hover:underline">Add your first service</button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Awards & Achievements */}
+        {activeTab === "awards" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Awards & Achievements</h3>
+                <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">
+                  <AutosaveIndicator status={awardsSaveStatus} />
+                  Highlight your professional recognition.
+                </p>
+              </div>
+              <button onClick={addAward} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Award</button>
+            </div>
+            
+            <div className="space-y-6">
+              {awardsData.map((award, index) => (
+                <div key={index} className="border border-white/50 rounded-[24px] p-8 relative bg-white/20 backdrop-blur-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.5),0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-300 group hover:bg-white/40">
+                  <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                      <button onClick={() => moveAward(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7"></path></svg>
+                      </button>
+                      <div className="w-px bg-slate-300"></div>
+                      <button onClick={() => moveAward(index, 'down')} disabled={index === awardsData.length - 1} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === awardsData.length - 1 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Down">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                      </button>
+                    </div>
+                    <button onClick={() => removeAward(index)} className="px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Award">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Remove
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
+                      <label className="block text-sm font-semibold text-slate-800 mb-2">Award / Title Name</label>
+                      <input 
+                        type="text" 
+                        value={award.awardName}
+                        onChange={(e) => updateAward(index, 'awardName', e.target.value)}
+                        placeholder="e.g. Best Surgeon Award" 
+                        className="w-full bg-slate-900/5 backdrop-blur-md shadow-[inset_0_4px_8px_rgba(0,0,0,0.08),0_1px_1px_rgba(255,255,255,0.6)] border border-slate-900/5 rounded-xl px-5 py-3.5 text-sm text-slate-800 focus:bg-slate-900/10 focus:ring-2 focus:ring-slate-900/20 outline-none transition-all" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-800 mb-2">Year</label>
+                      <input 
+                        type="number" 
+                        value={award.year}
+                        onChange={(e) => updateAward(index, 'year', e.target.value)}
+                        placeholder="e.g. 2024" 
+                        className="w-full bg-slate-900/5 backdrop-blur-md shadow-[inset_0_4px_8px_rgba(0,0,0,0.08),0_1px_1px_rgba(255,255,255,0.6)] border border-slate-900/5 rounded-xl px-5 py-3.5 text-sm text-slate-800 focus:bg-slate-900/10 focus:ring-2 focus:ring-slate-900/20 outline-none transition-all" 
+                      />
+                    </div>
+                    <div className="md:col-span-2 lg:col-span-3">
+                      <label className="block text-sm font-semibold text-slate-800 mb-2">Awarding Organization</label>
+                      <input 
+                        type="text" 
+                        value={award.awardingBody}
+                        onChange={(e) => updateAward(index, 'awardingBody', e.target.value)}
+                        placeholder="e.g. Medical Council of India" 
+                        className="w-full bg-slate-900/5 backdrop-blur-md shadow-[inset_0_4px_8px_rgba(0,0,0,0.08),0_1px_1px_rgba(255,255,255,0.6)] border border-slate-900/5 rounded-xl px-5 py-3.5 text-sm text-slate-800 focus:bg-slate-900/10 focus:ring-2 focus:ring-slate-900/20 outline-none transition-all" 
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {awardsData.length === 0 && (
+                <div className="text-center py-10 bg-slate-50/50 rounded-xl border border-dashed border-slate-300">
+                  <p className="text-sm text-slate-500 mb-4">No awards added yet.</p>
+                  <button onClick={addAward} className="text-cyan-600 font-bold text-sm hover:underline">Add your first award</button>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

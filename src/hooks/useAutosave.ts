@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { db } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
-export function useAutosave<T>(data: T, delay: number = 1000) {
+export function useAutosave<T>(data: T, docId: string | null, fieldPath: string, delay: number = 1000) {
   const [status, setStatus] = useState<SaveStatus>('idle');
   const initialRender = useRef(true);
 
@@ -16,18 +18,23 @@ export function useAutosave<T>(data: T, delay: number = 1000) {
     setStatus('saving');
 
     const handler = setTimeout(async () => {
+      if (!docId) {
+        setStatus('error');
+        return;
+      }
+
       try {
-        // Here we would normally make a fetch/Firebase call
-        // await db.collection('doctors').doc(userId).set(data, { merge: true });
+        const docRef = doc(db, 'directory', docId);
+        // Create an object with dynamic key for fieldPath
+        const updateData = { [fieldPath]: data };
         
-        // Mock network delay
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await setDoc(docRef, updateData, { merge: true });
         
         setStatus('saved');
         
-        // Reset to idle after a few seconds of showing the success checkmark
         setTimeout(() => setStatus('idle'), 3000);
       } catch (err) {
+        console.error("Autosave error:", err);
         setStatus('error');
       }
     }, delay);
@@ -35,7 +42,7 @@ export function useAutosave<T>(data: T, delay: number = 1000) {
     return () => {
       clearTimeout(handler);
     };
-  }, [data, delay]); // re-run whenever `data` changes
+  }, [data, delay, docId, fieldPath]);
 
   return status;
 }
