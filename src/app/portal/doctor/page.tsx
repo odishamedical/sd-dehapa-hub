@@ -12,7 +12,7 @@ import MultiImageUploader from '@/components/MultiImageUploader';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import TelemedicineSettings from '@/components/TelemedicineSettings';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import AvailabilitySettings from '@/components/AvailabilitySettings';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorAppointments from '@/components/DoctorAppointments';
@@ -26,6 +26,8 @@ export default function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
   const [doctorUid, setDoctorUid] = useState<string | null>(null);
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+  const [profileData, setProfileData] = useState<any>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
@@ -38,15 +40,37 @@ export default function DoctorDashboard() {
     }
   }, []);
 
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      if (!doctorUid) return;
+      try {
+        const docRef = doc(db, 'directory', doctorUid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfileData(data);
+          
+          if (data.basicInfo) setIdentityData(data.basicInfo);
+          if (data.qualifications) setQualificationsData(data.qualifications);
+          if (data.locationAddress) setLocationAddress(data.locationAddress);
+          if (data.experience) setExperienceData(data.experience);
+          if (data.research) setResearchData(data.research);
+          if (data.memberships) setMembershipsData(data.memberships);
+          if (data.awards) setAwardsData(data.awards);
+          if (data.specialties) setSpecialtiesData(data.specialties);
+          // bindings
+        }
+      } catch (err) {
+        console.error("Failed to fetch doctor profile", err);
+      } finally {
+        setIsProfileLoaded(true);
+      }
+    };
+    fetchProfile();
+  }, [doctorUid]);
+
   // Autosave State for Qualifications Tab
-  const [qualificationsData, setQualificationsData] = useState([
-    {
-      degreeName: "MBBS",
-      passingYear: "2010",
-      collegeId: "",
-      collegeName: "SCB Medical College"
-    }
-  ]);
+  const [qualificationsData, setQualificationsData] = useState<any[]>([]);
   const qualificationsSaveStatus = useAutosave(qualificationsData, doctorUid, "qualifications", 1000);
 
   const addQualification = () => {
@@ -93,23 +117,16 @@ export default function DoctorDashboard() {
   const [locationAddress, setLocationAddress] = useState<AddressData>({
     country: "India",
     state: "Odisha",
-    district: "Khordha",
+    district: "",
     block: "",
-    city: "Bhubaneswar",
-    pincode: "751001",
-    localAddress: "Unit 15, Near Sainik School"
+    city: "",
+    pincode: "",
+    localAddress: ""
   });
   const locationSaveStatus = useAutosave(locationAddress, doctorUid, "locationAddress", 1000);
 
   // Experience State
-  const [experienceData, setExperienceData] = useState([
-    {
-      hospitalId: "",
-      hospitalName: "Apollo Hospitals",
-      position: "Head of Cardiology",
-      duration: "2015-2020"
-    }
-  ]);
+  const [experienceData, setExperienceData] = useState<any[]>([]);
   const experienceSaveStatus = useAutosave(experienceData, doctorUid, "experience", 1000);
 
   const addExperience = () => setExperienceData(prev => [...prev, { hospitalId: "", hospitalName: "", position: "", duration: "" }]);
@@ -123,14 +140,7 @@ export default function DoctorDashboard() {
   const updateExperience = (index: number, field: string, value: any) => setExperienceData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
 
   // Research State
-  const [researchData, setResearchData] = useState([
-    {
-      paperTitle: "",
-      journalId: "",
-      journalName: "",
-      publicationYear: ""
-    }
-  ]);
+  const [researchData, setResearchData] = useState<any[]>([]);
   const researchSaveStatus = useAutosave(researchData, doctorUid, "research", 1000);
   const addResearch = () => setResearchData(prev => [...prev, { paperTitle: "", journalId: "", journalName: "", publicationYear: "" }]);
   const removeResearch = (index: number) => setResearchData(prev => prev.filter((_, i) => i !== index));
@@ -143,13 +153,7 @@ export default function DoctorDashboard() {
   const updateResearch = (index: number, field: string, value: any) => setResearchData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
 
   // Memberships State
-  const [membershipsData, setMembershipsData] = useState([
-    {
-      associationId: "",
-      associationName: "",
-      role: ""
-    }
-  ]);
+  const [membershipsData, setMembershipsData] = useState<any[]>([]);
   const membershipsSaveStatus = useAutosave(membershipsData, doctorUid, "memberships", 1000);
   const addMembership = () => setMembershipsData(prev => [...prev, { associationId: "", associationName: "", role: "" }]);
   const removeMembership = (index: number) => setMembershipsData(prev => prev.filter((_, i) => i !== index));
@@ -162,13 +166,7 @@ export default function DoctorDashboard() {
   const updateMembership = (index: number, field: string, value: any) => setMembershipsData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
 
   // Awards State
-  const [awardsData, setAwardsData] = useState([
-    {
-      awardName: "",
-      awardingBody: "",
-      year: ""
-    }
-  ]);
+  const [awardsData, setAwardsData] = useState<any[]>([]);
   const awardsSaveStatus = useAutosave(awardsData, doctorUid, "awards", 1000);
   const addAward = () => setAwardsData(prev => [...prev, { awardName: "", awardingBody: "", year: "" }]);
   const removeAward = (index: number) => setAwardsData(prev => prev.filter((_, i) => i !== index));
@@ -181,10 +179,7 @@ export default function DoctorDashboard() {
   const updateAward = (index: number, field: string, value: any) => setAwardsData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
 
   // Specialties State
-  const [specialtiesData, setSpecialtiesData] = useState<{ id: string; name: string; isPrimary: boolean }[]>([
-    { id: '1', name: 'Cardiology', isPrimary: true },
-    { id: '2', name: 'Interventional Cardiology', isPrimary: false }
-  ]);
+  const [specialtiesData, setSpecialtiesData] = useState<{ id: string; name: string; isPrimary: boolean }[]>([]);
   const specialtiesSaveStatus = useAutosave(specialtiesData, doctorUid, "specialties", 1000);
   const addSpecialty = () => setSpecialtiesData(prev => [...prev, { id: Math.random().toString(), name: "", isPrimary: prev.length === 0 }]);
   const removeSpecialty = (id: string) => setSpecialtiesData(prev => prev.filter(s => s.id !== id));
@@ -228,7 +223,44 @@ export default function DoctorDashboard() {
     { id: "account_settings", label: "General Settings", section: "ACCOUNT SETTINGS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> }
   ];
 
-  if (!doctorUid) return null;
+  
+  // Dynamic Profile Metrics
+  const calculateProfileStrength = () => {
+    let score = 0;
+    if (identityData?.fullName) score += 20;
+    if (identityData?.profilePhoto) score += 20;
+    if (identityData?.phone) score += 10;
+    if (qualificationsData?.length > 0) score += 25;
+    if (locationAddress?.city) score += 25;
+    return score;
+  };
+  
+  const getPendingActions = () => {
+    const actions = [];
+    if (!identityData?.fullName) actions.push({ id: 'a1', label: 'Add Full Name', tabId: 'identity' });
+    if (!identityData?.profilePhoto) actions.push({ id: 'a2', label: 'Upload Profile Photo', tabId: 'identity' });
+    if (!qualificationsData || qualificationsData.length === 0) actions.push({ id: 'a3', label: 'Add Qualifications', tabId: 'qualifications' });
+    if (!locationAddress?.city) actions.push({ id: 'a4', label: 'Add Practice Locations', tabId: 'locations' });
+    return actions;
+  };
+  
+  const getCompletedActions = () => {
+    const actions = [];
+    if (identityData?.fullName) actions.push({ id: 'c1', label: 'Identity Information Added' });
+    if (identityData?.profilePhoto) actions.push({ id: 'c2', label: 'Profile Photo Uploaded' });
+    if (qualificationsData?.length > 0) actions.push({ id: 'c3', label: 'Qualifications Added' });
+    if (locationAddress?.city) actions.push({ id: 'c4', label: 'Locations Added' });
+    return actions;
+  };
+  
+  if (!doctorUid || !isProfileLoaded) {
+    return (
+      <div className="min-h-screen bg-[#040815] flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
 
   return (
     <>
@@ -239,26 +271,19 @@ export default function DoctorDashboard() {
         activeTab={activeTab} 
         onTabChange={setActiveTab}
         userProfile={{
-          name: "Dr. Sandeep Sharma",
-          subtitle: "MBBS, MD - Cardiology",
-          image: "https://i.pravatar.cc/150?u=a042581f4e29026704d" // Mock image
+          name: profileData?.basicInfo?.fullName || profileData?.name || "Dr. Unnamed Profile",
+          subtitle: profileData?.basicInfo?.specialityName || profileData?.speciality || "Update your identity info",
+          image: profileData?.basicInfo?.profilePhoto || profileData?.image || null
         }}
         homeWidget={
           <DashboardHomeGrid 
             onNavigate={setActiveTab} 
             tabs={doctorTabs}
-            profileStrength={35}
+            profileStrength={calculateProfileStrength()}
             profileTitle="Profile Strength"
             profileSubtitle="Complete your profile to unlock the 'Verified DehaPa Doctor' badge."
-            pendingActions={[
-              { id: '1', label: 'Add Medical Registration No.', tabId: 'identity' },
-              { id: '2', label: 'Add Practice Locations', tabId: 'locations' },
-              { id: '3', label: 'Upload Profile Photo', tabId: 'identity' }
-            ]}
-            completedActions={[
-              { id: 'c1', label: 'Basic Identity Added' },
-              { id: 'c2', label: 'Qualifications Saved' }
-            ]}
+            pendingActions={getPendingActions()}
+            completedActions={getCompletedActions()}
             topRightWidget={<InviteWidget userUid={null} />}
             middleRightWidget={<DoctorStatusToggle />}
           />
