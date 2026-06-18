@@ -30,10 +30,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locationS
         doctorData = docSnap.data();
       }
     } else if (slug.length === 1) {
-      const q = query(collection(db, 'directory'), where('customSlug', '==', slug[0]), limit(1));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        doctorData = querySnapshot.docs[0].data();
+      if (slug[0].startsWith('ChIJ') || slug[0].length > 20) {
+        const docRef = doc(db, 'directory', slug[0]);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          doctorData = docSnap.data();
+        }
+      } else {
+        const q = query(collection(db, 'directory'), where('customSlug', '==', slug[0]), limit(1));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          doctorData = querySnapshot.docs[0].data();
+        }
       }
     }
 
@@ -77,6 +85,10 @@ export default async function DoctorsRoute({ params }: { params: Promise<{ locat
   }
 
   if (slug.length === 1 && !["india", "usa", "uae", "australia", "england"].includes(slug[0].toLowerCase())) {
+    // It could be a Google Place ID (starts with ChIJ) or a custom slug
+    if (slug[0].startsWith('ChIJ') || slug[0].length > 20) {
+      return <DoctorProfileView id={slug[0]} />;
+    }
     // Premium Custom Slug detected! (e.g., /doctors/dr-milan)
     return <DoctorProfileView customSlug={slug[0]} />;
   }
