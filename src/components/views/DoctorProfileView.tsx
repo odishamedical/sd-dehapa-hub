@@ -90,7 +90,9 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
               address: rawData.address || notVerified,
               phone: rawData.phone || notVerified,
               website: rawData.website || notVerified,
-              mapUrl: rawData.mapUrl || (rawData.clinicMapUrl ? `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name)}&t=&z=15&ie=UTF8&iwloc=&output=embed` : null) || `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+              mapUrl: (rawData.mapUrl || rawData.clinicMapUrl || "").includes('output=embed') || (rawData.mapUrl || rawData.clinicMapUrl || "").includes('pb=') 
+                ? (rawData.mapUrl || rawData.clinicMapUrl)
+                : `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`
             },
             hours: rawData.hours || [
               { day: "Operating Hours", time: notVerified }
@@ -393,19 +395,8 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                   </div>
                 )}
 
-                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] border border-slate-700/50 shadow-xl overflow-hidden">
-                  <div className="w-full h-80 bg-slate-800 relative">
-                    <iframe 
-                      src={doctor.clinic.mapUrl} 
-                      width="100%" 
-                      height="100%" 
-                      style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }} 
-                      allowFullScreen 
-                      loading="lazy" 
-                      referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
-                  </div>
-                  <div className="p-8 md:p-10">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] border border-slate-700/50 shadow-xl overflow-hidden flex flex-col">
+                  <div className="p-8 md:p-10 border-b border-slate-700/50">
                     <h3 className="font-bold text-2xl text-white mb-2 font-serif">
                       <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest block mb-2">Primary Clinic</span>
                       {doctor.clinic.name}
@@ -423,7 +414,31 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                           />
                         </div>
                       </div>
+                      
+                      {doctor.clinic.phone && doctor.clinic.phone !== "Not available (Not verified)" && (
+                        <div className="flex items-start gap-4">
+                          <svg className="w-6 h-6 text-teal-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                          <div className="text-base font-bold text-slate-300 leading-relaxed">
+                            <InlineEditField 
+                              value={doctor.clinic.phone} 
+                              onSave={(val) => handleInlineSave('phone', val)} 
+                              isEditMode={isEditMode} 
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  </div>
+                  <div className="w-full h-80 bg-slate-800 relative">
+                    <iframe 
+                      src={doctor.clinic.mapUrl} 
+                      width="100%" 
+                      height="100%" 
+                      style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }} 
+                      allowFullScreen 
+                      loading="lazy" 
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
                   </div>
                 </div>
 
