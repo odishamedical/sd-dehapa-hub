@@ -137,9 +137,25 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             const adsQuery = query(collection(db, 'platform_ads'), where('active', '==', true));
             const adsSnap = await getDocs(adsQuery);
             const adsData: any = {};
+            
+            // 1. First pass: Apply global ads
             adsSnap.forEach(d => {
-              if (d.data().slot) adsData[d.data().slot] = d.data();
+              const ad = d.data();
+              const slot = ad.slot || ad.slotId;
+              if (slot && (ad.targetType === 'global' || !ad.targetType)) {
+                adsData[slot] = ad;
+              }
             });
+
+            // 2. Second pass: Override with specific profile ads if they match docId
+            adsSnap.forEach(d => {
+              const ad = d.data();
+              const slot = ad.slot || ad.slotId;
+              if (slot && ad.targetType === 'specific_profile' && ad.targetId === docId) {
+                adsData[slot] = ad; // Overrides the global ad
+              }
+            });
+            
             setPlatformAds(adsData);
           } catch(e) {
             console.error("Ads fetch failed", e);

@@ -16,6 +16,7 @@ import AdminWhatsAppDashboard from '@/components/AdminWhatsAppDashboard';
 import AdminAnalyticsOverview from '@/components/AdminAnalyticsOverview';
 import AdminSupportTickets from '@/components/AdminSupportTickets';
 import AdminViralAnalytics from '@/components/AdminViralAnalytics';
+import AdminAdEngine from '@/components/AdminAdEngine';
 
 interface StagedListing {
   id: string;
@@ -287,6 +288,13 @@ export default function AdminDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
     },
     {
+      id: "ads",
+      label: "Ad Engine",
+      section: "Marketing",
+      badge: "New",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+    },
+    {
       id: "verification",
       label: "Verification Queue",
       section: "User Management",
@@ -398,6 +406,10 @@ export default function AdminDashboard() {
 
           {activeTab === "support" && (
             <AdminSupportTickets />
+          )}
+
+          {activeTab === "ads" && (
+            <AdminAdEngine />
           )}
 
           {activeTab === "viral-analytics" && (
