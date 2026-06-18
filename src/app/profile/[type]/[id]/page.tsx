@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import HorizontalScrollGallery from '@/components/HorizontalScrollGallery';
 
 // Mock DB Fetch
 const getMockProfile = (type: string, id: string) => {
@@ -19,7 +20,13 @@ const getMockProfile = (type: string, id: string) => {
           { label: "Registration", value: "Medical Council of India" },
           { label: "Languages", value: "English, Hindi, Odia" }
         ],
-        roster: ["Apollo Hospital, Bhubaneswar", "Sparsh Hospital, Bhubaneswar"]
+        roster: ["Apollo Hospital, Bhubaneswar", "Sparsh Hospital, Bhubaneswar"],
+        rawImages: [
+          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2070&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+        ],
       };
     }
     if (id === 'dr-satyabrata-das') {
@@ -35,7 +42,13 @@ const getMockProfile = (type: string, id: string) => {
           { label: "Specialty", value: "Oncoplastic, Thoracic, Hepatobiliary" },
           { label: "Languages", value: "English, Hindi, Odia" }
         ],
-        roster: ["Utkal Hospital, Bhubaneswar"]
+        roster: ["Utkal Hospital, Bhubaneswar"],
+        rawImages: [
+          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2070&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+        ],
       };
     }
     if (id === 'dr-sunil-sharma') {
@@ -51,7 +64,13 @@ const getMockProfile = (type: string, id: string) => {
           { label: "Specialty", value: "Invasive Cardiology" },
           { label: "Languages", value: "English, Hindi, Odia" }
         ],
-        roster: ["VIMSAR, Burla", "Sambalpur Heart Clinic"]
+        roster: ["VIMSAR, Burla", "Sambalpur Heart Clinic"],
+        rawImages: [
+          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2070&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+        ],
       };
     }
     if (id === 'dr-bansidhar-mulia') {
@@ -67,7 +86,13 @@ const getMockProfile = (type: string, id: string) => {
           { label: "Specialty", value: "Aesthetic Surgery, Trauma & Microsurgery" },
           { label: "Languages", value: "English, Hindi, Odia" }
         ],
-        roster: ["Pradyumna Bal Memorial Hospital", "KIMS, Bhubaneswar"]
+        roster: ["Pradyumna Bal Memorial Hospital", "KIMS, Bhubaneswar"],
+        rawImages: [
+          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2070&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+        ],
       };
     }
 
@@ -83,7 +108,13 @@ const getMockProfile = (type: string, id: string) => {
         { label: "Registration", value: "MCI-12345" },
         { label: "Languages", value: "English, Hindi, Odia" }
       ],
-      roster: ["Apollo Super Specialty, Bhubaneswar", "LifeCare Clinic, Sambalpur"]
+      roster: ["Apollo Super Specialty, Bhubaneswar", "LifeCare Clinic, Sambalpur"],
+      rawImages: [
+          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2070&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+        ],
     };
   }
   
@@ -100,7 +131,13 @@ const getMockProfile = (type: string, id: string) => {
         { label: "License No", value: "HOSP/2010/89" },
         { label: "Insurance Accepted", value: "Star Health, HDFC Ergo, BSKY" }
       ],
-      roster: ["Cardiology", "Neurology", "Orthopedics", "Emergency Medicine"]
+      roster: ["Cardiology", "Neurology", "Orthopedics", "Emergency Medicine"],
+      rawImages: [
+          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2070&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+        ],
     };
   }
 
@@ -122,11 +159,35 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    // Simulate API delay
-    const timer = setTimeout(() => {
+    const fetchProfile = async () => {
+      try {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const { db } = await import('@/lib/firebase');
+        const docRef = doc(db, 'directory', unwrappedParams.id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfile({
+            ...data,
+            name: data.name || data.basicInfo?.fullName || "Unnamed",
+            subtitle: data.category || data.basicInfo?.specialityName || "Medical Professional",
+            image: data.image || data.basicInfo?.profilePhoto || "",
+            about: data.about || data.description || "No description provided.",
+            stats: { rating: "4.5", status: "Active" },
+            details: [],
+            roster: [],
+            verified: data.verified || false,
+            galleryImages: data.galleryImages || [],
+            rawImages: data.rawImages || []
+          });
+          return;
+        }
+      } catch(err) {
+        console.log("Failed to fetch from DB, falling back to mock", err);
+      }
       setProfile(getMockProfile(unwrappedParams.type, unwrappedParams.id));
-    }, 500);
-    return () => clearTimeout(timer);
+    };
+    fetchProfile();
   }, [unwrappedParams.type, unwrappedParams.id]);
 
   if (!profile) {
@@ -228,6 +289,10 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
               </h3>
               <p className="text-slate-600 leading-relaxed text-lg">{profile.about}</p>
             </section>
+            
+            <HorizontalScrollGallery images={profile.galleryImages?.length > 0 ? profile.galleryImages : (profile.rawImages || [])} />
+            
+            <HorizontalScrollGallery images={profile.galleryImages?.length > 0 ? profile.galleryImages : (profile.rawImages || [])} />
 
             {profile.roster.length > 0 && (
               <section className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
