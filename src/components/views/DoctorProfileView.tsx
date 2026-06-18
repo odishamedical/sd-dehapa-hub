@@ -28,13 +28,25 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
 
   // UX Tabs State
   const [activeTab, setActiveTab] = useState<'overview' | 'locations' | 'experience' | 'research' | 'media'>('locations');
+  const [showUnverifiedModal, setShowUnverifiedModal] = useState(false);
 
   const handleInlineSave = async (field: string, value: any) => {
     if (!doctor || !doctor.id) return;
     try {
       const docRef = doc(db, 'directory', doctor.id);
       await updateDoc(docRef, { [field]: value });
-      setDoctor((prev: any) => ({ ...prev, [field]: value }));
+      
+      setDoctor((prev: any) => {
+        const updated = { ...prev, [field]: value };
+        // Sync root fields with the nested clinic object so the UI updates instantly
+        if (field === 'address' || field === 'phone' || field === 'website' || field === 'clinicName') {
+           updated.clinic = {
+             ...prev.clinic,
+             [field === 'clinicName' ? 'name' : field]: value
+           };
+        }
+        return updated;
+      });
     } catch (err) {
       console.error("Failed to save field:", err);
       alert("Failed to save changes.");
@@ -630,9 +642,15 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                       providerType="Doctor" 
                     />
                  </div>
-                 <Link href={`/portal/patient/book/${doctor.id}`} className="w-full block text-center bg-white hover:bg-slate-100 text-slate-900 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md">
-                   Check Availability
-                 </Link>
+                 {doctor.verified ? (
+                   <Link href={`/portal/book?doctor=${doctor.id}`} className="w-full block text-center bg-white hover:bg-slate-100 text-slate-900 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md">
+                     Check Availability
+                   </Link>
+                 ) : (
+                   <button onClick={() => setShowUnverifiedModal(true)} className="w-full block text-center bg-white hover:bg-slate-100 text-slate-900 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md">
+                     Check Availability
+                   </button>
+                 )}
                </div>
                
                <div className="mt-8 pt-6 border-t border-slate-700/50 relative z-10">
@@ -642,6 +660,30 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                  </div>
                </div>
             </div>
+
+            {/* Unverified Modal Overlay */}
+            {showUnverifiedModal && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowUnverifiedModal(false)}></div>
+                <div className="bg-slate-900 border border-slate-700/50 rounded-3xl p-8 max-w-md w-full relative z-10 shadow-2xl animate-in zoom-in-95 duration-200">
+                  <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-amber-500/20">
+                    <svg className="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white text-center mb-4 font-serif">Doctor Unverified</h3>
+                  <p className="text-slate-400 text-center mb-8 leading-relaxed">
+                    This doctor has not yet claimed their DehaPa profile. Please contact their clinic directly using the phone number provided, or browse our list of officially verified doctors for instant booking.
+                  </p>
+                  <div className="space-y-3">
+                    <button onClick={() => setShowUnverifiedModal(false)} className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors">
+                      Okay, Got it
+                    </button>
+                    <Link href="/search?verified=true" className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-bold transition-colors flex items-center justify-center block text-center">
+                      Find Verified Doctors
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Similar Doctors */}
             {similarDoctors.length > 0 && (
