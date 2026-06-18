@@ -73,7 +73,7 @@ export default function DehapaHome() {
     <main className="min-h-screen bg-[#020810] font-sans selection:bg-teal-500/30 overflow-x-hidden text-slate-100">
       
       {/* 1. HERO SECTION (The Gateway) - Futuristic Edition */}
-      <section className="relative pt-20 pb-24 lg:pt-28 lg:pb-36 overflow-hidden">
+      <section className="relative pt-12 pb-12 lg:pt-28 lg:pb-36 overflow-hidden">
         {/* Dynamic Holographic Background Matrix */}
         <div className="absolute inset-0 bg-[#020810] z-0">
           {/* Animated Grid */}
@@ -101,7 +101,7 @@ export default function DehapaHome() {
             The Future of <br className="hidden sm:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-blue-500 animate-gradient-x">Integrated Healthcare.</span>
           </h1>
-          <p className="text-base sm:text-xl lg:text-2xl text-slate-400 max-w-3xl mx-auto font-medium mb-16 drop-shadow-sm">
+          <p className="text-base sm:text-xl lg:text-2xl text-slate-400 max-w-3xl mx-auto font-medium mb-8 lg:mb-16 drop-shadow-sm">
             Access world-class specialists, live hospital metrics, and instant emergency response through a single unified portal.
           </p>
 
@@ -336,7 +336,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 2. CORE SERVICE TICKETS (Futuristic Cards) */}
-      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-16 mb-16">
+      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-8 lg:-mt-16 mb-8 lg:mb-16">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
           
           {[
@@ -350,7 +350,7 @@ export default function DehapaHome() {
             <Link 
               key={i} 
               href={item.href}
-              className={`group relative flex flex-col items-start justify-between min-h-[220px] sm:min-h-[260px] bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-8 overflow-hidden transition-all duration-700 hover:-translate-y-4 hover:bg-slate-800/80 hover:border-slate-500 hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.1)]`}
+              className={`group relative flex flex-col items-start justify-between min-h-[180px] sm:min-h-[260px] bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-5 sm:p-8 overflow-hidden transition-all duration-700 hover:-translate-y-4 hover:bg-slate-800/80 hover:border-slate-500 hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.1)]`}
               onClick={(e) => {
                 if (item.action) {
                   e.preventDefault();
@@ -388,14 +388,14 @@ export default function DehapaHome() {
       </section>
 
       {/* 3. UBER-LIKE AMBULANCE PING (Holographic Map) */}
-      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-8 mb-16 scroll-mt-24 relative">
+      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-4 lg:py-8 mb-8 lg:mb-16 scroll-mt-24 relative">
         {/* Background ambient glow for map section */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[500px] bg-red-900/10 blur-[150px] pointer-events-none rounded-full"></div>
 
         <div className="bg-slate-900/80 backdrop-blur-2xl rounded-[3rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-slate-700/50 flex flex-col lg:flex-row relative z-10">
           
           {/* Left Side: Cyberpunk Interface */}
-          <div className="w-full lg:w-5/12 p-8 sm:p-12 lg:p-20 flex flex-col justify-center relative z-20 border-r border-slate-800">
+          <div className="w-full lg:w-5/12 p-6 sm:p-12 lg:p-20 flex flex-col justify-center relative z-20 border-r border-slate-800">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-black uppercase tracking-widest mb-8 w-max shadow-[0_0_15px_rgba(239,68,68,0.2)]">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
               Emergency Override
@@ -403,7 +403,7 @@ export default function DehapaHome() {
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-white mb-6 leading-tight drop-shadow-lg">
               Hyper-Speed <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">Dispatch.</span>
             </h2>
-            <p className="text-slate-400 text-base sm:text-lg mb-12 leading-relaxed">
+            <p className="text-slate-400 text-base sm:text-lg mb-8 sm:mb-12 leading-relaxed">
               Our satellite-linked ping system instantly alerts all DehaPa emergency vehicles within a 5km radius. Live holographic tracking engaged.
             </p>
             
@@ -449,12 +449,12 @@ export default function DehapaHome() {
           </div>
 
           {/* Right Side: Holographic Radar Map */}
-          <div className="w-full lg:w-7/12 min-h-[500px] lg:min-h-full bg-[#030b14] relative overflow-hidden flex items-center justify-center">
+          <div className="w-full lg:w-7/12 min-h-[300px] lg:min-h-full bg-[#030b14] relative overflow-hidden flex items-center justify-center py-10 lg:py-0">
             {/* Base Dark Map Grid */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.1)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-30"></div>
             
             {/* The Radar Circle */}
-            <div className="relative w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full border border-teal-500/20 shadow-[inset_0_0_50px_rgba(20,184,166,0.1)] flex items-center justify-center">
+            <div className="relative w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] lg:w-[600px] lg:h-[600px] rounded-full border border-teal-500/20 shadow-[inset_0_0_50px_rgba(20,184,166,0.1)] flex items-center justify-center">
               
               {/* Inner Rings */}
               <div className="absolute w-[66%] h-[66%] rounded-full border border-teal-500/20"></div>
@@ -500,7 +500,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 4. QR SMART CONNECTION (Cyber-Bridge) */}
-      <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-8 mb-16 relative">
+      <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-4 lg:py-8 mb-8 lg:mb-16 relative">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/connected.png')] opacity-5 pointer-events-none"></div>
 
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 relative z-10">
@@ -510,7 +510,7 @@ export default function DehapaHome() {
             {/* Ambient Background Glow */}
             <div className="absolute inset-0 bg-blue-500/10 blur-[100px] rounded-full"></div>
             
-            <div className="relative w-[320px] h-[650px] bg-slate-900 rounded-[3rem] border-8 border-slate-800 shadow-[0_30px_60px_rgba(0,0,0,0.6),inset_0_0_20px_rgba(255,255,255,0.1)] transform rotate-y-[-15deg] rotate-x-[5deg] hover:rotate-y-0 hover:rotate-x-0 transition-transform duration-1000 ease-out z-20 flex flex-col overflow-hidden group">
+            <div className="relative w-[240px] h-[480px] sm:w-[320px] sm:h-[650px] bg-slate-900 rounded-[3rem] border-8 border-slate-800 shadow-[0_30px_60px_rgba(0,0,0,0.6),inset_0_0_20px_rgba(255,255,255,0.1)] transform rotate-y-[-15deg] rotate-x-[5deg] hover:rotate-y-0 hover:rotate-x-0 transition-transform duration-1000 ease-out z-20 flex flex-col overflow-hidden group">
                
                {/* Phone Screen Notch */}
                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-xl z-50"></div>
@@ -541,7 +541,7 @@ export default function DehapaHome() {
             </div>
 
             {/* Floating Cyber QR Code */}
-            <div className="absolute top-[40%] right-[-5%] lg:right-[-10%] bg-slate-900 p-6 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.5),0_0_40px_rgba(34,211,238,0.2)] border border-cyan-500/30 z-30 transform rotate-12 hover:rotate-0 hover:scale-110 transition-all duration-700 animate-float">
+            <div className="absolute top-[40%] right-[-5%] lg:right-[-10%] bg-slate-900 p-4 sm:p-6 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.5),0_0_40px_rgba(34,211,238,0.2)] border border-cyan-500/30 z-30 transform rotate-12 hover:rotate-0 hover:scale-110 transition-all duration-700 animate-float">
               <QrCode className="w-32 h-32 text-cyan-400" />
               <div className="mt-4 border-t border-slate-700 pt-3 text-center">
                 <span className="text-white font-mono text-[10px] uppercase tracking-widest block font-bold">Node #A7X9</span>
@@ -567,7 +567,7 @@ export default function DehapaHome() {
                 { title: "Sovereign Health Vault Auth", desc: "Grant the doctor encrypted, temporary access to your medical history via cryptographic handshake." },
                 { title: "Frictionless Transactions", desc: "Process consultation fees via instant UPI payment without queuing at the physical counter." }
               ].map((feat, i) => (
-                <div key={i} className="flex gap-6 group bg-slate-800/30 p-6 rounded-3xl border border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all duration-500 cursor-default shadow-lg hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]">
+                <div key={i} className="flex gap-4 sm:gap-6 group bg-slate-800/30 p-4 sm:p-6 rounded-3xl border border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all duration-500 cursor-default shadow-lg hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]">
                   <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 group-hover:border-cyan-400 group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all">
                     <span className="text-cyan-400 font-black font-mono text-xl">0{i + 1}</span>
                   </div>
@@ -583,7 +583,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 5. INSTRUCTION PORTAL (Glassmorphic Tabs) */}
-      <section className="relative z-20 bg-slate-900/50 backdrop-blur-3xl border-t border-slate-800 py-16 mb-12">
+      <section className="relative z-20 bg-slate-900/50 backdrop-blur-3xl border-t border-slate-800 py-8 lg:py-16 mb-6 lg:mb-12">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 text-center">
           <h2 className="text-4xl sm:text-5xl font-black font-serif text-white mb-6">DehaPa Operating Protocols</h2>
           <p className="text-slate-400 mb-16 max-w-2xl mx-auto text-lg">Select your entity classification to download operational guidelines and access secure gateways.</p>
@@ -610,7 +610,7 @@ export default function DehapaHome() {
           </div>
 
           {/* Holographic Tab Content Box */}
-          <div className="max-w-6xl mx-auto bg-slate-900/80 border border-slate-700/50 rounded-[3rem] p-10 sm:p-16 text-left shadow-[0_30px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl relative overflow-hidden min-h-[400px]">
+          <div className="max-w-6xl mx-auto bg-slate-900/80 border border-slate-700/50 rounded-[3rem] p-6 sm:p-10 lg:p-16 text-left shadow-[0_30px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl relative overflow-hidden min-h-[400px]">
             {/* Grid overlay */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
@@ -619,16 +619,16 @@ export default function DehapaHome() {
                 <h3 className="text-3xl font-black text-white mb-10 flex items-center gap-4">
                   <UserCircle className="w-8 h-8 text-teal-400" /> Patient Lifecycle
                 </h3>
-                <div className="grid md:grid-cols-3 gap-10 mb-12">
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
+                <div className="grid md:grid-cols-3 gap-6 sm:gap-10 mb-8 sm:mb-12">
+                  <div className="bg-slate-800/50 p-6 sm:p-8 rounded-3xl border border-slate-700">
                     <h4 className="font-black text-teal-400 mb-4 text-xl">01 / Search & Locate</h4>
                     <p className="text-slate-400 leading-relaxed">Query the central database using the search matrix or core tickets to locate specialized care modules in your sector.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
+                  <div className="bg-slate-800/50 p-6 sm:p-8 rounded-3xl border border-slate-700">
                     <h4 className="font-black text-teal-400 mb-4 text-xl">02 / Secure Booking</h4>
                     <p className="text-slate-400 leading-relaxed">Lock in consultation slots digitally or use the physical clinic QR code to sync with the doctor's live queue dashboard.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
+                  <div className="bg-slate-800/50 p-6 sm:p-8 rounded-3xl border border-slate-700">
                     <h4 className="font-black text-teal-400 mb-4 text-xl">03 / Data Vault</h4>
                     <p className="text-slate-400 leading-relaxed">All digital prescriptions and diagnostic logs are automatically compiled and encrypted into your personal Sovereign Vault.</p>
                   </div>
