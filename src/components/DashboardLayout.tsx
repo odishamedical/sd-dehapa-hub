@@ -61,6 +61,7 @@ export default function DashboardLayout({
   };
 
   const [expandedHomeSections, setExpandedHomeSections] = useState<Record<string, boolean>>({});
+  const [showQRModal, setShowQRModal] = useState(false);
 
   const toggleHomeSection = (sectionName: string) => {
     setExpandedHomeSections(prev => {
@@ -80,20 +81,12 @@ export default function DashboardLayout({
   }, {} as Record<string, DashboardTab[]>);
 
   return (
-    <div className="min-h-screen bg-[#040815] text-slate-900 font-sans selection:bg-cyan-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
+    <>
+      <div className="min-h-screen bg-[#040815] text-slate-900 font-sans selection:bg-cyan-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
       
       {/* Sidebar Navigation - Floating Pill */}
       <aside className="w-[280px] bg-[#0a1229] text-slate-200 shrink-0 hidden md:flex flex-col h-[calc(100vh-32px)] sticky top-4 overflow-y-auto scrollbar-hide rounded-[24px] shadow-2xl shadow-cyan-900/10 border border-cyan-500/20">
-        <div className="p-6 border-b border-cyan-500/10">
-          <button onClick={() => onTabChange("home")} className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity">
-             <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-[0_0_15px_var(--tenant-accent-glow)]">
-               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-             </div>
-             <span className="font-serif font-bold tracking-widest uppercase text-sm leading-tight">
-               DehaPa <br/><span className="text-tenant-accent">{roleName}</span>
-             </span>
-          </button>
-        </div>
+        {/* The top 'DEHAPA DOCTOR DASHBOARD' box has been completely removed to save space */}
 
         {userProfile && (
           <div className="p-6 border-b border-cyan-500/10 bg-[#040815]/50">
@@ -110,16 +103,14 @@ export default function DashboardLayout({
               <h3 className="font-bold text-white text-base">{userProfile.name}</h3>
               <p className="text-teal-400 text-xs font-medium mt-1 mb-4">{userProfile.subtitle}</p>
               
-              {/* Dehapa ID QR Code */}
-              <div className="bg-white p-2 rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.1)] inline-block">
-                <QRCodeSVG 
-                  value={`https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
-                  size={96} 
-                  level="H"
-                  fgColor="#0f172a" 
-                />
-              </div>
-              <p className="text-[9px] text-slate-500 uppercase tracking-widest mt-2">Scan for Profile Access</p>
+              {/* Sleek Teal QR Button */}
+              <button 
+                onClick={() => setShowQRModal(true)}
+                className="mt-4 w-full bg-teal-500/20 hover:bg-teal-500/30 border border-teal-400/50 rounded-xl py-2.5 px-4 flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_0_15px_rgba(20,184,166,0.15)] hover:shadow-[0_0_25px_rgba(20,184,166,0.25)] group"
+              >
+                <svg className="w-4 h-4 text-teal-300 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                <span className="text-teal-300 font-bold text-xs uppercase tracking-widest">Show Profile QR</span>
+              </button>
             </div>
           </div>
         )}
@@ -339,5 +330,49 @@ export default function DashboardLayout({
       </main>
 
     </div>
+      
+      {/* QR Code Modal */}
+      {showQRModal && userProfile && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-[#040815]/80 backdrop-blur-sm cursor-pointer"
+            onClick={() => setShowQRModal(false)}
+          ></div>
+          
+          {/* Modal Content */}
+          <div className="relative bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[32px] p-10 flex flex-col items-center shadow-2xl shadow-cyan-900/50 animate-in fade-in zoom-in-95 max-w-sm w-full">
+            <button 
+              onClick={() => setShowQRModal(false)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <h3 className="text-xl font-serif font-bold text-white mb-2 text-center">{userProfile.name}'s Profile</h3>
+            <p className="text-sm text-teal-400 mb-8 text-center">{userProfile.subtitle}</p>
+
+            <div className="bg-white p-6 rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.2)] mb-8">
+              <QRCodeSVG 
+                value={`https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
+                size={200} 
+                level="H"
+                fgColor="#0f172a" 
+              />
+            </div>
+
+            <button 
+              onClick={() => {
+                navigator.clipboard.writeText(`https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`);
+                alert("Profile Link Copied to Clipboard!");
+              }}
+              className="w-full bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)]"
+            >
+              Copy Profile Link
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
