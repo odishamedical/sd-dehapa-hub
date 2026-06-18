@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { auth, db } from '@/lib/firebase';
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 function LoginContent() {
   const router = useRouter();
@@ -57,6 +57,25 @@ function LoginContent() {
     }
     
     const userEmail = user.email || user.phoneNumber || additionalData.phone;
+    
+    // Ghost Onboarding Auto-Assign
+    if (referralCode) {
+      try {
+        const dirRef = doc(db, 'directory', referralCode);
+        const dirSnap = await getDoc(dirRef);
+        if (dirSnap.exists()) {
+          await updateDoc(dirRef, {
+            verified: true,
+            ownerEmail: userEmail,
+            assignedOwnerEmail: userEmail
+          });
+          userRole = 'doctor'; // Assume doctors claim profiles typically
+        }
+      } catch (err) {
+        console.error("Ghost onboarding failed", err);
+      }
+    }
+
     if (userEmail === 'odishamedical@gmail.com') {
       userRole = 'super_admin';
     }
