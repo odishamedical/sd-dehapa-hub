@@ -199,7 +199,7 @@ export default function UserDashboard() {
       <div className="max-w-4xl mx-auto pb-24">
         
         {activeTab === "identity" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Identity & Contact</h3>
             
             <div className="space-y-6">
@@ -216,7 +216,7 @@ export default function UserDashboard() {
                     value={identityData.fullName}
                     onChange={e => setIdentityData(prev => ({...prev, fullName: e.target.value}))}
                     placeholder="e.g. Shyam Dash" 
-                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none" 
+                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400" 
                   />
                 </div>
                 <div>
@@ -226,7 +226,7 @@ export default function UserDashboard() {
                     value={identityData.phone}
                     onChange={e => setIdentityData(prev => ({...prev, phone: e.target.value}))}
                     placeholder="e.g. +91 9876543210" 
-                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none" 
+                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400" 
                   />
                 </div>
               </div>
@@ -242,7 +242,7 @@ export default function UserDashboard() {
                     value={identityData.whatsappNumber}
                     onChange={e => setIdentityData(prev => ({...prev, whatsappNumber: e.target.value}))}
                     placeholder="e.g. +91 9876543210" 
-                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none" 
+                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400" 
                   />
                 </div>
                 <div>
@@ -251,7 +251,7 @@ export default function UserDashboard() {
                     type="email" 
                     value={identityData.email}
                     disabled
-                    className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-5 py-3.5 shadow-sm text-sm text-slate-500 outline-none cursor-not-allowed" 
+                    className="w-full bg-slate-100/50 backdrop-blur-sm border border-white/40 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-500 font-medium outline-none cursor-not-allowed" 
                   />
                   <p className="text-xs text-slate-400 mt-2">Email cannot be changed as it is linked to your DehaPa Auth.</p>
                 </div>
@@ -265,7 +265,7 @@ export default function UserDashboard() {
         )}
 
         {activeTab === "address" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Location & Address</h3>
             <AddressBlock data={addressData} onChange={setAddressData} />
             <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
@@ -275,7 +275,7 @@ export default function UserDashboard() {
         )}
 
         {activeTab === "family" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Family Members</h3>
@@ -299,7 +299,7 @@ export default function UserDashboard() {
                 </div>
               ) : (
                 familyMembers.map((member, index) => (
-                  <div key={member.id} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-50 shadow-inner">
+                  <div key={member.id} className="border border-white/60 rounded-[24px] p-6 relative bg-white/40 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
                     <button 
                       onClick={() => removeFamilyMember(index)}
                       className="absolute top-4 right-4 text-slate-400 hover:text-red-500"
@@ -317,7 +317,7 @@ export default function UserDashboard() {
                           value={member.name}
                           onChange={e => updateFamilyMember(index, 'name', e.target.value)}
                           placeholder="e.g. Anjali Dash" 
-                          className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 outline-none" 
+                          className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400" 
                         />
                       </div>
                       <div>
@@ -325,7 +325,7 @@ export default function UserDashboard() {
                         <select 
                           value={member.relationship}
                           onChange={e => updateFamilyMember(index, 'relationship', e.target.value)}
-                          className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 outline-none"
+                          className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400"
                         >
                           <option value="">Select Relationship</option>
                           <option value="Spouse">Spouse</option>
@@ -345,7 +345,7 @@ export default function UserDashboard() {
                           value={member.age}
                           onChange={e => updateFamilyMember(index, 'age', e.target.value)}
                           placeholder="e.g. 35" 
-                          className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 outline-none" 
+                          className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400" 
                         />
                       </div>
                       <div>
@@ -353,7 +353,7 @@ export default function UserDashboard() {
                         <select 
                           value={member.sex}
                           onChange={e => updateFamilyMember(index, 'sex', e.target.value)}
-                          className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 outline-none"
+                          className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400"
                         >
                           <option value="">Select</option>
                           <option value="Male">Male</option>
@@ -366,7 +366,7 @@ export default function UserDashboard() {
                         <select 
                           value={member.bloodGroup}
                           onChange={e => updateFamilyMember(index, 'bloodGroup', e.target.value)}
-                          className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 outline-none"
+                          className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400"
                         >
                           <option value="">Select</option>
                           <option value="A+">A+</option>
@@ -388,7 +388,7 @@ export default function UserDashboard() {
                         onChange={e => updateFamilyMember(index, 'medicalHistory', e.target.value)}
                         placeholder="e.g. Diabetic, allergic to penicillin..." 
                         rows={3}
-                        className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 outline-none resize-none" 
+                        className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-teal-500/20 focus:border-teal-500 transition-all placeholder:text-slate-400 resize-none" 
                       />
                     </div>
                   </div>
