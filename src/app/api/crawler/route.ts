@@ -86,14 +86,21 @@ export async function POST(req: NextRequest) {
     // We filter out results that Google mistakenly thought were doctors (like Hospitals or Medical Stores)
     if (category === "Doctor") {
       placesToMap = data.places.filter((place: any) => {
-        if (!place.types) return true; 
+        const nameLower = (place.displayName?.text || "").toLowerCase();
         
-        // Exclude massive hospitals, pharmacies, and general stores
-        const excludeTypes = ['hospital', 'pharmacy', 'drugstore', 'store', 'shopping_mall', 'veterinary_care'];
-        const isExcluded = place.types.some((t: string) => excludeTypes.includes(t));
+        // 1. Foolproof Name-based Exclusion
+        const forbiddenWords = ['hospital', 'pharmacy', 'store', 'medical hall', 'opticals', 'nursing home', 'diagnostics', 'pathology'];
+        const hasForbiddenWord = forbiddenWords.some(word => nameLower.includes(word));
+        if (hasForbiddenWord) return false;
+
+        // 2. Type-based Exclusion
+        if (place.types) {
+          const excludeTypes = ['hospital', 'pharmacy', 'drugstore', 'store', 'shopping_mall', 'veterinary_care'];
+          const isExcluded = place.types.some((t: string) => excludeTypes.includes(t));
+          if (isExcluded) return false;
+        }
         
-        // Only keep if it's NOT a hospital/pharmacy
-        return !isExcluded;
+        return true;
       });
     }
 
