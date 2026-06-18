@@ -48,12 +48,19 @@ export async function POST(req: NextRequest) {
       requestBody.pageToken = pageToken;
     }
 
+    // 1. Dynamic Field Masking based on Category
+    let fieldMask = 'places.id,places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.rating,places.userRatingCount,places.websiteUri,places.photos,nextPageToken';
+    
+    if (category === "Doctor") {
+      fieldMask += ',places.regularOpeningHours,places.editorialSummary,places.googleMapsUri,places.types,places.businessStatus';
+    }
+
     const response = await fetch('https://places.googleapis.com/v1/places:searchText', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY,
-        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.rating,places.userRatingCount,places.websiteUri,places.photos,nextPageToken'
+        'X-Goog-FieldMask': fieldMask
       },
       body: JSON.stringify(requestBody)
     });
@@ -73,7 +80,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ results: [], nextPageToken: null });
     }
 
-    // Transform into our StagedListing format
+    // 2. Transform into our StagedListing format dynamically
     const results = data.places.map((place: any) => {
       const name = place.displayName?.text || 'Unknown Name';
       const phone = place.nationalPhoneNumber || '';
@@ -94,6 +101,32 @@ export async function POST(req: NextRequest) {
         imageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f766e&color=fff&size=150`;
       }
 
+      // 3. Extract Category-Specific Fields
+      let hours: any[] = [];
+      let about = '';
+      let mapUrl = '';
+      let specialties: string[] = [];
+
+      if (category === "Doctor") {
+        if (place.regularOpeningHours && place.regularOpeningHours.weekdayDescriptions) {
+          hours = place.regularOpeningHours.weekdayDescriptions.map((desc: string) => {
+            const [day, ...timeParts] = desc.split(': ');
+            return { day, time: timeParts.join(': ') || 'Closed' };
+          });
+        }
+        if (place.editorialSummary && place.editorialSummary.text) {
+          about = place.editorialSummary.text;
+        }
+        if (place.googleMapsUri) {
+          mapUrl = place.googleMapsUri;
+        }
+        if (place.types) {
+          specialties = place.types
+            .filter((t: string) => !['point_of_interest', 'establishment', 'health'].includes(t))
+            .map((t: string) => t.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()));
+        }
+      }
+
       return {
         id: place.id,
         name: name,
@@ -104,7 +137,16 @@ export async function POST(req: NextRequest) {
         website: place.websiteUri || '',
         image: imageUrl,
         rawImages: rawImages,
-        hasWarning: !phone // Flag if phone is missing so Admin knows
+        hasWarning: !phone, // Flag if phone is missing so Admin knows
+        
+        // Inject Dynamic Doctor Fields
+        ...(category === "Doctor" && {
+          hours: hours.length > 0 ? hours : undefined,
+          about: about || undefined,
+          clinicMapUrl: mapUrl || undefined,
+          specialties: specialties.length > 0 ? specialties : undefined,
+          businessStatus: place.businessStatus || undefined
+        })
       };
     });
 

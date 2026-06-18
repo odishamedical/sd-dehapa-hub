@@ -90,7 +90,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
               address: rawData.address || notVerified,
               phone: rawData.phone || notVerified,
               website: rawData.website || notVerified,
-              mapUrl: `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+              mapUrl: rawData.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`
             },
             hours: rawData.hours || [
               { day: "Operating Hours", time: notVerified }

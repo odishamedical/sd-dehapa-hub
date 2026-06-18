@@ -256,6 +256,12 @@ export default function AdminDashboard() {
           source: "google_crawler",
           rawImages: listing.rawImages || [],
           galleryImages: listing.galleryImages || [],
+          // Dynamic Fields from Crawler
+          ...(listing.hours && { hours: listing.hours }),
+          ...(listing.about && { about: listing.about }),
+          ...(listing.clinicMapUrl && { mapUrl: listing.clinicMapUrl }),
+          ...(listing.specialties && { specialties: listing.specialties }),
+          ...(listing.businessStatus && { businessStatus: listing.businessStatus }),
           tenantId: activeTenant?.id || "default",
           updatedAt: serverTimestamp()
         }, { merge: true });
