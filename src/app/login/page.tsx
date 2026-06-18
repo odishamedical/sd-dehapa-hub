@@ -10,7 +10,11 @@ import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get('redirect') || '/portal';
+  let redirectUrl = searchParams.get('redirect') || '/portal';
+  const claimDoctorId = searchParams.get('claim');
+  if (claimDoctorId) {
+    redirectUrl = `/claim-profile?id=${claimDoctorId}`;
+  }
   const referralCode = searchParams.get('ref') || null;
 
   const [authMethod, setAuthMethod] = useState<'select' | 'email' | 'whatsapp'>('select');

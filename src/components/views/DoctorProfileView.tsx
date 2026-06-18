@@ -27,7 +27,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
   const [canEdit, setCanEdit] = useState(false);
 
   // UX Tabs State
-  const [activeTab, setActiveTab] = useState<'overview' | 'locations' | 'experience' | 'research' | 'media'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'locations' | 'experience' | 'research' | 'media'>('locations');
 
   const handleInlineSave = async (field: string, value: any) => {
     if (!doctor || !doctor.id) return;
@@ -109,7 +109,8 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             showPersonalDetails: rawData.showPersonalDetails || false,
             
             ownerEmail: rawData.ownerEmail || null,
-            galleryImages: rawData.galleryImages || []
+            galleryImages: rawData.galleryImages || [],
+            youtubeLinks: rawData.youtubeLinks || []
           };
           setDoctor(docData);
 
@@ -195,7 +196,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
       )}
       
       {/* Futuristic Banner */}
-      <div className="w-full h-[400px] relative overflow-hidden flex items-end pb-12">
+      <div className="w-full min-h-[400px] relative overflow-hidden flex flex-col">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0B1121]/40 via-[#0B1121]/80 to-[#060B14] z-10"></div>
         <img 
           src={doctor.banner} 
@@ -205,14 +206,14 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-cyan-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 z-0 pointer-events-none"></div>
 
         {/* Space 1: Top Hero Space (Unverified Banner OR Top Ad Slot) */}
-        <div className="absolute top-4 left-0 right-0 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 z-30">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 relative z-30 pt-4">
           {!doctor.verified ? (
             <div className="bg-gradient-to-r from-amber-900/60 to-amber-700/60 border border-amber-500/50 backdrop-blur-md rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
               <div className="flex items-center gap-3">
                 <svg className="w-6 h-6 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 <span className="text-white text-sm md:text-base font-medium">Data collected from reliable sources. Are you this doctor? Verify this profile. <span className="font-bold text-amber-400 tracking-wider ml-1">(NOW NOT VERIFIED)</span></span>
               </div>
-              <Link href="/auth/register" className="shrink-0 bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2 rounded-xl text-sm font-bold uppercase tracking-widest transition-colors shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+              <Link href={`/login?claim=${doctor.id}`} className="shrink-0 bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2 rounded-xl text-sm font-bold uppercase tracking-widest transition-colors shadow-[0_0_15px_rgba(245,158,11,0.4)]">
                 Verify Now
               </Link>
             </div>
@@ -229,7 +230,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
           ) : null}
         </div>
 
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 relative z-20 flex flex-col lg:flex-row gap-8 items-center lg:items-end">
+        <div className="flex-1 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 relative z-20 flex flex-col lg:flex-row gap-8 items-center lg:items-end pb-12 mt-8 lg:mt-auto">
            <div className="flex flex-col md:flex-row gap-8 items-center md:items-end flex-1">
              <div className="relative group">
                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400 to-blue-500 rounded-3xl blur-md opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -308,7 +309,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             
             {/* Segmented Navigation Tabs */}
             <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 p-2 rounded-2xl flex overflow-x-auto hide-scrollbar sticky top-[72px] z-30 shadow-lg">
-              {['overview', 'locations', 'experience', 'research', 'media'].map((tab) => (
+              {['locations', 'overview', 'experience', 'research', 'media'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as any)}
