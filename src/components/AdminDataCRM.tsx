@@ -216,6 +216,19 @@ export default function AdminDataCRM() {
     alert(`Magic Link Copied!\n\n${link}\n\nSend this via WhatsApp. When the doctor clicks it, they will instantly take ownership of this profile.`);
   };
 
+  const handleInstantVerify = () => {
+    if (!selectedListing?.assignedOwnerEmail) {
+      alert("Please enter an email address first.");
+      return;
+    }
+    setSelectedListing({
+      ...selectedListing,
+      ownerEmail: selectedListing.assignedOwnerEmail.toLowerCase().trim(),
+      verified: true
+    });
+    alert("Listing marked as Verified and Assigned! Please click 'Save Changes' below to permanently save to the database.");
+  };
+
   const handleSave = async () => {
     if (!selectedListing) return;
     setIsSaving(true);
@@ -553,8 +566,16 @@ export default function AdminDataCRM() {
                   <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="form-input" />
                 </div>
                 <div>
-                  <label className="form-label">Assigned Owner Email</label>
-                  <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="form-input" placeholder="e.g. user@example.com" />
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-widest">Assigned Owner Email</label>
+                    {selectedListing.verified && selectedListing.ownerEmail === selectedListing.assignedOwnerEmail && selectedListing.assignedOwnerEmail ? (
+                      <span className="text-[10px] font-bold text-teal-600 uppercase tracking-widest flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Verified</span>
+                    ) : null}
+                  </div>
+                  <div className="flex gap-2">
+                    <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="form-input m-0" placeholder="e.g. user@example.com" />
+                    <button onClick={handleInstantVerify} className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-1 rounded-xl text-xs font-bold uppercase tracking-widest whitespace-nowrap shadow-[0_4px_15px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Verify</button>
+                  </div>
                 </div>
                 <div className="relative flex flex-col justify-end">
                   <button 
