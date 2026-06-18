@@ -390,10 +390,8 @@ export default function GlobalTelemedicineFAB() {
               <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
               <div className="relative z-10">
                 <h2 className="text-2xl font-black tracking-wider uppercase flex items-center gap-3">
-                  <div className="bg-white/10 backdrop-blur-sm p-1.5 rounded-xl border border-white/30 shadow-sm flex items-center justify-center">
-                    <img src="/logo.png" alt="Dehapa Logo" className="h-10 object-contain drop-shadow-md" />
-                  </div>
-                  {urgencyMode === 'schedule' ? 'Schedule Consult' : 'Instant Consult'}
+                  <img src="/logo.png" alt="Dehapa Logo" className="h-12 object-contain drop-shadow-md" />
+                  {urgencyMode === 'schedule' ? 'DehaPa Schedule Consult' : 'DehaPa Instant Consult'}
                 </h2>
                 <p className="text-xs font-bold uppercase tracking-widest mt-1 opacity-80 pl-11">
                   {step === "urgency" ? "Select Option" : 
@@ -411,8 +409,8 @@ export default function GlobalTelemedicineFAB() {
             <div className="flex-1 overflow-y-auto p-6 bg-white/40 relative">
               
               {step !== "urgency" && step !== "connecting" && (
-                <button onClick={handleBack} className="text-xs uppercase tracking-widest font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 mb-6 transition-colors">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                <button onClick={handleBack} className="bg-white/60 hover:bg-white/90 text-slate-900 border border-white/80 shadow-sm backdrop-blur-md px-4 py-2.5 rounded-xl text-xs uppercase tracking-widest font-black flex items-center gap-2 mb-6 transition-all hover:-translate-x-1 hover:shadow-md">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"></path></svg>
                   BACK
                 </button>
               )}
