@@ -771,7 +771,11 @@ export default function AdminDashboard() {
             </div>
           )}
 
-                    {activeTab === "settings" && (
+                    {activeTab === "staff" && (
+            <AdminStaffManagement />
+          )}
+
+          {activeTab === "settings" && (
             <AdminPlatformSettings />
           )}
 
