@@ -4,8 +4,18 @@ import GlobalHeader from "@/components/GlobalHeader";
 import TenantProvider from "@/components/TenantContext";
 
 export const metadata: Metadata = {
-  title: "DehaPa Health OS",
-  description: "Next-Gen Telemedicine & Patient Portal",
+  title: "DehaPa Hub | Your Health, Our Mission",
+  description: "India's most trusted healthcare network. Instantly find and book verified top-rated doctors, premium hospitals, pharmacies, and emergency services near you.",
+  openGraph: {
+    title: "DehaPa Hub | Your Health, Our Mission",
+    description: "India's most trusted healthcare network. Instantly find and book verified top-rated doctors, premium hospitals, pharmacies, and emergency services near you.",
+    images: [{
+      url: '/og-home.png',
+      width: 1280,
+      height: 720,
+      alt: 'DehaPa Health Network'
+    }]
+  }
 };
 
 import GlobalScannerController from "@/components/GlobalScannerController";
