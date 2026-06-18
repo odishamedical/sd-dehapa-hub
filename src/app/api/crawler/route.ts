@@ -80,8 +80,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ results: [], nextPageToken: null });
     }
 
+    let placesToMap = data.places;
+
+    // 1.5 Strict Filtering for Doctors
+    // We filter out results that Google mistakenly thought were doctors (like Hospitals or Medical Stores)
+    if (category === "Doctor") {
+      placesToMap = data.places.filter((place: any) => {
+        if (!place.types) return true; 
+        
+        // Exclude massive hospitals, pharmacies, and general stores
+        const excludeTypes = ['hospital', 'pharmacy', 'drugstore', 'store', 'shopping_mall', 'veterinary_care'];
+        const isExcluded = place.types.some((t: string) => excludeTypes.includes(t));
+        
+        // Only keep if it's NOT a hospital/pharmacy
+        return !isExcluded;
+      });
+    }
+
     // 2. Transform into our StagedListing format dynamically
-    const results = data.places.map((place: any) => {
+    const results = placesToMap.map((place: any) => {
       const name = place.displayName?.text || 'Unknown Name';
       const phone = place.nationalPhoneNumber || '';
       
