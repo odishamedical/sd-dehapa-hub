@@ -4,6 +4,8 @@ import DoctorProfileView from '@/components/views/DoctorProfileView';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, collection, query, where, getDocs, limit } from 'firebase/firestore';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: Promise<{ locationSlug?: string[] }> }) {
   const resolvedParams = await params;
   const slug = resolvedParams.locationSlug || [];

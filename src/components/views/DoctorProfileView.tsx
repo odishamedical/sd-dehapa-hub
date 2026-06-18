@@ -86,11 +86,11 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             languages: rawData.languages || [notVerified],
             banner: "https://images.unsplash.com/photo-1551076805-e18690c5e53b?auto=format&fit=crop&w=1200&q=80",
             clinic: {
-              name: rawData.clinicName || notVerified,
+              name: rawData.clinicName || rawData.address?.split(',')[0] || notVerified,
               address: rawData.address || notVerified,
               phone: rawData.phone || notVerified,
               website: rawData.website || notVerified,
-              mapUrl: rawData.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+              mapUrl: rawData.mapUrl || (rawData.clinicMapUrl ? `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name)}&t=&z=15&ie=UTF8&iwloc=&output=embed` : null) || `https://maps.google.com/maps?q=${encodeURIComponent(rawData.address || rawData.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`
             },
             hours: rawData.hours || [
               { day: "Operating Hours", time: notVerified }
