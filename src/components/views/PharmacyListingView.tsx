@@ -130,10 +130,10 @@ export default function PharmacysDirectory({
   const uniqueDistricts = Array.from(new Set(pharmacies.map(d => d.district).filter(d => d !== "Unknown"))).sort();
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-teal-500/30">
+    <div className="min-h-screen bg-[#040815] text-slate-200 font-sans selection:bg-cyan-500/30">
       <CategoryNav />
       
-      <div className="bg-white border-b border-slate-200 px-6 py-3 shadow-sm relative z-20">
+      <div className="bg-[#0a1229] border-b border-cyan-500/20 px-6 py-3 shadow-[0_4px_20px_rgba(6,182,212,0.1)] relative z-20">
         <div className="w-full max-w-[1920px] mx-auto">
           <Breadcrumb paths={[
             { name: "Home", href: "/" },
@@ -169,64 +169,64 @@ export default function PharmacysDirectory({
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}
-          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-white border border-slate-200 rounded-[24px] p-4 lg:p-6 shadow-xl relative overflow-hidden">
+          <div className="w-full lg:w-1/4 lg:sticky lg:top-[100px] h-auto bg-[#0a1229] border border-slate-800 rounded-[24px] p-4 lg:p-6 shadow-2xl shadow-cyan-900/10 relative overflow-hidden">
             {/* Metallic top accent line */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-slate-400"></div>
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-500 via-teal-400 to-cyan-800"></div>
 
-            <div className={`flex justify-between items-center border-slate-100 ${isFiltersOpen ? 'mb-6 border-b pb-4' : 'lg:mb-6 lg:border-b lg:pb-4'}`}>
-              <h3 className="font-bold text-slate-900 flex items-center gap-2 uppercase tracking-widest text-xs">
-                <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            <div className={`flex justify-between items-center border-slate-800 ${isFiltersOpen ? 'mb-6 border-b pb-4' : 'lg:mb-6 lg:border-b lg:pb-4'}`}>
+              <h3 className="font-bold text-white flex items-center gap-2 uppercase tracking-widest text-xs">
+                <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
                 Smart Filters
               </h3>
-              <button onClick={() => setIsFiltersOpen(!isFiltersOpen)} className="lg:hidden text-teal-600 bg-teal-50 px-3 py-1.5 rounded-lg text-xs font-bold border border-teal-200 hover:bg-teal-100 transition-colors">
+              <button onClick={() => setIsFiltersOpen(!isFiltersOpen)} className="lg:hidden text-cyan-500 bg-teal-50 px-3 py-1.5 rounded-lg text-xs font-bold border border-teal-200 hover:bg-teal-100 transition-colors">
                 {isFiltersOpen ? "Hide" : "Show"} Filters
               </button>
             </div>
             
             <div className={`space-y-6 ${isFiltersOpen ? "block" : "hidden lg:block"}`}>
               <div>
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Popular Specialties</label>
+                <label className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest block mb-3">Popular Specialties</label>
                 <div className="flex flex-wrap gap-2">
                   {["24/7 Open", "Home Delivery", "Ayurvedic", "Surgical Supplies"].map(spec => (
-                    <button key={spec} className="bg-slate-100 hover:bg-white text-slate-700 hover:text-teal-700 border border-slate-200 hover:border-teal-300 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm hover:shadow-md">
+                    <button key={spec} className="bg-[#0f172a] hover:bg-cyan-950/40 text-slate-300 hover:text-cyan-400 border border-slate-800 hover:border-cyan-500/50 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm hover:shadow-md">
                       {spec}
                     </button>
                   ))}
                 </div>
               </div>
               
-              <div className="pt-6 border-t border-slate-100">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Locality / District</label>
+              <div className="pt-6 border-t border-slate-800">
+                <label className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest block mb-3">Locality / District</label>
                 <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                   {uniqueDistricts.map((dist: any) => (
                     <label key={dist} className="flex items-center gap-3 cursor-pointer group">
                       <input 
                         type="checkbox" 
-                        className="w-4 h-4 rounded border-slate-300 text-teal-700 focus:ring-teal-700 cursor-pointer shadow-sm" 
+                        className="w-4 h-4 rounded border-slate-700 bg-[#040815] text-cyan-500 focus:ring-cyan-500 cursor-pointer shadow-sm" 
                         checked={selectedDistricts.includes(dist)}
                         onChange={(e) => {
                           if (e.target.checked) setSelectedDistricts([...selectedDistricts, dist]);
                           else setSelectedDistricts(selectedDistricts.filter(d => d !== dist));
                         }}
                       />
-                      <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">{dist}</span>
+                      <span className="text-sm font-bold text-slate-300 group-hover:text-cyan-400 transition-colors">{dist}</span>
                     </label>
                   ))}
                   {uniqueDistricts.length === 0 && (
-                    <p className="text-xs text-slate-400 italic">No locations available.</p>
+                    <p className="text-xs text-slate-500 italic">No locations available.</p>
                   )}
                 </div>
               </div>
               
-              <div className="pt-6 border-t border-slate-100">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-3">Availability</label>
+              <div className="pt-6 border-t border-slate-800">
+                <label className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest block mb-3">Availability</label>
                 <label className="flex items-center gap-3 cursor-pointer group">
-                  <div className="w-5 h-5 rounded border-2 border-slate-300 bg-slate-50 group-hover:border-teal-600 group-hover:bg-white flex items-center justify-center transition-all shadow-inner"></div>
-                  <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">Available Today</span>
+                  <div className="w-5 h-5 rounded border-2 border-slate-700 bg-[#040815] group-hover:border-cyan-500 flex items-center justify-center transition-all shadow-inner"></div>
+                  <span className="text-sm font-bold text-slate-300 group-hover:text-cyan-400 transition-colors">Available Today</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer group mt-3">
-                  <div className="w-5 h-5 rounded border-2 border-slate-300 bg-slate-50 group-hover:border-teal-600 group-hover:bg-white flex items-center justify-center transition-all shadow-inner"></div>
-                  <span className="text-sm font-bold text-slate-700 group-hover:text-teal-700 transition-colors">Video Consult</span>
+                  <div className="w-5 h-5 rounded border-2 border-slate-700 bg-[#040815] group-hover:border-cyan-500 flex items-center justify-center transition-all shadow-inner"></div>
+                  <span className="text-sm font-bold text-slate-300 group-hover:text-cyan-400 transition-colors">Video Consult</span>
                 </label>
               </div>
             </div>
@@ -240,12 +240,12 @@ export default function PharmacysDirectory({
                   <PremiumEntityTicket type="pharmacies" key={doc.id} data={doc} />
                 ))
               ) : (
-                <div className="col-span-full text-center py-20 bg-slate-50 border border-slate-200 rounded-2xl">
-                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                <div className="col-span-full text-center py-20 bg-[#0a1229] border border-slate-800 rounded-2xl shadow-sm">
+                  <div className="w-16 h-16 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                   </div>
-                  <p className="text-slate-600 font-mono text-sm uppercase tracking-widest font-bold">No pharmacies found</p>
-                  <p className="text-xs text-slate-500 mt-2">Try adjusting your sidebar filters or search term.</p>
+                  <p className="text-white font-bold text-lg mb-1">No pharmacies found</p>
+                  <p className="text-sm text-slate-500 max-w-sm mx-auto">Try adjusting your sidebar filters or search term.</p>
                 </div>
               )}
             </div>
