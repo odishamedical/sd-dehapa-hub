@@ -118,7 +118,7 @@ export default function PatientConsultWidget({ patientId }: { patientId: string 
           </svg>
         </div>
         <div>
-          <h2 className="text-2xl font-black text-slate-900">Instant Consult (Uber-like)</h2>
+          <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2 flex items-center gap-3">Instant Video Consult</h2>
           <p className="text-slate-500 text-sm mt-1">Connect with an online doctor in less than 2 minutes.</p>
         </div>
       </div>
