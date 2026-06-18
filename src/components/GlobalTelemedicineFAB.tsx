@@ -211,7 +211,7 @@ export default function GlobalTelemedicineFAB() {
       console.error("Error fetching doctors", err);
       // Fallback mock data for beautiful UI demonstration if DB fails
       setDoctorsList([
-        { id: "mock_doc_1", name: "Dr. Anjali Dash (Mock)", specialty: dept, qualifications: "MBBS, MD (Med)", fee: mode === "schedule" ? 500 : 1200, rating: 4.9, reviews: 342, photo: "https://ui-avatars.com/api/?name=Anjali+Dash&background=047857&color=fff" },
+        { id: "mock_doc_1", name: "Dr. Anjali Dash", specialty: dept, qualifications: "MBBS, MD (Med)", fee: mode === "schedule" ? 500 : 1200, rating: 4.9, reviews: 342, photo: "https://ui-avatars.com/api/?name=Anjali+Dash&background=047857&color=fff" },
       ]);
     } finally {
       setIsLoadingDoctors(false);
@@ -379,17 +379,20 @@ export default function GlobalTelemedicineFAB() {
           
           {/* Main Modal Container */}
           <div 
-            className="w-full max-w-xl bg-white rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 h-[85vh] sm:h-auto sm:max-h-[85vh]"
+            className="w-full max-w-xl bg-white/30 backdrop-blur-[40px] border border-white/60 rounded-[32px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2),inset_0_1px_3px_rgba(255,255,255,0.7)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 h-[85vh] sm:h-auto sm:max-h-[85vh]"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
             <div className={`p-6 flex justify-between items-center relative overflow-hidden transition-colors duration-500 ${urgencyMode === 'schedule' ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white' : 'bg-gradient-to-r from-red-500 to-rose-600 text-white'}`}>
               <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
               <div className="relative z-10">
-                <h2 className="text-2xl font-black tracking-wider uppercase">
+                <h2 className="text-2xl font-black tracking-wider uppercase flex items-center gap-3">
+                  <div className="bg-white p-1 rounded border border-white/30 shadow-sm">
+                    <img src="/logo.png" alt="Dehapa Logo" className="h-6 object-contain" />
+                  </div>
                   {urgencyMode === 'schedule' ? 'Schedule Consult' : 'Instant Consult'}
                 </h2>
-                <p className="text-xs font-bold uppercase tracking-widest mt-1 opacity-80">
+                <p className="text-xs font-bold uppercase tracking-widest mt-1 opacity-80 pl-11">
                   {step === "urgency" ? "Select Option" : 
                    step === "doctor_list" ? "Select Doctor" : 
                    step === "payment_gate" ? "Secure Checkout" : 
@@ -402,7 +405,7 @@ export default function GlobalTelemedicineFAB() {
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-50 relative">
+            <div className="flex-1 overflow-y-auto p-6 bg-white/40 relative">
               
               {step !== "urgency" && step !== "connecting" && (
                 <button onClick={handleBack} className="text-xs uppercase tracking-widest font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 mb-6 transition-colors">
