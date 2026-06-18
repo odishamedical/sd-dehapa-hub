@@ -132,6 +132,9 @@ export default function AdminUserManagement() {
     return (now - then) < 7 * 24 * 60 * 60 * 1000; // 7 days
   }).length;
 
+  // Extract unique roles from database dynamically
+  const uniqueRoles = Array.from(new Set(users.map(u => u.role ? String(u.role).toUpperCase() : 'PATIENT')));
+
   return (
     <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[80vh] relative">
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
@@ -183,9 +186,9 @@ export default function AdminUserManagement() {
             className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
           >
             <option value="all">All Roles</option>
-            <option value="patient">Patients</option>
-            <option value="doctor">Doctors</option>
-            <option value="admin">Admins</option>
+            {uniqueRoles.map((role, idx) => (
+              <option key={idx} value={role.toLowerCase()}>{role}</option>
+            ))}
           </select>
           <select 
             value={statusFilter} 
