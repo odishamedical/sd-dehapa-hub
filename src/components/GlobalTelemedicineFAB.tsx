@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, collection, query, where, getDocs, addDoc } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, collection, query, where, getDocs, addDoc, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
@@ -16,119 +14,259 @@ const firebaseConfig = {
   messagingSenderId: "393346058191",
   appId: "1:393346058191:web:a5e96e1c481a72f86db4ba"
 };
+
+type FlowStep = "urgency" | "triage_tier" | "triage_dept" | "doctor_list" | "datetime_picker" | "payment_gate" | "auth_gate" | "connecting";
+
 export default function GlobalTelemedicineFAB() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<"urgency" | "triage_general" | "triage_specialist" | "availability" | "fallback" | "auth_gate" | "connecting">("urgency");
+  const [step, setStep] = useState<FlowStep>("urgency");
   
-  const [foundDoctorId, setFoundDoctorId] = useState<string | null>(null);
+  // Selections
+  const [urgencyMode, setUrgencyMode] = useState<"urgent" | "schedule" | null>(null);
+  const [selectedTier, setSelectedTier] = useState<string>("");
+  const [selectedDept, setSelectedDept] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Schedule Specific State
+  const [scheduledDate, setScheduledDate] = useState<string>("");
+  const [scheduledTime, setScheduledTime] = useState<string>("");
+
+  // Data
+  const [doctorsList, setDoctorsList] = useState<any[]>([]);
+  const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
+  const [selectedDoctorForDirectCall, setSelectedDoctorForDirectCall] = useState<any | null>(null);
+  
+  // Auth
   const [userUid, setUserUid] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  React.useEffect(() => {
+  // Payment State
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [paymentType, setPaymentType] = useState<"direct" | "broadcast">("direct");
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       setUserUid(localStorage.getItem("sd_current_user_uid"));
       setUserName(localStorage.getItem("sd_current_user_name"));
       
       const listener = (e: any) => {
-        handleOpen();
-        if (e.detail?.action === 'urgent') {
-          setStep('triage_general');
+        setIsOpen(true);
+        resetSelections();
+        
+        const action = e.detail?.action;
+        const doctorId = e.detail?.doctorId;
+        const doctorName = e.detail?.doctorName;
+        
+        if (action === 'urgent' || action === 'schedule') {
+          setUrgencyMode(action);
+          
+          if (doctorId) {
+            // Direct ping from profile bypasses triage
+            const mockDoc = { id: doctorId, name: doctorName || 'Doctor', fee: action === 'urgent' ? 999 : 500 };
+            initiateDirectCall(mockDoc, action);
+          } else {
+            setStep("triage_tier");
+          }
+        } else {
+          setStep("urgency");
         }
       };
+      
       window.addEventListener('open-telemedicine-fab', listener);
       return () => window.removeEventListener('open-telemedicine-fab', listener);
     }
   }, []);
-  
-  // State for selections
-  const [selectedUrgency, setSelectedUrgency] = useState<"urgent" | "schedule" | null>(null);
-  const [doctorType, setDoctorType] = useState<"general" | "specialist" | "super" | null>(null);
-  const [department, setDepartment] = useState("");
 
   const handleOpen = () => {
     setIsOpen(true);
     setStep("urgency");
-    setSelectedUrgency(null);
-    setDoctorType(null);
-    setDepartment("");
+    resetSelections();
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
+  const handleClose = () => setIsOpen(false);
+
+  const resetSelections = () => {
+    setUrgencyMode(null);
+    setSelectedTier("");
+    setSelectedDept("");
+    setScheduledDate("");
+    setScheduledTime("");
+    setDoctorsList([]);
+    setSelectedDoctorForDirectCall(null);
+    setSearchQuery("");
   };
 
   const handleBack = () => {
-    if (step === "triage_general") setStep("urgency");
-    else if (step === "triage_specialist") setStep("triage_general");
-    else if (step === "availability") setStep(doctorType === "general" ? "triage_general" : "triage_specialist");
-    else if (step === "auth_gate") setStep(doctorType === "general" ? "triage_general" : "triage_specialist");
-    else if (step === "fallback") setStep("urgency");
+    if (step === "triage_tier") setStep("urgency");
+    else if (step === "triage_dept") setStep("triage_tier");
+    else if (step === "doctor_list") setStep(selectedTier === "General" ? "triage_tier" : "triage_dept");
+    else if (step === "datetime_picker") setStep("doctor_list");
+    else if (step === "payment_gate") setStep(urgencyMode === "schedule" ? "datetime_picker" : "doctor_list");
+    else if (step === "auth_gate") setStep("payment_gate");
   };
 
-  const handleUrgencySelect = (urgency: "urgent" | "schedule") => {
-    setSelectedUrgency(urgency);
-    if (urgency === "schedule") {
-      // For schedule, redirect to booking flow
-      setIsOpen(false);
-      router.push("/portal/book");
-    } else {
-      setStep("triage_general");
+  // 1. Initial Selection or Quick Jump
+  const handleUrgencySelect = (mode: "urgent" | "schedule") => {
+    setUrgencyMode(mode);
+    setStep("triage_tier");
+  };
+
+  const handleQuickJump = (dept: string) => {
+    setUrgencyMode("urgent");
+    setSelectedDept(dept);
+    fetchDoctors("urgent", dept);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim().length > 2) {
+      handleQuickJump(searchQuery.trim());
     }
   };
 
-  const handleDoctorTypeSelect = (type: "general" | "specialist" | "super") => {
-    setDoctorType(type);
-    if (type === "general") {
-      setStep("availability");
-      checkAvailability(type, "");
+  // 2. Triage Steps
+  const handleTierSelect = (tier: string) => {
+    setSelectedTier(tier);
+    if (tier === "General") {
+      setSelectedDept("General Physician");
+      fetchDoctors(urgencyMode!, "General Physician");
     } else {
-      setStep("triage_specialist");
+      setStep("triage_dept");
     }
   };
 
-  const handleDepartmentSelect = (dept: string) => {
-    setDepartment(dept);
-    setStep("availability");
-    checkAvailability(doctorType!, dept);
+  const handleDeptSelect = (dept: string) => {
+    setSelectedDept(dept);
+    fetchDoctors(urgencyMode!, dept);
   };
 
-  const checkAvailability = async (type: string, dept: string) => {
+  // 3. Fetch Data
+  const fetchDoctors = async (mode: "urgent" | "schedule", dept: string) => {
+    setStep("doctor_list");
+    setIsLoadingDoctors(true);
+    
     const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
     const db = getFirestore(app, "default");
     
     try {
-      // Find ANY online doctor for testing (In prod, filter by department)
-      const q = query(collection(db, "doctor_status"), where("isOnline", "==", true));
-      const snapshot = await getDocs(q);
+      // Step 1: Find online doctors (for schedule we could skip this and just search directory, but let's assume we want active doctors)
+      const statusQuery = query(collection(db, "doctor_status"), where("isOnline", "==", true));
+      const statusSnap = await getDocs(statusQuery);
       
-      if (!snapshot.empty) {
-        // Doctor found!
-        const docId = snapshot.docs[0].id;
-        setFoundDoctorId(docId);
-        
-        // If user is already logged in, skip auth gate
-        if (userUid) {
-          initiateConnection(docId, userUid, userName || "Patient");
-        } else {
-          setStep("auth_gate");
-        }
-      } else {
-        setStep("fallback");
+      const onlineUids = statusSnap.docs.map(doc => doc.id);
+      
+      if (onlineUids.length === 0) {
+        setDoctorsList([]);
+        setIsLoadingDoctors(false);
+        return;
       }
+
+      // Step 2: Fetch their profiles from directory (mocking the join for UI demonstration, in production use Cloud Function or limit(10) in queries)
+      // For real flow, we iterate over onlineUids and getDoc
+      const fetchedDoctors = [];
+      for (const uid of onlineUids) {
+        const docRef = doc(db, "directory", uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          // Filter logic
+          const matchesDept = data.specialty?.toLowerCase().includes(dept.toLowerCase()) || dept === "General Physician";
+          const hasTelemedicine = mode === "schedule" ? data.isTelemedicineEnabled : data.isUrgentPingEnabled;
+          
+          if (matchesDept && hasTelemedicine) {
+            fetchedDoctors.push({
+              id: uid,
+              name: data.entityName || "Dr. Online",
+              specialty: data.specialty || dept,
+              qualifications: data.qualifications || "MBBS, MD",
+              fee: mode === "schedule" ? (data.scheduledConsultFee || 500) : (data.urgentPingFee || 999),
+              rating: data.rating || 4.8,
+              reviews: data.reviewCount || 120,
+              photo: data.logoUrl || "https://ui-avatars.com/api/?name=" + encodeURIComponent(data.entityName || "Doctor") + "&background=0D8ABC&color=fff"
+            });
+          }
+        }
+      }
+
+      // If no data exists, we provide mock data just so the UI can be tested robustly without seeding Firestore
+      if (fetchedDoctors.length === 0) {
+        setDoctorsList([
+          { id: "mock_doc_1", name: "Dr. Anjali Dash", specialty: dept, qualifications: "MBBS, MD (Med)", fee: mode === "schedule" ? 500 : 1200, rating: 4.9, reviews: 342, photo: "https://ui-avatars.com/api/?name=Anjali+Dash&background=047857&color=fff" },
+          { id: "mock_doc_2", name: "Dr. Rajesh Kumar", specialty: dept, qualifications: "MBBS, MS", fee: mode === "schedule" ? 400 : 999, rating: 4.7, reviews: 156, photo: "https://ui-avatars.com/api/?name=Rajesh+Kumar&background=be123c&color=fff" },
+          { id: "mock_doc_3", name: "Dr. Sarah Mishra", specialty: dept, qualifications: "MBBS, DNB", fee: mode === "schedule" ? 600 : 1500, rating: 4.9, reviews: 520, photo: "https://ui-avatars.com/api/?name=Sarah+Mishra&background=1d4ed8&color=fff" }
+        ]);
+      } else {
+        setDoctorsList(fetchedDoctors);
+      }
+
     } catch (err) {
-      console.error("Availability check failed", err);
-      setStep("fallback");
+      console.error("Error fetching doctors", err);
+      // Fallback mock data for beautiful UI demonstration if DB fails
+      setDoctorsList([
+        { id: "mock_doc_1", name: "Dr. Anjali Dash (Mock)", specialty: dept, qualifications: "MBBS, MD (Med)", fee: mode === "schedule" ? 500 : 1200, rating: 4.9, reviews: 342, photo: "https://ui-avatars.com/api/?name=Anjali+Dash&background=047857&color=fff" },
+      ]);
+    } finally {
+      setIsLoadingDoctors(false);
     }
   };
 
-  const handleFastTrackAuth = async (e: React.FormEvent) => {
+  // 4. Action Decision (Direct vs Broadcast)
+  const initiateDirectCall = (doctor: any, modeOverride?: string) => {
+    setSelectedDoctorForDirectCall(doctor);
+    setPaymentAmount(Number(doctor.fee));
+    setPaymentType("direct");
+    
+    if ((modeOverride || urgencyMode) === "schedule") {
+      setStep("datetime_picker");
+    } else {
+      setStep("payment_gate");
+    }
+  };
+
+  const confirmDateTime = () => {
+    if (!scheduledDate || !scheduledTime) return alert("Please select both date and time.");
+    setStep("payment_gate");
+  };
+
+  const initiateBroadcastPing = () => {
+    if (doctorsList.length === 0) return;
+    
+    // Find the maximum fee among available doctors for the Auth & Capture hold
+    const maxFee = Math.max(...doctorsList.map(d => Number(d.fee)));
+    
+    setSelectedDoctorForDirectCall(null);
+    setPaymentAmount(maxFee);
+    setPaymentType("broadcast");
+    setStep("payment_gate");
+  };
+
+  // 5. Payment Gate
+  const handlePaymentSuccess = () => {
+    setIsProcessingPayment(true);
+    // Mocking Razorpay delay
+    setTimeout(() => {
+      setIsProcessingPayment(false);
+      // If user not logged in, go to auth gate. Otherwise straight to connecting.
+      if (userUid) {
+        createConsultationRequest(userUid, userName || "Patient");
+      } else {
+        setStep("auth_gate");
+      }
+    }, 1500);
+  };
+
+  // 6. Auth Gate
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || !whatsapp) return alert("Phone and WhatsApp are mandatory for urgent calls.");
+    if (!phone || !whatsapp) return alert("Phone and WhatsApp are mandatory.");
     
     setIsAuthenticating(true);
     const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
@@ -139,47 +277,88 @@ export default function GlobalTelemedicineFAB() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       
-      // Save locally to match our ecosystem
       localStorage.setItem("sd_current_user_uid", user.uid);
       localStorage.setItem("sd_current_user_email", user.email || "");
       localStorage.setItem("sd_current_user_name", user.displayName || "Patient");
-      localStorage.setItem("sd_current_user_role", "patient");
       
       setUserUid(user.uid);
       setUserName(user.displayName);
       
-      if (foundDoctorId) {
-        initiateConnection(foundDoctorId, user.uid, user.displayName || "Patient");
-      }
+      createConsultationRequest(user.uid, user.displayName || "Patient");
     } catch (err) {
       console.error("Auth failed", err);
-      alert("Authentication failed. Please try again.");
-    } finally {
+      alert("Authentication failed.");
       setIsAuthenticating(false);
     }
   };
 
-  const initiateConnection = async (doctorId: string, patientId: string, pName: string) => {
+  // 7. Final Connecting State
+  const createConsultationRequest = async (patientId: string, pName: string) => {
     setStep("connecting");
     const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
     const db = getFirestore(app, "default");
     
     try {
-      await addDoc(collection(db, "consultation_requests"), {
-        doctorId: doctorId,
-        patientId: patientId,
+      if (urgencyMode === "schedule") {
+        const appointmentPayload = {
+          providerId: selectedDoctorForDirectCall?.id || "",
+          patientName: pName,
+          patientPhone: phone,
+          patientEmail: "",
+          date: scheduledDate,
+          time: scheduledTime,
+          type: "telemedicine",
+          status: "pending",
+          reason: symptoms,
+          age,
+          gender,
+          timestamp: new Date().toISOString()
+        };
+        await addDoc(collection(db, "appointments"), appointmentPayload);
+        setTimeout(() => {
+          router.push("/portal");
+          setIsOpen(false);
+        }, 1500);
+        return;
+      }
+
+      const payload = {
+        patientId,
         patientName: pName,
-        type: doctorType,
-        department: department,
-        symptoms: symptoms,
+        patientPhone: phone,
+        patientWhatsapp: whatsapp,
+        age,
+        gender,
+        symptoms,
+        urgency: urgencyMode,
+        department: selectedDept,
         status: "pending",
+        pingType: paymentType,
+        maxAuthorizedFee: paymentAmount,
         createdAt: new Date().toISOString()
+      };
+
+      if (paymentType === "direct" && selectedDoctorForDirectCall) {
+        Object.assign(payload, { doctorId: selectedDoctorForDirectCall.id });
+      } else {
+        Object.assign(payload, { targetCategory: selectedDept });
+      }
+
+      const docRef = await addDoc(collection(db, "consultation_requests"), payload);
+      
+      const unsubscribe = onSnapshot(doc(db, "consultation_requests", docRef.id), (snapshot) => {
+        const data = snapshot.data();
+        if (data && data.status === "accepted") {
+          unsubscribe();
+          setIsOpen(false);
+          router.push(`/consultation/${docRef.id}`);
+        }
       });
-      // In a real flow, we'd listen to this doc for status="accepted"
+
     } catch (err) {
       console.error("Failed to create request", err);
       alert("Failed to connect. Please try again.");
-      setStep("urgency");
+      setStep("doctor_list");
     }
   };
 
@@ -188,7 +367,7 @@ export default function GlobalTelemedicineFAB() {
       {/* Floating Action Button */}
       <button 
         onClick={handleOpen}
-        className="fixed bottom-[100px] md:bottom-6 right-6 z-50 bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-full shadow-2xl hover:shadow-red-500/50 hover:scale-105 transition-all flex items-center justify-center group"
+        className="fixed bottom-[100px] md:bottom-6 right-6 z-50 bg-gradient-to-r from-red-500 to-rose-600 text-white p-4 rounded-full shadow-2xl hover:shadow-red-500/50 hover:scale-105 transition-all flex items-center justify-center group"
       >
         <svg className="w-6 h-6 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
         <span className="hidden md:block ml-2 font-bold uppercase tracking-wider text-sm">Consult Doctor</span>
@@ -196,218 +375,436 @@ export default function GlobalTelemedicineFAB() {
 
       {/* Slide-over Modal Backdrop */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex justify-center items-center p-4" onClick={handleClose}>
-          {/* Modal Panel - Centered HUD Style */}
+        <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[100] flex justify-center items-center p-4 sm:p-6 animate-in fade-in duration-200" onClick={handleClose}>
+          
+          {/* Main Modal Container */}
           <div 
-            className="w-full max-w-lg bg-[#040815] border border-cyan-500/30 rounded-3xl shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300"
+            className="w-full max-w-xl bg-white rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 h-[85vh] sm:h-auto sm:max-h-[85vh]"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#0a1229] to-[#040815] border-b border-cyan-500/20 p-6 flex justify-between items-center text-white relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-50"></div>
-              <div>
-                <h2 className="text-2xl font-black tracking-wider uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-200">Video Consult</h2>
-                <p className="text-xs text-cyan-500/70 uppercase tracking-widest mt-1">Encrypted Telemedicine Link</p>
+            <div className={`p-6 flex justify-between items-center relative overflow-hidden transition-colors duration-500 ${urgencyMode === 'schedule' ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white' : 'bg-gradient-to-r from-red-500 to-rose-600 text-white'}`}>
+              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+              <div className="relative z-10">
+                <h2 className="text-2xl font-black tracking-wider uppercase">
+                  {urgencyMode === 'schedule' ? 'Schedule Consult' : 'Instant Consult'}
+                </h2>
+                <p className="text-xs font-bold uppercase tracking-widest mt-1 opacity-80">
+                  {step === "urgency" ? "Select Option" : 
+                   step === "doctor_list" ? "Select Doctor" : 
+                   step === "payment_gate" ? "Secure Checkout" : 
+                   step === "connecting" ? "Encrypted Link" : "Guided Triage"}
+                </p>
               </div>
-              <button onClick={handleClose} className="p-2 bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-full transition-colors border border-white/5">
+              <button onClick={handleClose} className="relative z-10 p-2 bg-black/10 hover:bg-black/20 rounded-full transition-colors backdrop-blur-md">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gradient-to-b from-[#040815] to-[#0a1229]">
+            <div className="flex-1 overflow-y-auto p-6 bg-slate-50 relative">
               
               {step !== "urgency" && step !== "connecting" && (
-                <button onClick={handleBack} className="text-xs uppercase tracking-widest font-bold text-cyan-500 hover:text-cyan-300 flex items-center gap-2 mb-6 transition-colors">
+                <button onClick={handleBack} className="text-xs uppercase tracking-widest font-bold text-slate-500 hover:text-slate-800 flex items-center gap-2 mb-6 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                   BACK
                 </button>
               )}
 
+              {/* STEP 1: INITIAL URGENCY & QUICK JUMP */}
               {step === "urgency" && (
-                <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
-                  <h3 className="text-xl font-bold text-white text-center mb-8">What type of consultation do you need?</h3>
+                <div className="space-y-8 animate-in fade-in zoom-in-95 duration-500">
                   
-                  <button 
-                    onClick={() => handleUrgencySelect("urgent")}
-                    className="w-full bg-[#0a1229]/80 backdrop-blur-md border border-red-500/30 hover:border-red-400 hover:bg-red-950/20 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-[0_0_20px_rgba(239,68,68,0.05)] hover:shadow-[0_0_30px_rgba(239,68,68,0.2)] group relative overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 translate-x-[-100%] group-hover:animate-[shimmer_2s_infinite]"></div>
-                    <div className="w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center text-red-400 group-hover:scale-110 group-hover:bg-red-500/20 transition-all shadow-[0_0_15px_rgba(239,68,68,0.2)] relative">
-                      <div className="absolute inset-0 rounded-full animate-ping bg-red-500/20 opacity-75"></div>
-                      <svg className="w-8 h-8 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <div>
-                      <h4 className="font-black uppercase tracking-wider text-white text-xl group-hover:text-red-400 transition-colors">Urgent Video Call</h4>
-                      <p className="text-sm text-slate-400 mt-2 font-medium">Connect with an available doctor immediately.</p>
-                    </div>
-                  </button>
+                  {/* Quick Search Bar */}
+                  <form onSubmit={handleSearchSubmit} className="relative shadow-sm">
+                    <input 
+                      type="text" 
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      placeholder="Search symptom, doctor, or specialty..." 
+                      className="w-full bg-white border-2 border-slate-200 rounded-2xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:border-red-500 focus:ring-4 focus:ring-red-500/10 outline-none transition-all"
+                    />
+                    <svg className="w-6 h-6 text-slate-400 absolute left-4 top-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                  </form>
 
-                  <button 
-                    onClick={() => handleUrgencySelect("schedule")}
-                    className="w-full bg-[#0a1229]/80 backdrop-blur-md border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-950/20 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-[0_0_20px_rgba(6,182,212,0.05)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)] group relative overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/5 to-cyan-500/0 translate-x-[-100%] group-hover:animate-[shimmer_2s_infinite]"></div>
-                    <div className="w-16 h-16 bg-cyan-500/10 border border-cyan-500/30 rounded-full flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  {/* High Urgency Quick Jump Grid */}
+                  <div>
+                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-2">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
+                      High Urgency Quick Jump
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {[
+                        { name: "General Med", icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
+                        { name: "Cardiology", icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" },
+                        { name: "Pediatrics", icon: "M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+                        { name: "Trauma/ER", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+                      ].map(dept => (
+                        <button 
+                          key={dept.name}
+                          onClick={() => handleQuickJump(dept.name)}
+                          className="bg-white border-2 border-slate-100 hover:border-red-500 hover:shadow-[0_4px_15px_rgba(239,68,68,0.15)] rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition-all group"
+                        >
+                          <div className="p-2 bg-red-50 text-red-500 rounded-full group-hover:scale-110 transition-transform">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={dept.icon}></path></svg>
+                          </div>
+                          <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider text-center">{dept.name}</span>
+                        </button>
+                      ))}
                     </div>
-                    <div>
-                      <h4 className="font-black uppercase tracking-wider text-white text-xl group-hover:text-cyan-400 transition-colors">Schedule Appointment</h4>
-                      <p className="text-sm text-slate-400 mt-2 font-medium">Book a specific date and time for a consult.</p>
-                    </div>
-                  </button>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="h-px bg-slate-200 flex-1"></div>
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">OR</span>
+                    <div className="h-px bg-slate-200 flex-1"></div>
+                  </div>
+
+                  {/* Guided Triage Buttons */}
+                  <div className="space-y-4">
+                    <button 
+                      onClick={() => handleUrgencySelect("urgent")}
+                      className="w-full bg-white border-2 border-slate-200 hover:border-red-500 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-sm hover:shadow-md group relative overflow-hidden"
+                    >
+                      <div className="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                      </div>
+                      <div>
+                        <h4 className="font-black uppercase tracking-wider text-slate-900 text-lg group-hover:text-red-500 transition-colors">Guided Urgent Consult</h4>
+                        <p className="text-sm text-slate-500 mt-1 font-medium">Browse online doctors to connect with immediately.</p>
+                      </div>
+                    </button>
+
+                    <button 
+                      onClick={() => handleUrgencySelect("schedule")}
+                      className="w-full bg-white border-2 border-slate-200 hover:border-teal-500 rounded-2xl p-6 text-left flex items-center gap-6 transition-all shadow-sm hover:shadow-md group relative overflow-hidden"
+                    >
+                      <div className="w-14 h-14 bg-teal-50 text-teal-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      </div>
+                      <div>
+                        <h4 className="font-black uppercase tracking-wider text-slate-900 text-lg group-hover:text-teal-500 transition-colors">Schedule Appointment</h4>
+                        <p className="text-sm text-slate-500 mt-1 font-medium">Book a specific date and time with a doctor.</p>
+                      </div>
+                    </button>
+                  </div>
                 </div>
               )}
 
-              {step === "triage_general" && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-300">
-                  <h3 className="text-xl font-bold text-white mb-6 text-center">Select Provider Type</h3>
-                  
-                  <button onClick={() => handleDoctorTypeSelect("general")} className="w-full bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 text-left flex items-center justify-between transition-all group hover:bg-[#0f172a]">
-                    <div>
-                      <h4 className="font-bold text-white text-lg">General Physician</h4>
-                      <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider">Fever, cold, general health</p>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-slate-800/50 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
-                      <svg className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
-                  </button>
-
-                  <button onClick={() => handleDoctorTypeSelect("specialist")} className="w-full bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 text-left flex items-center justify-between transition-all group hover:bg-[#0f172a]">
-                    <div>
-                      <h4 className="font-bold text-white text-lg">Specialist</h4>
-                      <p className="text-xs text-slate-500 mt-1">Cardiology, Orthopedics, etc.</p>
-                    </div>
-                    <svg className="w-5 h-5 text-slate-300 group-hover:text-teal-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                  </button>
-
-                  <button onClick={() => handleDoctorTypeSelect("super")} className="w-full bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 text-left flex items-center justify-between transition-all group hover:bg-[#0f172a]">
-                    <div>
-                      <h4 className="font-bold text-white text-lg">Super Specialist</h4>
-                      <p className="text-xs text-slate-400 mt-1 uppercase tracking-wider">Neurosurgery, Oncology, etc.</p>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-slate-800/50 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
-                      <svg className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
-                  </button>
+              {/* STEP 2: TRIAGE TIER */}
+              {step === "triage_tier" && (
+                <div className="space-y-4 animate-in slide-in-from-right-8 duration-300">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">Select Provider Tier</h3>
+                  {[
+                    { id: "General", title: "General Physician", desc: "MBBS, BHMS, BAMS for general health issues." },
+                    { id: "Specialist", title: "Specialist", desc: "Cardiology, Orthopedics, Pediatrics, etc." },
+                    { id: "Super Specialist", title: "Super Specialist", desc: "Neurosurgery, Oncology, specialized care." }
+                  ].map(tier => (
+                    <button 
+                      key={tier.id}
+                      onClick={() => handleTierSelect(tier.id)} 
+                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-400 rounded-2xl p-5 text-left flex items-center justify-between transition-all group shadow-sm"
+                    >
+                      <div>
+                        <h4 className="font-bold text-slate-900 text-lg">{tier.title}</h4>
+                        <p className="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">{tier.desc}</p>
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-slate-100 transition-colors">
+                        <svg className="w-5 h-5 text-slate-400 group-hover:text-slate-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               )}
 
-              {step === "triage_specialist" && (
-                <div className="space-y-4 animate-in fade-in slide-in-from-right-8 duration-300">
-                  <h3 className="text-xl font-bold text-white mb-6 text-center">Select Department</h3>
-                  
+              {/* STEP 3: TRIAGE DEPARTMENT */}
+              {step === "triage_dept" && (
+                <div className="space-y-4 animate-in slide-in-from-right-8 duration-300">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">Select {selectedTier} Department</h3>
                   <div className="grid grid-cols-2 gap-3">
-                    {["Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Gynecology", "General Surgery"].map(dept => (
+                    {["Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Gynecology", "Dermatology", "Psychiatry", "Oncology"].map(dept => (
                       <button 
                         key={dept}
-                        onClick={() => handleDepartmentSelect(dept)}
-                        className="bg-[#0a1229] border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-900/20 rounded-xl p-4 text-center transition-all text-sm font-bold text-slate-300 hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(6,182,212,0.1)]"
+                        onClick={() => handleDeptSelect(dept)}
+                        className="bg-white border-2 border-slate-200 hover:border-slate-400 rounded-xl p-4 text-center transition-all text-sm font-bold text-slate-700 hover:shadow-sm"
                       >
                         {dept}
                       </button>
                     ))}
                   </div>
-                  
-                  <div className="mt-6">
-                    <label className="block text-[10px] font-bold text-cyan-500 mb-2 uppercase tracking-widest text-center">Or Select Other Department</label>
-                    <div className="relative">
-                      <select 
-                        onChange={(e) => {
-                          if (e.target.value) handleDepartmentSelect(e.target.value);
-                        }}
-                        className="w-full appearance-none bg-[#0a1229] border border-slate-800 text-white rounded-xl py-4 px-5 pr-10 font-bold focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 cursor-pointer hover:border-cyan-500/50 transition-colors"
-                        defaultValue=""
+                </div>
+              )}
+
+              {/* STEP 4: DOCTOR LIST VIEW */}
+              {step === "doctor_list" && (
+                <div className="animate-in slide-in-from-right-8 duration-300 flex flex-col h-full">
+                  <div className="mb-6 flex justify-between items-end">
+                    <div>
+                      <h3 className="text-xl font-black text-slate-900">Available Doctors</h3>
+                      <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedDept}</p>
+                    </div>
+                    {urgencyMode === "urgent" && doctorsList.length > 0 && (
+                      <span className="flex items-center gap-2 text-xs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        Live Now
+                      </span>
+                    )}
+                  </div>
+
+                  {isLoadingDoctors ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <div className="w-12 h-12 border-4 border-slate-200 border-t-red-500 rounded-full animate-spin mb-4"></div>
+                      <p className="text-slate-500 font-bold uppercase tracking-widest text-xs animate-pulse">Searching Network...</p>
+                    </div>
+                  ) : doctorsList.length === 0 ? (
+                    <div className="text-center py-12 bg-white rounded-3xl border-2 border-dashed border-slate-200">
+                      <svg className="w-12 h-12 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <h4 className="text-lg font-bold text-slate-900 mb-2">No Doctors Available</h4>
+                      <p className="text-slate-500 text-sm max-w-xs mx-auto">There are currently no doctors online for this specialty. Please try scheduling an appointment or check back later.</p>
+                    </div>
+                  ) : (
+                    <div className="flex-1 overflow-y-auto space-y-4 pb-24">
+                      {doctorsList.map(doctor => (
+                        <div key={doctor.id} className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex gap-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                          {/* Doctor Avatar */}
+                          <div className="w-16 h-16 rounded-full bg-slate-100 shrink-0 border border-slate-200 overflow-hidden">
+                            <img src={doctor.photo} alt={doctor.name} className="w-full h-full object-cover" />
+                          </div>
+                          
+                          {/* Doctor Info */}
+                          <div className="flex-1">
+                            <h4 className="font-black text-slate-900">{doctor.name}</h4>
+                            <p className="text-xs font-bold text-slate-500 mb-1">{doctor.qualifications}</p>
+                            <div className="flex items-center gap-1 text-[10px] font-bold text-amber-500">
+                              <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                              {doctor.rating} ({doctor.reviews})
+                            </div>
+                          </div>
+
+                          {/* Fee & CTA */}
+                          <div className="flex flex-col items-end justify-between">
+                            <div className="text-lg font-black text-slate-900">₹{doctor.fee}</div>
+                            <button 
+                              onClick={() => initiateDirectCall(doctor)}
+                              className="text-[10px] font-black uppercase tracking-widest text-white bg-slate-900 hover:bg-slate-800 px-3 py-2 rounded-lg transition-colors"
+                            >
+                              Direct Call
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Ping All Broadcast Button Fixed at Bottom */}
+                  {doctorsList.length > 0 && urgencyMode === "urgent" && (
+                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-50 via-slate-50 to-transparent pt-12 border-t border-slate-200/50">
+                      <button 
+                        onClick={initiateBroadcastPing}
+                        className="w-full bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-2xl shadow-[0_10px_20px_rgba(239,68,68,0.2)] flex items-center justify-center gap-3 transition-all hover:-translate-y-1"
                       >
-                        <option value="" disabled>Select from all departments...</option>
-                        <option value="Dermatology">Dermatology</option>
-                        <option value="Psychiatry">Psychiatry</option>
-                        <option value="Neurosurgery">Neurosurgery</option>
-                        <option value="Oncology">Oncology</option>
-                        <option value="Urology">Urology</option>
-                        <option value="Gastroenterology">Gastroenterology</option>
-                        <option value="Endocrinology">Endocrinology</option>
-                        <option value="Ophthalmology">Ophthalmology</option>
-                        <option value="ENT">ENT</option>
-                        <option value="Pulmonology">Pulmonology</option>
-                        <option value="Rheumatology">Rheumatology</option>
-                        <option value="Nephrology">Nephrology</option>
-                        <option value="Plastic Surgery">Plastic Surgery</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-cyan-500">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        PING ALL AVAILABLE DOCTORS
+                      </button>
+                      <p className="text-[10px] text-center text-slate-500 mt-2 font-semibold">
+                        First doctor to accept connects instantly. We pre-authorize the maximum fee.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* STEP 4.5: DATETIME PICKER */}
+              {step === "datetime_picker" && (
+                <div className="h-full flex flex-col justify-center animate-in slide-in-from-right-8 duration-300 py-6">
+                  <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                    <h3 className="text-2xl font-black text-slate-900 mb-2">Select Date & Time</h3>
+                    <p className="text-sm font-medium text-slate-500 mb-8">Scheduling an appointment with {selectedDoctorForDirectCall?.name || 'Doctor'}</p>
+
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Date *</label>
+                        <input 
+                          type="date" 
+                          min={new Date().toISOString().split('T')[0]}
+                          value={scheduledDate}
+                          onChange={e => setScheduledDate(e.target.value)}
+                          className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-teal-500 outline-none transition-colors font-medium"
+                          required
+                        />
                       </div>
+                      
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Time Slot *</label>
+                        <input 
+                          type="time" 
+                          value={scheduledTime}
+                          onChange={e => setScheduledTime(e.target.value)}
+                          className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-teal-500 outline-none transition-colors font-medium"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-8">
+                      <button 
+                        onClick={confirmDateTime}
+                        className="w-full bg-teal-500 hover:bg-teal-600 text-white font-black py-4 rounded-xl transition-all shadow-[0_4px_15px_rgba(20,184,166,0.3)]"
+                      >
+                        CONFIRM & PROCEED
+                      </button>
                     </div>
                   </div>
                 </div>
               )}
 
-              {step === "availability" && (
-                <div className="h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500">
-                  <div className="w-24 h-24 bg-cyan-950/30 rounded-full flex items-center justify-center mb-8 relative border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.1)]">
-                    <div className="absolute inset-0 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-                    <div className="absolute inset-2 border-4 border-teal-500/50 border-b-transparent rounded-full animate-[spin_2s_reverse_infinite]"></div>
-                    <svg className="w-10 h-10 text-cyan-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              {/* STEP 5: PAYMENT GATE (Mock Razorpay) */}
+              {step === "payment_gate" && (
+                <div className="h-full flex flex-col justify-center animate-in slide-in-from-right-8 duration-300">
+                  <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                    <div className="flex justify-between items-start mb-8 border-b border-slate-100 pb-6">
+                      <div>
+                        <h3 className="text-2xl font-black text-slate-900">Checkout</h3>
+                        <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">
+                          {paymentType === "direct" ? "Direct Call Payment" : "Broadcast Ping Pre-Auth"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-xs font-bold text-slate-400 uppercase">Amount</span>
+                        <div className="text-3xl font-black text-slate-900">₹{paymentAmount}</div>
+                      </div>
+                    </div>
+
+                    {paymentType === "broadcast" && (
+                      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 flex gap-3 text-amber-800 text-sm font-medium">
+                        <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p>Because doctor fees vary, we are placing an <strong>authorization hold</strong> for the maximum fee (₹{paymentAmount}). You will only be charged the exact fee of the doctor who accepts your call.</p>
+                      </div>
+                    )}
+
+                    <div className="space-y-4 mb-8">
+                      <div className="border-2 border-slate-900 rounded-xl p-4 flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded flex items-center justify-center font-black italic">UP</div>
+                          <span className="font-bold text-slate-900">UPI / QR Code</span>
+                        </div>
+                        <div className="w-4 h-4 rounded-full border-4 border-slate-900"></div>
+                      </div>
+                      <div className="border-2 border-slate-100 rounded-xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed">
+                        <div className="flex items-center gap-3">
+                          <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                          <span className="font-bold text-slate-500">Credit / Debit Card</span>
+                        </div>
+                        <div className="w-4 h-4 rounded-full border-2 border-slate-300"></div>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={handlePaymentSuccess}
+                      disabled={isProcessingPayment}
+                      className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black py-4 rounded-xl transition-all flex items-center justify-center gap-2"
+                    >
+                      {isProcessingPayment ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          PROCESSING...
+                        </>
+                      ) : (
+                        <>AUTHORIZE ₹{paymentAmount}</>
+                      )}
+                    </button>
+                    <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4 flex items-center justify-center gap-1">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                      Secured by Razorpay
+                    </p>
                   </div>
-                  <h3 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-2">Checking Availability...</h3>
-                  <p className="text-cyan-500/80 text-center font-medium">Pinging online <span className="text-cyan-400 font-bold">{department || "General"}</span> doctors in our network.</p>
                 </div>
               )}
 
+              {/* STEP 6: AUTH GATE */}
               {step === "auth_gate" && (
-                <div className="h-full flex flex-col items-center justify-center animate-in fade-in slide-in-from-bottom-8 duration-500">
-                  <div className="w-20 h-20 bg-emerald-950/40 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
-                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <div className="h-full flex flex-col items-center justify-center animate-in slide-in-from-bottom-8 duration-500 py-8">
+                  <div className="w-16 h-16 bg-slate-100 text-slate-900 rounded-full flex items-center justify-center mb-6 border border-slate-200 shadow-sm">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                   </div>
-                  <h3 className="text-3xl font-black text-white mb-2 tracking-wide">Doctor Available!</h3>
-                  <p className="text-slate-400 mb-8 text-center text-sm font-medium">To connect immediately, please verify your identity. <br/><span className="text-xs text-red-400 font-bold tracking-widest uppercase mt-2 block bg-red-950/30 py-1 px-3 rounded-full border border-red-500/20 inline-block">(Profile builder skipped for urgent calls)</span></p>
+                  <h3 className="text-2xl font-black text-slate-900 mb-2">Final Step: Contact Info</h3>
+                  <p className="text-slate-500 mb-8 text-center text-sm font-medium">Verify your identity to connect with the doctor immediately.</p>
                   
-                  <form onSubmit={handleFastTrackAuth} className="w-full space-y-5 bg-[#0a1229] p-6 rounded-2xl border border-slate-800">
+                  <form onSubmit={handleAuth} className="w-full space-y-4">
                     <div>
-                      <label className="block text-xs font-bold text-cyan-500 mb-2 uppercase tracking-wider">Chief Symptoms / Reason *</label>
+                      <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Chief Symptoms *</label>
                       <textarea 
                         required 
                         value={symptoms}
                         onChange={e => setSymptoms(e.target.value)}
-                        className="w-full px-4 py-3 bg-[#040815] rounded-xl border border-slate-700 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none placeholder:text-slate-600 resize-none h-24"
-                        placeholder="e.g. Mild fever since yesterday, headache..."
+                        className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-slate-900 focus:ring-0 transition-all outline-none resize-none h-20"
+                        placeholder="e.g. Mild fever since yesterday..."
                       ></textarea>
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold text-cyan-500 mb-2 uppercase tracking-wider">Phone Number *</label>
-                      <input 
-                        type="tel" 
-                        required 
-                        value={phone}
-                        onChange={e => setPhone(e.target.value)}
-                        className="w-full px-4 py-3 bg-[#040815] rounded-xl border border-slate-700 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none placeholder:text-slate-600"
-                        placeholder="+91 98765 43210"
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Age (Years) *</label>
+                        <input 
+                          type="number" 
+                          required 
+                          value={age}
+                          onChange={e => setAge(e.target.value)}
+                          className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-slate-900 outline-none"
+                          placeholder="e.g. 34"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Biological Sex *</label>
+                        <select 
+                          required 
+                          value={gender}
+                          onChange={e => setGender(e.target.value)}
+                          className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-slate-900 outline-none"
+                        >
+                          <option value="">Select...</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold text-cyan-500 mb-2 uppercase tracking-wider">WhatsApp Number *</label>
-                      <input 
-                        type="tel" 
-                        required 
-                        value={whatsapp}
-                        onChange={e => setWhatsapp(e.target.value)}
-                        className="w-full px-4 py-3 bg-[#040815] rounded-xl border border-slate-700 text-white focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none placeholder:text-slate-600"
-                        placeholder="+91 98765 43210"
-                      />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Phone *</label>
+                        <input 
+                          type="tel" 
+                          required 
+                          value={phone}
+                          onChange={e => setPhone(e.target.value)}
+                          className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-slate-900 outline-none"
+                          placeholder="+91"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">WhatsApp *</label>
+                        <input 
+                          type="tel" 
+                          required 
+                          value={whatsapp}
+                          onChange={e => setWhatsapp(e.target.value)}
+                          className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-slate-900 outline-none"
+                          placeholder="+91"
+                        />
+                      </div>
                     </div>
                     
-                    <div className="pt-4">
+                    <div className="pt-6">
                       <button 
                         type="submit" 
                         disabled={isAuthenticating}
-                        className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-200 text-slate-900 font-bold py-4 px-4 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all"
+                        className="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-200 hover:border-slate-900 hover:shadow-md text-slate-900 font-bold py-4 px-4 rounded-xl transition-all"
                       >
                         {isAuthenticating ? (
-                          <div className="w-6 h-6 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+                          <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
                         ) : (
                           <>
-                            <svg className="w-6 h-6 text-red-500" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"></path></svg>
-                            Continue with Google
+                            <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"></path></svg>
+                            Verify with Google
                           </>
                         )}
                       </button>
@@ -416,25 +813,21 @@ export default function GlobalTelemedicineFAB() {
                 </div>
               )}
 
+              {/* STEP 7: CONNECTING */}
               {step === "connecting" && (
-                <div className="h-full flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500">
-                  <div className="w-32 h-32 bg-teal-950/30 rounded-full flex items-center justify-center mb-8 relative border border-teal-500/20 shadow-[0_0_40px_rgba(20,184,166,0.15)]">
-                    <div className="absolute inset-0 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                    <div className="absolute inset-[-10px] border border-teal-500/30 rounded-full animate-ping opacity-50"></div>
-                    <svg className="w-14 h-14 text-teal-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <div className="h-full flex flex-col items-center justify-center animate-in zoom-in duration-500 py-12">
+                  <div className="w-32 h-32 bg-slate-100 rounded-full flex items-center justify-center mb-8 relative border border-slate-200 shadow-inner">
+                    <div className="absolute inset-0 border-4 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="absolute inset-[-10px] border-2 border-slate-900/10 rounded-full animate-ping"></div>
+                    <svg className="w-12 h-12 text-slate-900 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                   </div>
-                  <h3 className="text-3xl font-black text-white mb-3 tracking-wide">Connecting...</h3>
-                  <p className="text-teal-500/80 text-center font-medium max-w-xs">Establishing encrypted video link. Do not close this window.</p>
+                  <h3 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">
+                    {paymentType === "direct" ? "Calling Doctor..." : "Pinging Network..."}
+                  </h3>
+                  <p className="text-slate-500 text-center font-medium max-w-xs">Establishing encrypted video link. Do not close this window.</p>
                 </div>
               )}
 
-            </div>
-            
-            {/* Footer */}
-            <div className="bg-gradient-to-r from-teal-500 to-cyan-500 p-4 text-center mt-auto shadow-[0_-5px_20px_rgba(6,182,212,0.3)] border-t border-cyan-400">
-              <p className="text-xs font-black text-white uppercase tracking-widest drop-shadow-md">
-                Secure Video Consultation
-              </p>
             </div>
           </div>
         </div>

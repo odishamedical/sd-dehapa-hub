@@ -4,6 +4,8 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { GlobalLabel, GlobalInput, GlobalSelect, GlobalTextarea, GlobalFormCard } from '@/components/ui/FormElements';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 // Predefined favorite medicines (In reality, fetched from Doctor's personal settings)
 const FAVORITE_MEDICINES = [
@@ -21,6 +23,7 @@ function PrescriptionPadContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const patientVaultId = searchParams?.get("patient") || "";
+  const requestId = searchParams?.get("request") || "";
 
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
@@ -77,9 +80,37 @@ function PrescriptionPadContent() {
       } catch (e) {}
     }
 
+    const fetchRequestData = async () => {
+      if (!requestId) return;
+      try {
+        let reqDoc = await getDoc(doc(db, "consultation_requests", requestId));
+        if (!reqDoc.exists()) {
+          reqDoc = await getDoc(doc(db, "appointments", requestId));
+        }
+        
+        if (reqDoc.exists()) {
+          const data = reqDoc.data();
+          setRxData(prev => ({
+            ...prev,
+            patientInfo: {
+              ...prev.patientInfo,
+              name: data.patientName || prev.patientInfo.name,
+              age: data.age || prev.patientInfo.age,
+              gender: data.gender || prev.patientInfo.gender
+            },
+            diagnosis: data.symptoms || data.reason || prev.diagnosis
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch request data:", err);
+      }
+    };
+
+    fetchRequestData();
+
     setAccessGranted(true);
     setLoading(false);
-  }, []);
+  }, [requestId]);
 
   const handleAddMedicine = () => {
     setRxData(prev => ({

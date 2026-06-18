@@ -252,9 +252,32 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
             <div className="bg-slate-900 rounded-2xl p-6 shadow-md text-center">
               <h3 className="text-white font-bold mb-4">Connect</h3>
               {unwrappedParams.type === 'doctor' && (
-                <button className="w-full bg-tenant-accent hover:bg-teal-400 text-slate-900 font-bold py-3 rounded-xl transition-colors mb-3">
-                  Book Appointment
-                </button>
+                <>
+                  <button 
+                    onClick={() => {
+                      const event = new CustomEvent('open-telemedicine-fab', { 
+                        detail: { action: 'urgent', doctorId: unwrappedParams.id, doctorName: profile.name }
+                      });
+                      window.dispatchEvent(event);
+                    }}
+                    className="w-full bg-red-500 hover:bg-red-400 text-white font-bold py-3 rounded-xl transition-colors mb-3 flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(239,68,68,0.2)]"
+                  >
+                    <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    Urgent Video Consult
+                  </button>
+                  <button 
+                    onClick={() => {
+                      const event = new CustomEvent('open-telemedicine-fab', { 
+                        detail: { action: 'schedule', doctorId: unwrappedParams.id, doctorName: profile.name }
+                      });
+                      window.dispatchEvent(event);
+                    }}
+                    className="w-full bg-teal-500 hover:bg-teal-400 text-white font-bold py-3 rounded-xl transition-colors mb-4 flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Schedule Consult
+                  </button>
+                </>
               )}
               {unwrappedParams.type === 'hospital' && (
                 <button className="w-full bg-red-500 hover:bg-red-400 text-white font-bold py-3 rounded-xl transition-colors mb-3">

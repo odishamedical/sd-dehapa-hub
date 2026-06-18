@@ -36,25 +36,30 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
       return;
     }
 
-    // Query for any pending request (removed specialty filter for easier testing)
     const q = query(
       collection(db, 'consultation_requests'),
       where('status', '==', 'pending')
     );
 
     const unsubRequests = onSnapshot(q, (snapshot) => {
-      // Find the oldest pending request (if multiple, take the first)
-      if (!snapshot.empty) {
-        // We just take the first one for the ping UI
-        const docData = snapshot.docs[0].data();
-        setIncomingRequest({
-          id: snapshot.docs[0].id,
-          ...docData
-        });
+      let validRequest = null;
+      
+      for (const doc of snapshot.docs) {
+        const data = doc.data();
+        const isDirect = data.pingType === 'direct' && data.doctorId === doctorId;
+        // Support legacy requests and new broadcast requests
+        const isBroadcast = (data.pingType === 'broadcast' || !data.pingType) && (data.targetCategory === doctorSpecialty || data.department === doctorSpecialty);
         
-        // Try to play a ringing sound (browsers may block this without interaction)
+        if (isDirect || isBroadcast) {
+          validRequest = { id: doc.id, ...data };
+          break; // take the first valid one
+        }
+      }
+
+      if (validRequest) {
+        setIncomingRequest(validRequest);
         try {
-          const audio = new Audio('/ringtone.mp3'); // We'll assume a dummy audio file
+          const audio = new Audio('/ringtone.mp3'); 
           audio.play().catch(e => console.log("Audio autoplay blocked", e));
         } catch (e) {}
       } else {
