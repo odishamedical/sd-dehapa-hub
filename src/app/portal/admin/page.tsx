@@ -663,6 +663,37 @@ export default function AdminDashboard() {
                               ⭐ {listing.rating} ({listing.reviews})
                             </span>
                           </div>
+                          
+                          {crawlerCategory === "Doctor" && (
+                            <div className="mt-3 flex flex-col gap-1.5 border-t border-slate-100 pt-3">
+                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Premium Fields Extracted:</div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {listing.hours ? (
+                                  <span className="text-[9px] bg-green-50 text-green-700 font-semibold px-2 py-0.5 rounded border border-green-200">Hours ✓</span>
+                                ) : (
+                                  <span className="text-[9px] bg-slate-50 text-slate-400 font-semibold px-2 py-0.5 rounded border border-slate-200">No Hours</span>
+                                )}
+                                
+                                {listing.about ? (
+                                  <span className="text-[9px] bg-green-50 text-green-700 font-semibold px-2 py-0.5 rounded border border-green-200">About ✓</span>
+                                ) : (
+                                  <span className="text-[9px] bg-slate-50 text-slate-400 font-semibold px-2 py-0.5 rounded border border-slate-200">No About</span>
+                                )}
+                                
+                                {listing.clinicMapUrl ? (
+                                  <span className="text-[9px] bg-green-50 text-green-700 font-semibold px-2 py-0.5 rounded border border-green-200">Map Pin ✓</span>
+                                ) : (
+                                  <span className="text-[9px] bg-slate-50 text-slate-400 font-semibold px-2 py-0.5 rounded border border-slate-200">No Map Pin</span>
+                                )}
+
+                                {listing.specialties ? (
+                                  <span className="text-[9px] bg-green-50 text-green-700 font-semibold px-2 py-0.5 rounded border border-green-200">Specialties ({listing.specialties.length}) ✓</span>
+                                ) : (
+                                  <span className="text-[9px] bg-slate-50 text-slate-400 font-semibold px-2 py-0.5 rounded border border-slate-200">No Specialties</span>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
