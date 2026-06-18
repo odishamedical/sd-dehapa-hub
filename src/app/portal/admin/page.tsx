@@ -127,6 +127,34 @@ export default function AdminDashboard() {
     );
   }
 
+    const handleRevokeClaim = async (claim: any) => {
+    if (!confirm("Are you sure you want to revoke this verification? This will remove the user's access to the listing.")) return;
+    try {
+      const batch = writeBatch(db);
+      
+      // Update claim status back to pending or create a new status 'revoked'. Let's use 'pending' so it can be re-approved if needed, or 'rejected'.
+      // We will set it to 'rejected'.
+      batch.update(doc(db, 'listing_claims', claim.id), { status: 'rejected' });
+      
+      // Update listing in directory
+      if (claim.listingId !== "new_listing") {
+        batch.update(doc(db, 'directory', claim.listingId), {
+          verified: false,
+          ownerEmail: null
+        });
+      }
+      
+      await batch.commit();
+      
+      // update state
+      setListingClaims(claims => claims.map(c => c.id === claim.id ? { ...c, status: 'rejected' } : c));
+      alert("Verification Revoked.");
+    } catch (err) {
+      console.error("Revoke error:", err);
+      alert("Failed to revoke claim.");
+    }
+  };
+
   const handleApproveClaim = async (claim: any) => {
     try {
       const batch = writeBatch(db);
