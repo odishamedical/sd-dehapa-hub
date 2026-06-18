@@ -1,33 +1,33 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
-import { useState, useEffect, use } from 'react';
 
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
-import UnverifiedBanner from '@/components/UnverifiedBanner';
-import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import TicketCard from '@/components/TicketCard';
 import { TicketConfig } from '@/lib/ticketConfig';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
 import { updateDoc } from 'firebase/firestore';
+import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
 export default function DoctorProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [doctor, setDoctor] = useState<any>(null);
   const [similarDoctors, setSimilarDoctors] = useState<any[]>([]);
-  const [topHospitals, setTopHospitals] = useState<any[]>([]);
-  const [nearbyCenters, setNearbyCenters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [platformAds, setPlatformAds] = useState<any>({});
 
   // Edit Mode State
   const [isEditMode, setIsEditMode] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
+
+  // UX Tabs State
+  const [activeTab, setActiveTab] = useState<'overview' | 'locations' | 'experience' | 'research' | 'media'>('overview');
 
   const handleInlineSave = async (field: string, value: any) => {
     if (!doctor || !doctor.id) return;
@@ -54,7 +54,6 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             docSnap = querySnapshot.docs[0];
             docId = docSnap.id;
           } else {
-            // Fallback: customSlug might be the raw ID (like a Google Places ChIJ ID)
             const docRef = doc(db, 'directory', customSlug);
             const fallbackSnap = await getDoc(docRef);
             if (fallbackSnap.exists()) {
@@ -76,7 +75,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             specialty: rawData.subCategory || rawData.category || "Specialist",
             experience: rawData.experience || notVerified,
             qualification: rawData.qualification || notVerified,
-            rating: rawData.rating || 4.5,
+            rating: rawData.rating || 4.8,
             reviews: rawData.reviews || 0,
             fee: rawData.fee || "Contact Clinic",
             image: rawData.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Doc")}&background=0f766e&color=fff&size=150`,
@@ -98,26 +97,22 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             ],
             city: rawData.city || rawData.district || "Odisha",
             
-            // New Advanced Array Fields
             locations: rawData.locations || [],
             experiences: rawData.experiences || [],
             qualificationsList: rawData.qualificationsList || [],
             research: rawData.research || [],
             awards: rawData.awards || [],
             
-            // Personal & Registration
             dob: rawData.dob || "",
             maritalStatus: rawData.maritalStatus || "",
             registrationNumber: rawData.registrationNumber || "",
             showPersonalDetails: rawData.showPersonalDetails || false,
             
-            // Auth Check
             ownerEmail: rawData.ownerEmail || null,
             galleryImages: rawData.galleryImages || []
           };
           setDoctor(docData);
 
-          // Check if current user can edit
           if (typeof window !== 'undefined') {
             const currentUserEmail = localStorage.getItem("sd_current_user_email");
             if (currentUserEmail === "odishamedical@gmail.com" || currentUserEmail === docData.ownerEmail) {
@@ -125,38 +120,30 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             }
           }
           
-          // Fetch sidebar widgets safely with smart fallbacks
           try {
-            // Fetch a broad pool of directory items to filter in memory (good for small/medium datasets)
-            const broadQuery = query(collection(db, 'directory'), limit(50));
+            const broadQuery = query(collection(db, 'directory'), limit(20));
             const broadSnap = await getDocs(broadQuery);
-            // Global Rule: Only include documents that have an image
             const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId && !!d.image);
-            
-            // 1. Similar Doctors: Try same subCategory first, fallback to any Doctor
             let similarDocs = allDocs.filter(d => d.category === "Doctor" && d.subCategory === rawData.subCategory);
             if (similarDocs.length === 0) {
-              similarDocs = allDocs.filter(d => d.category === "Doctor"); // Fallback
+              similarDocs = allDocs.filter(d => d.category === "Doctor");
             }
-            
-            // 2. Top Hospitals: Try same city first, fallback to any Hospital
-            let hospitals = allDocs.filter(d => d.category === "Hospital" && d.city === rawData.city);
-            if (hospitals.length === 0) {
-              hospitals = allDocs.filter(d => d.category === "Hospital"); // Fallback
-            }
-            
-            // 3. Nearby Centers: Try same city first, fallback to any center
-            let centers = allDocs.filter(d => d.category !== "Doctor" && d.category !== "Hospital" && d.city === rawData.city);
-            if (centers.length === 0) {
-              centers = allDocs.filter(d => d.category !== "Doctor" && d.category !== "Hospital"); // Fallback
-            }
-            
             setSimilarDoctors(similarDocs.slice(0, 3));
-            setTopHospitals(hospitals.slice(0, 3));
-            setNearbyCenters(centers.slice(0, 3));
-          } catch (e) {
-            console.error("Failed to fetch sidebar widgets", e);
+          } catch(e) {
+            console.error("Failed to fetch similar doctors", e);
           }
+          try {
+            const adsQuery = query(collection(db, 'platform_ads'), where('active', '==', true));
+            const adsSnap = await getDocs(adsQuery);
+            const adsData: any = {};
+            adsSnap.forEach(d => {
+              if (d.data().slot) adsData[d.data().slot] = d.data();
+            });
+            setPlatformAds(adsData);
+          } catch(e) {
+            console.error("Ads fetch failed", e);
+          }
+
         }
       } catch (err) {
         console.error(err);
@@ -168,19 +155,20 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
   }, [id, customSlug]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]"><div className="animate-spin w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full"></div></div>;
+    return <div className="min-h-screen flex items-center justify-center bg-[#0B1121]"><div className="animate-spin w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full"></div></div>;
   }
 
   if (!doctor) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]"><div className="text-center"><h2 className="text-2xl font-bold text-slate-900 mb-2">Doctor Not Found</h2><Link href="/doctors" className="text-teal-600 hover:underline">Return to Directory</Link></div></div>;
+    return <div className="min-h-screen flex items-center justify-center bg-[#0B1121]"><div className="text-center"><h2 className="text-2xl font-bold text-white mb-2">Doctor Not Found</h2><Link href="/doctors" className="text-cyan-400 hover:underline">Return to Directory</Link></div></div>;
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] font-sans pb-20">
-      <CategoryNav />
+    <div className="min-h-screen bg-[#060B14] font-sans pb-20 selection:bg-cyan-500/30">
       
-      <div className="bg-white border-b border-slate-200 px-6 py-3">
-        <div className="w-full max-w-[1920px] mx-auto">
+      {/* Premium Glassmorphic Header */}
+      <div className="bg-slate-900/50 backdrop-blur-xl border-b border-slate-800/60 sticky top-0 z-50">
+        <CategoryNav />
+        <div className="px-6 py-3 w-full max-w-[1920px] mx-auto border-t border-slate-800/40">
           <Breadcrumb paths={[
             { name: "Home", href: "/" },
             { name: doctor.city || "Odisha", href: "/doctors" },
@@ -192,73 +180,156 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
       </div>
 
       {canEdit && (
-        <div className="bg-slate-900 text-white px-6 py-2 sticky top-[72px] z-40 flex items-center justify-between shadow-md">
+        <div className="bg-gradient-to-r from-teal-900 to-cyan-900 text-white px-6 py-2 sticky top-[108px] z-40 flex items-center justify-between shadow-[0_10px_30px_rgba(0,0,0,0.5)] border-b border-cyan-500/30">
           <div className="flex items-center gap-3">
-            <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-            <span className="font-bold text-sm">You have access to edit this profile</span>
+            <svg className="w-5 h-5 text-cyan-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            <span className="font-bold text-sm tracking-wide">Doctor Access: You can edit this profile</span>
           </div>
           <button 
             onClick={() => setIsEditMode(!isEditMode)}
-            className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${isEditMode ? 'bg-teal-500 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+            className={`px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${isEditMode ? 'bg-cyan-400 text-slate-900 shadow-[0_0_15px_rgba(34,211,238,0.5)]' : 'bg-white/10 text-white hover:bg-white/20'}`}
           >
             {isEditMode ? 'Disable Edit Mode' : 'Enable Edit Mode'}
           </button>
         </div>
       )}
       
-      {/* Banner Area */}
-      <div className="w-full h-64 md:h-80 relative bg-teal-900 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-teal-900 to-teal-700 opacity-90 z-10"></div>
+      {/* Futuristic Banner */}
+      <div className="w-full h-[400px] relative overflow-hidden flex items-end pb-12">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1121]/40 via-[#0B1121]/80 to-[#060B14] z-10"></div>
         <img 
           src={doctor.banner} 
           alt="Clinic Banner" 
-          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
+          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30"
         />
-        
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-cyan-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 z-0 pointer-events-none"></div>
+
+        {/* Space 1: Top Hero Space (Unverified Banner OR Top Ad Slot) */}
+        <div className="absolute top-4 left-0 right-0 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 z-30">
+          {!doctor.verified ? (
+            <div className="bg-gradient-to-r from-amber-900/60 to-amber-700/60 border border-amber-500/50 backdrop-blur-md rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+              <div className="flex items-center gap-3">
+                <svg className="w-6 h-6 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <span className="text-white text-sm md:text-base font-medium">Data collected from reliable sources. Are you this doctor? Verify this profile. <span className="font-bold text-amber-400 tracking-wider ml-1">(NOW NOT VERIFIED)</span></span>
+              </div>
+              <Link href="/auth/register" className="shrink-0 bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2 rounded-xl text-sm font-bold uppercase tracking-widest transition-colors shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+                Verify Now
+              </Link>
+            </div>
+          ) : platformAds['ad_slot_doctor_hero_top'] ? (
+            <div className="w-full h-[90px] rounded-xl overflow-hidden shadow-lg border border-slate-700/50 bg-black/50 backdrop-blur-md">
+               {platformAds['ad_slot_doctor_hero_top'].imageUrl ? (
+                 <a href={platformAds['ad_slot_doctor_hero_top'].linkUrl} target="_blank" rel="noreferrer">
+                   <img src={platformAds['ad_slot_doctor_hero_top'].imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
+                 </a>
+               ) : (
+                 <div dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_doctor_hero_top'].htmlCode }} />
+               )}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 relative z-20 flex flex-col lg:flex-row gap-8 items-center lg:items-end">
+           <div className="flex flex-col md:flex-row gap-8 items-center md:items-end flex-1">
+             <div className="relative group">
+               <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400 to-blue-500 rounded-3xl blur-md opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+               <img src={doctor.image} alt={doctor.name} className="relative w-40 h-40 md:w-48 md:h-48 rounded-3xl object-cover border-2 border-slate-800/80 shadow-2xl" />
+               {doctor.verified && (
+                 <div className="absolute -bottom-3 -right-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white p-2 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.6)]">
+                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 </div>
+               )}
+             </div>
+             
+             <div className="flex-1 text-center md:text-left">
+               <div className="flex flex-col md:flex-row items-center md:items-end gap-4 mb-2">
+                 <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight font-serif">{doctor.name}</h1>
+                 {doctor.verified && (
+                   <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-full mb-1 shadow-[0_0_15px_rgba(16,185,129,0.4)] animate-[pulse_3s_ease-in-out_infinite]">
+                     <div className="relative flex h-4 w-4 items-center justify-center">
+                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+                       <svg className="relative w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                     </div>
+                     <span className="text-emerald-400 text-xs font-black uppercase tracking-widest mt-0.5">Verified</span>
+                   </div>
+                 )}
+               </div>
+               <p className="text-xl text-cyan-400 font-medium mb-6">{doctor.specialty}</p>
+             
+             {/* Trust Strip */}
+             <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 text-sm">
+                <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                  <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                  <div>
+                    <span className="text-white font-bold block leading-none">{doctor.rating} Rating</span>
+                    <span className="text-slate-400 text-xs">{doctor.reviews} Reviews</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                  <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                  <div>
+                    <span className="text-white font-bold block leading-none">{doctor.experience}</span>
+                    <span className="text-slate-400 text-xs">Experience</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                  <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                  <div>
+                    <span className="text-white font-bold block leading-none">{doctor.registrationNumber || "MCI Registered"}</span>
+                    <span className="text-slate-400 text-xs">Medical Council</span>
+                  </div>
+                </div>
+             </div>
+           </div>
+           </div>
+
+           {/* Space 2: Right Side of Banner (Premium Ad Space) */}
+           {platformAds['ad_slot_doctor_hero_right'] && (
+             <div className="hidden lg:block w-[300px] h-[250px] shrink-0 bg-black/40 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50">
+               {platformAds['ad_slot_doctor_hero_right'].imageUrl ? (
+                 <a href={platformAds['ad_slot_doctor_hero_right'].linkUrl} target="_blank" rel="noreferrer">
+                   <img src={platformAds['ad_slot_doctor_hero_right'].imageUrl} alt="Premium Advertisement" className="w-full h-full object-cover" />
+                 </a>
+               ) : (
+                 <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_doctor_hero_right'].htmlCode }} />
+               )}
+             </div>
+           )}
+        </div>
       </div>
 
       {/* Main Content Container */}
-      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 relative -mt-24 z-20">
+      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 relative z-20">
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           
           {/* Left & Center Content (75% Width) */}
           <div className="lg:col-span-3 space-y-8">
             
-            {/* Unified Header Card */}
-            <TicketCard 
-              entity={doctor} 
-              config={TicketConfig.doctor} 
-              isEditMode={isEditMode}
-              onSave={handleInlineSave}
-            />
+            {/* Segmented Navigation Tabs */}
+            <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 p-2 rounded-2xl flex overflow-x-auto hide-scrollbar sticky top-[72px] z-30 shadow-lg">
+              {['overview', 'locations', 'experience', 'research', 'media'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab as any)}
+                  className={`flex-1 min-w-[120px] px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${
+                    activeTab === tab 
+                    ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)]' 
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
 
-            {/* Google Extracted Image Gallery */}
-            {doctor.galleryImages?.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                  Clinic Photos
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {doctor.galleryImages.map((img: string, idx: number) => (
-                    <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-sm border border-slate-200">
-                      <img src={img} alt={`Clinic Photo ${idx + 1}`} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 2-Column Content Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              
-              <div className="space-y-8">
-                {/* About */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
-                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
-                  <h2 className="text-xl font-bold text-slate-900 mb-4">About the Doctor</h2>
-                  <div className="text-slate-600 leading-relaxed text-sm">
+            {/* TAB CONTENT: OVERVIEW */}
+            {activeTab === 'overview' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest border border-cyan-500/30">Editable</div>}
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">About the Doctor</h2>
+                  <div className="text-slate-300 leading-relaxed text-base">
                     <InlineEditField 
                       value={doctor.about} 
                       onSave={(val) => handleInlineSave('about', val)} 
@@ -268,197 +339,65 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                   </div>
                 </div>
 
-                {/* Personal & Registration Details */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
-                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-slate-900">Personal & Registration</h2>
-                    {isEditMode && (
-                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
-                        <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Show Publicly</span>
-                        <input 
-                          type="checkbox" 
-                          checked={doctor.showPersonalDetails} 
-                          onChange={(e) => handleInlineSave('showPersonalDetails', e.target.checked)}
-                          className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
-                        />
-                      </label>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <div className="flex flex-col bg-slate-50 p-3 rounded-xl border border-slate-100">
-                      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Medical Registration Number</span>
-                      <div className="text-sm font-semibold text-slate-900">
-                        <InlineEditField 
-                          value={doctor.registrationNumber} 
-                          onSave={(val) => handleInlineSave('registrationNumber', val)} 
-                          isEditMode={isEditMode} 
-                          placeholder="e.g. OMC-15243"
-                        />
-                      </div>
-                    </div>
-
-                    {(doctor.showPersonalDetails || isEditMode) && (
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col bg-slate-50 p-3 rounded-xl border border-slate-100 opacity-90">
-                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Date of Birth</span>
-                          <div className="text-sm font-semibold text-slate-900">
-                            <InlineEditField 
-                              value={doctor.dob} 
-                              onSave={(val) => handleInlineSave('dob', val)} 
-                              isEditMode={isEditMode} 
-                              placeholder="e.g. 22/04/1979"
-                            />
-                          </div>
-                        </div>
-                        <div className="flex flex-col bg-slate-50 p-3 rounded-xl border border-slate-100 opacity-90">
-                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Marital Status</span>
-                          <div className="text-sm font-semibold text-slate-900">
-                            <InlineEditField 
-                              value={doctor.maritalStatus} 
-                              onSave={(val) => handleInlineSave('maritalStatus', val)} 
-                              isEditMode={isEditMode} 
-                              placeholder="e.g. Married"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl relative group">
+                  {isEditMode && <div className="absolute top-4 right-4 bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest border border-cyan-500/30">Editable</div>}
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">Specialties & Services</h2>
+                  <div className="text-slate-300">
+                    <InlineEditArray 
+                      items={doctor.specialties || []} 
+                      onSave={(newArr) => handleInlineSave('specialties', newArr)} 
+                      isEditMode={isEditMode} 
+                      placeholder="Add a specialty (e.g. ENT Surgeon)"
+                    />
                   </div>
                 </div>
-
-                {/* Specialties */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
-                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
-                  <h2 className="text-xl font-bold text-slate-900 mb-4">Specialties & Services</h2>
-                  <InlineEditArray 
-                    items={doctor.specialties || []} 
-                    onSave={(newArr) => handleInlineSave('specialties', newArr)} 
-                    isEditMode={isEditMode} 
-                    placeholder="Add a specialty (e.g. ENT Surgeon)"
-                  />
-                </div>
-
-                {/* Detailed Qualifications */}
-                {doctor.qualificationsList?.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
-                      Qualifications & Fellowships
-                    </h2>
-                    <div className="space-y-4">
-                      {doctor.qualificationsList.map((qual: any, idx: number) => (
-                        <div key={idx} className="flex flex-col bg-slate-50 border border-slate-100 p-4 rounded-xl">
-                          <h4 className="font-bold text-slate-900 text-sm">{qual.degree}</h4>
-                          <p className="text-xs text-slate-600 mt-1">{qual.institution}</p>
-                          {qual.year && <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider mt-2">{qual.year}</span>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Fallback Legacy Education */}
-                {!doctor.qualificationsList?.length && doctor.education.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900 mb-6">Education & Training</h2>
-                    <div className="space-y-6">
-                      {doctor.education.map((edu: any, idx: number) => (
-                        <div key={idx} className="flex gap-4">
-                          <div className="flex flex-col items-center">
-                            <div className="w-3 h-3 bg-teal-500 rounded-full mt-1.5"></div>
-                            {idx !== doctor.education.length - 1 && <div className="w-0.5 h-full bg-slate-200 mt-2"></div>}
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-slate-900 text-sm">{edu.degree}</h4>
-                            <p className="text-xs text-slate-500 mt-1">{edu.institution}</p>
-                            {edu.year && <span className="text-xs font-bold text-slate-400 mt-1 block">{edu.year}</span>}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Awards & Recognitions */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
-                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable Array</div>}
-                  <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                    Awards & Recognitions
-                  </h2>
-                  
-                  {(!doctor.awards || doctor.awards.length === 0) ? (
-                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
-                      <p className="text-sm text-slate-500 font-semibold italic">Soon to update</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {doctor.awards.map((award: any, idx: number) => (
-                        <div key={idx} className="flex gap-3 items-start">
-                          <div className="w-2 h-2 bg-amber-400 rounded-full mt-1.5 shrink-0"></div>
-                          <div>
-                            <h4 className="font-bold text-slate-900 text-sm">{award.name}</h4>
-                            <p className="text-xs text-slate-600 mt-1">{award.organization} {award.year && `• ${award.year}`}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
               </div>
+            )}
 
-              <div className="space-y-8">
+            {/* TAB CONTENT: LOCATIONS & CLINIC */}
+            {activeTab === 'locations' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                 
-                {/* Advanced Experience Timeline */}
-                {doctor.experiences?.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                      Professional Experience
+                {/* Image Gallery (Horizontal Scroll) */}
+                {doctor.galleryImages?.length > 0 && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 border border-slate-700/50 shadow-xl">
+                    <h2 className="text-2xl font-bold text-white mb-6 font-serif flex items-center gap-3">
+                      <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      Clinic Facilities
                     </h2>
-                    <div className="space-y-0 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
-                      {doctor.experiences.map((exp: any, idx: number) => (
-                        <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active py-4">
-                          <div className="flex items-center justify-center w-6 h-6 rounded-full border border-white bg-slate-200 text-slate-500 group-[.is-active]:bg-teal-600 group-[.is-active]:text-emerald-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                          </div>
-                          <div className="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-                            <h4 className="font-bold text-slate-900 text-sm">{exp.role}</h4>
-                            <p className="text-xs text-slate-600 mt-1">{exp.hospital}</p>
-                            {exp.duration && <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider mt-2 block">{exp.duration}</span>}
-                          </div>
+                    <div className="flex overflow-x-auto gap-4 pb-4 hide-scrollbar snap-x">
+                      {doctor.galleryImages.map((img: string, idx: number) => (
+                        <div key={idx} className="min-w-[280px] md:min-w-[320px] h-48 md:h-64 rounded-2xl overflow-hidden snap-center border border-slate-700/50 shrink-0 group cursor-pointer relative">
+                          <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/20 transition-colors z-10"></div>
+                          <img src={img} alt={`Clinic Photo ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
-                
-                {/* Legacy Location Card (Primary) */}
-                <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 overflow-hidden">
-                  <div className="w-full h-48 bg-slate-100 relative">
+
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] border border-slate-700/50 shadow-xl overflow-hidden">
+                  <div className="w-full h-80 bg-slate-800 relative">
                     <iframe 
                       src={doctor.clinic.mapUrl} 
                       width="100%" 
                       height="100%" 
-                      style={{ border: 0 }} 
+                      style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }} 
                       allowFullScreen 
                       loading="lazy" 
                       referrerPolicy="no-referrer-when-downgrade"
                     ></iframe>
                   </div>
-                  <div className="p-6">
-                    <h3 className="font-bold text-lg text-slate-900 mb-2">
-                    <span className="text-sm font-semibold text-slate-500 block mb-1">Primary Clinic</span>
-                    {doctor.clinic.name}
-                  </h3>
-                    <div className="space-y-4 mt-4 relative">
-                      {isEditMode && <div className="absolute -top-12 right-0 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest hidden md:block">Editable</div>}
-                      <div className="flex items-start gap-3">
-                        <svg className="w-5 h-5 text-teal-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        <div className="text-sm text-slate-600 leading-relaxed">
+                  <div className="p-8 md:p-10">
+                    <h3 className="font-bold text-2xl text-white mb-2 font-serif">
+                      <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest block mb-2">Primary Clinic</span>
+                      {doctor.clinic.name}
+                    </h3>
+                    <div className="space-y-6 mt-6 relative">
+                      {isEditMode && <div className="absolute -top-12 right-0 bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest border border-cyan-500/30">Editable</div>}
+                      <div className="flex items-start gap-4">
+                        <svg className="w-6 h-6 text-cyan-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <div className="text-base text-slate-300 leading-relaxed">
                           <InlineEditField 
                             value={doctor.clinic.address} 
                             onSave={(val) => handleInlineSave('address', val)} 
@@ -467,142 +406,226 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
                           />
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <svg className="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                        <PhoneRevealButton 
-                          phoneNumber={doctor.clinic.phone} 
-                          providerId={doctor.id} 
-                          providerName={doctor.name} 
-                          providerType="Doctor" 
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Multiple Visiting Locations */}
                 {doctor.locations?.length > 0 && (
-                  <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                      Also Visits
-                    </h2>
-                    <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 border border-slate-700/50 shadow-xl">
+                    <h2 className="text-2xl font-bold text-white mb-6 font-serif">Also Visits</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {doctor.locations.map((loc: any, idx: number) => (
-                        <div key={idx} className="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-white transition-colors">
-                          <h4 className="font-bold text-slate-900 text-sm mb-1">{loc.name}</h4>
-                          <p className="text-xs text-slate-500 mb-3">{loc.address}, {loc.city}</p>
-                          <div className="flex items-center justify-between text-xs font-semibold">
-                            <span className="text-teal-700 bg-teal-50 px-2 py-1 rounded">{loc.days}</span>
-                            <span className="text-slate-600">{loc.timings}</span>
+                        <div key={idx} className="border border-slate-700/50 rounded-2xl p-6 bg-slate-800/50 hover:bg-slate-800 transition-colors">
+                          <h4 className="font-bold text-white text-lg mb-1">{loc.name}</h4>
+                          <p className="text-sm text-slate-400 mb-4">{loc.address}, {loc.city}</p>
+                          <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider">
+                            <span className="text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1.5 rounded-lg">{loc.days}</span>
+                            <span className="text-slate-300">{loc.timings}</span>
                           </div>
-                          {loc.fee && <div className="mt-3 pt-3 border-t border-slate-200 text-xs text-slate-600">Consultation Fee: <span className="font-bold text-slate-900">₹{loc.fee}</span></div>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB CONTENT: EXPERIENCE & EDUCATION */}
+            {activeTab === 'experience' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                {doctor.experiences?.length > 0 && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                    <h2 className="text-2xl font-bold text-white mb-8 font-serif">Professional Experience</h2>
+                    <div className="space-y-0 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-cyan-500/50 before:to-transparent">
+                      {doctor.experiences.map((exp: any, idx: number) => (
+                        <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active py-4">
+                          <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-[#060B14] bg-cyan-500 text-white shadow-[0_0_15px_rgba(34,211,238,0.5)] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
+                          <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 shadow-sm hover:border-cyan-500/30 transition-colors">
+                            <h4 className="font-bold text-white text-lg">{exp.role}</h4>
+                            <p className="text-sm text-slate-400 mt-1">{exp.hospital}</p>
+                            {exp.duration && <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest mt-3 block">{exp.duration}</span>}
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Research & Publications */}
-                <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
-                  {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable Array</div>}
-                  <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                    Research & Publications
-                  </h2>
+                {doctor.qualificationsList?.length > 0 && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                    <h2 className="text-2xl font-bold text-white mb-6 font-serif">Education & Qualifications</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {doctor.qualificationsList.map((qual: any, idx: number) => (
+                        <div key={idx} className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-white text-lg">{qual.degree}</h4>
+                          <p className="text-sm text-slate-400 mt-2">{qual.institution}</p>
+                          {qual.year && <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded w-fit uppercase tracking-widest mt-3">{qual.year}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB CONTENT: MEDIA (YOUTUBE GALLERY) */}
+            {activeTab === 'media' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-2xl font-bold text-white font-serif flex items-center gap-3">
+                      <svg className="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.498 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.498-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                      Doctor Media & Interviews
+                    </h2>
+                    {isEditMode && <div className="bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest border border-cyan-500/30">Editable Array</div>}
+                  </div>
+
+                  {(!doctor.youtubeLinks || doctor.youtubeLinks.length === 0) ? (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-8 text-center">
+                      <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-slate-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.498 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.498-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                      </div>
+                      <p className="text-base text-slate-400 font-semibold italic">No media uploaded yet.</p>
+                      {isEditMode && <p className="text-xs text-cyan-400 mt-2">Edit mode enabled: Add YouTube links to display them here.</p>}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {doctor.youtubeLinks.slice(0, 10).map((link: string, idx: number) => {
+                        let videoId = '';
+                        const match = link.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})/);
+                        if (match && match[1]) {
+                          videoId = match[1];
+                        }
+                        if (!videoId) return null;
+
+                        return (
+                          <div key={idx} className="aspect-video rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.4)] border border-slate-700/50 bg-black group relative">
+                            <iframe 
+                              width="100%" 
+                              height="100%" 
+                              src={`https://www.youtube.com/embed/${videoId}`} 
+                              title="YouTube video player" 
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                              allowFullScreen
+                              className="absolute inset-0 w-full h-full"
+                            ></iframe>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                   
-                  {(!doctor.research || doctor.research.length === 0) ? (
-                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
-                      <p className="text-sm text-slate-500 font-semibold italic">Soon to update</p>
+                  {isEditMode && (
+                    <div className="mt-8 pt-8 border-t border-slate-700/50">
+                      <h4 className="text-sm font-bold text-cyan-400 uppercase tracking-widest mb-4">Manage YouTube Links</h4>
+                      <InlineEditArray 
+                        items={doctor.youtubeLinks || []} 
+                        onSave={(newArr) => handleInlineSave('youtubeLinks', newArr)} 
+                        isEditMode={isEditMode} 
+                        placeholder="Paste YouTube Link (https://youtube.com/watch?v=...)"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TAB CONTENT: RESEARCH & AWARDS */}
+            {activeTab === 'research' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif text-amber-400">Awards & Recognitions</h2>
+                  {(!doctor.awards || doctor.awards.length === 0) ? (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">No awards listed.</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {doctor.research.map((res: any, idx: number) => (
-                        <div key={idx} className="border-l-2 border-teal-500 pl-4 py-1">
-                          <h4 className="font-bold text-slate-900 text-sm leading-snug">{res.title}</h4>
-                          <p className="text-xs text-slate-600 mt-2 font-serif italic">{res.journal} {res.year && `(${res.year})`}</p>
+                      {doctor.awards.map((award: any, idx: number) => (
+                        <div key={idx} className="flex gap-4 items-start bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                          <div className="w-10 h-10 bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/20 shrink-0">
+                            <span className="text-amber-400 font-serif font-bold text-lg">🏆</span>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white text-base">{award.name}</h4>
+                            <p className="text-sm text-slate-400 mt-1">{award.organization} {award.year && `• ${award.year}`}</p>
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-              </div>
-            </div>
-          </div>
-
-          {/* Right Sidebar: Ecosystem (25% Width) */}
-          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-[100px]">
-            
-            {/* Advertisement Placeholder (Hidden until ads are injected) */}
-            {false && (
-              <div className="w-full h-64 bg-slate-100 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 text-center shadow-inner">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Advertisement</span>
-                <p className="text-sm text-slate-500 font-medium">Google AdSense / Internal Promo Block</p>
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">Research & Publications</h2>
+                  {(!doctor.research || doctor.research.length === 0) ? (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">No publications listed.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {doctor.research.map((res: any, idx: number) => (
+                        <div key={idx} className="border-l-2 border-cyan-500 pl-6 py-2">
+                          <h4 className="font-bold text-white text-base leading-snug">{res.title}</h4>
+                          <p className="text-sm text-cyan-400/80 mt-2 font-serif italic">{res.journal} {res.year && `(${res.year})`}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
+
+          </div>
+
+          {/* Right Sidebar: Sticky Contact / Booking Widget (25% Width) */}
+          <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-[160px] z-30">
+            
+            {/* STICKY BOOKING CARD */}
+            <div className="bg-gradient-to-b from-slate-800 to-slate-900 rounded-[32px] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-700/60 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 rounded-full blur-[50px]"></div>
+               <h3 className="font-bold text-xl text-white mb-2 relative z-10 font-serif">Book Appointment</h3>
+               <p className="text-sm text-slate-400 mb-6 relative z-10">Instantly view availability or contact the clinic directly.</p>
+               
+               <div className="space-y-4 relative z-10">
+                 <div className="w-full">
+                    <PhoneRevealButton 
+                      phoneNumber={doctor.clinic.phone} 
+                      providerId={doctor.id} 
+                      providerName={doctor.name} 
+                      providerType="Doctor" 
+                    />
+                 </div>
+                 <Link href={`/portal/patient/book/${doctor.id}`} className="w-full block text-center bg-white hover:bg-slate-100 text-slate-900 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md">
+                   Check Availability
+                 </Link>
+               </div>
+               
+               <div className="mt-8 pt-6 border-t border-slate-700/50 relative z-10">
+                 <div className="flex items-center gap-3 text-sm text-slate-300">
+                    <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Secure Booking via DehaPa</span>
+                 </div>
+               </div>
+            </div>
 
             {/* Similar Doctors */}
             {similarDoctors.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                  Recommended Specialists in {doctor.city}
-                </h3>
+              <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-6 border border-slate-700/50 shadow-xl">
+                <h3 className="font-bold text-base text-white mb-4 font-serif">Recommended Specialists</h3>
                 <div className="flex flex-col gap-4">
                   {similarDoctors.map((sim, idx) => (
-                    <Link key={idx} href={generateUniversalSeoUrl(sim, 'doctors')} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
-                      <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Doc")}&background=0f766e&color=fff`} alt={sim.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
+                    <Link key={idx} href={generateUniversalSeoUrl(sim, 'doctors')} className="bg-slate-800/50 hover:bg-slate-800 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-700/50 hover:border-cyan-500/30">
+                      <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Doc")}&background=0f766e&color=fff`} alt={sim.name} className="w-12 h-12 rounded-lg object-cover border border-slate-700 shrink-0" />
                       <div className="min-w-0 flex-1">
-                        <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{sim.name}</h4>
+                        <h4 className="font-bold text-sm text-white truncate group-hover:text-cyan-400 transition-colors">{sim.name}</h4>
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-[10px] font-bold text-yellow-600">⭐ {sim.rating || 4.5}</span>
-                          <span className="text-[10px] font-bold text-slate-400">({sim.reviews || 0})</span>
+                          <span className="text-[10px] font-bold text-yellow-400">⭐ {sim.rating || 4.8}</span>
                         </div>
                       </div>
                     </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Top Hospitals */}
-            {topHospitals.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                  Top Hospitals in {doctor.city}
-                </h3>
-                <div className="flex flex-col gap-4">
-                  {topHospitals.map((hosp, idx) => (
-                    <Link key={idx} href={`/hospitals/${hosp.id}`} className="bg-slate-50 hover:bg-teal-50 rounded-xl p-3 flex items-center gap-3 group transition-colors border border-slate-100 hover:border-teal-100">
-                      <img src={hosp.image} alt={hosp.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <h4 className="font-bold text-sm text-slate-900 truncate group-hover:text-teal-700 transition-colors">{hosp.name}</h4>
-                        <p className="text-xs text-slate-500 truncate mt-1">{hosp.address || hosp.district}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Nearby Care Centers */}
-            {nearbyCenters.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
-                <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                  Nearby Care Centers
-                </h3>
-                <div className="flex flex-col gap-4">
-                  {nearbyCenters.map((center, idx) => (
-                    <div key={idx} className="bg-slate-50 rounded-xl p-3 flex items-center gap-3 border border-slate-100 hover:bg-white hover:border-teal-100 transition-colors">
-                      <img src={center.image} alt={center.name} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" />
-                      <div className="min-w-0 flex-1 flex flex-col gap-1">
-                        <h4 className="font-bold text-sm text-slate-900 truncate">{center.name}</h4>
-                        <p className="text-[10px] text-slate-500 truncate">{center.category} • {center.address || center.district}</p>
-                      </div>
-                    </div>
                   ))}
                 </div>
               </div>
