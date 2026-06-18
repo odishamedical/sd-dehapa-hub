@@ -171,10 +171,10 @@ export default function DoctorsDirectory({
     const searchMatch = nameMatch || specMatch;
     
     if (selectedDistricts.length > 0) {
-      if (!selectedDistricts.includes(doc.district)) return false;
+      if (!selectedDistricts.map(d => d.toLowerCase()).includes(doc.district?.toLowerCase())) return false;
     }
     
-    if (searchDistrict && doc.district !== searchDistrict) {
+    if (searchDistrict && doc.district?.toLowerCase() !== searchDistrict.toLowerCase()) {
       return false;
     }
 
