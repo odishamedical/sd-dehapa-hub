@@ -11,6 +11,7 @@ import ImageCropper from './ImageCropper';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import InlineEditArray from './InlineEditArray';
+import ObjectArrayEditor from './ObjectArrayEditor';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -695,7 +696,7 @@ export default function AdminDataCRM() {
                   <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h4 className="font-bold text-slate-800 mb-2 text-sm uppercase tracking-widest">Associated Clinics / Hospitals</h4>
                     <p className="text-xs text-slate-500 mb-4">Edit the clinics or hospitals where this entity provides services.</p>
-                    <InlineEditArray
+                    <ObjectArrayEditor
                       title="Clinics"
                       items={locations}
                       fields={[
@@ -718,7 +719,7 @@ export default function AdminDataCRM() {
                   {selectedListing.category === 'Doctor' && (
                     <>
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <InlineEditArray
+                        <ObjectArrayEditor
                           title="Professional Experience"
                           items={experiences}
                           fields={[
@@ -734,7 +735,7 @@ export default function AdminDataCRM() {
                       </div>
                       
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <InlineEditArray
+                        <ObjectArrayEditor
                           title="Qualifications & Education"
                           items={qualificationsList}
                           fields={[
@@ -749,7 +750,7 @@ export default function AdminDataCRM() {
                       </div>
 
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <InlineEditArray
+                        <ObjectArrayEditor
                           title="Awards & Recognitions"
                           items={awards}
                           fields={[
@@ -764,7 +765,7 @@ export default function AdminDataCRM() {
                       </div>
                       
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <InlineEditArray
+                        <ObjectArrayEditor
                           title="Research & Publications"
                           items={research}
                           fields={[
@@ -784,7 +785,7 @@ export default function AdminDataCRM() {
                   {selectedListing.category === 'Hospital' && (
                     <>
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <InlineEditArray
+                        <ObjectArrayEditor
                           title="Departments"
                           items={departments}
                           fields={[
@@ -797,7 +798,7 @@ export default function AdminDataCRM() {
                       </div>
                       
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <InlineEditArray
+                        <ObjectArrayEditor
                           title="Health Packages"
                           items={healthPackages}
                           fields={[
