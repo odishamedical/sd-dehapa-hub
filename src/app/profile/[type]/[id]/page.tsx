@@ -280,11 +280,11 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
 
           // Fetch similar entities
           try {
-            const broadQuery = query(collection(db, 'directory'), limit(20));
+            const broadQuery = query(collection(db, 'directory'), limit(50));
             const broadSnap = await getDocs(broadQuery);
             const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== unwrappedParams.id && !!d.image);
             let similarDocs = allDocs.filter(d => d.category?.toLowerCase() === unwrappedParams.type);
-            setSimilarEntities(similarDocs.slice(0, 3));
+            setSimilarEntities(similarDocs.slice(0, 6));
           } catch(e) {
             console.error("Failed to fetch similar entities", e);
           }
