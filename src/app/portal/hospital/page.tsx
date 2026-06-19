@@ -20,6 +20,16 @@ interface RosteredDoctor {
   status: "Pending" | "Active";
 }
 
+
+interface HealthPackage {
+  id: string;
+  packageName: string;
+  description: string;
+  price: string;
+  discountedPrice: string;
+  includedTests: string; // Comma separated for simplicity, or we can use array
+}
+
 interface StaffRole {
   email: string;
   role: string;
@@ -98,6 +108,23 @@ export default function HospitalDashboard() {
   const updateInsurance = (index: number, value: string) => setInsuranceNetworks(prev => { const copy = [...prev]; copy[index].name = value; return copy; });
 
   
+  
+  // State: Health Packages
+  const [healthPackages, setHealthPackages] = useState<HealthPackage[]>([]);
+  const packagesSaveStatus = useAutosave(healthPackages, hospitalUid, "healthPackages", 1000);
+  
+  const addPackage = () => {
+    setHealthPackages(prev => [...prev, { id: Date.now().toString(), packageName: "", description: "", price: "", discountedPrice: "", includedTests: "" }]);
+  };
+  const removePackage = (index: number) => setHealthPackages(prev => prev.filter((_, i) => i !== index));
+  const updatePackage = (index: number, field: keyof HealthPackage, value: string) => {
+    setHealthPackages(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
+
   // State: Staff
   const [staffRoles, setStaffRoles] = useState<StaffRole[]>([]);
   const staffSaveStatus = useAutosave(staffRoles, hospitalUid, "staffRoles", 1000);
@@ -235,6 +262,7 @@ export default function HospitalDashboard() {
           if (data.insuranceNetworks) setInsuranceNetworks(data.insuranceNetworks);
           if (data.rosterDoctors) setRosterDoctors(data.rosterDoctors);
           if (data.staffRoles) setStaffRoles(data.staffRoles);
+          if (data.healthPackages) setHealthPackages(data.healthPackages);
         }
       } catch (err) {
         console.error("Failed to fetch hospital profile", err);
@@ -262,6 +290,7 @@ export default function HospitalDashboard() {
     
     // 3. REVENUE & STAFF
     { id: "roster", label: "Doctor Roster", section: "REVENUE & STAFF", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> },
+    { id: "packages", label: "Health Packages", section: "REVENUE & STAFF", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg> },
     { id: "staff", label: "Staff & Roles", section: "REVENUE & STAFF", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> },
   ];
   const hospitalTabs = currentUserRole === "hospital_staff" ? allTabs.filter(t => t.section === "QUICK ACCESS") : allTabs;
@@ -500,6 +529,64 @@ export default function HospitalDashboard() {
         )}
 
         
+        
+        {/* Tab: Health Packages */}
+        {activeTab === "packages" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4 relative">
+            <div className="flex justify-between items-center border-b border-slate-200/50 pb-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Health Packages</h3>
+                <p className="text-sm text-slate-500 mt-1">Create preventive health checkup packages to offer to patients directly.</p>
+              </div>
+              <button onClick={addPackage} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-sm transition-colors shadow-sm">+ Add Package</button>
+            </div>
+            
+            <div className="space-y-6">
+              {healthPackages.length === 0 ? (
+                <div className="text-center p-10 bg-white/40 border border-white/60 rounded-[24px]">
+                  <p className="text-slate-500 font-medium">No health packages created yet.</p>
+                </div>
+              ) : (
+                healthPackages.map((pkg, index) => (
+                  <div key={pkg.id} className="border border-white/50 rounded-[24px] p-8 relative bg-white/20 backdrop-blur-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.5),0_10px_30px_rgba(0,0,0,0.05)] transition-all duration-300 group hover:bg-white/40">
+                    <button onClick={() => removePackage(index)} className="absolute top-6 right-6 px-3 py-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-sm" title="Delete Package">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Remove
+                    </button>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pr-24">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-slate-900 mb-1.5">Package Name</label>
+                        <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 outline-none transition-all" type="text" value={pkg.packageName} onChange={(e) => updatePackage(index, 'packageName', e.target.value)} placeholder="e.g. Master Health Checkup" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-slate-900 mb-1.5">Description</label>
+                        <textarea className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 outline-none transition-all min-h-[80px]" value={pkg.description} onChange={(e) => updatePackage(index, 'description', e.target.value)} placeholder="Brief description of the package benefits..."></textarea>
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-semibold text-slate-900 mb-1.5">Included Tests (comma separated)</label>
+                        <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 outline-none transition-all" type="text" value={pkg.includedTests} onChange={(e) => updatePackage(index, 'includedTests', e.target.value)} placeholder="e.g. CBC, ECG, Lipid Profile, X-Ray" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-900 mb-1.5">Regular Price (₹)</label>
+                        <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 outline-none transition-all" type="number" value={pkg.price} onChange={(e) => updatePackage(index, 'price', e.target.value)} placeholder="e.g. 5000" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-900 mb-1.5">Discounted Price (₹)</label>
+                        <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 outline-none transition-all text-teal-700 font-bold" type="number" value={pkg.discountedPrice} onChange={(e) => updatePackage(index, 'discountedPrice', e.target.value)} placeholder="e.g. 3999" />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+              
+              <div className="flex items-center justify-between pt-6 border-t border-slate-200/50 mt-6">
+                <AutosaveIndicator status={packagesSaveStatus} />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Tab: Staff & Roles */}
         {activeTab === "staff" && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4 relative">
