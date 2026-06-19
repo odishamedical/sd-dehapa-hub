@@ -108,7 +108,14 @@ function SearchResultsContent() {
 
   const filteredResults = results.filter(item => {
     if (type !== "all" && item.type !== type) return false;
-    if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && !item.subtitle.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (searchQuery) {
+      const queryTerms = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
+      const name = item.name.toLowerCase();
+      const subtitle = item.subtitle.toLowerCase();
+      
+      const matches = queryTerms.every(term => name.includes(term) || subtitle.includes(term));
+      if (!matches) return false;
+    }
     
     // Cascading Location Logic Match
     if (district && item.district.toLowerCase() !== district.toLowerCase()) return false;
