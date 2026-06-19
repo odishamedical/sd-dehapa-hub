@@ -10,6 +10,7 @@ import AddressBlock from './AddressBlock';
 import ImageCropper from './ImageCropper';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
+import InlineEditArray from './InlineEditArray';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -47,12 +48,15 @@ export default function AdminDataCRM() {
   const [isDeletingBulk, setIsDeletingBulk] = useState(false);
   
   // Advanced features state
+  const [activeTab, setActiveTab] = useState("basic");
   const [dynamicFields, setDynamicFields] = useState<{label: string, value: string}[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
   const [experiences, setExperiences] = useState<any[]>([]);
   const [qualificationsList, setQualificationsList] = useState<any[]>([]);
   const [research, setResearch] = useState<any[]>([]);
   const [awards, setAwards] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [healthPackages, setHealthPackages] = useState<any[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -93,6 +97,7 @@ export default function AdminDataCRM() {
   const uniqueCategories = Array.from(new Set(data.map(d => d.category).filter(Boolean)));
 
   const openDrawer = (listing: any) => {
+    setActiveTab("basic");
     setIsNewListing(false);
     setSelectedListing({ ...listing });
     setDynamicFields(listing.customFields || []);
@@ -101,11 +106,14 @@ export default function AdminDataCRM() {
     setQualificationsList(listing.qualificationsList || []);
     setResearch(listing.research || []);
     setAwards(listing.awards || []);
+    setDepartments(listing.departments || []);
+    setHealthPackages(listing.healthPackages || []);
     setSlugAvailability({status: 'idle', message: ''});
     setIsDrawerOpen(true);
   };
 
   const handleCreateNew = () => {
+    setActiveTab("basic");
     setIsNewListing(true);
     setSelectedListing({
       id: "NEW_" + Date.now().toString(),
@@ -127,6 +135,8 @@ export default function AdminDataCRM() {
     setQualificationsList([]);
     setResearch([]);
     setAwards([]);
+    setDepartments([]);
+    setHealthPackages([]);
     setSlugAvailability({status: 'idle', message: ''});
     setIsDrawerOpen(true);
   };
@@ -258,6 +268,8 @@ export default function AdminDataCRM() {
         qualificationsList: cleanQualifications,
         research: cleanResearch,
         awards: cleanAwards,
+        departments: departments.filter(d => d.name?.trim() !== ""),
+        healthPackages: healthPackages.filter(h => h.packageName?.trim() !== ""),
         galleryImages: selectedListing.galleryImages || [],
         rawImages: selectedListing.rawImages || [],
         updatedAt: serverTimestamp()
