@@ -669,6 +669,18 @@ export default function AdminDataCRM() {
                 <div className="space-y-8">
                   <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Primary Address & Location Mapping</h4>
+                    
+                    <div className="mb-6">
+                      <label className="form-label">Primary Clinic / Hospital Name</label>
+                      <input 
+                        type="text" 
+                        value={selectedListing.clinicName || ""} 
+                        onChange={e => setSelectedListing({...selectedListing, clinicName: e.target.value})} 
+                        className="form-input" 
+                        placeholder="e.g. Sanjivani Hospital"
+                      />
+                    </div>
+
                     <AddressBlock 
                       data={{
                         country: selectedListing.country || '',
