@@ -81,6 +81,13 @@ export default function HospitalDashboard() {
   });
   const infrastructureSaveStatus = useAutosave(infrastructureData, hospitalUid, "infrastructureData", 1000);
 
+  const [totalBeds, setTotalBeds] = useState("");
+  const [icuCapacity, setIcuCapacity] = useState("");
+  const [emergencyServices, setEmergencyServices] = useState("");
+  const bedsSaveStatus = useAutosave(totalBeds, hospitalUid, "totalBeds", 1000);
+  const icuSaveStatus = useAutosave(icuCapacity, hospitalUid, "icuCapacity", 1000);
+  const emergencySaveStatus = useAutosave(emergencyServices, hospitalUid, "emergencyServices", 1000);
+
   // State: Departments
   const [departments, setDepartments] = useState([{ name: "" }]);
   const departmentsSaveStatus = useAutosave(departments, hospitalUid, "departments", 1000);
@@ -258,6 +265,9 @@ export default function HospitalDashboard() {
           if (data.identityData) setIdentityData(data.identityData);
           if (data.locationData) setLocationData(data.locationData);
           if (data.infrastructureData) setInfrastructureData(data.infrastructureData);
+          if (data.totalBeds) setTotalBeds(data.totalBeds);
+          if (data.icuCapacity) setIcuCapacity(data.icuCapacity);
+          if (data.emergencyServices) setEmergencyServices(data.emergencyServices);
           if (data.departments) setDepartments(data.departments);
           if (data.insuranceNetworks) setInsuranceNetworks(data.insuranceNetworks);
           if (data.rosterDoctors) setRosterDoctors(data.rosterDoctors);
@@ -427,55 +437,35 @@ export default function HospitalDashboard() {
 
               <div className="pt-6 border-t border-slate-200/50">
                 <h4 className="text-sm font-bold text-slate-800 mb-4">Facility Capabilities</h4>
-                {['nursing_home', 'corporate_hospital'].includes(identityData.facilityType) ? (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-semibold text-slate-900 mb-1.5">Total Beds Capacity</label>
-                        <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
-                          type="number" 
-                          value={infrastructureData.totalBeds}
-                          onChange={(e) => setInfrastructureData(prev => ({...prev, totalBeds: e.target.value}))}
-                          placeholder="e.g. 50" 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                      <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors bg-white shadow-sm">
-                        <input 
-                          type="checkbox" 
-                          checked={infrastructureData.hasIcu}
-                          onChange={(e) => setInfrastructureData(prev => ({...prev, hasIcu: e.target.checked}))}
-                          className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 border-slate-300"
-                        />
-                        <span className="font-bold text-slate-700 text-sm">Has ICU</span>
-                      </label>
-                      <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors bg-white shadow-sm">
-                        <input 
-                          type="checkbox" 
-                          checked={infrastructureData.hasEmergency}
-                          onChange={(e) => setInfrastructureData(prev => ({...prev, hasEmergency: e.target.checked}))}
-                          className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 border-slate-300"
-                        />
-                        <span className="font-bold text-slate-700 text-sm">24/7 Emergency Ward</span>
-                      </label>
-                      <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors bg-white shadow-sm">
-                        <input 
-                          type="checkbox" 
-                          checked={infrastructureData.is247}
-                          onChange={(e) => setInfrastructureData(prev => ({...prev, is247: e.target.checked}))}
-                          className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 border-slate-300"
-                        />
-                        <span className="font-bold text-slate-700 text-sm">Open 24/7</span>
-                      </label>
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-sm text-slate-500 italic bg-white/40 p-4 rounded-xl border border-white/60">
-                    Bed capacity and intensive care capabilities are not required for {identityData.facilityType === 'clinic' ? 'Single-Specialty Clinics' : 'Poly-Clinics'}.
-                  </p>
-                )}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">Total Beds Capacity</label>
+                    <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
+                      type="text" 
+                      value={totalBeds}
+                      onChange={(e) => setTotalBeds(e.target.value)}
+                      placeholder="e.g. 50" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">ICU Capacity</label>
+                    <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
+                      type="text" 
+                      value={icuCapacity}
+                      onChange={(e) => setIcuCapacity(e.target.value)}
+                      placeholder="e.g. 10" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">Emergency Services</label>
+                    <input className="w-full bg-white/60 backdrop-blur-xl border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-5 py-3.5 shadow-inner text-slate-900 text-sm focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all" 
+                      type="text" 
+                      value={emergencyServices}
+                      onChange={(e) => setEmergencyServices(e.target.value)}
+                      placeholder="e.g. 24/7 Available" 
+                    />
+                  </div>
+                </div>
                 <div className="flex justify-end mt-4">
                   <AutosaveIndicator status={infrastructureSaveStatus} />
                 </div>
