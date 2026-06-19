@@ -128,7 +128,11 @@ export default function AdminDataCRM() {
       verified: false,
       customSlug: "",
       source: "manual_entry",
-      tenantId: "default"
+      tenantId: "default",
+      youtubeLinks: [],
+      totalBeds: "",
+      icuCapacity: "",
+      emergencyServices: ""
     });
     setDynamicFields([]);
     setLocations([]);
@@ -273,6 +277,10 @@ export default function AdminDataCRM() {
         healthPackages: healthPackages.filter(h => h.packageName?.trim() !== ""),
         galleryImages: selectedListing.galleryImages || [],
         rawImages: selectedListing.rawImages || [],
+        youtubeLinks: selectedListing.youtubeLinks || [],
+        totalBeds: selectedListing.totalBeds || "",
+        icuCapacity: selectedListing.icuCapacity || "",
+        emergencyServices: selectedListing.emergencyServices || "",
         updatedAt: serverTimestamp()
       };
 
@@ -652,6 +660,14 @@ export default function AdminDataCRM() {
                     <label className="form-label">About / Biography</label>
                     <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="form-input" rows={4} />
                   </div>
+                  <div className="col-span-2 mt-4">
+                    <label className="form-label">YouTube Video Links (Media Gallery)</label>
+                    <InlineEditArray 
+                      items={selectedListing.youtubeLinks || []} 
+                      onUpdate={(newItems) => setSelectedListing({...selectedListing, youtubeLinks: newItems})} 
+                      placeholder="Paste YouTube URL here..." 
+                    />
+                  </div>
                   <div className="col-span-2 flex flex-wrap items-center gap-6 mt-2 p-5 bg-slate-50 border border-slate-200 rounded-xl">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input type="checkbox" id="verifiedCheck" checked={selectedListing.verified || false} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-6 h-6 text-teal-600 rounded border-slate-300" />
@@ -705,24 +721,26 @@ export default function AdminDataCRM() {
                     />
                   </div>
 
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h4 className="font-bold text-slate-800 mb-2 text-sm uppercase tracking-widest">Associated Clinics / Hospitals</h4>
-                    <p className="text-xs text-slate-500 mb-4">Edit the clinics or hospitals where this entity provides services.</p>
-                    <ObjectArrayEditor
-                      title="Clinics"
-                      items={locations}
-                      fields={[
-                        { key: "clinicName", label: "Clinic/Hospital Name", type: "text" },
-                        { key: "address", label: "Full Address", type: "textarea" },
-                        { key: "mapUrl", label: "Google Maps Embed URL", type: "text" },
-                        { key: "timings", label: "Timings (e.g. Mon-Sat 10AM-5PM)", type: "text" },
-                        { key: "phone", label: "Booking Phone Number", type: "text" }
-                      ]}
-                      onUpdate={(idx, key, val) => handleArrayChange(setLocations, locations, idx, key, val)}
-                      onAdd={() => setLocations([...locations, { clinicName: '', address: '', mapUrl: '', timings: '', phone: '' }])}
-                      onRemove={(idx) => setLocations(locations.filter((_, i) => i !== idx))}
-                    />
-                  </div>
+                  {selectedListing.category === 'Doctor' && (
+                    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                      <h4 className="font-bold text-slate-800 mb-2 text-sm uppercase tracking-widest">Associated Clinics / Hospitals</h4>
+                      <p className="text-xs text-slate-500 mb-4">Edit the clinics or hospitals where this entity provides services.</p>
+                      <ObjectArrayEditor
+                        title="Clinics"
+                        items={locations}
+                        fields={[
+                          { key: "clinicName", label: "Clinic/Hospital Name", type: "text" },
+                          { key: "address", label: "Full Address", type: "textarea" },
+                          { key: "mapUrl", label: "Google Maps Embed URL", type: "text" },
+                          { key: "timings", label: "Timings (e.g. Mon-Sat 10AM-5PM)", type: "text" },
+                          { key: "phone", label: "Booking Phone Number", type: "text" }
+                        ]}
+                        onUpdate={(idx, key, val) => handleArrayChange(setLocations, locations, idx, key, val)}
+                        onAdd={() => setLocations([...locations, { clinicName: '', address: '', mapUrl: '', timings: '', phone: '' }])}
+                        onRemove={(idx) => setLocations(locations.filter((_, i) => i !== idx))}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -796,6 +814,24 @@ export default function AdminDataCRM() {
 
                   {selectedListing.category === 'Hospital' && (
                     <>
+                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Hospital Facilities & Stats</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div>
+                            <label className="form-label">Total Beds</label>
+                            <input type="text" value={selectedListing.totalBeds || ""} onChange={e => setSelectedListing({...selectedListing, totalBeds: e.target.value})} className="form-input" placeholder="e.g. 500" />
+                          </div>
+                          <div>
+                            <label className="form-label">ICU Capacity</label>
+                            <input type="text" value={selectedListing.icuCapacity || ""} onChange={e => setSelectedListing({...selectedListing, icuCapacity: e.target.value})} className="form-input" placeholder="e.g. 50" />
+                          </div>
+                          <div>
+                            <label className="form-label">Emergency Services</label>
+                            <input type="text" value={selectedListing.emergencyServices || ""} onChange={e => setSelectedListing({...selectedListing, emergencyServices: e.target.value})} className="form-input" placeholder="e.g. 24/7 Available" />
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                         <ObjectArrayEditor
                           title="Departments"
