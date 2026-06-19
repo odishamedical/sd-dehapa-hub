@@ -90,6 +90,7 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
             infrastructure: rawData.infrastructureData || {},
             insuranceNetworks: rawData.insuranceNetworks || [],
             rosterDoctors: rawData.rosterDoctors || [],
+            healthPackages: rawData.healthPackages || [],
             
             // Auth Check
             ownerEmail: rawData.identityData?.contactEmail || rawData.ownerEmail || null,
@@ -224,6 +225,50 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
               <div className="space-y-8">
+
+                {/* Health Packages */}
+                {hospital.healthPackages?.length > 0 && (
+                  <div className="bg-gradient-to-br from-teal-900 to-slate-900 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-teal-800 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 translate-y-1/2"></div>
+                    
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2 relative z-10">
+                      <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                      Preventive Health Packages
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                      {hospital.healthPackages.map((pkg: any, idx: number) => (
+                        <div key={idx} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 hover:bg-white/15 transition-all group">
+                          <h3 className="text-lg font-bold text-white mb-2">{pkg.packageName}</h3>
+                          <p className="text-sm text-teal-100 mb-4 line-clamp-2">{pkg.description}</p>
+                          
+                          <div className="mb-4">
+                            <p className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-2">Included Tests</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {pkg.includedTests.split(',').map((test: string, tIdx: number) => (
+                                <span key={tIdx} className="bg-black/20 text-white text-[10px] font-medium px-2 py-1 rounded border border-white/10">
+                                  {test.trim()}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-end justify-between mt-6 pt-4 border-t border-white/10">
+                            <div>
+                              <p className="text-xs text-slate-400 line-through mb-0.5">₹{pkg.price}</p>
+                              <p className="text-2xl font-bold text-cyan-400">₹{pkg.discountedPrice}</p>
+                            </div>
+                            <button className="bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm transition-colors shadow-lg">
+                              Book Now
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* About */}
                 <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 relative group">
                   {isEditMode && <div className="absolute top-4 right-4 bg-teal-100 text-teal-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest">Editable</div>}
@@ -256,7 +301,7 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
                 </div>
 
                 {/* Infrastructure & Facilities */}
-                {Object.keys(hospital.infrastructure || {}).length > 0 && (
+                {Object.keys(hospital.infrastructure || {}).length > 0 && ['nursing_home', 'corporate_hospital'].includes(hospital.specialty) && (
                   <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
                     <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
                       <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
