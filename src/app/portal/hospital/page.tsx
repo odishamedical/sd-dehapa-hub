@@ -20,11 +20,17 @@ interface RosteredDoctor {
   status: "Pending" | "Active";
 }
 
+interface StaffRole {
+  email: string;
+  role: string;
+}
+
 export default function HospitalDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [hospitalName, setHospitalName] = useState("Enterprise Dashboard");
+  const [currentUserRole, setCurrentUserRole] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
   const [activeTab, setActiveTab] = useState("home");
@@ -90,6 +96,21 @@ export default function HospitalDashboard() {
     setInsuranceNetworks(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
   };
   const updateInsurance = (index: number, value: string) => setInsuranceNetworks(prev => { const copy = [...prev]; copy[index].name = value; return copy; });
+
+  
+  // State: Staff
+  const [staffRoles, setStaffRoles] = useState<StaffRole[]>([]);
+  const staffSaveStatus = useAutosave(staffRoles, hospitalUid, "staffRoles", 1000);
+  const [newStaffEmail, setNewStaffEmail] = useState("");
+  const [newStaffRole, setNewStaffRole] = useState("Front Desk");
+
+  const handleInviteStaff = async () => {
+    if (!newStaffEmail) return;
+    setStaffRoles(prev => [...prev, { email: newStaffEmail, role: newStaffRole }]);
+    setNewStaffEmail("");
+  };
+  
+  const removeStaff = (index: number) => setStaffRoles(prev => prev.filter((_, i) => i !== index));
 
   // State: Roster
   const [rosterDoctors, setRosterDoctors] = useState<RosteredDoctor[]>([]);
@@ -171,7 +192,19 @@ export default function HospitalDashboard() {
       const email = localStorage.getItem("sd_current_user_email");
       const uid = localStorage.getItem("sd_current_user_uid") || localStorage.getItem("sd_current_user_email");
       
-      if (role === "hospital" || role === "super_admin") {
+      if (role === "hospital" || role === "super_admin" || role === "hospital_staff") {
+        setCurrentUserRole(role);
+        if (role === "hospital_staff") {
+          const hospId = localStorage.getItem("sd_hospital_id");
+          if (hospId) setHospitalUid(hospId);
+          else {
+            setAccessGranted(false);
+            router.push("/portal");
+            return;
+          }
+        } else {
+          if (uid) setHospitalUid(uid);
+        }
         setAccessGranted(true);
         if (uid) setHospitalUid(uid);
         if (name) {
@@ -201,6 +234,7 @@ export default function HospitalDashboard() {
           if (data.departments) setDepartments(data.departments);
           if (data.insuranceNetworks) setInsuranceNetworks(data.insuranceNetworks);
           if (data.rosterDoctors) setRosterDoctors(data.rosterDoctors);
+          if (data.staffRoles) setStaffRoles(data.staffRoles);
         }
       } catch (err) {
         console.error("Failed to fetch hospital profile", err);
@@ -215,7 +249,7 @@ export default function HospitalDashboard() {
   if (!accessGranted) return null;
   if (hospitalUid && !isProfileLoaded) return <div className="flex h-screen items-center justify-center"><div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
-  const hospitalTabs: DashboardTab[] = [
+  const allTabs: DashboardTab[] = [
     // 1. QUICK ACCESS
     { id: "home", label: "Dashboard Home", section: "QUICK ACCESS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> },
     { id: "inquiries", label: "Patient Inquiries", section: "QUICK ACCESS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg> },
@@ -228,7 +262,9 @@ export default function HospitalDashboard() {
     
     // 3. REVENUE & STAFF
     { id: "roster", label: "Doctor Roster", section: "REVENUE & STAFF", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> },
+    { id: "staff", label: "Staff & Roles", section: "REVENUE & STAFF", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> },
   ];
+  const hospitalTabs = currentUserRole === "hospital_staff" ? allTabs.filter(t => t.section === "QUICK ACCESS") : allTabs;
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
@@ -458,6 +494,65 @@ export default function HospitalDashboard() {
               ))}
               <div className="flex items-center justify-between pt-6 border-t border-slate-200/50 mt-6">
                 <AutosaveIndicator status={departmentsSaveStatus} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        
+        {/* Tab: Staff & Roles */}
+        {activeTab === "staff" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 md:p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4 relative">
+            <div className="flex justify-between items-center border-b border-slate-200/50 pb-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Staff & Roles</h3>
+                <p className="text-sm text-slate-500 mt-1">Manage sub-users and their access to your hospital portal.</p>
+              </div>
+            </div>
+            
+            <div className="bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-[24px] mb-8 shadow-sm">
+              <h4 className="text-sm font-bold text-slate-800 mb-4">Invite New Staff Member</h4>
+              <div className="flex flex-col md:flex-row gap-4">
+                <input 
+                  type="email" 
+                  value={newStaffEmail}
+                  onChange={(e) => setNewStaffEmail(e.target.value)}
+                  placeholder="Staff Email Address" 
+                  className="flex-1 bg-white/80 border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-4 py-3 shadow-inner text-sm focus:border-cyan-500 outline-none transition-all"
+                />
+                <select 
+                  value={newStaffRole}
+                  onChange={(e) => setNewStaffRole(e.target.value)}
+                  className="w-48 bg-white/80 border-2 border-slate-200/60 hover:border-cyan-300 rounded-xl px-4 py-3 shadow-inner text-sm focus:border-cyan-500 outline-none transition-all"
+                >
+                  <option value="Front Desk">Front Desk</option>
+                  <option value="Billing Admin">Billing Admin</option>
+                </select>
+                <button onClick={handleInviteStaff} className="bg-teal-500 hover:bg-teal-400 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md hover:shadow-lg">
+                  Send Invite
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-sm font-bold text-slate-800 mb-2">Active Staff Roles</h4>
+              {staffRoles.length === 0 ? (
+                <p className="text-sm text-slate-500 italic bg-white/40 p-4 rounded-xl border border-white/60 text-center">No staff members have been invited yet.</p>
+              ) : (
+                staffRoles.map((staff, index) => (
+                  <div key={index} className="flex justify-between items-center p-4 bg-white/60 backdrop-blur-md border border-white/50 rounded-[20px] shadow-sm group">
+                    <div>
+                      <p className="font-bold text-slate-900 text-sm">{staff.email}</p>
+                      <p className="text-xs text-cyan-700 font-semibold uppercase tracking-widest">{staff.role}</p>
+                    </div>
+                    <button onClick={() => removeStaff(index)} className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                ))
+              )}
+              <div className="flex justify-end mt-4">
+                <AutosaveIndicator status={staffSaveStatus} />
               </div>
             </div>
           </div>
