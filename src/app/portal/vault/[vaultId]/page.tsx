@@ -47,46 +47,48 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
     // 3. Fetch Records from Firestore (Zero Mock Data)
     const fetchVaultRecords = async () => {
       try {
-        // const q = query(collection(db, `patients/${params.vaultId}/records`));
-        // const snap = await getDocs(q);
-        // setRecords(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-        setRecords([]); // Enforcing Zero Mock Data
+        if (!accessGranted) return;
+        
+        const db = (await import('@/lib/firebase')).db;
+        const { collectionGroup, query, where, getDocs, orderBy } = await import('firebase/firestore');
+        
+        const q = query(
+          collectionGroup(db, 'records'),
+          where('patientId', '==', decodeURIComponent(params.vaultId))
+        );
+        
+        const snap = await getDocs(q);
+        const fetchedRecords = snap.docs.map(doc => {
+          const data = doc.data();
+          // Normalize the data between PrescriptionPad and SecureMedicalVault
+          return {
+            id: doc.id,
+            type: data.type || data.recordType || 'document',
+            date: data.date || (data.uploadDate?.toDate ? data.uploadDate.toDate().toLocaleDateString() : new Date().toLocaleDateString()),
+            authorName: data.authorName || 'Medical Provider',
+            facilityName: data.facilityName || 'Clinic/Hospital',
+            diagnosis: data.diagnosis || data.fileName || 'Uploaded Document',
+            medicines: data.medicines || [],
+            notes: data.notes || '',
+            routedToPharmacy: data.routedToPharmacy,
+            routedToLab: data.routedToLab,
+            fileUrl: data.fileUrl
+          };
+        });
+        
+        // Sort newest first by parsing date strings (mock/simple logic)
+        fetchedRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
+        setRecords(fetchedRecords);
       } catch (err) {
         console.error("Vault fetch error:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     if (accessGranted) {
-      // Mocking the Data synchronization from Phase 8
-      setTimeout(() => {
-        setRecords([
-          {
-            id: "rec_1",
-            type: "prescription",
-            date: new Date().toLocaleDateString(),
-            authorName: "Dr. Sandeep Sharma",
-            facilityName: "Dehapa Clinic",
-            diagnosis: "Viral Fever with minor throat infection.",
-            medicines: [
-              { name: "Paracetamol 650mg", dosage: "1 tablet", frequency: "1-1-1", duration: "3 days" },
-              { name: "Azithromycin 500mg", dosage: "1 tablet", frequency: "1-0-0", duration: "3 days" }
-            ],
-            routedToPharmacy: "LifeCare Meds (Pending Pickup)",
-            routedToLab: "Apollo Diagnostics (Pending Test)"
-          },
-          {
-            id: "rec_2",
-            type: "hospital_admission",
-            date: "12/05/2025",
-            authorName: "Dr. Ananya Das",
-            facilityName: "Apollo Super Specialty",
-            diagnosis: "Observation - Mild Dehydration",
-            notes: "Discharged after 6 hours IV fluids."
-          }
-        ]);
-        setLoading(false);
-      }, 500);
+      fetchVaultRecords();
     } else {
       setLoading(false); // Finished loading but access denied
     }

@@ -49,9 +49,10 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Dynamic Field Masking based on Category
+    // We want maximum data for Hospitals, Clinics, and Doctors to populate the Standard Layout
     let fieldMask = 'places.id,places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.rating,places.userRatingCount,places.websiteUri,places.photos,nextPageToken';
     
-    if (category === "Doctor") {
+    if (category === "Doctor" || category === "Hospital" || category === "Clinic") {
       fieldMask += ',places.regularOpeningHours,places.editorialSummary,places.googleMapsUri,places.types,places.businessStatus';
     }
 
@@ -131,7 +132,7 @@ export async function POST(req: NextRequest) {
       let mapUrl = '';
       let specialties: string[] = [];
 
-      if (category === "Doctor") {
+      if (category === "Doctor" || category === "Hospital" || category === "Clinic") {
         if (place.regularOpeningHours && place.regularOpeningHours.weekdayDescriptions) {
           hours = place.regularOpeningHours.weekdayDescriptions.map((desc: string) => {
             const [day, ...timeParts] = desc.split(': ');
@@ -163,8 +164,8 @@ export async function POST(req: NextRequest) {
         rawImages: rawImages,
         hasWarning: !phone, // Flag if phone is missing so Admin knows
         
-        // Inject Dynamic Doctor Fields
-        ...(category === "Doctor" && {
+        // Inject Dynamic Fields (Now available for Doctor, Hospital, and Clinic)
+        ...((category === "Doctor" || category === "Hospital" || category === "Clinic") && {
           hours: hours.length > 0 ? hours : undefined,
           about: about || undefined,
           clinicMapUrl: mapUrl || undefined,

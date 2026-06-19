@@ -195,17 +195,31 @@ function PrescriptionPadContent() {
       setAllMedicinesList([...FAVORITE_MEDICINES, ...customMedsArray]);
     }
 
-    // In production: write to Firestore
-    // await addDoc(collection(db, `patients/${patientVaultId}/records`), {
-    //   type: "prescription",
-    //   authorId: localStorage.getItem("sd_current_user_uid"),
-    //   authorName: doctorName,
-    //   content: JSON.stringify(rxData),
-    //   timestamp: serverTimestamp()
-    // });
-
-    alert("Prescription securely saved to Patient Vault.");
-    router.push(`/portal/vault/${patientVaultId}`);
+    // Save to Firestore (Real Data)
+    try {
+      const db = (await import('@/lib/firebase')).db;
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      
+      await addDoc(collection(db, `patients/${patientVaultId}/records`), {
+        type: "prescription",
+        patientId: patientVaultId,
+        authorId: localStorage.getItem("sd_current_user_uid") || "unknown",
+        authorName: doctorName,
+        facilityName: doctorData.address || "DehaPa Clinic",
+        diagnosis: rxData.diagnosis,
+        medicines: rxData.medicines,
+        notes: rxData.advice,
+        routedToPharmacy: rxData.routing.pharmacyId,
+        routedToLab: rxData.routing.labId,
+        date: new Date().toLocaleDateString(),
+        timestamp: serverTimestamp()
+      });
+      alert("Prescription securely saved to Patient Vault.");
+      router.push(`/portal/vault/${patientVaultId}`);
+    } catch (error) {
+      console.error("Error saving prescription:", error);
+      alert("Failed to save prescription.");
+    }
   };
 
   if (loading) {

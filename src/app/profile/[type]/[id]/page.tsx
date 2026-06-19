@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import HorizontalScrollGallery from '@/components/HorizontalScrollGallery';
+import UniversalProfileLayout from '@/components/UniversalProfileLayout';
 
 // Mock DB Fetch
 const getMockProfile = (type: string, id: string) => {
@@ -119,26 +119,97 @@ const getMockProfile = (type: string, id: string) => {
   }
   
   if (type === 'hospital') {
-    return {
-      name: "Apollo Super Specialty",
-      subtitle: "NABH Accredited Hospital",
-      image: "",
-      verified: true,
-      stats: { beds: "250", icu: "50", emergency: "24/7" },
-      about: "A premier multi-specialty healthcare facility providing world-class medical services.",
-      details: [
-        { label: "Established", value: "2010" },
-        { label: "License No", value: "HOSP/2010/89" },
-        { label: "Insurance Accepted", value: "Star Health, HDFC Ergo, BSKY" }
-      ],
-      roster: ["Cardiology", "Neurology", "Orthopedics", "Emergency Medicine"],
-      rawImages: [
-          "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2070&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop"
+    if (id === 'smile-dental') {
+      return {
+        name: "Smile Dental Clinic",
+        subtitle: "Single-Specialty Clinic",
+        image: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&q=80",
+        verified: false,
+        stats: { rating: "4.7", reviews: "128" },
+        about: "State-of-the-art dental care facility offering comprehensive oral health services.",
+        details: [
+          { label: "Phone", value: "+91 98765 43210" },
+          { label: "Address", value: "Jaydev Vihar, Bhubaneswar" },
+          { label: "Hours", value: "Mon-Sat: 10:00 AM - 8:00 PM" }
         ],
-    };
+        roster: ["Dr. Amit Kumar (Orthodontist)"],
+        rawImages: ["https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=80"]
+      };
+    }
+    if (id === 'nidaan-polyclinic') {
+      return {
+        name: "Nidaan Poly-Clinic & Diagnostics",
+        subtitle: "Poly-Clinic",
+        image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&q=80",
+        verified: false,
+        stats: { departments: "8", doctors: "15", rating: "4.5" },
+        about: "A multi-specialty outpatient clinic equipped with advanced diagnostic labs and pharmacy.",
+        details: [
+          { label: "Phone", value: "+91 99887 76655" },
+          { label: "Address", value: "Patia, Bhubaneswar" },
+          { label: "Lab Available", value: "Yes" }
+        ],
+        roster: ["General Medicine", "Pediatrics", "Gynecology", "Orthopedics", "Pathology"],
+        rawImages: ["https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80"]
+      };
+    }
+    if (id === 'sparsh-standard') {
+      return {
+        name: "Sparsh Hospital",
+        subtitle: "Nursing Home / Care Center",
+        image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=400&q=80",
+        verified: false,
+        stats: { beds: "50", icu: "10", emergency: "24/7" },
+        about: "A trusted local nursing home providing primary and secondary care with 24/7 emergency support.",
+        details: [
+          { label: "Phone", value: "0674-2567890" },
+          { label: "Address", value: "Saheed Nagar, Bhubaneswar" },
+          { label: "Ambulance", value: "Available" }
+        ],
+        roster: ["General Surgery", "Internal Medicine", "Obstetrics"],
+        rawImages: ["https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800&q=80"]
+      };
+    }
+    if (id === 'amri-standard') {
+      return {
+        name: "AMRI Hospitals",
+        subtitle: "Corporate Hospital",
+        image: "https://images.unsplash.com/photo-1551076805-e1869033e561?w=400&q=80",
+        verified: false,
+        stats: { beds: "400+", icu: "80", rating: "4.8" },
+        about: "One of the largest corporate healthcare networks in Eastern India, providing quaternary care.",
+        details: [
+          { label: "Phone", value: "0674-6666600" },
+          { label: "Address", value: "Khandagiri, Bhubaneswar" },
+          { label: "Insurance", value: "All Major TPAs" }
+        ],
+        roster: ["Cardiology", "Neurology", "Oncology", "Orthopedics", "Gastroenterology"],
+        rawImages: ["https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80"]
+      };
+    }
+    if (id === 'apollo-premium') {
+      return {
+        name: "Apollo Hospitals Bhubaneswar",
+        subtitle: "Corporate Hospital",
+        image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&q=80",
+        verified: false,
+        isPremium: true, // Flag for Mini-Website layout
+        stats: { beds: "350", icu: "65", rating: "4.9" },
+        about: "A multi-specialty tertiary care hospital offering world-class medical facilities and renowned specialists.",
+        details: [
+          { label: "Phone", value: "0674-6661016" },
+          { label: "Address", value: "Sainik School Road, Unit 15, Bhubaneswar" },
+          { label: "Established", value: "2010" }
+        ],
+        roster: ["Cardiothoracic Surgery", "Neurosurgery", "Medical Oncology", "Joint Replacement"],
+        rawImages: ["https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80"],
+        healthPackages: [
+          { name: "Apollo Master Health Check", price: "₹4,500", included: "Complete Blood Count, Lipid Profile, Liver Function, ECG, X-Ray Chest" },
+          { name: "Apollo Heart Check", price: "₹3,200", included: "Cardiac Risk Marker, TMT, 2D Echo, Consultation" }
+        ]
+      };
+    }
+
   }
 
   // Generic fallback
@@ -150,7 +221,9 @@ const getMockProfile = (type: string, id: string) => {
     stats: { rating: "4.5", status: "Active" },
     about: "A registered healthcare provider on the Dehapa Health Hub network.",
     details: [],
-    roster: []
+    roster: [],
+    mapUrl: "https://maps.google.com/maps?q=Odisha&t=&z=15&ie=UTF8&iwloc=&output=embed",
+    phone: "0674-1234567"
   };
 };
 
@@ -164,7 +237,10 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
         const { doc, getDoc } = await import('firebase/firestore');
         const { db } = await import('@/lib/firebase');
         const docRef = doc(db, 'directory', unwrappedParams.id);
-        const docSnap = await getDoc(docRef);
+        const docSnap = await Promise.race([
+          getDoc(docRef),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 3000))
+        ]) as any;
         if (docSnap.exists()) {
           const data = docSnap.data();
           setProfile({
@@ -178,7 +254,9 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
             roster: [],
             verified: data.verified || false,
             galleryImages: data.galleryImages || [],
-            rawImages: data.rawImages || []
+            rawImages: data.rawImages || [],
+            mapUrl: data.mapUrl || data.clinicMapUrl || "https://maps.google.com/maps?q=Odisha&t=&z=15&ie=UTF8&iwloc=&output=embed",
+            phone: data.phone || data.receptionPhone || "Not available"
           });
           return;
         }
@@ -199,180 +277,7 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
     );
   }
 
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-tenant-accent/30 pb-20">
-      
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/search" className="flex items-center gap-2 text-slate-600 hover:text-tenant-accent transition-colors font-bold text-sm">
-             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-             Back to Search
-          </Link>
-
-          <Link href="/" className="flex items-center gap-2">
-             <div className="w-8 h-8 rounded-lg bg-tenant-accent flex items-center justify-center text-white font-bold shadow-sm">
-               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-             </div>
-             <span className="font-serif font-bold tracking-widest uppercase text-sm">Dehapa <span className="text-tenant-accent">Hub</span></span>
-          </Link>
-        </div>
-      </header>
-
-      <main className="max-w-4xl mx-auto px-6 py-8 mt-4">
-        
-        {/* Identity Card */}
-        <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-3xl p-8 border border-slate-300 mb-8 relative overflow-hidden">
-          {/* Metallic Shine Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
-          
-          <div className="absolute top-0 left-0 w-full h-32 bg-slate-900 border-b border-slate-700"></div>
-          
-          <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-end mt-12">
-            <div className="w-32 h-32 rounded-3xl bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative overflow-hidden">
-              <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl flex items-center justify-center text-5xl shadow-inner overflow-hidden">
-                {profile.image ? (
-                  <img src={profile.image} alt={profile.name} className="w-full h-full object-cover" />
-                ) : (
-                  <>
-                    {unwrappedParams.type === 'doctor' && '👨‍⚕️'}
-                    {unwrappedParams.type === 'hospital' && '🏥'}
-                    {unwrappedParams.type !== 'doctor' && unwrappedParams.type !== 'hospital' && '⚕️'}
-                  </>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex-1 w-full">
-              <div className="flex items-center justify-between w-full flex-wrap gap-4 mb-2">
-                <div className="flex items-center gap-3">
-                  <h1 className="text-3xl font-serif font-bold text-slate-900">{profile.name}</h1>
-                  {profile.verified && (
-                    <div className="flex items-center gap-1.5 bg-gradient-to-r from-teal-50 to-teal-100 border border-teal-200 px-3 py-1.5 rounded-full shadow-sm">
-                      <svg className="w-4 h-4 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
-                      <span className="text-xs font-bold text-teal-700 uppercase tracking-widest">Dehapa Verified</span>
-                    </div>
-                  )}
-                </div>
-                
-                {/* The Unverified Workflow */}
-                {!profile.verified && (
-                  <Link href="/login" className="flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 hover:text-rose-700 px-4 py-2 rounded-xl transition-all shadow-sm font-bold animate-pulse group">
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                    Verify your page
-                  </Link>
-                )}
-              </div>
-              <p className="text-lg font-medium text-tenant-accent mb-6">{profile.subtitle}</p>
-              
-              <div className="flex flex-wrap gap-4">
-                {Object.entries(profile.stats).map(([key, val]) => (
-                  <div key={key} className="bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl">
-                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-0.5">{key}</p>
-                    <p className="font-bold text-slate-900">{val as string}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          {/* Main Info */}
-          <div className="md:col-span-2 space-y-8">
-            <section className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
-              <h3 className="text-xl font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                About
-              </h3>
-              <p className="text-slate-600 leading-relaxed text-lg">{profile.about}</p>
-            </section>
-            
-            <HorizontalScrollGallery images={profile.galleryImages?.length > 0 ? profile.galleryImages : (profile.rawImages || [])} />
-            
-            <HorizontalScrollGallery images={profile.galleryImages?.length > 0 ? profile.galleryImages : (profile.rawImages || [])} />
-
-            {profile.roster.length > 0 && (
-              <section className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-                <h3 className="text-xl font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3">
-                  {unwrappedParams.type === 'doctor' ? 'Associated Hospitals' : 'Available Departments / Doctors'}
-                </h3>
-                <ul className="space-y-3">
-                  {profile.roster.map((item: string, i: number) => (
-                    <li key={i} className="flex items-center gap-3 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                      <div className="w-2 h-2 rounded-full bg-tenant-accent"></div>
-                      <span className="font-medium">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </div>
-
-          {/* Sidebar Info */}
-          <div className="space-y-8">
-            {/* Quick Actions */}
-            <div className="bg-slate-900 rounded-2xl p-6 shadow-md text-center">
-              <h3 className="text-white font-bold mb-4">Connect</h3>
-              {unwrappedParams.type === 'doctor' && (
-                <>
-                  <button 
-                    onClick={() => {
-                      const event = new CustomEvent('open-telemedicine-fab', { 
-                        detail: { action: 'urgent', doctorId: unwrappedParams.id, doctorName: profile.name }
-                      });
-                      window.dispatchEvent(event);
-                    }}
-                    className="w-full bg-red-500 hover:bg-red-400 text-white font-bold py-3 rounded-xl transition-colors mb-3 flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(239,68,68,0.2)]"
-                  >
-                    <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    Urgent Video Consult
-                  </button>
-                  <button 
-                    onClick={() => {
-                      const event = new CustomEvent('open-telemedicine-fab', { 
-                        detail: { action: 'schedule', doctorId: unwrappedParams.id, doctorName: profile.name }
-                      });
-                      window.dispatchEvent(event);
-                    }}
-                    className="w-full bg-teal-500 hover:bg-teal-400 text-white font-bold py-3 rounded-xl transition-colors mb-4 flex items-center justify-center gap-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    Schedule Consult
-                  </button>
-                </>
-              )}
-              {unwrappedParams.type === 'hospital' && (
-                <button className="w-full bg-red-500 hover:bg-red-400 text-white font-bold py-3 rounded-xl transition-colors mb-3">
-                  Send Emergency Alert
-                </button>
-              )}
-              <button className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl transition-colors border border-slate-700">
-                Share Profile
-              </button>
-            </div>
-
-            {/* Details List */}
-            {profile.details.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                <h3 className="font-bold text-slate-900 mb-4">Information</h3>
-                <div className="space-y-4">
-                  {profile.details.map((item: any, i: number) => (
-                    <div key={i}>
-                      <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">{item.label}</p>
-                      <p className="font-medium text-slate-900">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-        </div>
-
-      </main>
-    </div>
-  );
+  // Use the exact same layout for ALL profiles (Hospitals, Doctors, Clinics, Labs)
+  return <UniversalProfileLayout profile={profile} unwrappedParams={unwrappedParams} />;
 }
+
