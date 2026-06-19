@@ -230,34 +230,65 @@ const getMockProfile = (type: string, id: string) => {
 export default function PublicProfile({ params }: { params: Promise<{ type: string, id: string }> }) {
   const unwrappedParams = React.use(params);
   const [profile, setProfile] = useState<any>(null);
+  const [platformAds, setPlatformAds] = useState<any>({});
+  const [similarEntities, setSimilarEntities] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { doc, getDoc } = await import('firebase/firestore');
+        const { doc, getDoc, collection, query, limit, getDocs, where } = await import('firebase/firestore');
         const { db } = await import('@/lib/firebase');
+        
+        // Fetch ads in background
+        getDocs(query(collection(db, 'platform_ads'), where('active', '==', true))).then(adsSnap => {
+          const adsData: any = {};
+          adsSnap.forEach(d => {
+            const ad = d.data();
+            const slot = ad.slot || ad.slotId;
+            if (slot && (ad.targetType === 'global' || !ad.targetType || (ad.targetType === 'specific_profile' && ad.targetId === unwrappedParams.id))) {
+              adsData[slot] = ad;
+            }
+          });
+          setPlatformAds(adsData);
+        }).catch(e => console.error("Ads fetch failed", e));
+
         const docRef = doc(db, 'directory', unwrappedParams.id);
         const docSnap = await Promise.race([
           getDoc(docRef),
           new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 3000))
         ]) as any;
+        
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setProfile({
+          const p = {
             ...data,
             name: data.name || data.basicInfo?.fullName || "Unnamed",
             subtitle: data.category || data.basicInfo?.specialityName || "Medical Professional",
             image: data.image || data.basicInfo?.profilePhoto || "",
             about: data.about || data.description || "No description provided.",
-            stats: { rating: "4.5", status: "Active" },
-            details: [],
-            roster: [],
+            stats: data.stats || {},
+            details: data.details || [],
+            roster: data.roster || [],
             verified: data.verified || false,
             galleryImages: data.galleryImages || [],
             rawImages: data.rawImages || [],
+            youtubeLinks: data.youtubeLinks || [],
             mapUrl: data.mapUrl || data.clinicMapUrl || "https://maps.google.com/maps?q=Odisha&t=&z=15&ie=UTF8&iwloc=&output=embed",
             phone: data.phone || data.receptionPhone || "Not available"
-          });
+          };
+          setProfile(p);
+
+          // Fetch similar entities
+          try {
+            const broadQuery = query(collection(db, 'directory'), limit(20));
+            const broadSnap = await getDocs(broadQuery);
+            const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== unwrappedParams.id && !!d.image);
+            let similarDocs = allDocs.filter(d => d.category?.toLowerCase() === unwrappedParams.type);
+            setSimilarEntities(similarDocs.slice(0, 3));
+          } catch(e) {
+            console.error("Failed to fetch similar entities", e);
+          }
+
           return;
         }
       } catch(err) {
@@ -270,14 +301,13 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
-        <div className="w-8 h-8 border-4 border-tenant-accent border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-slate-500 font-medium">Loading Profile...</p>
+      <div className="min-h-screen bg-[#060B14] flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full"></div>
       </div>
     );
   }
 
   // Use the exact same layout for ALL profiles (Hospitals, Doctors, Clinics, Labs)
-  return <UniversalProfileLayout profile={profile} unwrappedParams={unwrappedParams} />;
+  return <UniversalProfileLayout profile={profile} unwrappedParams={unwrappedParams} platformAds={platformAds} similarEntities={similarEntities} />;
 }
 
