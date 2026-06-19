@@ -491,168 +491,319 @@ export default function AdminDataCRM() {
               </button>
             </div>
             
+            
+            {/* TABS HEADER */}
+            <div className="flex border-b border-slate-200 bg-white px-8 pt-4 gap-6 shrink-0">
+              <button 
+                onClick={() => setActiveTab('basic')}
+                className={`pb-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'basic' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+              >
+                Basic Info
+              </button>
+              <button 
+                onClick={() => setActiveTab('locations')}
+                className={`pb-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'locations' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+              >
+                Locations & Clinics
+              </button>
+              <button 
+                onClick={() => setActiveTab('professional')}
+                className={`pb-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'professional' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+              >
+                Professional & Services
+              </button>
+            </div>
+
             <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
-              <div className="grid grid-cols-2 gap-8">
-                
-                <div className="col-span-2 flex items-start gap-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                  <div className="w-32 h-32 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-dashed border-slate-300 overflow-hidden shrink-0 relative">
-                    {selectedListing.image ? (
-                      <img src={selectedListing.image} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                      <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    )}
-                    {isUploadingImage && <div className="absolute inset-0 bg-white/80 flex items-center justify-center"><svg className="animate-spin w-6 h-6 text-teal-600" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>}
-                  </div>
-                  <div className="flex-1">
-                    <label className="form-label">Profile Image</label>
-                    <p className="text-xs text-slate-500 mb-3">Upload a high quality square image. Maximum 2MB.</p>
-                    <div className="flex gap-3">
-                      <label className="px-5 py-2.5 bg-white border-2 border-slate-200 hover:border-teal-500 rounded-xl text-sm font-bold text-slate-700 cursor-pointer transition-colors shadow-sm inline-block">
-                        {isUploadingImage ? 'Uploading...' : 'Upload / Edit Image'}
-                        <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={isUploadingImage} />
-                      </label>
-                      {selectedListing.image && (
-                        <button onClick={() => setSelectedListing({...selectedListing, image: null})} className="px-5 py-2.5 text-red-600 hover:bg-red-50 rounded-xl text-sm font-bold transition-colors">
-                          Remove Primary
-                        </button>
+              
+              {activeTab === 'basic' && (
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="col-span-2 flex items-start gap-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="w-32 h-32 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-dashed border-slate-300 overflow-hidden shrink-0 relative">
+                      {selectedListing.image ? (
+                        <img src={selectedListing.image} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                       )}
+                      {isUploadingImage && <div className="absolute inset-0 bg-white/80 flex items-center justify-center"><svg className="animate-spin w-6 h-6 text-teal-600" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>}
+                    </div>
+                    <div className="flex-1">
+                      <label className="form-label">Profile Image</label>
+                      <p className="text-xs text-slate-500 mb-3">Upload a high quality square image. Maximum 2MB.</p>
+                      <div className="flex gap-3">
+                        <label className="px-5 py-2.5 bg-white border-2 border-slate-200 hover:border-teal-500 rounded-xl text-sm font-bold text-slate-700 cursor-pointer transition-colors shadow-sm inline-block">
+                          {isUploadingImage ? 'Uploading...' : 'Upload / Edit Image'}
+                          <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} disabled={isUploadingImage} />
+                        </label>
+                        {selectedListing.image && (
+                          <button onClick={() => setSelectedListing({...selectedListing, image: null})} className="px-5 py-2.5 text-red-600 hover:bg-red-50 rounded-xl text-sm font-bold transition-colors">
+                            Remove Primary
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Scraped Raw Images Section */}
-                {selectedListing.rawImages && selectedListing.rawImages.length > 0 && (
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
-                    <h4 className="font-bold text-slate-900 mb-2">Scraped Images (Crawler)</h4>
-                    <p className="text-xs text-slate-500 mb-4">Click any image to crop it and set as Primary or add to Gallery.</p>
-                    <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
-                      {selectedListing.rawImages.map((rawUrl: string, idx: number) => (
-                        <div key={idx} onClick={() => handleRawImageClick(rawUrl)} className="w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-transparent hover:border-teal-500 cursor-pointer shadow-sm transition-all hover:scale-105">
-                          <img src={rawUrl} alt={`Scraped ${idx}`} className="w-full h-full object-cover" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Gallery Images Section */}
-                {selectedListing.galleryImages && selectedListing.galleryImages.length > 0 && (
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
-                    <h4 className="font-bold text-slate-900 mb-4">Gallery Images</h4>
-                    <div className="flex flex-wrap gap-4">
-                      {selectedListing.galleryImages.map((galUrl: string, idx: number) => (
-                        <div key={idx} className="relative w-24 h-24 rounded-lg overflow-hidden border border-slate-200 shadow-sm group">
-                          <img src={galUrl} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
-                              onClick={() => {
-                                const newGal = [...selectedListing.galleryImages];
-                                newGal.splice(idx, 1);
-                                setSelectedListing({...selectedListing, galleryImages: newGal});
-                              }}
-                              className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 shadow-lg"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
+                  {selectedListing.rawImages && selectedListing.rawImages.length > 0 && (
+                    <div className="col-span-2 bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
+                      <h4 className="font-bold text-slate-900 mb-2">Scraped Images (Crawler)</h4>
+                      <p className="text-xs text-slate-500 mb-4">Click any image to crop it and set as Primary or add to Gallery.</p>
+                      <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+                        {selectedListing.rawImages.map((rawUrl: string, idx: number) => (
+                          <div key={idx} onClick={() => handleRawImageClick(rawUrl)} className="w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-transparent hover:border-teal-500 cursor-pointer shadow-sm transition-all hover:scale-105">
+                            <img src={rawUrl} alt={`Scraped ${idx}`} className="w-full h-full object-cover" />
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedListing.galleryImages && selectedListing.galleryImages.length > 0 && (
+                    <div className="col-span-2 bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
+                      <h4 className="font-bold text-slate-900 mb-4">Gallery Images</h4>
+                      <div className="flex flex-wrap gap-4">
+                        {selectedListing.galleryImages.map((galUrl: string, idx: number) => (
+                          <div key={idx} className="relative w-24 h-24 rounded-lg overflow-hidden border border-slate-200 shadow-sm group">
+                            <img src={galUrl} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button 
+                                onClick={() => {
+                                  const newGal = [...selectedListing.galleryImages];
+                                  newGal.splice(idx, 1);
+                                  setSelectedListing({...selectedListing, galleryImages: newGal});
+                                }}
+                                className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 shadow-lg"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="form-label">Name</label>
+                    <input type="text" value={selectedListing.name || ""} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="form-input" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="text-xs font-bold text-slate-700 uppercase tracking-widest">Assigned Owner Email</label>
+                      {selectedListing.verified && selectedListing.ownerEmail === selectedListing.assignedOwnerEmail && selectedListing.assignedOwnerEmail ? (
+                        <span className="text-[10px] font-bold text-teal-600 uppercase tracking-widest flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Verified</span>
+                      ) : null}
+                    </div>
+                    <div className="flex gap-2">
+                      <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="form-input m-0" placeholder="e.g. user@example.com" />
+                      <button onClick={handleInstantVerify} className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-1 rounded-xl text-xs font-bold uppercase tracking-widest whitespace-nowrap shadow-[0_4px_15px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Verify</button>
                     </div>
                   </div>
-                )}
+                  <div className="relative flex flex-col justify-end">
+                    <button 
+                      onClick={generateMagicLink}
+                      className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-200 px-4 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm group"
+                    >
+                      <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                      Copy Magic Invite Link
+                    </button>
+                    <p className="text-[10px] text-slate-500 mt-2 text-center">Ghost Onboarding: Send link via WhatsApp to auto-assign profile.</p>
+                  </div>
+                  <div className="relative">
+                    <label className="form-label">Custom Slug</label>
+                    <div className="flex gap-2">
+                      <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="form-input" />
+                      <button onClick={checkSlugAvailability} className="bg-slate-800 text-white px-4 py-1 rounded-lg text-sm font-bold">Check</button>
+                      <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold whitespace-nowrap">Super Search</button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="form-label">Phone</label>
+                    <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="form-input" />
+                  </div>
+                  <div>
+                    <label className="form-label">Category</label>
+                    <select value={selectedListing.category || ""} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="form-select">
+                      <option value="">Select Category</option>
+                      <option value="Doctor">Doctor</option>
+                      <option value="Hospital">Hospital</option>
+                      <option value="Pharmacy">Pharmacy</option>
+                      <option value="Lab">Lab</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="form-label">Sub-Category / Specialty</label>
+                    <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="form-input" />
+                  </div>
+                  <div className="col-span-2 mt-4">
+                    <label className="form-label">About / Biography</label>
+                    <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="form-input" rows={4} />
+                  </div>
+                  <div className="col-span-2 flex flex-wrap items-center gap-6 mt-2 p-5 bg-slate-50 border border-slate-200 rounded-xl">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input type="checkbox" id="verifiedCheck" checked={selectedListing.verified || false} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-6 h-6 text-teal-600 rounded border-slate-300" />
+                      <span className="text-sm font-bold text-slate-900">Verified Listing</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input type="checkbox" id="featuredCheck" checked={selectedListing.featured || false} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-6 h-6 text-amber-500 rounded border-slate-300" />
+                      <span className="text-sm font-bold text-slate-900">Featured / Sponsored</span>
+                    </label>
+                  </div>
+                </div>
+              )}
 
-                <div>
-                  <label className="form-label">Name</label>
-                  <input type="text" value={selectedListing.name} onChange={e => setSelectedListing({...selectedListing, name: e.target.value})} className="form-input" />
-                </div>
-                <div>
-                  <div className="flex justify-between items-center mb-1.5">
-                    <label className="text-xs font-bold text-slate-700 uppercase tracking-widest">Assigned Owner Email</label>
-                    {selectedListing.verified && selectedListing.ownerEmail === selectedListing.assignedOwnerEmail && selectedListing.assignedOwnerEmail ? (
-                      <span className="text-[10px] font-bold text-teal-600 uppercase tracking-widest flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Verified</span>
-                    ) : null}
+              {activeTab === 'locations' && (
+                <div className="space-y-8">
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Primary Address & Location Mapping</h4>
+                    <AddressBlock 
+                      data={{
+                        country: selectedListing.country || '',
+                        state: selectedListing.state || '',
+                        district: selectedListing.district || '',
+                        block: selectedListing.block || '',
+                        city: selectedListing.city || '',
+                        pincode: selectedListing.pin || '',
+                        localAddress: selectedListing.locality || selectedListing.address || ''
+                      }}
+                      onChange={(newData) => setSelectedListing({
+                        ...selectedListing,
+                        country: newData.country,
+                        state: newData.state,
+                        district: newData.district,
+                        block: newData.block,
+                        city: newData.city,
+                        pin: newData.pincode,
+                        locality: newData.localAddress,
+                        address: newData.localAddress
+                      })}
+                    />
                   </div>
-                  <div className="flex gap-2">
-                    <input type="text" value={selectedListing.assignedOwnerEmail || ""} onChange={e => setSelectedListing({...selectedListing, assignedOwnerEmail: e.target.value})} className="form-input m-0" placeholder="e.g. user@example.com" />
-                    <button onClick={handleInstantVerify} className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-1 rounded-xl text-xs font-bold uppercase tracking-widest whitespace-nowrap shadow-[0_4px_15px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Verify</button>
+
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 className="font-bold text-slate-800 mb-2 text-sm uppercase tracking-widest">Associated Clinics / Hospitals</h4>
+                    <p className="text-xs text-slate-500 mb-4">Edit the clinics or hospitals where this entity provides services.</p>
+                    <InlineEditArray
+                      title="Clinics"
+                      items={locations}
+                      fields={[
+                        { key: "clinicName", label: "Clinic/Hospital Name", type: "text" },
+                        { key: "address", label: "Full Address", type: "textarea" },
+                        { key: "mapUrl", label: "Google Maps Embed URL", type: "text" },
+                        { key: "timings", label: "Timings (e.g. Mon-Sat 10AM-5PM)", type: "text" },
+                        { key: "phone", label: "Booking Phone Number", type: "text" }
+                      ]}
+                      onUpdate={(idx, key, val) => handleArrayChange(setLocations, locations, idx, key, val)}
+                      onAdd={() => setLocations([...locations, { clinicName: '', address: '', mapUrl: '', timings: '', phone: '' }])}
+                      onRemove={(idx) => setLocations(locations.filter((_, i) => i !== idx))}
+                    />
                   </div>
                 </div>
-                <div className="relative flex flex-col justify-end">
-                  <button 
-                    onClick={generateMagicLink}
-                    className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 border border-indigo-200 px-4 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm group"
-                  >
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                    Copy Magic Invite Link
-                  </button>
-                  <p className="text-[10px] text-slate-500 mt-2 text-center">Ghost Onboarding: Send link via WhatsApp to auto-assign profile.</p>
+              )}
+
+              {activeTab === 'professional' && (
+                <div className="space-y-8">
+                  {selectedListing.category === 'Doctor' && (
+                    <>
+                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <InlineEditArray
+                          title="Professional Experience"
+                          items={experiences}
+                          fields={[
+                            { key: "role", label: "Role / Position", type: "text" },
+                            { key: "hospital", label: "Hospital / Institution", type: "text" },
+                            { key: "duration", label: "Duration (e.g. 2010 - Present)", type: "text" },
+                            { key: "description", label: "Description", type: "textarea" }
+                          ]}
+                          onUpdate={(idx, key, val) => handleArrayChange(setExperiences, experiences, idx, key, val)}
+                          onAdd={() => setExperiences([...experiences, { role: '', hospital: '', duration: '', description: '' }])}
+                          onRemove={(idx) => setExperiences(experiences.filter((_, i) => i !== idx))}
+                        />
+                      </div>
+                      
+                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <InlineEditArray
+                          title="Qualifications & Education"
+                          items={qualificationsList}
+                          fields={[
+                            { key: "degree", label: "Degree / Certification", type: "text" },
+                            { key: "institution", label: "Institution / University", type: "text" },
+                            { key: "year", label: "Year of Completion", type: "text" }
+                          ]}
+                          onUpdate={(idx, key, val) => handleArrayChange(setQualificationsList, qualificationsList, idx, key, val)}
+                          onAdd={() => setQualificationsList([...qualificationsList, { degree: '', institution: '', year: '' }])}
+                          onRemove={(idx) => setQualificationsList(qualificationsList.filter((_, i) => i !== idx))}
+                        />
+                      </div>
+
+                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <InlineEditArray
+                          title="Awards & Recognitions"
+                          items={awards}
+                          fields={[
+                            { key: "name", label: "Award Name", type: "text" },
+                            { key: "organization", label: "Issuing Organization", type: "text" },
+                            { key: "year", label: "Year", type: "text" }
+                          ]}
+                          onUpdate={(idx, key, val) => handleArrayChange(setAwards, awards, idx, key, val)}
+                          onAdd={() => setAwards([...awards, { name: '', organization: '', year: '' }])}
+                          onRemove={(idx) => setAwards(awards.filter((_, i) => i !== idx))}
+                        />
+                      </div>
+                      
+                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <InlineEditArray
+                          title="Research & Publications"
+                          items={research}
+                          fields={[
+                            { key: "title", label: "Title of Paper/Research", type: "text" },
+                            { key: "journal", label: "Journal / Publication", type: "text" },
+                            { key: "year", label: "Year", type: "text" },
+                            { key: "link", label: "Link (Optional)", type: "text" }
+                          ]}
+                          onUpdate={(idx, key, val) => handleArrayChange(setResearch, research, idx, key, val)}
+                          onAdd={() => setResearch([...research, { title: '', journal: '', year: '', link: '' }])}
+                          onRemove={(idx) => setResearch(research.filter((_, i) => i !== idx))}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {selectedListing.category === 'Hospital' && (
+                    <>
+                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <InlineEditArray
+                          title="Departments"
+                          items={departments}
+                          fields={[
+                            { key: "name", label: "Department Name", type: "text" }
+                          ]}
+                          onUpdate={(idx, key, val) => handleArrayChange(setDepartments, departments, idx, key, val)}
+                          onAdd={() => setDepartments([...departments, { name: '' }])}
+                          onRemove={(idx) => setDepartments(departments.filter((_, i) => i !== idx))}
+                        />
+                      </div>
+                      
+                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <InlineEditArray
+                          title="Health Packages"
+                          items={healthPackages}
+                          fields={[
+                            { key: "packageName", label: "Package Name", type: "text" },
+                            { key: "description", label: "Description", type: "textarea" },
+                            { key: "includedTests", label: "Tests (Comma separated)", type: "text" },
+                            { key: "price", label: "Regular Price", type: "text" },
+                            { key: "discountedPrice", label: "Discounted Price", type: "text" }
+                          ]}
+                          onUpdate={(idx, key, val) => handleArrayChange(setHealthPackages, healthPackages, idx, key, val)}
+                          onAdd={() => setHealthPackages([...healthPackages, { packageName: '', description: '', includedTests: '', price: '', discountedPrice: '' }])}
+                          onRemove={(idx) => setHealthPackages(healthPackages.filter((_, i) => i !== idx))}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="relative">
-                  <label className="form-label">Custom Slug</label>
-                  <div className="flex gap-2">
-                    <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="form-input" />
-                    <button onClick={checkSlugAvailability} className="bg-slate-800 text-white px-4 py-1 rounded-lg text-sm font-bold">Check</button>
-                    <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold whitespace-nowrap">Super Search</button>
-                  </div>
-                </div>
-                <div>
-                  <label className="form-label">Phone</label>
-                  <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="form-input" />
-                </div>
-                <div>
-                  <label className="form-label">Category</label>
-                  <select value={selectedListing.category || ""} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="form-select">
-                    <option value="">Select Category</option>
-                    <option value="Doctor">Doctor</option>
-                    <option value="Hospital">Hospital</option>
-                    <option value="Pharmacy">Pharmacy</option>
-                    <option value="Lab">Lab</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="form-label">Sub-Category / Specialty</label>
-                  <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="form-input" />
-                </div>
-                <div className="col-span-2 pt-4 mt-2 border-t border-slate-100">
-                  <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Location Data</h4>
-                  <AddressBlock 
-                    data={{
-                      country: selectedListing.country || '',
-                      state: selectedListing.state || '',
-                      district: selectedListing.district || '',
-                      block: selectedListing.block || '',
-                      city: selectedListing.city || '',
-                      pincode: selectedListing.pin || '',
-                      localAddress: selectedListing.locality || selectedListing.address || ''
-                    }}
-                    onChange={(newData) => setSelectedListing({
-                      ...selectedListing,
-                      country: newData.country,
-                      state: newData.state,
-                      district: newData.district,
-                      block: newData.block,
-                      city: newData.city,
-                      pin: newData.pincode,
-                      locality: newData.localAddress,
-                      address: newData.localAddress
-                    })}
-                  />
-                </div>
-                <div className="col-span-2 mt-4">
-                  <label className="form-label">About / Biography</label>
-                  <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="form-input" rows={4} />
-                </div>
-                <div className="col-span-2 flex flex-wrap items-center gap-6 mt-2 p-5 bg-slate-50 border border-slate-200 rounded-xl">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" id="verifiedCheck" checked={selectedListing.verified || false} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-6 h-6 text-teal-600 rounded border-slate-300" />
-                    <span className="text-sm font-bold text-slate-900">Verified Listing</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" id="featuredCheck" checked={selectedListing.featured || false} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-6 h-6 text-amber-500 rounded border-slate-300" />
-                    <span className="text-sm font-bold text-slate-900">Featured / Sponsored</span>
-                  </label>
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="p-6 border-t flex justify-end gap-4 shrink-0 bg-white shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] z-10">
