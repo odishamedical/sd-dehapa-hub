@@ -668,6 +668,26 @@ export default function AdminDataCRM() {
                       placeholder="Paste YouTube URL here..." 
                     />
                   </div>
+                  
+                  {selectedListing.category === 'Hospital' && (
+                    <div className="col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
+                      <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Hospital Facilities & Stats</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                          <label className="form-label">Total Beds</label>
+                          <input type="text" value={selectedListing.totalBeds || ""} onChange={e => setSelectedListing({...selectedListing, totalBeds: e.target.value})} className="form-input" placeholder="e.g. 500" />
+                        </div>
+                        <div>
+                          <label className="form-label">ICU Capacity</label>
+                          <input type="text" value={selectedListing.icuCapacity || ""} onChange={e => setSelectedListing({...selectedListing, icuCapacity: e.target.value})} className="form-input" placeholder="e.g. 50" />
+                        </div>
+                        <div>
+                          <label className="form-label">Emergency Services</label>
+                          <input type="text" value={selectedListing.emergencyServices || ""} onChange={e => setSelectedListing({...selectedListing, emergencyServices: e.target.value})} className="form-input" placeholder="e.g. 24/7 Available" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div className="col-span-2 flex flex-wrap items-center gap-6 mt-2 p-5 bg-slate-50 border border-slate-200 rounded-xl">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input type="checkbox" id="verifiedCheck" checked={selectedListing.verified || false} onChange={e => setSelectedListing({...selectedListing, verified: e.target.checked})} className="w-6 h-6 text-teal-600 rounded border-slate-300" />
@@ -814,24 +834,6 @@ export default function AdminDataCRM() {
 
                   {selectedListing.category === 'Hospital' && (
                     <>
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Hospital Facilities & Stats</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <div>
-                            <label className="form-label">Total Beds</label>
-                            <input type="text" value={selectedListing.totalBeds || ""} onChange={e => setSelectedListing({...selectedListing, totalBeds: e.target.value})} className="form-input" placeholder="e.g. 500" />
-                          </div>
-                          <div>
-                            <label className="form-label">ICU Capacity</label>
-                            <input type="text" value={selectedListing.icuCapacity || ""} onChange={e => setSelectedListing({...selectedListing, icuCapacity: e.target.value})} className="form-input" placeholder="e.g. 50" />
-                          </div>
-                          <div>
-                            <label className="form-label">Emergency Services</label>
-                            <input type="text" value={selectedListing.emergencyServices || ""} onChange={e => setSelectedListing({...selectedListing, emergencyServices: e.target.value})} className="form-input" placeholder="e.g. 24/7 Available" />
-                          </div>
-                        </div>
-                      </div>
-
                       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                         <ObjectArrayEditor
                           title="Departments"
