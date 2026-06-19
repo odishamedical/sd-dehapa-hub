@@ -145,21 +145,21 @@ export default function UniversalProfileLayout({
                       <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
                         <svg className="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                         <div>
-                          <span className="text-white font-bold block leading-none">{profile.stats?.beds || "Data not available"}</span>
+                          <span className="text-white font-bold block leading-none">{profile.totalBeds || profile.stats?.beds || "Data not available"}</span>
                           <span className="text-slate-400 text-[10px] uppercase tracking-widest">Total Beds</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
                         <svg className="w-5 h-5 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                         <div>
-                          <span className="text-white font-bold block leading-none">{profile.stats?.icu || "Data not available"}</span>
+                          <span className="text-white font-bold block leading-none">{profile.icuCapacity || profile.stats?.icu || "Data not available"}</span>
                           <span className="text-slate-400 text-[10px] uppercase tracking-widest">ICU Capacity</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
                         <svg className="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <div>
-                          <span className="text-white font-bold block leading-none">{profile.stats?.emergency || "Data not available"}</span>
+                          <span className="text-white font-bold block leading-none">{profile.emergencyServices || profile.stats?.emergency || "Data not available"}</span>
                           <span className="text-slate-400 text-[10px] uppercase tracking-widest">Emergency</span>
                         </div>
                       </div>
