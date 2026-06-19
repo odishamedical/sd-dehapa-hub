@@ -14,6 +14,7 @@ import { db } from '@/lib/firebase';
 
 import InviteWidget from '@/components/InviteWidget';
 import PatientConsultWidget from '@/components/PatientConsultWidget';
+import PatientAppointments from '@/components/PatientAppointments';
 
 function UserHomeWidget({ userName, userUid }: { userName: string | null, userUid: string | null }) {
   return (
@@ -417,13 +418,7 @@ export default function UserDashboard() {
         {activeTab === "appointments" && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">My Appointments</h3>
-            <div className="text-center py-16 bg-white/40 backdrop-blur-md rounded-[24px] border border-white/60 shadow-sm">
-              <div className="w-16 h-16 bg-white/80 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-              </div>
-              <p className="text-slate-900 font-bold text-lg mb-1">No Appointments Found</p>
-              <p className="text-sm text-slate-500 max-w-sm mx-auto">You have no upcoming or past visits recorded in the system.</p>
-            </div>
+            <PatientAppointments patientId={userEmail || ''} />
           </div>
         )}
 

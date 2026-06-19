@@ -12,6 +12,20 @@ import MultiImageUploader from '@/components/MultiImageUploader';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import TelemedicineSettings from '@/components/TelemedicineSettings';
 import { db } from '@/lib/firebase';
+"use client";
+
+import React, { useState } from 'react';
+import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
+import PremiumSlugModal from '@/components/PremiumSlugModal';
+import EntitySearchInput from '@/components/EntitySearchInput';
+import { useAutosave } from '@/hooks/useAutosave';
+import AutosaveIndicator from '@/components/AutosaveIndicator';
+import AddressBlock, { AddressData } from '@/components/AddressBlock';
+import ImageUpload from '@/components/ImageUpload';
+import MultiImageUploader from '@/components/MultiImageUploader';
+import PatientLeadsWidget from '@/components/PatientLeadsWidget';
+import TelemedicineSettings from '@/components/TelemedicineSettings';
+import { db } from '@/lib/firebase';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import AvailabilitySettings from '@/components/AvailabilitySettings';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
@@ -21,6 +35,7 @@ import InviteWidget from '@/components/InviteWidget';
 import DoctorStatusToggle from '@/components/DoctorStatusToggle';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
 import DashboardHomeGrid from '@/components/DashboardHomeGrid';
+import HospitalAffiliationWidget from '@/components/HospitalAffiliationWidget';
 
 export default function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState("home");
@@ -116,187 +131,6 @@ export default function DoctorDashboard() {
 
   // Gallery State
   const [galleryData, setGalleryData] = useState<string[]>([]);
-  const gallerySaveStatus = useAutosave(galleryData, doctorUid, "galleryImages", 1000);
-
-  // Practice Location State
-  const [locationAddress, setLocationAddress] = useState<AddressData>({
-    country: "India",
-    state: "Odisha",
-    district: "",
-    block: "",
-    city: "",
-    pincode: "",
-    localAddress: ""
-  });
-  const locationSaveStatus = useAutosave(locationAddress, doctorUid, "locationAddress", 1000);
-
-  // Experience State
-  const [experienceData, setExperienceData] = useState<any[]>([]);
-  const experienceSaveStatus = useAutosave(experienceData, doctorUid, "experience", 1000);
-
-  const addExperience = () => setExperienceData(prev => [...prev, { hospitalId: "", hospitalName: "", position: "", duration: "" }]);
-  const removeExperience = (index: number) => setExperienceData(prev => prev.filter((_, i) => i !== index));
-  const moveExperience = (index: number, direction: 'up' | 'down') => {
-    if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === experienceData.length - 1) return;
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    setExperienceData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
-  };
-  const updateExperience = (index: number, field: string, value: any) => setExperienceData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
-
-  // Research State
-  const [researchData, setResearchData] = useState<any[]>([]);
-  const researchSaveStatus = useAutosave(researchData, doctorUid, "research", 1000);
-  const addResearch = () => setResearchData(prev => [...prev, { paperTitle: "", journalId: "", journalName: "", publicationYear: "" }]);
-  const removeResearch = (index: number) => setResearchData(prev => prev.filter((_, i) => i !== index));
-  const moveResearch = (index: number, direction: 'up' | 'down') => {
-    if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === researchData.length - 1) return;
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    setResearchData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
-  };
-  const updateResearch = (index: number, field: string, value: any) => setResearchData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
-
-  // Memberships State
-  const [membershipsData, setMembershipsData] = useState<any[]>([]);
-  const membershipsSaveStatus = useAutosave(membershipsData, doctorUid, "memberships", 1000);
-  const addMembership = () => setMembershipsData(prev => [...prev, { associationId: "", associationName: "", role: "" }]);
-  const removeMembership = (index: number) => setMembershipsData(prev => prev.filter((_, i) => i !== index));
-  const moveMembership = (index: number, direction: 'up' | 'down') => {
-    if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === membershipsData.length - 1) return;
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    setMembershipsData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
-  };
-  const updateMembership = (index: number, field: string, value: any) => setMembershipsData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
-
-  // Awards State
-  const [awardsData, setAwardsData] = useState<any[]>([]);
-  const awardsSaveStatus = useAutosave(awardsData, doctorUid, "awards", 1000);
-  const addAward = () => setAwardsData(prev => [...prev, { awardName: "", awardingBody: "", year: "" }]);
-  const removeAward = (index: number) => setAwardsData(prev => prev.filter((_, i) => i !== index));
-  const moveAward = (index: number, direction: 'up' | 'down') => {
-    if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === awardsData.length - 1) return;
-    const newIndex = direction === 'up' ? index - 1 : index + 1;
-    setAwardsData(prev => { const copy = [...prev]; const temp = copy[index]; copy[index] = copy[newIndex]; copy[newIndex] = temp; return copy; });
-  };
-  const updateAward = (index: number, field: string, value: any) => setAwardsData(prev => { const copy = [...prev]; copy[index] = { ...copy[index], [field]: value }; return copy; });
-
-  // Specialties State
-  const [specialtiesData, setSpecialtiesData] = useState<{ id: string; name: string; isPrimary: boolean }[]>([]);
-  const specialtiesSaveStatus = useAutosave(specialtiesData, doctorUid, "specialties", 1000);
-  const addSpecialty = () => setSpecialtiesData(prev => [...prev, { id: Math.random().toString(), name: "", isPrimary: prev.length === 0 }]);
-  const removeSpecialty = (id: string) => setSpecialtiesData(prev => prev.filter(s => s.id !== id));
-  const updateSpecialty = (id: string, name: string) => setSpecialtiesData(prev => prev.map(s => s.id === id ? { ...s, name } : s));
-  const setPrimarySpecialty = (id: string) => setSpecialtiesData(prev => prev.map(s => ({ ...s, isPrimary: s.id === id })));
-
-  // Bookings State
-  const [bookingsData, setBookingsData] = useState({
-    appointmentType: "Video Consultation",
-    duration: "15 Mins",
-    noticePeriod: "1 Hour"
-  });
-  const bookingsSaveStatus = useAutosave(bookingsData, 1000);
-
-  const doctorTabs: DashboardTab[] = [
-    // 1. QUICK ACCESS
-    { id: "home", label: "Dashboard Home", section: "QUICK ACCESS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> },
-    { id: "appointments", label: "Appointments", section: "QUICK ACCESS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> },
-    { id: "inquiries", label: "Patient Inquiries", section: "QUICK ACCESS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg> },
-
-    // 2. CLINIC MANAGEMENT
-    { id: "settings", label: "Availability Settings", section: "CLINIC MANAGEMENT", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> },
-    { id: "telemedicine", label: "Telemedicine Clinic", section: "CLINIC MANAGEMENT", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> },
-    { id: "records", label: "Patient Records", section: "CLINIC MANAGEMENT", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg> },
-    { id: "vault", label: "Secure Medical Vault", section: "CLINIC MANAGEMENT", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg> },
-
-    // 3. PROFILE BUILDER
-    { id: "identity", label: "Identity & Bio", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> },
-    { id: "qualifications", label: "Qualifications", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg> },
-    { id: "experience", label: "Experience & Positions", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> },
-    { id: "locations", label: "Practice Locations", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> },
-    { id: "specialties", label: "Specialties & Services", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg> },
-    { id: "research", label: "Awards & Publications", section: "PROFILE BUILDER", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg> },
-
-    // 4. REPUTATION & REVENUE
-    { id: "reviews", label: "Reviews & Ratings", section: "REPUTATION & REVENUE", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg> },
-    { id: "earnings", label: "Earnings & Payouts", section: "REPUTATION & REVENUE", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> },
-
-    // 5. ACCOUNT
-    { id: "identity_premium", label: "Premium Identity", section: "ACCOUNT SETTINGS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> },
-    { id: "account_settings", label: "General Settings", section: "ACCOUNT SETTINGS", icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> }
-  ];
-
-  
-  // Dynamic Profile Metrics
-  const calculateProfileStrength = () => {
-    let score = 0;
-    if (identityData?.fullName) score += 20;
-    if (identityData?.profilePhoto) score += 20;
-    if (identityData?.phone) score += 10;
-    if (qualificationsData?.length > 0) score += 25;
-    if (locationAddress?.city) score += 25;
-    return score;
-  };
-  
-  const getPendingActions = () => {
-    const actions = [];
-    if (!identityData?.fullName) actions.push({ id: 'a1', label: 'Add Full Name', tabId: 'identity' });
-    if (!identityData?.profilePhoto) actions.push({ id: 'a2', label: 'Upload Profile Photo', tabId: 'identity' });
-    if (!qualificationsData || qualificationsData.length === 0) actions.push({ id: 'a3', label: 'Add Qualifications', tabId: 'qualifications' });
-    if (!locationAddress?.city) actions.push({ id: 'a4', label: 'Add Practice Locations', tabId: 'locations' });
-    return actions;
-  };
-  
-  const getCompletedActions = () => {
-    const actions = [];
-    if (identityData?.fullName) actions.push({ id: 'c1', label: 'Identity Information Added' });
-    if (identityData?.profilePhoto) actions.push({ id: 'c2', label: 'Profile Photo Uploaded' });
-    if (qualificationsData?.length > 0) actions.push({ id: 'c3', label: 'Qualifications Added' });
-    if (locationAddress?.city) actions.push({ id: 'c4', label: 'Locations Added' });
-    return actions;
-  };
-  
-  if (!doctorUid || !isProfileLoaded) {
-    return (
-      <div className="min-h-screen bg-[#040815] flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-
-
-  return (
-    <>
-      <IncomingPingWidget doctorId={doctorUid} doctorSpecialty="Super-specialist Doctor" />
-      <DashboardLayout 
-        roleName="Doctor Dashboard" 
-        tabs={doctorTabs} 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab}
-        userProfile={{
-          name: profileData?.basicInfo?.fullName || profileData?.name || "Dr. Unnamed Profile",
-          subtitle: profileData?.basicInfo?.specialityName || profileData?.speciality || "Update your identity info",
-          image: profileData?.basicInfo?.profilePhoto || profileData?.image || null
-        }}
-        homeWidget={
-          <DashboardHomeGrid 
-            onNavigate={setActiveTab} 
-            tabs={doctorTabs}
-            profileStrength={calculateProfileStrength()}
-            profileTitle="Profile Strength"
-            profileSubtitle="Complete your profile to unlock the 'Verified DehaPa Doctor' badge."
-            pendingActions={getPendingActions()}
-            completedActions={getCompletedActions()}
-            topRightWidget={<InviteWidget userUid={null} />}
-            middleRightWidget={<DoctorStatusToggle />}
-          />
-        }
-        hideDefaultModulesList={true}
-      >
-        <div className="w-full">
-        {/* Header Alert */}
         <div className="bg-gradient-to-r from-[#0f172a] to-cyan-950 backdrop-blur-xl border border-cyan-800 text-white rounded-2xl p-6 mb-8 flex items-start gap-4 shadow-xl shadow-cyan-900/20">
           <svg className="w-8 h-8 text-cyan-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
           <div>

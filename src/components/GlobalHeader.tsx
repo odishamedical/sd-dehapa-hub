@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, onSnapshot, query, where } from "firebase/firestore";
 import GlobalAvatarWidget from "./GlobalAvatarWidget";
+import DoctorStatusToggle from "./DoctorStatusToggle";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
@@ -314,7 +315,8 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
           )}
         </button>
 
-        {/* Removed DoctorStatusToggle */}
+        {/* DoctorStatusToggle */}
+        <DoctorStatusToggle />
 
         {userEmail ? (
           <div className="relative">

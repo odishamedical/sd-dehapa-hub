@@ -9,8 +9,10 @@ import AutosaveIndicator from '@/components/AutosaveIndicator';
 import ImageUpload from '@/components/ImageUpload';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
-
 import DashboardHomeGrid from '@/components/DashboardHomeGrid';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { GlobalFormCard, GlobalInput, GlobalLabel } from '@/components/ui/FormElements';
 
 interface RosteredDoctor {
   id: string;
@@ -28,6 +30,9 @@ export default function HospitalDashboard() {
 
   const [activeTab, setActiveTab] = useState("home");
 
+  const [hospitalUid, setHospitalUid] = useState<string | null>(null);
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+
   // State: Identity & Bio
   const [identityData, setIdentityData] = useState({
     logo: "",
@@ -38,7 +43,7 @@ export default function HospitalDashboard() {
     whatsappNumber: "",
     email: ""
   });
-  const identitySaveStatus = useAutosave(identityData, 1000);
+  const identitySaveStatus = useAutosave(identityData, hospitalUid, "identityData", 1000);
 
   // State: Location & Infrastructure
   const [locationData, setLocationData] = useState<AddressData>({
@@ -50,7 +55,7 @@ export default function HospitalDashboard() {
     pincode: "",
     localAddress: ""
   });
-  const locationSaveStatus = useAutosave(locationData, 1000);
+  const locationSaveStatus = useAutosave(locationData, hospitalUid, "locationData", 1000);
   
   const [infrastructureData, setInfrastructureData] = useState({
     totalBeds: "",
@@ -58,11 +63,11 @@ export default function HospitalDashboard() {
     hasEmergency: false,
     is247: false
   });
-  const infrastructureSaveStatus = useAutosave(infrastructureData, 1000);
+  const infrastructureSaveStatus = useAutosave(infrastructureData, hospitalUid, "infrastructureData", 1000);
 
   // State: Departments
   const [departments, setDepartments] = useState([{ name: "" }]);
-  const departmentsSaveStatus = useAutosave(departments, 1000);
+  const departmentsSaveStatus = useAutosave(departments, hospitalUid, "departments", 1000);
   const addDepartment = () => setDepartments(prev => [...prev, { name: "" }]);
   const removeDepartment = (index: number) => setDepartments(prev => prev.filter((_, i) => i !== index));
   const moveDepartment = (index: number, direction: 'up' | 'down') => {
@@ -75,7 +80,7 @@ export default function HospitalDashboard() {
 
   // State: Insurance
   const [insuranceNetworks, setInsuranceNetworks] = useState([{ name: "" }]);
-  const insuranceSaveStatus = useAutosave(insuranceNetworks, 1000);
+  const insuranceSaveStatus = useAutosave(insuranceNetworks, hospitalUid, "insuranceNetworks", 1000);
   const addInsurance = () => setInsuranceNetworks(prev => [...prev, { name: "" }]);
   const removeInsurance = (index: number) => setInsuranceNetworks(prev => prev.filter((_, i) => i !== index));
   const moveInsurance = (index: number, direction: 'up' | 'down') => {
@@ -88,22 +93,73 @@ export default function HospitalDashboard() {
 
   // State: Roster
   const [rosterDoctors, setRosterDoctors] = useState<RosteredDoctor[]>([]);
-  const rosterSaveStatus = useAutosave(rosterDoctors, 1000);
+  const rosterSaveStatus = useAutosave(rosterDoctors, hospitalUid, "rosterDoctors", 1000);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
 
-  // Mock search results for inviting doctors
-  const searchResults = [
-    { id: "doc_1", name: "Dr. A. K. Sharma", specialty: "Cardiologist" },
-    { id: "doc_2", name: "Dr. Smita Das", specialty: "Neurologist" },
-  ].filter(d => d.name.toLowerCase().includes(doctorSearchQuery.toLowerCase()) || d.specialty.toLowerCase().includes(doctorSearchQuery.toLowerCase()));
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const handleInviteDoctor = (doc: any) => {
-    // Check if already in roster
-    if (rosterDoctors.find(r => r.id === doc.id)) return;
-    setRosterDoctors(prev => [...prev, { id: doc.id, name: doc.name, department: doc.specialty, status: "Pending" }]);
+  // Search doctors in Firestore directory
+  useEffect(() => {
+    const searchDoctors = async () => {
+      if (doctorSearchQuery.length < 3) {
+        setSearchResults([]);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const q = query(
+          collection(db, "directory"),
+          where("role", "==", "doctor")
+        );
+        const querySnapshot = await getDocs(q);
+        const results: any[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const name = data.basicInfo?.fullName || data.name || "";
+          const specialty = data.basicInfo?.specialityName || data.specialty || "";
+          
+          if (name.toLowerCase().includes(doctorSearchQuery.toLowerCase()) || 
+              specialty.toLowerCase().includes(doctorSearchQuery.toLowerCase())) {
+            results.push({ id: doc.id, name, specialty });
+          }
+        });
+        setSearchResults(results);
+      } catch (err) {
+        console.error("Error searching doctors:", err);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const timeoutId = setTimeout(searchDoctors, 500); // debounce
+    return () => clearTimeout(timeoutId);
+  }, [doctorSearchQuery]);
+
+  const handleInviteDoctor = async (docObj: any) => {
+    if (!hospitalUid) return;
+    if (rosterDoctors.find(r => r.id === docObj.id)) return;
+    
+    // Add locally as Pending
+    setRosterDoctors(prev => [...prev, { id: docObj.id, name: docObj.name, department: docObj.specialty, status: "Pending" }]);
     setShowInviteModal(false);
     setDoctorSearchQuery("");
+
+    // Write to hospital_affiliations collection
+    try {
+      await addDoc(collection(db, "hospital_affiliations"), {
+        hospitalId: hospitalUid,
+        hospitalName: hospitalName,
+        doctorId: docObj.id,
+        doctorName: docObj.name,
+        doctorSpecialty: docObj.specialty,
+        status: "pending",
+        createdAt: new Date().toISOString()
+      });
+    } catch (err) {
+      console.error("Failed to send invite:", err);
+    }
   };
 
   const removeDoctor = (id: string) => setRosterDoctors(prev => prev.filter(d => d.id !== id));
@@ -113,9 +169,11 @@ export default function HospitalDashboard() {
       const role = localStorage.getItem("sd_current_user_role");
       const name = localStorage.getItem("sd_current_user_name");
       const email = localStorage.getItem("sd_current_user_email");
+      const uid = localStorage.getItem("sd_current_user_uid") || localStorage.getItem("sd_current_user_email");
       
       if (role === "hospital" || role === "super_admin") {
         setAccessGranted(true);
+        if (uid) setHospitalUid(uid);
         if (name) {
           setHospitalName(name);
           setIdentityData(prev => ({ ...prev, hospitalName: name }));
@@ -129,8 +187,33 @@ export default function HospitalDashboard() {
     }
   }, [router]);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!hospitalUid) return;
+      try {
+        const docRef = doc(db, 'directory', hospitalUid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.identityData) setIdentityData(data.identityData);
+          if (data.locationData) setLocationData(data.locationData);
+          if (data.infrastructureData) setInfrastructureData(data.infrastructureData);
+          if (data.departments) setDepartments(data.departments);
+          if (data.insuranceNetworks) setInsuranceNetworks(data.insuranceNetworks);
+          if (data.rosterDoctors) setRosterDoctors(data.rosterDoctors);
+        }
+      } catch (err) {
+        console.error("Failed to fetch hospital profile", err);
+      } finally {
+        setIsProfileLoaded(true);
+      }
+    };
+    fetchProfile();
+  }, [hospitalUid]);
+
   if (loading) return null;
   if (!accessGranted) return null;
+  if (hospitalUid && !isProfileLoaded) return <div className="flex h-screen items-center justify-center"><div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
   const hospitalTabs: DashboardTab[] = [
     {
@@ -212,8 +295,8 @@ export default function HospitalDashboard() {
 
         {/* Tab 1: Identity & Bio */}
         {activeTab === "identity" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Identity & Bio</h3>
+          <GlobalFormCard className="animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200/50 pb-4">Identity & Bio</h3>
             
             <div className="space-y-6">
               <ImageUpload 
@@ -224,64 +307,60 @@ export default function HospitalDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-1.5">Hospital Name</label>
-                  <input 
+                  <GlobalLabel>Hospital Name</GlobalLabel>
+                  <GlobalInput 
                     type="text" 
                     value={identityData.hospitalName}
                     onChange={(e) => setIdentityData(prev => ({...prev, hospitalName: e.target.value}))}
                     placeholder="e.g. Apollo Hospitals" 
-                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-1.5">Clinical Registration Number</label>
-                  <input 
+                  <GlobalLabel>Clinical Registration Number</GlobalLabel>
+                  <GlobalInput 
                     type="text" 
                     value={identityData.registrationNumber}
                     onChange={(e) => setIdentityData(prev => ({...prev, registrationNumber: e.target.value}))}
                     placeholder="e.g. CLINIC-12345" 
-                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-1.5">Phone Number</label>
-                  <input 
+                  <GlobalLabel>Phone Number</GlobalLabel>
+                  <GlobalInput 
                     type="text" 
                     value={identityData.phone}
                     onChange={(e) => setIdentityData(prev => ({...prev, phone: e.target.value}))}
                     placeholder="e.g. +91 9876543210" 
-                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-1.5 flex items-center gap-2">
+                  <GlobalLabel className="flex items-center gap-2">
                     WhatsApp Number
                     <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                  </label>
-                  <input 
+                  </GlobalLabel>
+                  <GlobalInput 
                     type="text" 
                     value={identityData.whatsappNumber}
                     onChange={(e) => setIdentityData(prev => ({...prev, whatsappNumber: e.target.value}))}
                     placeholder="e.g. +91 9876543210" 
-                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-200/50">
                 <AutosaveIndicator status={identitySaveStatus} />
               </div>
             </div>
-          </div>
+          </GlobalFormCard>
         )}
 
         {/* Tab 2: Location & Infrastructure */}
         {activeTab === "infrastructure" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Location & Infrastructure</h3>
+          <GlobalFormCard className="animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200/50 pb-4">Location & Infrastructure</h3>
             
             <div className="space-y-8">
               <div>
@@ -292,48 +371,47 @@ export default function HospitalDashboard() {
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-slate-100">
+              <div className="pt-6 border-t border-slate-200/50">
                 <h4 className="text-sm font-bold text-slate-800 mb-4">Facility Capabilities</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">Total Beds Capacity</label>
-                    <input 
+                    <GlobalLabel>Total Beds Capacity</GlobalLabel>
+                    <GlobalInput 
                       type="number" 
                       value={infrastructureData.totalBeds}
                       onChange={(e) => setInfrastructureData(prev => ({...prev, totalBeds: e.target.value}))}
                       placeholder="e.g. 50" 
-                      className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 text-sm focus:border-teal-500 outline-none transition-all" 
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                  <label className="flex items-center gap-3 p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors">
+                  <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors bg-white shadow-sm">
                     <input 
                       type="checkbox" 
                       checked={infrastructureData.hasIcu}
                       onChange={(e) => setInfrastructureData(prev => ({...prev, hasIcu: e.target.checked}))}
                       className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 border-slate-300"
                     />
-                    <span className="font-semibold text-slate-700 text-sm">Has ICU</span>
+                    <span className="font-bold text-slate-700 text-sm">Has ICU</span>
                   </label>
-                  <label className="flex items-center gap-3 p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors">
+                  <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors bg-white shadow-sm">
                     <input 
                       type="checkbox" 
                       checked={infrastructureData.hasEmergency}
                       onChange={(e) => setInfrastructureData(prev => ({...prev, hasEmergency: e.target.checked}))}
                       className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 border-slate-300"
                     />
-                    <span className="font-semibold text-slate-700 text-sm">24/7 Emergency Ward</span>
+                    <span className="font-bold text-slate-700 text-sm">24/7 Emergency Ward</span>
                   </label>
-                  <label className="flex items-center gap-3 p-4 border border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors">
+                  <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-teal-500 transition-colors bg-white shadow-sm">
                     <input 
                       type="checkbox" 
                       checked={infrastructureData.is247}
                       onChange={(e) => setInfrastructureData(prev => ({...prev, is247: e.target.checked}))}
                       className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 border-slate-300"
                     />
-                    <span className="font-semibold text-slate-700 text-sm">Open 24/7</span>
+                    <span className="font-bold text-slate-700 text-sm">Open 24/7</span>
                   </label>
                 </div>
                 <div className="flex justify-end mt-4">
@@ -341,13 +419,13 @@ export default function HospitalDashboard() {
                 </div>
               </div>
             </div>
-          </div>
+          </GlobalFormCard>
         )}
 
         {/* Tab 3: Departments */}
         {activeTab === "departments" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+          <GlobalFormCard className="animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-center border-b border-slate-200/50 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Departments & Specialties</h3>
                 <p className="text-sm text-slate-500 mt-1">Select the active medical departments in your facility.</p>
@@ -357,7 +435,7 @@ export default function HospitalDashboard() {
             
             <div className="space-y-6">
               {departments.map((dept, index) => (
-                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-50 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
                   <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
                       <button onClick={() => moveDepartment(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
@@ -376,16 +454,16 @@ export default function HospitalDashboard() {
                   </div>
                   
                   <div className="mt-2 pr-48">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Department Name</label>
-                    <input type="text" value={dept.name} onChange={(e) => updateDepartment(index, e.target.value)} placeholder="e.g. Cardiology" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <GlobalLabel>Department Name</GlobalLabel>
+                    <GlobalInput type="text" value={dept.name} onChange={(e) => updateDepartment(index, e.target.value)} placeholder="e.g. Cardiology" />
                   </div>
                 </div>
               ))}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-200/50 mt-6">
                 <AutosaveIndicator status={departmentsSaveStatus} />
               </div>
             </div>
-          </div>
+          </GlobalFormCard>
         )}
 
         {/* Tab 4: Associated Doctors */}
@@ -422,8 +500,14 @@ export default function HospitalDashboard() {
                 </div>
 
                 <div className="flex-1 overflow-y-auto space-y-3">
-                  {doctorSearchQuery.length > 0 && searchResults.length === 0 ? (
+                  {isSearching ? (
+                    <div className="flex justify-center py-8">
+                      <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  ) : doctorSearchQuery.length > 0 && searchResults.length === 0 && doctorSearchQuery.length >= 3 ? (
                     <p className="text-center text-slate-500 py-4">No doctors found matching "{doctorSearchQuery}"</p>
+                  ) : doctorSearchQuery.length < 3 && doctorSearchQuery.length > 0 ? (
+                    <p className="text-center text-slate-500 py-4">Type at least 3 characters to search</p>
                   ) : (
                     searchResults.map(doc => (
                       <div key={doc.id} className="flex items-center justify-between p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
@@ -494,8 +578,8 @@ export default function HospitalDashboard() {
 
         {/* Tab 5: Insurance & TPA */}
         {activeTab === "insurance" && (
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+          <GlobalFormCard className="animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex justify-between items-center border-b border-slate-200/50 pb-4 mb-6">
               <div>
                 <h3 className="text-xl font-bold text-slate-900">Insurance & TPA</h3>
                 <p className="text-sm text-slate-500 mt-1">List accepted health insurance networks for cashless facilities.</p>
@@ -505,7 +589,7 @@ export default function HospitalDashboard() {
             
             <div className="space-y-6">
               {insuranceNetworks.map((ins, index) => (
-                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-100 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
+                <div key={index} className="border border-slate-300 rounded-2xl p-6 relative bg-slate-50 shadow-inner hover:border-teal-400 hover:shadow-md transition-all duration-300">
                   <div className="absolute top-4 right-4 flex gap-3 items-center bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
                       <button onClick={() => moveInsurance(index, 'up')} disabled={index === 0} className={`px-3 py-2 hover:bg-slate-200 transition-colors flex items-center gap-1 ${index === 0 ? 'opacity-30 cursor-not-allowed' : 'text-slate-800'}`} title="Move Up">
@@ -524,16 +608,16 @@ export default function HospitalDashboard() {
                   </div>
                   
                   <div className="mt-2 pr-48">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Network Name</label>
-                    <input type="text" value={ins.name} onChange={(e) => updateInsurance(index, e.target.value)} placeholder="e.g. BSKY, Star Health" className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-teal-500 outline-none transition-all" />
+                    <GlobalLabel>Network Name</GlobalLabel>
+                    <GlobalInput type="text" value={ins.name} onChange={(e) => updateInsurance(index, e.target.value)} placeholder="e.g. BSKY, Star Health" />
                   </div>
                 </div>
               ))}
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
+              <div className="flex items-center justify-between pt-6 border-t border-slate-200/50 mt-6">
                 <AutosaveIndicator status={insuranceSaveStatus} />
               </div>
             </div>
-          </div>
+          </GlobalFormCard>
         )}
 
       </div>

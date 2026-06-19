@@ -48,7 +48,10 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
         const data = doc.data();
         const isDirect = data.pingType === 'direct' && data.doctorId === doctorId;
         // Support legacy requests and new broadcast requests
-        const isBroadcast = (data.pingType === 'broadcast' || !data.pingType) && (data.targetCategory === doctorSpecialty || data.department === doctorSpecialty);
+        const isBroadcast = (data.pingType === 'broadcast' || !data.pingType) && 
+                            (data.targetCategory === doctorSpecialty || 
+                             data.department === doctorSpecialty || 
+                             data.specialtyTier === doctorSpecialty);
         
         if (isDirect || isBroadcast) {
           validRequest = { id: doc.id, ...data };

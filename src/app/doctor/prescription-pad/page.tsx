@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { GlobalLabel, GlobalInput, GlobalSelect, GlobalTextarea, GlobalFormCard } from '@/components/ui/FormElements';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import PrescriptionTemplate from '@/components/PrescriptionTemplate';
 
 // Predefined favorite medicines (In reality, fetched from Doctor's personal settings)
 const FAVORITE_MEDICINES = [
@@ -28,6 +29,14 @@ function PrescriptionPadContent() {
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [doctorName, setDoctorName] = useState("");
+  const [doctorData, setDoctorData] = useState({
+    name: "",
+    speciality: "General Physician",
+    degrees: "MBBS",
+    registrationNo: "Pending",
+    phone: "",
+    address: "DehaPa Clinic, Bhubaneswar"
+  });
   const [allMedicinesList, setAllMedicinesList] = useState<string[]>(FAVORITE_MEDICINES);
 
   const [rxData, setRxData] = useState({
@@ -70,6 +79,7 @@ function PrescriptionPadContent() {
     }
 
     setDoctorName(name || "Dr. Authorized Provider");
+    setDoctorData(prev => ({ ...prev, name: name || "Dr. Authorized Provider" }));
 
     // Load custom learned medicines from local storage
     const savedMeds = localStorage.getItem("sd_custom_medicines");
@@ -79,6 +89,28 @@ function PrescriptionPadContent() {
         setAllMedicinesList([...FAVORITE_MEDICINES, ...parsedMeds]);
       } catch (e) {}
     }
+
+    // Fetch Doctor's actual metadata
+    const fetchDoctorMeta = async () => {
+      const uid = localStorage.getItem("sd_current_user_uid");
+      if (uid) {
+         try {
+           const docSnap = await getDoc(doc(db, "providers", uid));
+           if (docSnap.exists()) {
+             const data = docSnap.data();
+             setDoctorData({
+               name: data.identity?.fullName || name || "Dr. Authorized Provider",
+               speciality: data.identity?.specialityName || "General Physician",
+               degrees: "MBBS, MD", // Ideally fetched from qualifications
+               registrationNo: "MCI-123456", // Ideally fetched from identity
+               phone: data.identity?.phone || "+91 9876543210",
+               address: "DehaPa Clinic"
+             });
+           }
+         } catch(e) {}
+      }
+    };
+    fetchDoctorMeta();
 
     const fetchRequestData = async () => {
       if (!requestId) return;
@@ -442,112 +474,7 @@ function PrescriptionPadContent() {
       </main>
 
       {/* PRINT LAYOUT (Hidden on screen, visible only when printing) */}
-      <div className="hidden print:block bg-white text-black p-8 min-h-screen">
-        {/* Letterhead Header */}
-        <div className="border-b-2 border-slate-800 pb-6 mb-6 flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-serif font-bold uppercase text-slate-900">{doctorName}</h1>
-            <p className="font-bold text-slate-600 mt-1">MBBS, MD (Specialist)</p>
-            <p className="text-sm text-slate-500 mt-1">Reg No: MCI-123456</p>
-          </div>
-          <div className="text-right">
-            <h2 className="text-xl font-bold font-serif uppercase tracking-widest text-tenant-accent">Dehapa Clinic</h2>
-            <p className="text-sm text-slate-600 mt-1">123 Health Avenue, Medical District</p>
-            <p className="text-sm text-slate-600">Bhubaneswar, Odisha 751001</p>
-            <p className="text-sm font-bold text-slate-800 mt-1">Ph: +91 98765 43210</p>
-          </div>
-        </div>
-
-        {/* Patient Details Row */}
-        <div className="flex justify-between items-center bg-slate-50 p-4 rounded-lg mb-8 border border-slate-200">
-          <div>
-            <p className="text-xs font-bold text-slate-500 uppercase">Patient Name</p>
-            <p className="font-bold text-lg">{decodeURIComponent(patientVaultId).split("@")[0] || "Unknown Patient"}</p>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-slate-500 uppercase">Date</p>
-            <p className="font-bold">{new Date().toLocaleDateString()}</p>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-slate-500 uppercase">Vault ID</p>
-            <p className="font-mono text-sm">{patientVaultId || "N/A"}</p>
-          </div>
-        </div>
-
-        {/* Clinical Data */}
-        <div className="space-y-8">
-          {rxData.history && (
-            <div>
-              <h3 className="font-bold border-b border-slate-200 pb-2 mb-2 uppercase tracking-widest text-sm text-slate-500">Medical History</h3>
-              <p className="text-sm whitespace-pre-wrap">{rxData.history}</p>
-            </div>
-          )}
-
-          {rxData.diagnosis && (
-            <div>
-              <h3 className="font-bold border-b border-slate-200 pb-2 mb-2 uppercase tracking-widest text-sm text-slate-500">Clinical Diagnosis</h3>
-              <p className="text-sm font-bold whitespace-pre-wrap">{rxData.diagnosis}</p>
-            </div>
-          )}
-
-          {rxData.medicines.length > 0 && rxData.medicines[0].name !== "" && (
-            <div>
-              <h3 className="font-bold border-b border-slate-200 pb-2 mb-4 text-2xl font-serif text-slate-800 flex items-center gap-2">
-                <svg className="w-6 h-6 text-tenant-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                Rx
-              </h3>
-              <ul className="space-y-4">
-                {rxData.medicines.map((med, i) => (
-                  med.name && (
-                    <li key={i} className="flex justify-between items-end border-b border-dashed border-slate-300 pb-2">
-                      <div>
-                        <span className="font-bold text-lg mr-2">{i+1}.</span>
-                        <span className="font-bold text-lg uppercase tracking-wide">{med.name}</span>
-                        {med.dosage && <span className="text-slate-600 ml-2">({med.dosage})</span>}
-                      </div>
-                      <div className="text-right">
-                        <span className="font-bold bg-slate-100 px-3 py-1 rounded">{med.frequency}</span>
-                        <span className="ml-4 italic text-sm">x {med.duration}</span>
-                      </div>
-                    </li>
-                  )
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {rxData.tests.length > 0 && rxData.tests[0].name !== "" && (
-            <div>
-              <h3 className="font-bold border-b border-slate-200 pb-2 mb-4 uppercase tracking-widest text-sm text-slate-500">Lab Investigations</h3>
-              <ul className="list-disc pl-5 space-y-2">
-                {rxData.tests.map((test, i) => (
-                  test.name && (
-                    <li key={i}>
-                      <span className="font-bold">{test.name}</span>
-                      {test.instructions && <span className="text-slate-600 italic ml-2">({test.instructions})</span>}
-                    </li>
-                  )
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {rxData.advice && (
-            <div>
-              <h3 className="font-bold border-b border-slate-200 pb-2 mb-2 uppercase tracking-widest text-sm text-slate-500">General Advice & Follow Up</h3>
-              <p className="text-sm whitespace-pre-wrap">{rxData.advice}</p>
-            </div>
-          )}
-        </div>
-
-        {/* Footer Signature */}
-        <div className="mt-24 flex justify-end">
-          <div className="text-center border-t border-slate-800 pt-2 w-48">
-            <p className="font-bold">{doctorName}</p>
-            <p className="text-xs text-slate-500">Signature</p>
-          </div>
-        </div>
-      </div>
+      <PrescriptionTemplate doctorData={doctorData} rxData={rxData} date={new Date().toLocaleDateString()} />
 
 
     </div>

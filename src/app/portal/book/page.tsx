@@ -2,54 +2,197 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import { useRouter, useSearchParams } from "next/navigation";
-import GlobalHeader from "@/components/GlobalHeader";
-
-const DOCTORS = [
-  { id: "dr-01", name: "Dr. Sandeep Mohanty", specialty: "Cardiologist", experience: "15 Years", hospital: "Apollo Hospitals, Bhubaneswar", fee: 800 },
-  { id: "dr-02", name: "Dr. Ananya Das", specialty: "Pediatrician", experience: "8 Years", hospital: "KIMS, Bhubaneswar", fee: 600 },
-  { id: "dr-03", name: "Dr. Rajesh Pattnaik", specialty: "Neurologist", experience: "22 Years", hospital: "SUM Ultimate, Bhubaneswar", fee: 1200 },
-  { id: "dr-04", name: "Dr. Meera Nanda", specialty: "Dermatologist", experience: "12 Years", hospital: "Care Hospitals, Cuttack", fee: 500 },
-  { id: "dr-05", name: "Dr. Prateek Mishra", specialty: "Orthopedic Surgeon", experience: "18 Years", hospital: "AMRI Hospitals, Bhubaneswar", fee: 1000 }
-];
+import { db } from "@/lib/firebase";
+import { doc, getDoc, collection, addDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 function BookAppointmentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const docId = searchParams.get("doctor") || "dr-01";
+  const docId = searchParams?.get("doctor") || "";
   
-  const [selectedDocId, setSelectedDocId] = useState(docId);
-  const doctor = DOCTORS.find(d => d.id === selectedDocId) || DOCTORS[0];
+  const [loading, setLoading] = useState(true);
+  const [doctor, setDoctor] = useState<any>(null);
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState("2026-05-26");
+  const [userUid, setUserUid] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1); // tomorrow
+    return d.toISOString().split('T')[0];
+  });
   const [selectedTime, setSelectedTime] = useState("10:30 AM");
   const [symptoms, setSymptoms] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [bookingId, setBookingId] = useState("");
 
   useEffect(() => {
     const email = localStorage.getItem("sd_current_user_email");
     const name = localStorage.getItem("sd_current_user_name");
+    const uid = localStorage.getItem("sd_current_user_uid") || email; // fallback to email if uid not present
 
-    setUserEmail(email || "test@example.com");
+    if (!email) {
+      router.push("/login?redirect=/portal/book?doctor=" + docId);
+      return;
+    }
+
+    setUserEmail(email);
     setUserName(name || "Patient");
-  }, [router]);
+    setUserUid(uid);
 
-  const handleBook = (e: React.FormEvent) => {
+    const fetchDoctor = async () => {
+      if (!docId) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const docRef = doc(db, 'directory', docId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setDoctor({ id: docSnap.id, ...docSnap.data() });
+        }
+      } catch (err) {
+        console.error("Failed to fetch doctor details", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDoctor();
+  }, [router, docId]);
+
+  const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!doctor || !userEmail) return;
+    
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const appointmentData = {
+        patientId: userUid,
+        patientName: userName,
+        patientEmail: userEmail,
+        doctorId: doctor.id,
+        doctorName: doctor.name,
+        date: selectedDate,
+        timeSlot: selectedTime,
+        symptoms: symptoms,
+        status: "Pending", // Pending payment
+        type: "Telemedicine",
+        fee: doctor.consultationFee || 500, // Default fee if not set
+        timestamp: serverTimestamp(),
+      };
+
+      const docRef = await addDoc(collection(db, "appointments"), appointmentData);
+      setBookingId(docRef.id);
+      
       setBookingSuccess(true);
-    }, 1500);
+    } catch (error) {
+      console.error("Error booking appointment", error);
+      alert("Failed to book appointment. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // Temporarily removed auth block for testing
+  const handlePayment = async () => {
+    try {
+      setIsSubmitting(true);
+      // Create Order
+      const res = await fetch('/api/payment/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: doctor.consultationFee || 500, receipt: bookingId })
+      });
+      const orderData = await res.json();
+      
+      if (!orderData.id) {
+         alert("Failed to create payment order");
+         setIsSubmitting(false);
+         return;
+      }
+
+      // Razorpay options
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder_key", 
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "DehaPa Healthcare",
+        description: `Consultation with ${doctor.name}`,
+        order_id: orderData.id,
+        handler: async function (response: any) {
+          try {
+            const verifyRes = await fetch('/api/payment/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyData.success) {
+              // Update appointment status in Firestore
+              await updateDoc(doc(db, "appointments", bookingId), {
+                status: "Confirmed",
+                paymentId: response.razorpay_payment_id
+              });
+              setPaymentSuccess(true);
+            } else {
+              alert("Payment verification failed.");
+            }
+          } catch(err) {
+             console.error(err);
+             alert("Error during payment verification");
+          }
+        },
+        prefill: {
+          name: userName,
+          email: userEmail,
+        },
+        theme: {
+          color: "#0d9488"
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', function (response: any){
+         alert(response.error.description);
+      });
+      rzp.open();
+    } catch(err) {
+      console.error(err);
+      alert("Error initiating payment.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+         <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!doctor) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+         <div className="text-center">
+           <h2 className="text-2xl font-bold mb-2">Doctor Not Found</h2>
+           <Link href="/doctors" className="text-teal-600 underline">Return to Directory</Link>
+         </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] font-sans pb-24">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       {/* Header Area */}
       <div className="bg-teal-900 text-white pt-24 pb-12 px-6 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 150%, #14b8a6 0%, transparent 50%)' }}></div>
@@ -62,36 +205,6 @@ function BookAppointmentForm() {
             <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2">Book Appointment</h1>
             <p className="text-teal-100/80 text-sm md:text-base max-w-xl">Complete your secure booking for a video consultation. All sessions are fully encrypted and HIPAA/FHIR-compliant.</p>
           </div>
-
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-6 mt-6 md:mt-0 animate-in fade-in duration-500">
-            <div className="text-center sm:text-left">
-              <p className="text-white font-bold text-sm uppercase tracking-wider">Need Urgent Help?</p>
-              <p className="text-teal-200 text-xs">Connect instantly with available doctors</p>
-            </div>
-            
-            <div className="relative group w-full sm:w-auto shrink-0">
-              {/* Radar Ping Effects */}
-              <div className="absolute -inset-2 border-2 border-red-500/50 rounded-xl animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
-              <div className="absolute -inset-4 border border-red-500/30 rounded-xl animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
-              
-              <button 
-                onClick={() => {
-                  const fabEvent = new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent' } });
-                  window.dispatchEvent(fabEvent);
-                }}
-                className="relative bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_0_25px_rgba(239,68,68,0.5)] w-full sm:w-auto z-10 hover:scale-105 overflow-hidden border border-red-500/50"
-              >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 h-full w-full bg-white/20 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
-                
-                <span className="relative z-10 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-white rounded-full animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]"></span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                  Call Urgent
-                </span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -102,36 +215,18 @@ function BookAppointmentForm() {
             <div className="lg:col-span-4 space-y-6">
               <div className="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col items-center text-center">
                 
-                <div className="w-full mb-6">
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-left block mb-2">Select a Provider</label>
-                  <div className="relative">
-                    <select 
-                      value={selectedDocId}
-                      onChange={(e) => setSelectedDocId(e.target.value)}
-                      className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-900 rounded-xl py-3 px-4 pr-10 font-bold text-sm focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 shadow-sm"
-                    >
-                      {DOCTORS.map(d => (
-                        <option key={d.id} value={d.id}>{d.name} ({d.specialty})</option>
-                      ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-teal-50 shadow-md mb-4">
-                  <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=0f766e&color=fff&size=150`} alt={doctor.name} className="w-full h-full object-cover" />
+                  <img src={doctor.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=0f766e&color=fff&size=150`} alt={doctor.name} className="w-full h-full object-cover" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900">{doctor.name}</h2>
-                <p className="text-teal-600 font-bold text-sm uppercase tracking-wider mt-1">{doctor.specialty}</p>
+                <p className="text-teal-600 font-bold text-sm uppercase tracking-wider mt-1">{doctor.specialty || doctor.category}</p>
                 <div className="w-12 h-1 bg-slate-100 rounded-full my-4"></div>
-                <p className="text-slate-500 text-sm">{doctor.experience} Experience</p>
-                <p className="text-slate-500 text-sm mt-1">{doctor.hospital}</p>
+                <p className="text-slate-500 text-sm">{doctor.experience || "10+ Years"} Experience</p>
+                <p className="text-slate-500 text-sm mt-1">{doctor.clinic?.name || "Verified Clinic"}</p>
                 
                 <div className="mt-6 w-full bg-slate-50 rounded-xl p-4 border border-slate-100 flex justify-between items-center">
                   <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">Consultation Fee</span>
-                  <span className="text-slate-900 font-black text-lg">₹{doctor.fee}</span>
+                  <span className="text-slate-900 font-black text-lg">₹{doctor.consultationFee || 500}</span>
                 </div>
               </div>
 
@@ -157,6 +252,7 @@ function BookAppointmentForm() {
                       value={selectedDate}
                       onChange={(e) => setSelectedDate(e.target.value)}
                       required
+                      min={new Date().toISOString().split('T')[0]}
                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-semibold"
                     />
                   </div>
@@ -208,20 +304,61 @@ function BookAppointmentForm() {
                       {isSubmitting ? (
                         <>
                           <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                          Processing...
+                          Generating Order...
                         </>
                       ) : (
                         <>
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                          Confirm & Pay ₹{doctor.fee}
+                          Confirm Schedule
                         </>
                       )}
                     </button>
-                    <p className="text-center text-xs text-slate-400 mt-4">By booking, you agree to our Telemedicine Terms of Service.</p>
                   </div>
                 </form>
               </div>
             </div>
+          </div>
+        ) : !paymentSuccess ? (
+          <div className="max-w-2xl mx-auto bg-white rounded-3xl p-10 md:p-16 shadow-2xl shadow-emerald-900/10 border border-slate-100 text-center space-y-8 animate-in zoom-in-95 duration-500 mt-12">
+            <div className="w-24 h-24 rounded-full bg-slate-50 border-4 border-slate-100 flex items-center justify-center text-slate-500 mx-auto">
+              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            </div>
+            
+            <div>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">Pending Payment</h3>
+              <p className="text-slate-600 leading-relaxed text-lg">
+                Your video consultation with <strong className="text-teal-600">{doctor.name}</strong> on <strong className="text-slate-900">{selectedDate}</strong> at <strong className="text-slate-900">{selectedTime}</strong> is temporarily reserved. Complete payment to confirm.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-left space-y-3 mx-auto max-w-sm">
+              <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+                <span className="text-slate-500 text-sm">Booking ID</span>
+                <strong className="text-slate-900 font-mono">{bookingId.substring(0, 8).toUpperCase()}</strong>
+              </div>
+              <div className="flex justify-between items-center pt-1">
+                <span className="text-slate-500 text-sm">Status</span>
+                <strong className="text-amber-500 text-sm font-bold">Awaiting Payment</strong>
+              </div>
+            </div>
+
+            <button 
+              onClick={handlePayment}
+              disabled={isSubmitting}
+              className="w-full py-4 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-sm font-bold uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(13,148,136,0.3)] hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-100"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                `Pay Now (₹${doctor.consultationFee || 500})`
+              )}
+            </button>
+            <Link href="/portal" className="inline-block mt-4 text-sm text-slate-500 hover:text-slate-900 underline">
+              Cancel & Return to Dashboard
+            </Link>
           </div>
         ) : (
           <div className="max-w-2xl mx-auto bg-white rounded-3xl p-10 md:p-16 shadow-2xl shadow-emerald-900/10 border border-slate-100 text-center space-y-8 animate-in zoom-in-95 duration-500 mt-12">
@@ -230,28 +367,24 @@ function BookAppointmentForm() {
             </div>
             
             <div>
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">Consultation Confirmed</h3>
+              <h3 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">Consultation Confirmed!</h3>
               <p className="text-slate-600 leading-relaxed text-lg">
-                Thank you, <strong className="text-slate-900">{userName}</strong>. Your video consultation with <strong className="text-teal-600">{doctor.name}</strong> is scheduled for <strong className="text-slate-900">{selectedDate}</strong> at <strong className="text-slate-900">{selectedTime}</strong>.
+                Thank you, <strong className="text-slate-900">{userName}</strong>. Payment received. Your video consultation with <strong className="text-teal-600">{doctor.name}</strong> is fully confirmed.
               </p>
             </div>
 
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-left space-y-3 mx-auto max-w-sm">
               <div className="flex justify-between items-center border-b border-slate-200 pb-3">
-                <span className="text-slate-500 text-sm">Consultation ID</span>
-                <strong className="text-slate-900 font-mono">CON-{Math.floor(100000 + Math.random() * 900000)}</strong>
-              </div>
-              <div className="flex justify-between items-center border-b border-slate-200 pb-3">
-                <span className="text-slate-500 text-sm">Amount Paid</span>
-                <strong className="text-slate-900">₹{doctor.fee}</strong>
+                <span className="text-slate-500 text-sm">Booking ID</span>
+                <strong className="text-slate-900 font-mono">{bookingId.substring(0, 8).toUpperCase()}</strong>
               </div>
               <div className="flex justify-between items-center pt-1">
                 <span className="text-slate-500 text-sm">Logistics</span>
-                <strong className="text-teal-600 text-sm">Link sent via SMS</strong>
+                <strong className="text-teal-600 text-sm">Join via Dashboard</strong>
               </div>
             </div>
 
-            <Link href="/portal" className="inline-flex items-center justify-center px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-sm font-bold uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(13,148,136,0.3)] hover:scale-105">
+            <Link href="/portal" className="inline-block w-full py-4 bg-slate-900 hover:bg-black text-white rounded-xl text-sm font-bold uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:scale-105">
               Go to Patient Dashboard
             </Link>
           </div>
@@ -272,4 +405,3 @@ export default function BookAppointment() {
     </Suspense>
   );
 }
-
