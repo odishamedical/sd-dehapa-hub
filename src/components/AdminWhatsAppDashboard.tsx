@@ -252,7 +252,6 @@ export default function AdminWhatsAppDashboard() {
       </div>
 
       {internalTab === 'inbox' && (
-      {/* Live Sessions Container */}
       <div className="flex h-[700px] bg-gray-50 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
       {/* Sidebar */}
       <div className="w-1/3 bg-white border-r border-slate-200 flex flex-col">
