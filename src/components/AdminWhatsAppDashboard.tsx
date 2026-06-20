@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, onSnapshot, orderBy, getDoc, getDocs, doc, setDoc, serverTimestamp, updateDoc, deleteField } from 'firebase/firestore';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
+import * as XLSX from 'xlsx';
 
 export default function AdminWhatsAppDashboard() {
   const [sessions, setSessions] = useState<any[]>([]);
@@ -166,6 +167,47 @@ export default function AdminWhatsAppDashboard() {
     setBulkUploadText('');
     setUploadGroup('General');
     alert(`Processed ${numbers.length} numbers. Added ${count} new contacts and tagged all with "${uploadGroup || 'General'}"!`);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws, { header: 1 }) as any[][];
+        
+        const extractedNumbers: string[] = [];
+        data.forEach((row) => {
+          row.forEach((cell) => {
+            if (cell) {
+              const str = String(cell).replace(/[^0-9]/g, '');
+              if (str.length >= 10 && str.length <= 15) {
+                extractedNumbers.push(str);
+              }
+            }
+          });
+        });
+        
+        if (extractedNumbers.length > 0) {
+          const uniqueNumbers = Array.from(new Set(extractedNumbers));
+          setBulkUploadText(prev => prev + (prev ? ',\n' : '') + uniqueNumbers.join(',\n'));
+          alert(`Successfully extracted ${uniqueNumbers.length} unique valid numbers from the file.`);
+        } else {
+          alert("No valid phone numbers found in the file.");
+        }
+      } catch (err) {
+        console.error("Error parsing file:", err);
+        alert("Failed to parse the file. Ensure it's a valid Excel or CSV.");
+      }
+    };
+    reader.readAsBinaryString(file);
+    e.target.value = ''; // reset input
   };
 
   const executeWizardImport = async () => {
@@ -544,7 +586,25 @@ export default function AdminWhatsAppDashboard() {
             </div>
 
             <div className="bg-white/60 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
-              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Bulk Upload Numbers</h4>
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Bulk Upload Numbers</h4>
+                <div>
+                  <input 
+                    type="file" 
+                    id="excel-upload" 
+                    accept=".xlsx, .xls, .csv" 
+                    onChange={handleFileUpload} 
+                    className="hidden" 
+                  />
+                  <label 
+                    htmlFor="excel-upload" 
+                    className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-300 transition-colors flex items-center gap-1.5 shadow-sm"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Extract from Excel / CSV
+                  </label>
+                </div>
+              </div>
               <div className="flex flex-col gap-3">
                  <textarea 
                    value={bulkUploadText}
