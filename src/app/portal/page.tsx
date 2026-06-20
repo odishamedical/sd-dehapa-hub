@@ -43,6 +43,22 @@ export default function UserDashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const [showOnboarding, setShowOnboarding] = useState(false);
 
+  // Sync tab with URL Hash
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash.replace("#", "");
+      if (hash && ["home", "identity", "address", "family", "appointments", "billing", "vault", "telemedicine", "find_doctor"].includes(hash)) {
+        setActiveTab(hash);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", "#" + activeTab);
+    }
+  }, [activeTab]);
+
   // State for Identity
   const [identityData, setIdentityData] = useState({
     profilePhoto: "",

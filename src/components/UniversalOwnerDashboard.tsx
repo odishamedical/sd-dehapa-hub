@@ -27,7 +27,22 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
   const [activeTab, setActiveTab] = useState("home");
-  
+
+  // Sync tab with URL Hash
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash.replace("#", "");
+      if (hash) {
+        setActiveTab(hash);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", "#" + activeTab);
+    }
+  }, [activeTab]);
   // Dynamic State for the Entity
   const [entityData, setEntityData] = useState<any>({});
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
