@@ -26,7 +26,7 @@ export default function AdminWhatsAppDashboard() {
   const [groupFilter, setGroupFilter] = useState('All');
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [crmLoading, setCrmLoading] = useState(true);
-  const [messageType, setMessageType] = useState<'free' | 'template'>('free');
+  const [messageType, setMessageType] = useState<'free' | 'template' | 'dynamic_template'>('free');
   const [templateName, setTemplateName] = useState('');
 
   // Import Wizard State
@@ -234,10 +234,20 @@ export default function AdminWhatsAppDashboard() {
             const existing = contacts.find(c => c.phone === num);
             if (!existing) {
               const masterGroup = data.category ? `Directory - ${data.category}` : 'Directory';
+              let profileUrl = '';
+              if (data.slug) {
+                 const catPath = data.category === 'Doctor' ? 'doctor' :
+                                 data.category === 'Hospital' ? 'hospital' :
+                                 data.category === 'Ambulance' ? 'ambulance' :
+                                 data.category === 'Pharmacy' ? 'pharmacy' :
+                                 data.category === 'Lab' ? 'lab' : 'directory';
+                 profileUrl = `https://dehapa.com/profile/${catPath}/${data.slug}`;
+              }
               await setDoc(doc(db, 'whatsapp_contacts', num), {
                 phone: num,
                 name: data.name || 'Directory Contact',
                 tags: [masterGroup, dateTag],
+                profileUrl: profileUrl,
                 createdAt: serverTimestamp()
               }, { merge: true });
               count++;
@@ -313,7 +323,7 @@ export default function AdminWhatsAppDashboard() {
       alert("Please enter a message to broadcast.");
       return;
     }
-    if (messageType === 'template' && !templateName.trim()) {
+    if (messageType !== 'free' && !templateName.trim()) {
       alert("Please enter the Meta Template Name.");
       return;
     }
@@ -321,14 +331,21 @@ export default function AdminWhatsAppDashboard() {
     let success = 0;
     for (const phoneId of Array.from(selectedContacts)) {
       try {
+        const contact = contacts.find(c => c.phone === phoneId);
+        let parameters: string[] | undefined = undefined;
+        if (messageType === 'dynamic_template' && contact?.profileUrl) {
+          parameters = [contact.profileUrl];
+        }
+
         await fetch('/api/whatsapp/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             to: phoneId, 
             text: messageType === 'free' ? broadcastMessage : undefined,
-            messageType: messageType,
-            templateName: messageType === 'template' ? templateName : undefined
+            messageType: messageType === 'dynamic_template' ? 'template' : messageType,
+            templateName: messageType !== 'free' ? templateName : undefined,
+            parameters: parameters
           })
         });
         success++;
@@ -731,13 +748,19 @@ export default function AdminWhatsAppDashboard() {
                   onClick={() => setMessageType('free')}
                   className={`flex-1 py-2 font-bold text-xs rounded-lg transition-all ${messageType === 'free' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  Free-Form Text (24h)
+                  Free-Form Text
                 </button>
                 <button 
                   onClick={() => setMessageType('template')}
                   className={`flex-1 py-2 font-bold text-xs rounded-lg transition-all ${messageType === 'template' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Meta Template
+                </button>
+                <button 
+                  onClick={() => setMessageType('dynamic_template')}
+                  className={`flex-1 py-2 font-bold text-xs rounded-lg transition-all ${messageType === 'dynamic_template' ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/30' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Directory Profile Link
                 </button>
               </div>
             </div>
@@ -750,18 +773,25 @@ export default function AdminWhatsAppDashboard() {
                 className="w-full bg-white rounded-2xl p-5 border border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-inner text-sm outline-none transition-all h-64 resize-none mb-6"
               />
             ) : (
-              <div className="w-full bg-white rounded-2xl p-6 border border-slate-300 shadow-inner mb-6 h-64 flex flex-col justify-center items-center">
-                <svg className="w-12 h-12 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              <div className={`w-full bg-white rounded-2xl p-6 border ${messageType === 'dynamic_template' ? 'border-indigo-300' : 'border-slate-300'} shadow-inner mb-6 h-64 flex flex-col justify-center items-center relative overflow-hidden`}>
+                {messageType === 'dynamic_template' && (
+                  <div className="absolute top-0 inset-x-0 bg-indigo-50 border-b border-indigo-100 p-2 text-center text-xs font-bold text-indigo-700">
+                    Will send exact Directory Profile URL to each contact!
+                  </div>
+                )}
+                <svg className={`w-12 h-12 mb-4 ${messageType === 'dynamic_template' ? 'text-indigo-300 mt-6' : 'text-slate-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 <label className="text-sm font-bold text-slate-700 mb-2">Meta Template Name</label>
                 <input 
                   type="text"
                   value={templateName}
                   onChange={(e) => setTemplateName(e.target.value)}
                   placeholder="e.g. promotional_offer_1"
-                  className="w-full max-w-sm rounded-xl p-3 border border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-sm text-center font-mono text-sm outline-none transition-all"
+                  className={`w-full max-w-sm rounded-xl p-3 border ${messageType === 'dynamic_template' ? 'border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500/10' : 'border-slate-300 focus:border-teal-500 focus:ring-teal-500/10'} shadow-sm text-center font-mono text-sm outline-none transition-all focus:ring-4`}
                 />
-                <p className="text-xs text-slate-400 mt-4 text-center max-w-sm">
-                  Must exactly match the template name approved in your Meta Business portal.
+                <p className={`text-xs mt-4 text-center max-w-sm ${messageType === 'dynamic_template' ? 'text-indigo-600/80 font-medium' : 'text-slate-400'}`}>
+                  {messageType === 'dynamic_template' 
+                    ? "Template MUST contain one variable {{1}} where the URL will be injected." 
+                    : "Must exactly match the template name approved in your Meta Business portal."}
                 </p>
               </div>
             )}
