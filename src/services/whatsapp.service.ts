@@ -46,6 +46,10 @@ export class WhatsAppService {
       if (!response.ok) {
         const errorData = await response.text();
         console.error('WhatsApp API Error:', errorData);
+        try {
+          const { setDoc, doc } = require('firebase/firestore');
+          await setDoc(doc(db, 'whatsapp_debug_logs', 'API_ERROR_' + Date.now()), { error: errorData, payload });
+        } catch(e) {}
         return { error: true, data: errorData };
       }
 
