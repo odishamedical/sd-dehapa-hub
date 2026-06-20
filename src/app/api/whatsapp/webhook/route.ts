@@ -43,6 +43,14 @@ export async function POST(req: NextRequest) {
       for (const entry of body.entry) {
         // Process each change in the entry
         for (const change of entry.changes) {
+          
+          // Log the raw payload to Firebase unconditionally!
+          try {
+            const { setDoc, doc } = require('firebase/firestore');
+            const debugRef = doc(db, 'whatsapp_debug_logs', Date.now().toString() + '_WEBHOOK');
+            await setDoc(debugRef, { payload: JSON.stringify(change.value) });
+          } catch(e) {}
+
           // Check if it's a message event
           if (change.value && change.value.messages) {
             const phone_number_id = change.value.metadata.phone_number_id;
@@ -50,12 +58,6 @@ export async function POST(req: NextRequest) {
             const msg_body = change.value.messages[0].text?.body; // The message text
 
             console.log(`Received message from ${from}: ${change.value.messages[0].type}`);
-            
-            // Log the raw payload to Firebase so we can inspect it!
-            try {
-              const debugRef = doc(db, 'whatsapp_debug_logs', Date.now().toString());
-              await setDoc(debugRef, { payload: JSON.stringify(change.value) });
-            } catch(e) {}
 
             try {
               await BotService.handleIncomingMessage(from, change.value.messages[0]);
