@@ -334,7 +334,7 @@ export default function AdminWhatsAppDashboard() {
         const contact = contacts.find(c => c.phone === phoneId);
         let parameters: string[] | undefined = undefined;
         if (messageType === 'dynamic_template' && contact?.profileUrl) {
-          parameters = [contact.profileUrl];
+          parameters = [contact.name || 'Doctor', contact.profileUrl];
         }
 
         await fetch('/api/whatsapp/send', {
@@ -790,7 +790,7 @@ export default function AdminWhatsAppDashboard() {
                 />
                 <p className={`text-xs mt-4 text-center max-w-sm ${messageType === 'dynamic_template' ? 'text-indigo-600/80 font-medium' : 'text-slate-400'}`}>
                   {messageType === 'dynamic_template' 
-                    ? "Template MUST contain one variable {{1}} where the URL will be injected." 
+                    ? "Template MUST contain two variables: {{1}} for Name and {{2}} for URL." 
                     : "Must exactly match the template name approved in your Meta Business portal."}
                 </p>
               </div>
