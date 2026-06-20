@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, onSnapshot, orderBy, getDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, getDoc, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function AdminWhatsAppDashboard() {
   const [sessions, setSessions] = useState<any[]>([]);
@@ -20,8 +20,11 @@ export default function AdminWhatsAppDashboard() {
   const [broadcastMessage, setBroadcastMessage] = useState('');
   const [selectedContacts, setSelectedContacts] = useState<Set<string>>(new Set());
   const [bulkUploadText, setBulkUploadText] = useState('');
+  const [uploadGroup, setUploadGroup] = useState('General');
+  const [groupFilter, setGroupFilter] = useState('All');
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [crmLoading, setCrmLoading] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
 
   // API Config State
   const [waToken, setWaToken] = useState("");
@@ -141,13 +144,44 @@ export default function AdminWhatsAppDashboard() {
         await setDoc(doc(db, 'whatsapp_contacts', num), {
           phone: num,
           name: 'Imported Contact',
+          group: uploadGroup || 'General',
           createdAt: serverTimestamp()
         }, { merge: true });
         count++;
       }
     }
     setBulkUploadText('');
-    alert(`Imported ${count} new contacts!`);
+    setUploadGroup('General');
+    alert(`Imported ${count} new contacts into group "${uploadGroup || 'General'}"!`);
+  };
+
+  const importFromEcosystem = async () => {
+    if (!confirm("This will scan the entire ecosystem directory and import all valid phone numbers into the CRM. Proceed?")) return;
+    setIsImporting(true);
+    try {
+      const snap = await getDocs(collection(db, 'directory'));
+      let count = 0;
+      for (const d of snap.docs) {
+        const data = d.data();
+        if (data.phone) {
+          const num = String(data.phone).replace(/[^0-9]/g, '');
+          if (num.length > 5 && !contacts.find(c => c.phone === num)) {
+            await setDoc(doc(db, 'whatsapp_contacts', num), {
+              phone: num,
+              name: data.name || 'Directory Contact',
+              group: data.category ? `Directory - ${data.category}` : 'Directory',
+              createdAt: serverTimestamp()
+            }, { merge: true });
+            count++;
+          }
+        }
+      }
+      alert(`Successfully imported ${count} new contacts from the Ecosystem!`);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to import from Ecosystem.");
+    }
+    setIsImporting(false);
   };
 
   const sendBroadcast = async () => {
@@ -186,11 +220,17 @@ export default function AdminWhatsAppDashboard() {
     setSelectedContacts(newSet);
   };
 
+  const filteredContacts = groupFilter === 'All' 
+    ? contacts 
+    : contacts.filter(c => c.group === groupFilter);
+
+  const uniqueGroups = Array.from(new Set(contacts.map(c => c.group || 'General')));
+
   const toggleAllContacts = () => {
-    if (selectedContacts.size === contacts.length) {
+    if (selectedContacts.size === filteredContacts.length) {
       setSelectedContacts(new Set());
     } else {
-      setSelectedContacts(new Set(contacts.map(c => c.phone)));
+      setSelectedContacts(new Set(filteredContacts.map(c => c.phone)));
     }
   };
 
@@ -378,17 +418,56 @@ export default function AdminWhatsAppDashboard() {
       )}
 
       {internalTab === 'crm' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col lg:flex-row gap-8 min-h-[700px]">
+        <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] border border-slate-300 p-8 flex flex-col lg:flex-row gap-8 min-h-[700px] relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
+          
           {/* Left Column: Contacts */}
-          <div className="w-full lg:w-1/2 flex flex-col">
-            <h3 className="font-bold text-slate-900 mb-4 text-lg">Contact Manager</h3>
-            <div className="flex gap-2 mb-4">
-               <textarea 
-                 value={bulkUploadText}
-                 onChange={(e) => setBulkUploadText(e.target.value)}
-                 placeholder="Paste comma-separated phone numbers (e.g. 919876543210, 919876543211)"
-                 className="flex-1 rounded-xl p-3 border-2 border-slate-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-sm text-sm outline-none transition-all h-24 resize-none"
-               />
+          <div className="w-full lg:w-1/2 flex flex-col relative z-10">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-bold text-slate-900 text-xl drop-shadow-sm">Contact Manager</h3>
+              <button 
+                onClick={importFromEcosystem}
+                disabled={isImporting}
+                className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold border border-indigo-200 px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-sm transition-colors"
+              >
+                {isImporting ? <span className="animate-spin">...</span> : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                )}
+                Import from Ecosystem
+              </button>
+            </div>
+
+            <div className="bg-white/60 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Bulk Upload Numbers</h4>
+              <div className="flex flex-col gap-3">
+                 <textarea 
+                   value={bulkUploadText}
+                   onChange={(e) => setBulkUploadText(e.target.value)}
+                   placeholder="Paste comma-separated phone numbers (e.g. 919876543210, 919876543211)"
+                   className="w-full rounded-xl p-3 border border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-inner text-sm outline-none transition-all h-20 resize-none bg-white"
+                 />
+                 <div className="flex gap-3 items-center">
+                   <div className="flex-1 relative">
+                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                     </span>
+                     <input 
+                       type="text"
+                       value={uploadGroup}
+                       onChange={(e) => setUploadGroup(e.target.value)}
+                       placeholder="Assign Group (e.g. Doctors, Cold Leads)"
+                       className="w-full rounded-xl pl-9 pr-3 py-2 border border-slate-300 focus:border-teal-500 shadow-sm text-sm outline-none transition-all bg-white"
+                     />
+                   </div>
+                   <button 
+                     onClick={saveBulkContacts}
+                     disabled={!bulkUploadText.trim()}
+                     className="bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl text-sm disabled:opacity-50 hover:bg-slate-700 transition-colors shadow-sm"
+                   >
+                     Save
+                   </button>
+                 </div>
+              </div>
             </div>
             <button 
               onClick={saveBulkContacts}
@@ -398,30 +477,49 @@ export default function AdminWhatsAppDashboard() {
               Upload / Save Numbers
             </button>
 
-            <div className="flex justify-between items-center mb-3">
-              <span className="font-bold text-slate-600 text-sm">Saved Contacts ({contacts.length})</span>
-              <button onClick={toggleAllContacts} className="text-teal-600 text-xs font-bold hover:underline">
-                {selectedContacts.size === contacts.length && contacts.length > 0 ? "Deselect All" : "Select All"}
+            <div className="flex justify-between items-end mb-3">
+              <div>
+                <span className="font-bold text-slate-700 text-sm">Saved Contacts ({filteredContacts.length})</span>
+                <div className="mt-2">
+                  <select 
+                    value={groupFilter} 
+                    onChange={e => setGroupFilter(e.target.value)}
+                    className="border border-slate-300 rounded-lg px-2 py-1 shadow-sm text-xs focus:border-teal-500 outline-none bg-white font-medium text-slate-600"
+                  >
+                    <option value="All">All Groups</option>
+                    {uniqueGroups.map(g => (
+                      <option key={g as string} value={g as string}>{g as string}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <button onClick={toggleAllContacts} className="text-teal-600 text-xs font-bold hover:underline mb-1">
+                {selectedContacts.size === filteredContacts.length && filteredContacts.length > 0 ? "Deselect Filtered" : "Select All Filtered"}
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto border border-slate-200 rounded-xl max-h-[400px]">
+            <div className="flex-1 overflow-y-auto border border-slate-300 rounded-2xl bg-white shadow-inner max-h-[400px]">
               {crmLoading ? (
                 <div className="p-8 text-center text-slate-500">Loading contacts...</div>
-              ) : contacts.length === 0 ? (
-                <div className="p-8 text-center text-slate-500">No contacts saved yet. Paste numbers above to start.</div>
+              ) : filteredContacts.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 text-sm">No contacts found.</div>
               ) : (
-                contacts.map(c => (
-                  <div key={c.id} className="p-3 border-b border-slate-100 flex items-center gap-3 hover:bg-slate-50">
-                    <input 
-                      type="checkbox" 
-                      checked={selectedContacts.has(c.phone)}
-                      onChange={() => toggleContactSelection(c.phone)}
-                      className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
-                    />
-                    <div>
-                      <div className="font-bold text-slate-800 text-sm">+{c.phone}</div>
-                      <div className="text-[10px] text-slate-400">Added {new Date(c.createdAt?.toMillis ? c.createdAt.toMillis() : c.createdAt).toLocaleDateString()}</div>
+                filteredContacts.map(c => (
+                  <div key={c.id} className="p-3 border-b border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedContacts.has(c.phone)}
+                        onChange={() => toggleContactSelection(c.phone)}
+                        className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
+                      />
+                      <div>
+                        <div className="font-bold text-slate-800 text-sm">+{c.phone}</div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] text-slate-400">Added {new Date(c.createdAt?.toMillis ? c.createdAt.toMillis() : c.createdAt).toLocaleDateString()}</span>
+                          <span className="text-[9px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase font-bold">{c.group || 'General'}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -430,36 +528,45 @@ export default function AdminWhatsAppDashboard() {
           </div>
 
           {/* Right Column: Broadcast */}
-          <div className="w-full lg:w-1/2 flex flex-col">
-            <h3 className="font-bold text-slate-900 mb-4 text-lg">Broadcast Engine</h3>
+          <div className="w-full lg:w-1/2 flex flex-col relative z-10">
+            <h3 className="font-bold text-slate-900 mb-6 text-xl drop-shadow-sm">Broadcast Engine</h3>
             
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
-              <h4 className="font-bold text-amber-800 text-sm mb-1 flex items-center gap-2">
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-2xl p-5 mb-6 shadow-sm">
+              <h4 className="font-bold text-amber-800 text-sm mb-1.5 flex items-center gap-2">
                 ⚠️ Meta's 24-Hour Policy
               </h4>
-              <p className="text-xs text-amber-700">
+              <p className="text-xs text-amber-700/80 leading-relaxed">
                 You can only send free-form text messages to users who have messaged your bot within the last 24 hours. For cold marketing to older contacts, you must use approved Meta Message Templates. (This tool currently sends raw text).
               </p>
             </div>
 
-            <div className="mb-2 flex justify-between items-center">
+            <div className="mb-3 flex justify-between items-center px-1">
                <label className="text-sm font-bold text-slate-700">Message to Broadcast</label>
-               <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-md">{selectedContacts.size} Selected</span>
+               <span className="text-xs font-bold text-teal-700 bg-teal-100 border border-teal-200 px-3 py-1 rounded-full shadow-sm">
+                 {selectedContacts.size} Recipients Selected
+               </span>
             </div>
             
             <textarea 
               value={broadcastMessage}
               onChange={(e) => setBroadcastMessage(e.target.value)}
               placeholder="Type your promotional message here..."
-              className="w-full rounded-xl p-4 border-2 border-slate-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-sm text-sm outline-none transition-all h-64 resize-none mb-4"
+              className="w-full bg-white rounded-2xl p-5 border border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-inner text-sm outline-none transition-all h-64 resize-none mb-6"
             />
 
             <button 
               onClick={sendBroadcast}
               disabled={isBroadcasting || selectedContacts.size === 0 || !broadcastMessage.trim()}
-              className="bg-teal-600 text-white font-bold py-4 rounded-xl text-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold py-4 rounded-2xl text-lg hover:from-teal-700 hover:to-teal-800 transition-all shadow-lg shadow-teal-500/30 hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isBroadcasting ? `Sending...` : `Send to ${selectedContacts.size} Contacts`}
+              {isBroadcasting ? (
+                <><span className="animate-spin text-2xl leading-none -mt-1">↻</span> Sending...</>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                  Blast to {selectedContacts.size} Contacts
+                </>
+              )}
             </button>
           </div>
         </div>
