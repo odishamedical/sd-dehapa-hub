@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, onSnapshot, orderBy, getDoc, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, getDoc, getDocs, doc, setDoc, serverTimestamp, updateDoc, deleteField } from 'firebase/firestore';
+import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 
 export default function AdminWhatsAppDashboard() {
   const [sessions, setSessions] = useState<any[]>([]);
@@ -24,7 +25,14 @@ export default function AdminWhatsAppDashboard() {
   const [groupFilter, setGroupFilter] = useState('All');
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [crmLoading, setCrmLoading] = useState(true);
+
+  // Import Wizard State
+  const [isImportWizardOpen, setIsImportWizardOpen] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [wizardCategory, setWizardCategory] = useState('');
+  const [wizardState, setWizardState] = useState('');
+  const [wizardDistrict, setWizardDistrict] = useState('');
+  const [wizardBlock, setWizardBlock] = useState('');
 
   // API Config State
   const [waToken, setWaToken] = useState("");
@@ -140,48 +148,89 @@ export default function AdminWhatsAppDashboard() {
     const numbers = bulkUploadText.split(/[\n,]+/).map(n => n.trim().replace(/[^0-9]/g, '')).filter(n => n.length > 5);
     let count = 0;
     for (const num of numbers) {
-      if (!contacts.find(c => c.phone === num)) {
-        await setDoc(doc(db, 'whatsapp_contacts', num), {
-          phone: num,
-          name: 'Imported Contact',
-          group: uploadGroup || 'General',
-          createdAt: serverTimestamp()
-        }, { merge: true });
-        count++;
-      }
+      const existing = contacts.find(c => c.phone === num);
+      const newTag = uploadGroup || 'General';
+      const tags = Array.from(new Set([...(existing?.tags || (existing?.group ? [existing.group] : [])), newTag]));
+      
+      await setDoc(doc(db, 'whatsapp_contacts', num), {
+        phone: num,
+        name: existing ? existing.name : 'Imported Contact',
+        tags: tags,
+        ...(existing ? {} : { createdAt: serverTimestamp() })
+      }, { merge: true });
+      if (!existing) count++;
     }
     setBulkUploadText('');
     setUploadGroup('General');
-    alert(`Imported ${count} new contacts into group "${uploadGroup || 'General'}"!`);
+    alert(`Processed ${numbers.length} numbers. Added ${count} new contacts and tagged all with "${uploadGroup || 'General'}"!`);
   };
 
-  const importFromEcosystem = async () => {
-    if (!confirm("This will scan the entire ecosystem directory and import all valid phone numbers into the CRM. Proceed?")) return;
+  const executeWizardImport = async () => {
+    if (!confirm("Start import based on these filters? This will skip duplicates automatically.")) return;
     setIsImporting(true);
     try {
       const snap = await getDocs(collection(db, 'directory'));
       let count = 0;
+      
+      const dateTag = `Imported: ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`;
+
       for (const d of snap.docs) {
         const data = d.data();
+        
+        // Apply Filters
+        if (wizardCategory && data.category !== wizardCategory) continue;
+        if (wizardState && data.state !== wizardState) continue;
+        if (wizardDistrict && data.district !== wizardDistrict) continue;
+        if (wizardBlock && data.city !== wizardBlock && data.block !== wizardBlock) continue;
+        
         if (data.phone) {
           const num = String(data.phone).replace(/[^0-9]/g, '');
-          if (num.length > 5 && !contacts.find(c => c.phone === num)) {
-            await setDoc(doc(db, 'whatsapp_contacts', num), {
-              phone: num,
-              name: data.name || 'Directory Contact',
-              group: data.category ? `Directory - ${data.category}` : 'Directory',
-              createdAt: serverTimestamp()
-            }, { merge: true });
-            count++;
+          if (num.length > 5) {
+            const existing = contacts.find(c => c.phone === num);
+            if (!existing) {
+              const masterGroup = data.category ? `Directory - ${data.category}` : 'Directory';
+              await setDoc(doc(db, 'whatsapp_contacts', num), {
+                phone: num,
+                name: data.name || 'Directory Contact',
+                tags: [masterGroup, dateTag],
+                createdAt: serverTimestamp()
+              }, { merge: true });
+              count++;
+            }
           }
         }
       }
-      alert(`Successfully imported ${count} new contacts from the Ecosystem!`);
+      setIsImportWizardOpen(false);
+      alert(`Successfully imported ${count} fresh new contacts and tagged them with "${dateTag}"!`);
     } catch (e) {
       console.error(e);
-      alert("Failed to import from Ecosystem.");
+      alert("Failed to import.");
     }
     setIsImporting(false);
+  };
+
+  const deleteGroupTag = async (tagToRemove: string) => {
+    if (!confirm(`Are you sure you want to permanently delete the tag "${tagToRemove}" from all contacts? This will NOT delete the contacts themselves.`)) return;
+    setCrmLoading(true);
+    let updatedCount = 0;
+    try {
+      for (const c of contacts) {
+        const currentTags = c.tags || (c.group ? [c.group] : ['General']);
+        if (currentTags.includes(tagToRemove)) {
+          const newTags = currentTags.filter((t: string) => t !== tagToRemove);
+          await updateDoc(doc(db, 'whatsapp_contacts', c.id), {
+            tags: newTags
+          });
+          updatedCount++;
+        }
+      }
+      alert(`Tag removed from ${updatedCount} contacts.`);
+      if (groupFilter === tagToRemove) setGroupFilter('All');
+    } catch(e) {
+      console.error(e);
+      alert("Failed to delete tag.");
+    }
+    setCrmLoading(false);
   };
 
   const sendBroadcast = async () => {
@@ -222,9 +271,9 @@ export default function AdminWhatsAppDashboard() {
 
   const filteredContacts = groupFilter === 'All' 
     ? contacts 
-    : contacts.filter(c => c.group === groupFilter);
+    : contacts.filter(c => (c.tags || (c.group ? [c.group] : ['General'])).includes(groupFilter));
 
-  const uniqueGroups = Array.from(new Set(contacts.map(c => c.group || 'General')));
+  const uniqueGroups = Array.from(new Set(contacts.flatMap(c => c.tags || (c.group ? [c.group] : ['General']))));
 
   const toggleAllContacts = () => {
     if (selectedContacts.size === filteredContacts.length) {
@@ -426,14 +475,14 @@ export default function AdminWhatsAppDashboard() {
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-slate-900 text-xl drop-shadow-sm">Contact Manager</h3>
               <button 
-                onClick={importFromEcosystem}
+                onClick={() => setIsImportWizardOpen(true)}
                 disabled={isImporting}
                 className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold border border-indigo-200 px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-sm transition-colors"
               >
                 {isImporting ? <span className="animate-spin">...</span> : (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 )}
-                Import from Ecosystem
+                Advanced Import Wizard
               </button>
             </div>
 
@@ -480,17 +529,26 @@ export default function AdminWhatsAppDashboard() {
             <div className="flex justify-between items-end mb-3">
               <div>
                 <span className="font-bold text-slate-700 text-sm">Saved Contacts ({filteredContacts.length})</span>
-                <div className="mt-2">
+                <div className="mt-2 flex items-center gap-2">
                   <select 
                     value={groupFilter} 
                     onChange={e => setGroupFilter(e.target.value)}
-                    className="border border-slate-300 rounded-lg px-2 py-1 shadow-sm text-xs focus:border-teal-500 outline-none bg-white font-medium text-slate-600"
+                    className="border border-slate-300 rounded-lg px-2 py-1 shadow-sm text-xs focus:border-teal-500 outline-none bg-white font-medium text-slate-600 max-w-[200px]"
                   >
                     <option value="All">All Groups</option>
                     {uniqueGroups.map(g => (
                       <option key={g as string} value={g as string}>{g as string}</option>
                     ))}
                   </select>
+                  {groupFilter !== 'All' && (
+                    <button 
+                      onClick={() => deleteGroupTag(groupFilter)}
+                      className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors text-xs font-bold border border-red-200"
+                      title="Remove this tag from all contacts"
+                    >
+                      Delete Tag
+                    </button>
+                  )}
                 </div>
               </div>
               <button onClick={toggleAllContacts} className="text-teal-600 text-xs font-bold hover:underline mb-1">
@@ -513,11 +571,13 @@ export default function AdminWhatsAppDashboard() {
                         onChange={() => toggleContactSelection(c.phone)}
                         className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
                       />
-                      <div>
+                      <div className="min-w-0">
                         <div className="font-bold text-slate-800 text-sm">+{c.phone}</div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] text-slate-400">Added {new Date(c.createdAt?.toMillis ? c.createdAt.toMillis() : c.createdAt).toLocaleDateString()}</span>
-                          <span className="text-[9px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded uppercase font-bold">{c.group || 'General'}</span>
+                        <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                          <span className="text-[9px] text-slate-400 shrink-0">Added {new Date(c.createdAt?.toMillis ? c.createdAt.toMillis() : c.createdAt).toLocaleDateString()}</span>
+                          {(c.tags || (c.group ? [c.group] : ['General'])).map((tag: string, idx: number) => (
+                            <span key={idx} className="text-[8px] bg-slate-100 text-slate-500 px-1 py-0.5 rounded uppercase font-bold border border-slate-200 whitespace-nowrap">{tag}</span>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -571,6 +631,73 @@ export default function AdminWhatsAppDashboard() {
           </div>
         </div>
       )}
+
+      {/* Advanced Import Wizard Modal */}
+      {isImportWizardOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl relative border border-slate-200">
+            <button 
+              onClick={() => setIsImportWizardOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Advanced Ecosystem Import</h2>
+            <p className="text-sm text-slate-500 mb-6">Extract contacts from your main directory directly into the CRM. Existing CRM numbers are automatically skipped to prevent duplicates. Contacts will be tagged with a master group and today's date.</p>
+            
+            <div className="space-y-4 mb-8">
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Category</label>
+                <select value={wizardCategory} onChange={e => setWizardCategory(e.target.value)} className="w-full border border-slate-300 rounded-xl p-3 focus:border-teal-500 outline-none text-sm">
+                  <option value="">All Categories</option>
+                  <option value="Doctor">Doctor</option>
+                  <option value="Hospital">Hospital</option>
+                  <option value="Lab">Lab</option>
+                  <option value="Pharmacy">Pharmacy</option>
+                  <option value="Ambulance">Ambulance</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">State</label>
+                  <select value={wizardState} onChange={e => { setWizardState(e.target.value); setWizardDistrict(''); setWizardBlock(''); }} className="w-full border border-slate-300 rounded-xl p-3 focus:border-teal-500 outline-none text-sm">
+                    <option value="">All States</option>
+                    {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">District</label>
+                  <select value={wizardDistrict} onChange={e => { setWizardDistrict(e.target.value); setWizardBlock(''); }} disabled={!wizardState} className="w-full border border-slate-300 rounded-xl p-3 focus:border-teal-500 outline-none text-sm disabled:bg-slate-50">
+                    <option value="">All Districts</option>
+                    {wizardState && districtsByState[wizardState]?.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">City / Block</label>
+                <select value={wizardBlock} onChange={e => setWizardBlock(e.target.value)} disabled={!wizardDistrict} className="w-full border border-slate-300 rounded-xl p-3 focus:border-teal-500 outline-none text-sm disabled:bg-slate-50">
+                  <option value="">All Blocks</option>
+                  {wizardDistrict && blocksByDistrict[wizardDistrict]?.map(b => <option key={b} value={b}>{b}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <button 
+                onClick={executeWizardImport}
+                disabled={isImporting}
+                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-teal-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isImporting ? <span className="animate-spin text-xl">↻</span> : <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>}
+                {isImporting ? "Scanning & Importing..." : "Extract & Import"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
