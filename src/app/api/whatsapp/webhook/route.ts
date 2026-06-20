@@ -46,10 +46,9 @@ export async function POST(req: NextRequest) {
           
           // Log the raw payload to Firebase unconditionally!
           try {
-            const { setDoc, doc } = require('firebase/firestore');
             const debugRef = doc(db, 'whatsapp_debug_logs', Date.now().toString() + '_WEBHOOK');
             await setDoc(debugRef, { payload: JSON.stringify(change.value) });
-          } catch(e) {}
+          } catch(e) { console.error("Firebase log error:", e); }
 
           // Check if it's a message event
           if (change.value && change.value.messages) {
