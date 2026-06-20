@@ -273,6 +273,7 @@ export default function AdminWhatsAppDashboard() {
           </div>
         )}
       </div>
+      </div>
     </div>
   );
 }
