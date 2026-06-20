@@ -4,7 +4,12 @@ import { doc, setDoc } from 'firebase/firestore';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
-export function useAutosave<T>(data: T, docId: string | null, fieldPath: string, delay: number = 1000) {
+export function useAutosave<T>(data: T, docId?: string | null | number, fieldPath?: string | number, delay?: number) {
+  if (typeof docId === 'number' && typeof fieldPath === 'undefined') {
+    delay = docId;
+    docId = null;
+    fieldPath = '';
+  }
   const [status, setStatus] = useState<SaveStatus>('idle');
   const initialRender = useRef(true);
 

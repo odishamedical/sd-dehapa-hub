@@ -12,6 +12,7 @@ import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import InlineEditArray from './InlineEditArray';
 import ObjectArrayEditor from './ObjectArrayEditor';
+import { directoryConfig } from '@/lib/directoryConfig';
 
 export default function AdminDataCRM() {
   const [data, setData] = useState<any[]>([]);
@@ -429,6 +430,36 @@ export default function AdminDataCRM() {
         </div>
       </div>
 
+      {/* Dynamic Self-Learning Category Filters */}
+      {uniqueCategories.length > 0 && (
+        <div className="px-6 py-3 bg-white/50 backdrop-blur-md border-b border-slate-200 flex items-center gap-2 overflow-x-auto no-scrollbar relative z-10">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest shrink-0 mr-2">Filter by Type:</span>
+          <button
+            onClick={() => setCategoryFilter("")}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+              categoryFilter === "" 
+                ? "bg-slate-800 text-white shadow-sm" 
+                : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+            }`}
+          >
+            All Entities
+          </button>
+          {uniqueCategories.map(cat => (
+            <button
+              key={cat as string}
+              onClick={() => setCategoryFilter(cat as string)}
+              className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                categoryFilter === cat 
+                  ? "bg-teal-600 text-white shadow-sm shadow-teal-600/20" 
+                  : "bg-white text-slate-600 border border-slate-200 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700"
+              }`}
+            >
+              {cat as string}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="flex-1 overflow-auto bg-white/70 backdrop-blur-md relative z-10">
         {loading ? (
           <div className="flex items-center justify-center h-64">
@@ -664,27 +695,56 @@ export default function AdminDataCRM() {
                     <label className="form-label">YouTube Video Links (Media Gallery)</label>
                     <InlineEditArray 
                       items={selectedListing.youtubeLinks || []} 
-                      onUpdate={(newItems) => setSelectedListing({...selectedListing, youtubeLinks: newItems})} 
+                      onSave={(newItems) => setSelectedListing({...selectedListing, youtubeLinks: newItems})} 
+                      isEditMode={true}
                       placeholder="Paste YouTube URL here..." 
                     />
                   </div>
                   
-                  {selectedListing.category === 'Hospital' && (
+                  {selectedListing.category && directoryConfig[selectedListing.category]?.tabs?.find(t => t.id === 'basic')?.fields && (
                     <div className="col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-4">
-                      <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Hospital Facilities & Stats</h4>
+                      <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">{selectedListing.category} Specific Basic Info</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                          <label className="form-label">Total Beds</label>
-                          <input type="text" value={selectedListing.totalBeds || ""} onChange={e => setSelectedListing({...selectedListing, totalBeds: e.target.value})} className="form-input" placeholder="e.g. 500" />
-                        </div>
-                        <div>
-                          <label className="form-label">ICU Capacity</label>
-                          <input type="text" value={selectedListing.icuCapacity || ""} onChange={e => setSelectedListing({...selectedListing, icuCapacity: e.target.value})} className="form-input" placeholder="e.g. 50" />
-                        </div>
-                        <div>
-                          <label className="form-label">Emergency Services</label>
-                          <input type="text" value={selectedListing.emergencyServices || ""} onChange={e => setSelectedListing({...selectedListing, emergencyServices: e.target.value})} className="form-input" placeholder="e.g. 24/7 Available" />
-                        </div>
+                        {directoryConfig[selectedListing.category].tabs.find(t => t.id === 'basic')?.fields.map(field => (
+                          <div key={field.key} className={field.type === 'textarea' ? "col-span-3" : ""}>
+                            <label className="form-label">{field.label}</label>
+                            {field.type === 'textarea' ? (
+                                <textarea 
+                                  className="form-input" 
+                                  value={selectedListing[field.key] || ''} 
+                                  onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.value})} 
+                                  placeholder={field.placeholder}
+                                />
+                            ) : field.type === 'boolean' ? (
+                                <label className="flex items-center gap-3 mt-2 cursor-pointer">
+                                  <input 
+                                    type="checkbox" 
+                                    className="w-5 h-5 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
+                                    checked={selectedListing[field.key] || false} 
+                                    onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.checked})} 
+                                  />
+                                  <span className="text-sm font-bold text-slate-700">{field.label}</span>
+                                </label>
+                            ) : field.type === 'select' ? (
+                                <select 
+                                  className="form-select" 
+                                  value={selectedListing[field.key] || ''} 
+                                  onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.value})}
+                                >
+                                    <option value="">Select {field.label}</option>
+                                    {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                            ) : (
+                                <input 
+                                  type="text" 
+                                  className="form-input" 
+                                  value={selectedListing[field.key] || ''} 
+                                  onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.value})} 
+                                  placeholder={field.placeholder}
+                                />
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -766,104 +826,86 @@ export default function AdminDataCRM() {
 
               {activeTab === 'professional' && (
                 <div className="space-y-8">
-                  {selectedListing.category === 'Doctor' && (
-                    <>
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                  {selectedListing.category && directoryConfig[selectedListing.category]?.tabs?.find(t => t.id === 'professional')?.fields?.map(field => (
+                    <div key={field.key} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                      {field.type === 'object_array' && field.arrayFields ? (
                         <ObjectArrayEditor
-                          title="Professional Experience"
-                          items={experiences}
-                          fields={[
-                            { key: "role", label: "Role / Position", type: "text" },
-                            { key: "hospital", label: "Hospital / Institution", type: "text" },
-                            { key: "duration", label: "Duration (e.g. 2010 - Present)", type: "text" },
-                            { key: "description", label: "Description", type: "textarea" }
-                          ]}
-                          onUpdate={(idx, key, val) => handleArrayChange(setExperiences, experiences, idx, key, val)}
-                          onAdd={() => setExperiences([...experiences, { role: '', hospital: '', duration: '', description: '' }])}
-                          onRemove={(idx) => setExperiences(experiences.filter((_, i) => i !== idx))}
+                          title={field.label}
+                          items={selectedListing[field.key] || []}
+                          fields={field.arrayFields}
+                          onUpdate={(idx, k, val) => {
+                            const newArr = [...(selectedListing[field.key] || [])];
+                            newArr[idx] = { ...newArr[idx], [k]: val };
+                            setSelectedListing({...selectedListing, [field.key]: newArr});
+                          }}
+                          onAdd={() => {
+                            const emptyObj: any = {};
+                            field.arrayFields?.forEach(af => emptyObj[af.key] = '');
+                            setSelectedListing({...selectedListing, [field.key]: [...(selectedListing[field.key] || []), emptyObj]});
+                          }}
+                          onRemove={(idx) => {
+                            const newArr = [...(selectedListing[field.key] || [])];
+                            newArr.splice(idx, 1);
+                            setSelectedListing({...selectedListing, [field.key]: newArr});
+                          }}
                         />
-                      </div>
-                      
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <ObjectArrayEditor
-                          title="Qualifications & Education"
-                          items={qualificationsList}
-                          fields={[
-                            { key: "degree", label: "Degree / Certification", type: "text" },
-                            { key: "institution", label: "Institution / University", type: "text" },
-                            { key: "year", label: "Year of Completion", type: "text" }
-                          ]}
-                          onUpdate={(idx, key, val) => handleArrayChange(setQualificationsList, qualificationsList, idx, key, val)}
-                          onAdd={() => setQualificationsList([...qualificationsList, { degree: '', institution: '', year: '' }])}
-                          onRemove={(idx) => setQualificationsList(qualificationsList.filter((_, i) => i !== idx))}
-                        />
-                      </div>
-
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <ObjectArrayEditor
-                          title="Awards & Recognitions"
-                          items={awards}
-                          fields={[
-                            { key: "name", label: "Award Name", type: "text" },
-                            { key: "organization", label: "Issuing Organization", type: "text" },
-                            { key: "year", label: "Year", type: "text" }
-                          ]}
-                          onUpdate={(idx, key, val) => handleArrayChange(setAwards, awards, idx, key, val)}
-                          onAdd={() => setAwards([...awards, { name: '', organization: '', year: '' }])}
-                          onRemove={(idx) => setAwards(awards.filter((_, i) => i !== idx))}
-                        />
-                      </div>
-                      
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <ObjectArrayEditor
-                          title="Research & Publications"
-                          items={research}
-                          fields={[
-                            { key: "title", label: "Title of Paper/Research", type: "text" },
-                            { key: "journal", label: "Journal / Publication", type: "text" },
-                            { key: "year", label: "Year", type: "text" },
-                            { key: "link", label: "Link (Optional)", type: "text" }
-                          ]}
-                          onUpdate={(idx, key, val) => handleArrayChange(setResearch, research, idx, key, val)}
-                          onAdd={() => setResearch([...research, { title: '', journal: '', year: '', link: '' }])}
-                          onRemove={(idx) => setResearch(research.filter((_, i) => i !== idx))}
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  {selectedListing.category === 'Hospital' && (
-                    <>
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <ObjectArrayEditor
-                          title="Departments"
-                          items={departments}
-                          fields={[
-                            { key: "name", label: "Department Name", type: "text" }
-                          ]}
-                          onUpdate={(idx, key, val) => handleArrayChange(setDepartments, departments, idx, key, val)}
-                          onAdd={() => setDepartments([...departments, { name: '' }])}
-                          onRemove={(idx) => setDepartments(departments.filter((_, i) => i !== idx))}
-                        />
-                      </div>
-                      
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <ObjectArrayEditor
-                          title="Health Packages"
-                          items={healthPackages}
-                          fields={[
-                            { key: "packageName", label: "Package Name", type: "text" },
-                            { key: "description", label: "Description", type: "textarea" },
-                            { key: "includedTests", label: "Tests (Comma separated)", type: "text" },
-                            { key: "price", label: "Regular Price", type: "text" },
-                            { key: "discountedPrice", label: "Discounted Price", type: "text" }
-                          ]}
-                          onUpdate={(idx, key, val) => handleArrayChange(setHealthPackages, healthPackages, idx, key, val)}
-                          onAdd={() => setHealthPackages([...healthPackages, { packageName: '', description: '', includedTests: '', price: '', discountedPrice: '' }])}
-                          onRemove={(idx) => setHealthPackages(healthPackages.filter((_, i) => i !== idx))}
-                        />
-                      </div>
-                    </>
+                      ) : field.type === 'string_array' ? (
+                        <>
+                          <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">{field.label}</h4>
+                          <InlineEditArray 
+                            items={selectedListing[field.key] || []} 
+                            onSave={(newItems) => setSelectedListing({...selectedListing, [field.key]: newItems})} 
+                            isEditMode={true}
+                            placeholder={field.placeholder || "Add item..."} 
+                          />
+                        </>
+                      ) : (
+                        <div className={field.type === 'textarea' ? "col-span-2" : ""}>
+                          <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">{field.label}</h4>
+                          {field.type === 'textarea' ? (
+                              <textarea 
+                                className="form-input" 
+                                value={selectedListing[field.key] || ''} 
+                                onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.value})} 
+                                placeholder={field.placeholder}
+                              />
+                          ) : field.type === 'boolean' ? (
+                              <label className="flex items-center gap-3 mt-2 cursor-pointer">
+                                <input 
+                                  type="checkbox" 
+                                  className="w-5 h-5 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
+                                  checked={selectedListing[field.key] || false} 
+                                  onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.checked})} 
+                                />
+                                <span className="text-sm font-bold text-slate-700">{field.label}</span>
+                              </label>
+                          ) : field.type === 'select' ? (
+                              <select 
+                                className="form-select" 
+                                value={selectedListing[field.key] || ''} 
+                                onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.value})}
+                              >
+                                  <option value="">Select {field.label}</option>
+                                  {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                              </select>
+                          ) : (
+                              <input 
+                                type="text" 
+                                className="form-input" 
+                                value={selectedListing[field.key] || ''} 
+                                onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.value})} 
+                                placeholder={field.placeholder}
+                              />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  
+                  {(!selectedListing.category || !directoryConfig[selectedListing.category]) && (
+                    <div className="bg-slate-50 border-2 border-dashed border-slate-200 p-8 rounded-2xl text-center">
+                      <p className="text-slate-500 font-bold text-sm">Please select a valid category to edit Professional & Services data.</p>
+                    </div>
                   )}
                 </div>
               )}

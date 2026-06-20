@@ -9,6 +9,9 @@ import PhoneRevealButton from '@/components/PhoneRevealButton';
 
 const TABS_DOCTOR = ['locations', 'overview', 'experience', 'research', 'media'];
 const TABS_HOSPITAL = ['overview', 'packages', 'departments', 'facilities', 'media'];
+const TABS_PHARMACY = ['overview', 'products', 'distributors', 'media'];
+const TABS_LAB = ['overview', 'tests', 'facilities', 'media'];
+const TABS_AMBULANCE = ['overview', 'fleet', 'media'];
 
 export default function UniversalProfileLayout({ 
   profile, 
@@ -21,9 +24,16 @@ export default function UniversalProfileLayout({
   platformAds?: any,
   similarEntities?: any[]
 }) {
-  const [activeTab, setActiveTab] = useState(unwrappedParams.type === 'doctor' ? 'locations' : 'overview');
-  const tabs = unwrappedParams.type === 'doctor' ? TABS_DOCTOR : TABS_HOSPITAL;
-  const isDoctor = unwrappedParams.type === 'doctor';
+  const type = unwrappedParams.type;
+  const tabs = type === 'doctor' ? TABS_DOCTOR : 
+               type === 'hospital' ? TABS_HOSPITAL :
+               type === 'pharmacy' ? TABS_PHARMACY :
+               type === 'lab' ? TABS_LAB :
+               type === 'ambulance' ? TABS_AMBULANCE :
+               ['overview', 'media'];
+               
+  const [activeTab, setActiveTab] = useState(type === 'doctor' ? 'locations' : 'overview');
+  const isDoctor = type === 'doctor';
 
   const verified = profile.verified;
 
@@ -43,8 +53,8 @@ export default function UniversalProfileLayout({
         <div className="px-6 py-3 w-full max-w-[1920px] mx-auto border-t border-slate-800/40">
           <Breadcrumb paths={[
             { name: "Home", href: "/" },
-            { name: isDoctor ? "Doctors" : "Hospitals", href: `/${unwrappedParams.type}s` },
-            { name: profile.subtitle || "Specialist", href: `/${unwrappedParams.type}s` },
+            { name: type ? type.charAt(0).toUpperCase() + type.slice(1) + "s" : "Directory", href: `/${type}s` },
+            { name: profile.subtitle || profile.category || "Specialist", href: `/${type}s` },
             { name: profile.name }
           ]} />
         </div>
@@ -123,7 +133,7 @@ export default function UniversalProfileLayout({
                     </div>
                   </div>
 
-                  {isDoctor ? (
+                  {type === 'doctor' && (
                     <>
                       <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
                         <svg className="w-5 h-5 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
@@ -140,7 +150,9 @@ export default function UniversalProfileLayout({
                         </div>
                       </div>
                     </>
-                  ) : (
+                  )}
+
+                  {type === 'hospital' && (
                     <>
                       <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
                         <svg className="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
@@ -161,6 +173,70 @@ export default function UniversalProfileLayout({
                         <div>
                           <span className="text-white font-bold block leading-none">{profile.emergencyServices || profile.stats?.emergency || "Data not available"}</span>
                           <span className="text-slate-400 text-[10px] uppercase tracking-widest">Emergency</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {type === 'pharmacy' && (
+                    <>
+                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                        <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <div>
+                          <span className="text-white font-bold block leading-none">{profile.homeDeliveryRadius || "Data not available"}</span>
+                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Delivery Radius</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                        <svg className="w-5 h-5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <div>
+                          <span className="text-white font-bold block leading-none">{profile.retailLicense || "Data not available"}</span>
+                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Drug License</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                        <svg className="w-5 h-5 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                          <span className="text-white font-bold block leading-none">{profile.is247 ? "24/7 Open" : profile.timings || "Data not available"}</span>
+                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Timings</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {type === 'lab' && (
+                    <>
+                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                        <svg className="w-5 h-5 text-indigo-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        <div>
+                          <span className="text-white font-bold block leading-none">{profile.labType || "Diagnostic Center"}</span>
+                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Facility Type</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                        <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <div>
+                          <span className="text-white font-bold block leading-none">{profile.accreditations?.join(", ") || "Data not available"}</span>
+                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Accreditations</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {type === 'ambulance' && (
+                    <>
+                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                        <svg className="w-5 h-5 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <div>
+                          <span className="text-white font-bold block leading-none">{profile.ambulanceType || "Emergency Transport"}</span>
+                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Ambulance Type</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                        <svg className="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        <div>
+                          <span className="text-white font-bold block leading-none">{profile.fleetSize || "Data not available"}</span>
+                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Fleet Size</span>
                         </div>
                       </div>
                     </>
@@ -215,7 +291,7 @@ export default function UniversalProfileLayout({
                 <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
                   <h2 className="text-2xl font-bold text-white mb-6 font-serif">About</h2>
                   <p className="text-slate-300 leading-relaxed text-base">
-                    {profile.about}
+                    {profile.about || <span className="italic text-slate-500">Data not available</span>}
                   </p>
                 </div>
 
@@ -409,8 +485,18 @@ export default function UniversalProfileLayout({
             {/* STICKY BOOKING CARD */}
             <div className="bg-gradient-to-b from-slate-800 to-slate-900 rounded-[32px] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-slate-700/60 relative overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 rounded-full blur-[50px]"></div>
-               <h3 className="font-bold text-xl text-white mb-2 relative z-10 font-serif">Book Appointment</h3>
-               <p className="text-sm text-slate-400 mb-6 relative z-10">Instantly view availability or contact the facility directly.</p>
+               <h3 className="font-bold text-xl text-white mb-2 relative z-10 font-serif">
+                 {unwrappedParams.type === 'ambulance' ? "Emergency Transport" :
+                  unwrappedParams.type === 'pharmacy' ? "Order Medicines" :
+                  unwrappedParams.type === 'lab' ? "Diagnostic Tests" :
+                  "Book Appointment"}
+               </h3>
+               <p className="text-sm text-slate-400 mb-6 relative z-10">
+                 {unwrappedParams.type === 'ambulance' ? "Send an emergency ping with your live location." :
+                  unwrappedParams.type === 'pharmacy' ? "Upload your e-prescription for fast home delivery." :
+                  unwrappedParams.type === 'lab' ? "Book a home collection or submit a lab order." :
+                  "Instantly view availability or contact the facility directly."}
+               </p>
                
                <div className="space-y-4 relative z-10">
                  <div className="w-full">
@@ -421,9 +507,26 @@ export default function UniversalProfileLayout({
                       providerType={unwrappedParams.type} 
                     />
                  </div>
-                 <Link href={`/portal/book?id=${profile.id}&type=${unwrappedParams.type}`} className="w-full block text-center bg-white hover:bg-slate-100 text-slate-900 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md">
-                   Check Availability
-                 </Link>
+                 {!verified ? (
+                   <button disabled className="w-full block text-center bg-slate-800 border border-slate-700 text-slate-500 py-4 rounded-2xl text-sm font-black uppercase tracking-widest cursor-not-allowed shadow-sm">
+                     Unverified
+                   </button>
+                 ) : (
+                   <Link href={
+                     unwrappedParams.type === 'ambulance' ? `/portal/dispatch?id=${profile.id}` :
+                     unwrappedParams.type === 'pharmacy' ? `/portal/order?id=${profile.id}&type=pharmacy` :
+                     unwrappedParams.type === 'lab' ? `/portal/order?id=${profile.id}&type=lab` :
+                     `/portal/book?doctor=${profile.id}`
+                   } className={`w-full block text-center py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md ${
+                     unwrappedParams.type === 'ambulance' ? 'bg-red-500 hover:bg-red-600 text-white border border-red-400' :
+                     'bg-white hover:bg-slate-100 text-slate-900'
+                   }`}>
+                     {unwrappedParams.type === 'ambulance' ? "Send Emergency Ping" :
+                      unwrappedParams.type === 'pharmacy' ? "Upload E-Prescription" :
+                      unwrappedParams.type === 'lab' ? "Book Home Collection" :
+                      "Check Availability"}
+                   </Link>
+                 )}
                </div>
                
                <div className="mt-8 pt-6 border-t border-slate-700/50 relative z-10">
