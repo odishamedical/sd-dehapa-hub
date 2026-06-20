@@ -1,16 +1,32 @@
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
 export class WhatsAppService {
   private static readonly API_VERSION = 'v25.0'; // Updated to match user's screenshot
   
-  private static get accessToken() {
-    return process.env.WHATSAPP_ACCESS_TOKEN;
-  }
-
-  private static get phoneNumberId() {
-    return process.env.WHATSAPP_PHONE_NUMBER_ID;
+  private static async getCredentials() {
+    try {
+      const docSnap = await getDoc(doc(db, "system_settings", "whatsapp"));
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        return {
+          token: data.token || process.env.WHATSAPP_ACCESS_TOKEN,
+          phoneId: data.phoneId || process.env.WHATSAPP_PHONE_NUMBER_ID
+        };
+      }
+    } catch (e) {
+      console.error("Error reading WhatsApp settings from Firebase:", e);
+    }
+    // Fallback to env vars
+    return {
+      token: process.env.WHATSAPP_ACCESS_TOKEN,
+      phoneId: process.env.WHATSAPP_PHONE_NUMBER_ID
+    };
   }
 
   private static async sendRequest(payload: any) {
-    if (!this.accessToken || !this.phoneNumberId) {
+    const creds = await this.getCredentials();
+    if (!creds.token || !creds.phoneId) {
       console.error("Missing WHATSAPP_ACCESS_TOKEN or WHATSAPP_PHONE_NUMBER_ID");
       return null;
     }
@@ -21,7 +37,7 @@ export class WhatsAppService {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
+          'Authorization': `Bearer ${creds.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
@@ -57,12 +73,11 @@ export class WhatsAppService {
 
   static async sendInteractiveButtons(to: string, text: string, buttons: {id: string, title: string}[]) {
     console.log("sendInteractiveButtons called. to:", to, "buttons:", buttons.length);
-    const token = process.env.WHATSAPP_ACCESS_TOKEN;
-    const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+    const creds = await this.getCredentials();
 
-    if (!token || !phoneId) {
-      console.log("sendInteractiveButtons ERROR: Missing WHATSAPP_ACCESS_TOKEN or PHONE_NUMBER_ID");
-      console.log("Token length:", token ? token.length : 0, "PhoneId length:", phoneId ? phoneId.length : 0);
+    if (!creds.token || !creds.phoneId) {
+      console.log("sendInteractiveButtons ERROR: Missing WHATSAPP_ACCESS_TOKEN or PHONE_NUMBER_ID in Firebase/Env");
+      console.log("Token length:", creds.token ? creds.token.length : 0, "PhoneId length:", creds.phoneId ? creds.phoneId.length : 0);
       return;
     }
     
