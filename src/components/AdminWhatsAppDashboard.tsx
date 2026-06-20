@@ -236,6 +236,32 @@ export default function AdminWhatsAppDashboard() {
     setCrmLoading(false);
   };
 
+  const renameGroupTag = async (oldTag: string) => {
+    const newTag = prompt(`Rename tag "${oldTag}" to:`, oldTag);
+    if (!newTag || newTag === oldTag || !newTag.trim()) return;
+    
+    setCrmLoading(true);
+    let updatedCount = 0;
+    try {
+      for (const c of contacts) {
+        const currentTags = c.tags || (c.group ? [c.group] : ['General']);
+        if (currentTags.includes(oldTag)) {
+          const newTags = currentTags.map((t: string) => t === oldTag ? newTag.trim() : t);
+          await updateDoc(doc(db, 'whatsapp_contacts', c.id), {
+            tags: newTags
+          });
+          updatedCount++;
+        }
+      }
+      alert(`Successfully renamed tag for ${updatedCount} contacts.`);
+      if (groupFilter === oldTag) setGroupFilter(newTag.trim());
+    } catch(e) {
+      console.error(e);
+      alert("Failed to rename tag.");
+    }
+    setCrmLoading(false);
+  };
+
   const sendBroadcast = async () => {
     if (selectedContacts.size === 0) {
       alert("Please select at least one contact.");
@@ -549,14 +575,6 @@ export default function AdminWhatsAppDashboard() {
                  </div>
               </div>
             </div>
-            <button 
-              onClick={saveBulkContacts}
-              disabled={!bulkUploadText.trim()}
-              className="bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-sm mb-6 disabled:opacity-50 hover:bg-slate-700 transition-colors self-start"
-            >
-              Upload / Save Numbers
-            </button>
-
             <div className="flex justify-between items-end mb-3">
               <div>
                 <span className="font-bold text-slate-700 text-sm">Saved Contacts ({filteredContacts.length})</span>
@@ -572,13 +590,22 @@ export default function AdminWhatsAppDashboard() {
                     ))}
                   </select>
                   {groupFilter !== 'All' && (
-                    <button 
-                      onClick={() => deleteGroupTag(groupFilter)}
-                      className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors text-xs font-bold border border-red-200"
-                      title="Remove this tag from all contacts"
-                    >
-                      Delete Tag
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button 
+                        onClick={() => renameGroupTag(groupFilter)}
+                        className="text-indigo-600 hover:bg-indigo-50 p-1 rounded transition-colors text-xs font-bold border border-indigo-200"
+                        title="Rename this tag"
+                      >
+                        Rename
+                      </button>
+                      <button 
+                        onClick={() => deleteGroupTag(groupFilter)}
+                        className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors text-xs font-bold border border-red-200"
+                        title="Remove this tag from all contacts"
+                      >
+                        Delete Tag
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
