@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, getDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function AdminWhatsAppDashboard() {
   const [sessions, setSessions] = useState<any[]>([]);
@@ -11,6 +11,43 @@ export default function AdminWhatsAppDashboard() {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // API Config State
+  const [waToken, setWaToken] = useState("");
+  const [waPhoneId, setWaPhoneId] = useState("");
+  const [waSaving, setWaSaving] = useState(false);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, "system_settings", "whatsapp"));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setWaToken(data.token || "");
+          setWaPhoneId(data.phoneId || "");
+        }
+      } catch (e) {
+        console.error("Failed to load WhatsApp settings", e);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const saveWhatsAppSettings = async () => {
+    setWaSaving(true);
+    try {
+      await setDoc(doc(db, "system_settings", "whatsapp"), {
+        token: waToken,
+        phoneId: waPhoneId,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      alert("WhatsApp API Keys saved successfully!");
+    } catch (e) {
+      console.error("Failed to save keys", e);
+      alert("Failed to save WhatsApp API keys.");
+    }
+    setWaSaving(false);
+  };
 
   // Fetch Sessions
   useEffect(() => {
@@ -74,7 +111,47 @@ export default function AdminWhatsAppDashboard() {
   };
 
   return (
-    <div className="flex h-[700px] bg-gray-50 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+    <div className="space-y-6">
+      {/* API Configuration Panel */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md">
+        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+           API Configuration
+        </h3>
+        <p className="text-xs text-slate-400 mb-6">Update these credentials directly from your Meta Developer Portal. The bot will instantly start using them without requiring a redeploy.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Access Token</label>
+            <input 
+              type="password" 
+              value={waToken} 
+              onChange={(e) => setWaToken(e.target.value)} 
+              placeholder="EAAL..." 
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-[#25D366] outline-none font-mono text-sm" 
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Phone Number ID</label>
+            <input 
+              type="text" 
+              value={waPhoneId} 
+              onChange={(e) => setWaPhoneId(e.target.value)} 
+              placeholder="1234567890" 
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-[#25D366] outline-none font-mono text-sm" 
+            />
+          </div>
+        </div>
+        <button 
+          onClick={saveWhatsAppSettings}
+          disabled={waSaving}
+          className="w-full md:w-auto mt-6 py-3 px-8 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 font-bold hover:bg-[#25D366]/20 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          {waSaving ? "Saving..." : "Save API Keys"}
+        </button>
+      </div>
+
+      {/* Live Sessions Container */}
+      <div className="flex h-[700px] bg-gray-50 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
       {/* Sidebar */}
       <div className="w-1/3 bg-white border-r border-slate-200 flex flex-col">
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
