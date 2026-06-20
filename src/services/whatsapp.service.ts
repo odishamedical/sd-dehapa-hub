@@ -53,7 +53,15 @@ export class WhatsAppService {
         return { error: true, data: errorData };
       }
 
-      return await response.json();
+      // Log success so we know what url and phone ID was used
+      try {
+        const responseData = await response.json();
+        const { doc, setDoc } = await import('firebase/firestore');
+        await setDoc(doc(db, 'whatsapp_debug_logs', 'API_SUCCESS_' + Date.now()), { url, payload, response: responseData });
+        return responseData;
+      } catch(e) { console.error("Firebase log success error:", e); }
+
+      return { error: false };
     } catch (error) {
       console.error('Fetch Error when sending WhatsApp message:', error);
       return null;
