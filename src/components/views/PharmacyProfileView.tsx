@@ -152,5 +152,5 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
     );
   }
 
-  return <UniversalProfileLayout profile={pharmacy} unwrappedParams={{ type: 'pharmacy', id: pharmacy.id }} similarEntities={similarEntities} />;
+  return <UniversalProfileLayout profile={pharmacy} unwrappedParams={{ type: 'pharmacy', id: pharmacy.id }} similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }

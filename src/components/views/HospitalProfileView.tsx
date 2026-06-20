@@ -3,12 +3,27 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, limit, getDocs, updateDoc } from 'firebase/firestore';
 import UniversalProfileLayout from '@/components/UniversalProfileLayout';
 
 export default function HospitalProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Edit Mode State
+  const [canEdit, setCanEdit] = useState(false);
+
+  const handleInlineSave = async (field: string, value: any) => {
+    if (!profile || !profile.id) return;
+    try {
+      const docRef = doc(db, 'directory', profile.id);
+      await updateDoc(docRef, { [field]: value });
+      setProfile((prev: any) => ({ ...prev, [field]: value }));
+    } catch (err) {
+      console.error("Failed to save field:", err);
+      alert("Failed to save changes.");
+    }
+  };
 
   useEffect(() => {
     const fetchHospital = async () => {
@@ -124,5 +139,5 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
     );
   }
 
-  return <UniversalProfileLayout profile={profile} unwrappedParams={{ type: 'hospital', id: profile.id }} />;
+  return <UniversalProfileLayout profile={profile} unwrappedParams={{ type: 'hospital', id: profile.id }} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }

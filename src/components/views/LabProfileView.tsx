@@ -152,5 +152,5 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
     );
   }
 
-  return <UniversalProfileLayout profile={lab} unwrappedParams={{ type: 'lab', id: lab.id }} similarEntities={similarEntities} />;
+  return <UniversalProfileLayout profile={lab} unwrappedParams={{ type: 'lab', id: lab.id }} similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }

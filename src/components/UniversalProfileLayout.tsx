@@ -6,6 +6,8 @@ import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
 import HorizontalScrollGallery from '@/components/HorizontalScrollGallery';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
+import InlineEditField from '@/components/InlineEditField';
+import InlineEditArray from '@/components/InlineEditArray';
 
 const TABS_DOCTOR = ['locations', 'overview', 'experience', 'research', 'media'];
 const TABS_HOSPITAL = ['locations', 'overview', 'packages', 'departments', 'facilities', 'media'];
@@ -17,12 +19,16 @@ export default function UniversalProfileLayout({
   profile, 
   unwrappedParams, 
   platformAds = {}, 
-  similarEntities = [] 
+  similarEntities = [],
+  canEdit = false,
+  onInlineSave
 }: { 
   profile: any, 
   unwrappedParams: any,
   platformAds?: any,
-  similarEntities?: any[]
+  similarEntities?: any[],
+  canEdit?: boolean,
+  onInlineSave?: (field: string, value: any) => Promise<void>
 }) {
   const type = unwrappedParams.type;
   const tabs = type === 'doctor' ? TABS_DOCTOR : 
@@ -33,6 +39,7 @@ export default function UniversalProfileLayout({
                ['overview', 'media'];
                
   const [activeTab, setActiveTab] = useState('locations');
+  const [isEditMode, setIsEditMode] = useState(false);
   const isDoctor = type === 'doctor';
 
   const verified = profile.verified;
@@ -59,6 +66,22 @@ export default function UniversalProfileLayout({
           ]} />
         </div>
       </div>
+
+      {/* Edit Mode Banner */}
+      {canEdit && (
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-3 flex justify-between items-center sticky top-[108px] z-[60] border-b border-teal-500 shadow-xl">
+          <div className="text-white font-bold text-sm flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            You are the owner of this profile.
+          </div>
+          <button 
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${isEditMode ? 'bg-white text-teal-700 shadow-md' : 'bg-teal-700/50 text-white hover:bg-teal-700 border border-teal-500/50'}`}
+          >
+            {isEditMode ? "Exit Edit Mode" : "Enable Edit Mode"}
+          </button>
+        </div>
+      )}
 
       {/* Futuristic Banner */}
       <div className="w-full min-h-[400px] relative overflow-hidden flex flex-col">
@@ -290,9 +313,16 @@ export default function UniversalProfileLayout({
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                 <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
                   <h2 className="text-2xl font-bold text-white mb-6 font-serif">About</h2>
-                  <p className="text-slate-300 leading-relaxed text-base">
-                    {profile.about || <span className="italic text-slate-500">Data not available</span>}
-                  </p>
+                  <div className="text-slate-300 leading-relaxed text-base">
+                    <InlineEditField
+                      value={profile.about}
+                      field="about"
+                      isEditMode={isEditMode}
+                      onSave={onInlineSave || (async () => {})}
+                      multiline={true}
+                      placeholder="Add an about description..."
+                    />
+                  </div>
                 </div>
 
                 {(!isDoctor && profile.details?.length > 0) && (
@@ -388,8 +418,15 @@ export default function UniversalProfileLayout({
                       <div className="space-y-6 mt-6 relative">
                         <div className="flex items-start gap-4">
                           <svg className="w-6 h-6 text-cyan-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                          <div className="text-base text-slate-300 leading-relaxed">
-                            {profile.clinic?.address || profile.address || "Address not available"}
+                          <div className="text-base text-slate-300 leading-relaxed w-full">
+                            <InlineEditField
+                              value={profile.clinic?.address || profile.address}
+                              field={profile.clinic ? "clinic.address" : "address"}
+                              isEditMode={isEditMode}
+                              onSave={onInlineSave || (async () => {})}
+                              multiline={true}
+                              placeholder="Add full address..."
+                            />
                           </div>
                         </div>
                         
@@ -438,6 +475,7 @@ export default function UniversalProfileLayout({
                       <svg className="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.498 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.498-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                       Media & Interviews
                     </h2>
+                    {isEditMode && <div className="bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest border border-cyan-500/30">Editable Array</div>}
                   </div>
 
                   {(!profile.youtubeLinks || profile.youtubeLinks.length === 0) ? (
@@ -446,6 +484,7 @@ export default function UniversalProfileLayout({
                         <svg className="w-8 h-8 text-slate-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.498 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.498-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                       </div>
                       <p className="text-base text-slate-400 font-semibold italic">No media uploaded yet.</p>
+                      {isEditMode && <p className="text-xs text-cyan-400 mt-2">Edit mode enabled: Add YouTube links to display them here.</p>}
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -473,12 +512,116 @@ export default function UniversalProfileLayout({
                       })}
                     </div>
                   )}
+
+                  {isEditMode && (
+                    <div className="mt-8 pt-8 border-t border-slate-700/50">
+                      <h4 className="text-sm font-bold text-cyan-400 uppercase tracking-widest mb-4">Manage YouTube Links</h4>
+                      <InlineEditArray 
+                        items={profile.youtubeLinks || []} 
+                        onSave={(newArr) => onInlineSave && onInlineSave('youtubeLinks', newArr)} 
+                        isEditMode={isEditMode} 
+                        placeholder="Paste YouTube Link (https://youtube.com/watch?v=...)"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Additional Tabs for Doctor/Hospital */}
-            {(activeTab === 'experience' || activeTab === 'research' || activeTab === 'facilities') && (
+            {/* TAB CONTENT: EXPERIENCE & EDUCATION */}
+            {activeTab === 'experience' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                {profile.experiences?.length > 0 && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                    <h2 className="text-2xl font-bold text-white mb-8 font-serif">Professional Experience</h2>
+                    <div className="space-y-0 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-cyan-500/50 before:to-transparent">
+                      {profile.experiences.map((exp: any, idx: number) => (
+                        <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active py-4">
+                          <div className="flex items-center justify-center w-6 h-6 rounded-full border-2 border-[#060B14] bg-cyan-500 text-white shadow-[0_0_15px_rgba(34,211,238,0.5)] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
+                          <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 shadow-sm hover:border-cyan-500/30 transition-colors">
+                            <h4 className="font-bold text-white text-lg">{exp.role}</h4>
+                            <p className="text-sm text-slate-400 mt-1">{exp.hospital}</p>
+                            {exp.duration && <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest mt-3 block">{exp.duration}</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {profile.qualificationsList?.length > 0 && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                    <h2 className="text-2xl font-bold text-white mb-6 font-serif">Education & Qualifications</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {profile.qualificationsList.map((qual: any, idx: number) => (
+                        <div key={idx} className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-white text-lg">{qual.degree}</h4>
+                          <p className="text-sm text-slate-400 mt-2">{qual.institution}</p>
+                          {qual.year && <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded w-fit uppercase tracking-widest mt-3">{qual.year}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB CONTENT: RESEARCH & AWARDS */}
+            {activeTab === 'research' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif text-amber-400">Awards & Recognitions</h2>
+                  {(!profile.awards || profile.awards.length === 0) ? (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">No awards listed.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {profile.awards.map((award: any, idx: number) => (
+                        <div key={idx} className="flex gap-4 items-start bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                          <div className="w-10 h-10 bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/20 shrink-0">
+                            <span className="text-amber-400 font-serif font-bold text-lg">🏆</span>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-white text-base">{award.name}</h4>
+                            <p className="text-sm text-slate-400 mt-1">{award.organization} {award.year && `• ${award.year}`}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">Research & Publications</h2>
+                  {(!profile.research || profile.research.length === 0) ? (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">No research publications listed.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {profile.research.map((item: any, idx: number) => (
+                        <div key={idx} className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-white text-lg">{item.title}</h4>
+                          <p className="text-sm text-slate-300 mt-2 font-medium">{item.journal} {item.year && `(${item.year})`}</p>
+                          {item.link && (
+                            <a href={item.link} target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 text-sm mt-3 flex items-center gap-1 w-fit">
+                              View Publication
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Additional Tabs fallback */}
+            {(activeTab === 'facilities') && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                 <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl text-center">
                    <h2 className="text-2xl font-bold text-white mb-2 font-serif capitalize">{activeTab}</h2>

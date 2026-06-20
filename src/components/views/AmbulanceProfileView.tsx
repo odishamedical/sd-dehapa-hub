@@ -152,5 +152,5 @@ export default function AmbulanceProfileView({ id, customSlug }: { id?: string, 
     );
   }
 
-  return <UniversalProfileLayout profile={ambulance} unwrappedParams={{ type: 'ambulance', id: ambulance.id }} similarEntities={similarEntities} />;
+  return <UniversalProfileLayout profile={ambulance} unwrappedParams={{ type: 'ambulance', id: ambulance.id }} similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }
