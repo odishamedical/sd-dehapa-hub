@@ -309,14 +309,39 @@ export default function UniversalProfileLayout({
                   </div>
                 )}
                 
-                {(!isDoctor && profile.mapUrl) && (
+                {(!isDoctor && (profile.mapUrl || profile.clinic?.mapUrl)) && (
                   <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] border border-slate-700/50 shadow-xl overflow-hidden flex flex-col">
-                    <div className="p-8 border-b border-slate-700/50">
-                      <h3 className="font-bold text-2xl text-white mb-2 font-serif">Location</h3>
+                    <div className="p-8 md:p-10 border-b border-slate-700/50">
+                      <h3 className="font-bold text-2xl text-white mb-2 font-serif">
+                        <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest block mb-2">Primary Location</span>
+                        {profile.clinic?.name || profile.name}
+                      </h3>
+                      <div className="space-y-6 mt-6 relative">
+                        <div className="flex items-start gap-4">
+                          <svg className="w-6 h-6 text-cyan-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                          <div className="text-base text-slate-300 leading-relaxed">
+                            {profile.clinic?.address || profile.address || "Address not available"}
+                          </div>
+                        </div>
+                        
+                        {(profile.clinic?.phone || profile.phone) && (profile.clinic?.phone || profile.phone) !== "Not available (Not verified)" && (
+                          <div className="flex items-start gap-4">
+                            <svg className="w-6 h-6 text-teal-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            <div className="text-base font-bold text-slate-300 leading-relaxed w-full">
+                              <PhoneRevealButton 
+                                phoneNumber={profile.clinic?.phone || profile.phone} 
+                                providerId={profile.id} 
+                                providerName={profile.name} 
+                                providerType={unwrappedParams.type} 
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="w-full h-80 bg-slate-800 relative">
                       <iframe 
-                        src={profile.mapUrl} 
+                        src={profile.mapUrl || profile.clinic?.mapUrl} 
                         width="100%" 
                         height="100%" 
                         style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }} 
