@@ -8,10 +8,10 @@ import HorizontalScrollGallery from '@/components/HorizontalScrollGallery';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
 
 const TABS_DOCTOR = ['locations', 'overview', 'experience', 'research', 'media'];
-const TABS_HOSPITAL = ['overview', 'packages', 'departments', 'facilities', 'media'];
-const TABS_PHARMACY = ['overview', 'products', 'distributors', 'media'];
-const TABS_LAB = ['overview', 'tests', 'facilities', 'media'];
-const TABS_AMBULANCE = ['overview', 'fleet', 'media'];
+const TABS_HOSPITAL = ['locations', 'overview', 'packages', 'departments', 'facilities', 'media'];
+const TABS_PHARMACY = ['locations', 'overview', 'products', 'distributors', 'media'];
+const TABS_LAB = ['locations', 'overview', 'tests', 'facilities', 'media'];
+const TABS_AMBULANCE = ['locations', 'overview', 'fleet', 'media'];
 
 export default function UniversalProfileLayout({ 
   profile, 
@@ -32,7 +32,7 @@ export default function UniversalProfileLayout({
                type === 'ambulance' ? TABS_AMBULANCE :
                ['overview', 'media'];
                
-  const [activeTab, setActiveTab] = useState(type === 'doctor' ? 'locations' : 'overview');
+  const [activeTab, setActiveTab] = useState('locations');
   const isDoctor = type === 'doctor';
 
   const verified = profile.verified;
@@ -308,50 +308,6 @@ export default function UniversalProfileLayout({
                     </div>
                   </div>
                 )}
-                
-                {(!isDoctor && (profile.mapUrl || profile.clinic?.mapUrl)) && (
-                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] border border-slate-700/50 shadow-xl overflow-hidden flex flex-col">
-                    <div className="p-8 md:p-10 border-b border-slate-700/50">
-                      <h3 className="font-bold text-2xl text-white mb-2 font-serif">
-                        <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest block mb-2">Primary Location</span>
-                        {profile.clinic?.name || profile.name}
-                      </h3>
-                      <div className="space-y-6 mt-6 relative">
-                        <div className="flex items-start gap-4">
-                          <svg className="w-6 h-6 text-cyan-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                          <div className="text-base text-slate-300 leading-relaxed">
-                            {profile.clinic?.address || profile.address || "Address not available"}
-                          </div>
-                        </div>
-                        
-                        {(profile.clinic?.phone || profile.phone) && (profile.clinic?.phone || profile.phone) !== "Not available (Not verified)" && (
-                          <div className="flex items-start gap-4">
-                            <svg className="w-6 h-6 text-teal-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                            <div className="text-base font-bold text-slate-300 leading-relaxed w-full">
-                              <PhoneRevealButton 
-                                phoneNumber={profile.clinic?.phone || profile.phone} 
-                                providerId={profile.id} 
-                                providerName={profile.name} 
-                                providerType={unwrappedParams.type} 
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="w-full h-80 bg-slate-800 relative">
-                      <iframe 
-                        src={profile.mapUrl || profile.clinic?.mapUrl} 
-                        width="100%" 
-                        height="100%" 
-                        style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }} 
-                        allowFullScreen 
-                        loading="lazy" 
-                        referrerPolicy="no-referrer-when-downgrade"
-                      ></iframe>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
@@ -419,28 +375,57 @@ export default function UniversalProfileLayout({
               </div>
             )}
 
-            {/* TAB CONTENT: LOCATIONS (Doctor only) */}
+            {/* TAB CONTENT: LOCATIONS */}
             {activeTab === 'locations' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
-                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] border border-slate-700/50 shadow-xl overflow-hidden flex flex-col">
-                  <div className="p-8 md:p-10 border-b border-slate-700/50">
-                    <h3 className="font-bold text-2xl text-white mb-2 font-serif">
-                      <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest block mb-2">Primary Clinic</span>
-                      {(profile.clinic && profile.clinic.name) ? profile.clinic.name : "Clinic"}
-                    </h3>
+                {(profile.mapUrl || profile.clinic?.mapUrl) ? (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] border border-slate-700/50 shadow-xl overflow-hidden flex flex-col">
+                    <div className="p-8 md:p-10 border-b border-slate-700/50">
+                      <h3 className="font-bold text-2xl text-white mb-2 font-serif">
+                        <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest block mb-2">Primary Location</span>
+                        {profile.clinic?.name || profile.name}
+                      </h3>
+                      <div className="space-y-6 mt-6 relative">
+                        <div className="flex items-start gap-4">
+                          <svg className="w-6 h-6 text-cyan-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                          <div className="text-base text-slate-300 leading-relaxed">
+                            {profile.clinic?.address || profile.address || "Address not available"}
+                          </div>
+                        </div>
+                        
+                        {(profile.clinic?.phone || profile.phone) && (profile.clinic?.phone || profile.phone) !== "Not available (Not verified)" && (
+                          <div className="flex items-start gap-4">
+                            <svg className="w-6 h-6 text-teal-400 mt-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            <div className="text-base font-bold text-slate-300 leading-relaxed w-full">
+                              <PhoneRevealButton 
+                                phoneNumber={profile.clinic?.phone || profile.phone} 
+                                providerId={profile.id} 
+                                providerName={profile.name} 
+                                providerType={unwrappedParams.type} 
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-full h-80 bg-slate-800 relative">
+                      <iframe 
+                        src={profile.mapUrl || profile.clinic?.mapUrl} 
+                        width="100%" 
+                        height="100%" 
+                        style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }} 
+                        allowFullScreen 
+                        loading="lazy" 
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    </div>
                   </div>
-                  <div className="w-full h-80 bg-slate-800 relative">
-                    <iframe 
-                      src={profile.mapUrl} 
-                      width="100%" 
-                      height="100%" 
-                      style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }} 
-                      allowFullScreen 
-                      loading="lazy" 
-                      referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
+                ) : (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl text-center">
+                    <h2 className="text-2xl font-bold text-white mb-2 font-serif">Location</h2>
+                    <p className="text-slate-400 italic mt-4">Location information is currently not available.</p>
                   </div>
-                </div>
+                )}
               </div>
             )}
 
