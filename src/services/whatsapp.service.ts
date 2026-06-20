@@ -31,7 +31,7 @@ export class WhatsAppService {
       return null;
     }
 
-    const url = `https://graph.facebook.com/${this.API_VERSION}/${this.phoneNumberId}/messages`;
+    const url = `https://graph.facebook.com/${this.API_VERSION}/${creds.phoneId}/messages`;
 
     try {
       const response = await fetch(url, {
@@ -68,6 +68,22 @@ export class WhatsAppService {
       }
     };
 
+    return this.sendRequest(payload);
+  }
+
+  static async sendTemplateMessage(to: string, templateName: string, languageCode: string = 'en_US') {
+    const payload = {
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to: to,
+      type: "template",
+      template: {
+        name: templateName,
+        language: {
+          code: languageCode
+        }
+      }
+    };
     return this.sendRequest(payload);
   }
 

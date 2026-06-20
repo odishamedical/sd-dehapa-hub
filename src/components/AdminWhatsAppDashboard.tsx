@@ -25,6 +25,8 @@ export default function AdminWhatsAppDashboard() {
   const [groupFilter, setGroupFilter] = useState('All');
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [crmLoading, setCrmLoading] = useState(true);
+  const [messageType, setMessageType] = useState<'free' | 'template'>('free');
+  const [templateName, setTemplateName] = useState('');
 
   // Import Wizard State
   const [isImportWizardOpen, setIsImportWizardOpen] = useState(false);
@@ -38,6 +40,7 @@ export default function AdminWhatsAppDashboard() {
   const [waToken, setWaToken] = useState("");
   const [waPhoneId, setWaPhoneId] = useState("");
   const [waSaving, setWaSaving] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -238,8 +241,12 @@ export default function AdminWhatsAppDashboard() {
       alert("Please select at least one contact.");
       return;
     }
-    if (!broadcastMessage.trim()) {
+    if (messageType === 'free' && !broadcastMessage.trim()) {
       alert("Please enter a message to broadcast.");
+      return;
+    }
+    if (messageType === 'template' && !templateName.trim()) {
+      alert("Please enter the Meta Template Name.");
       return;
     }
     setIsBroadcasting(true);
@@ -249,7 +256,12 @@ export default function AdminWhatsAppDashboard() {
         await fetch('/api/whatsapp/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to: phoneId, text: broadcastMessage })
+          body: JSON.stringify({ 
+            to: phoneId, 
+            text: messageType === 'free' ? broadcastMessage : undefined,
+            messageType: messageType,
+            templateName: messageType === 'template' ? templateName : undefined
+          })
         });
         success++;
       } catch (e) {
@@ -284,66 +296,85 @@ export default function AdminWhatsAppDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* API Configuration Panel */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-           API Configuration
-        </h3>
-        <p className="text-xs text-slate-400 mb-6">Update these credentials directly from your Meta Developer Portal. The bot will instantly start using them without requiring a redeploy.</p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Access Token</label>
-            <input 
-              type="password" 
-              value={waToken} 
-              onChange={(e) => setWaToken(e.target.value)} 
-              placeholder="EAAL..." 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-[#25D366] outline-none font-mono text-sm" 
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Phone Number ID</label>
-            <input 
-              type="text" 
-              value={waPhoneId} 
-              onChange={(e) => setWaPhoneId(e.target.value)} 
-              placeholder="1234567890" 
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:border-[#25D366] outline-none font-mono text-sm" 
-            />
+    <div className="space-y-6 relative">
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl relative border border-slate-200">
+            <button 
+              onClick={() => setIsSettingsOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              API Configuration
+            </h2>
+            <p className="text-sm text-slate-500 mb-6">Update credentials from your Meta Developer Portal.</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Access Token</label>
+                <input 
+                  type="password" 
+                  value={waToken} 
+                  onChange={(e) => setWaToken(e.target.value)} 
+                  placeholder="EAAL..." 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-800 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none font-mono text-sm" 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs uppercase tracking-wider text-slate-400 font-bold">Phone Number ID</label>
+                <input 
+                  type="text" 
+                  value={waPhoneId} 
+                  onChange={(e) => setWaPhoneId(e.target.value)} 
+                  placeholder="1234567890" 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-800 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none font-mono text-sm" 
+                />
+              </div>
+            </div>
+            <button 
+              onClick={saveWhatsAppSettings}
+              disabled={waSaving}
+              className="w-full mt-6 py-4 rounded-xl bg-teal-600 text-white font-bold hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30 disabled:opacity-50"
+            >
+              {waSaving ? "Saving..." : "Save API Keys"}
+            </button>
           </div>
         </div>
-        <button 
-          onClick={saveWhatsAppSettings}
-          disabled={waSaving}
-          className="w-full md:w-auto mt-6 py-3 px-8 rounded-xl bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 font-bold hover:bg-[#25D366]/20 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          {waSaving ? "Saving..." : "Save API Keys"}
-        </button>
-      </div>
+      )}
 
-      {/* Internal Tabs */}
-      <div className="flex border-b border-slate-200">
+      {/* Header and Tabs */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+        <div className="flex p-1 bg-slate-100 rounded-xl w-full md:w-auto">
+          <button 
+            onClick={() => setInternalTab('inbox')}
+            className={`flex-1 md:flex-none py-2 px-6 font-bold text-sm rounded-lg transition-all ${internalTab === 'inbox' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            Live Inbox
+          </button>
+          <button 
+            onClick={() => setInternalTab('crm')}
+            className={`flex-1 md:flex-none py-2 px-6 font-bold text-sm rounded-lg transition-all flex items-center justify-center gap-2 ${internalTab === 'crm' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            Contacts & Broadcast
+          </button>
+        </div>
         <button 
-          onClick={() => setInternalTab('inbox')}
-          className={`py-3 px-6 font-bold text-sm border-b-2 transition-colors ${internalTab === 'inbox' ? 'border-teal-500 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+          onClick={() => setIsSettingsOpen(true)}
+          className="text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition-colors"
+          title="API Settings"
         >
-          Live Inbox
-        </button>
-        <button 
-          onClick={() => setInternalTab('crm')}
-          className={`py-3 px-6 font-bold text-sm border-b-2 transition-colors flex items-center gap-2 ${internalTab === 'crm' ? 'border-teal-500 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
-        >
-          Contacts & Broadcast
-          <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">NEW</span>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
         </button>
       </div>
 
       {internalTab === 'inbox' && (
-      <div className="flex h-[700px] bg-gray-50 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+      <div className="flex flex-col lg:flex-row h-[700px] bg-gray-50 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
       {/* Sidebar */}
-      <div className="w-1/3 bg-white border-r border-slate-200 flex flex-col">
+      <div className="w-full lg:w-1/3 bg-white border-r border-slate-200 flex flex-col h-1/2 lg:h-full">
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
           <h2 className="font-bold text-slate-900">Live Sessions</h2>
           <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
@@ -376,7 +407,7 @@ export default function AdminWhatsAppDashboard() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="w-2/3 flex flex-col bg-[#e5ddd5]">
+      <div className="w-full lg:w-2/3 flex flex-col bg-[#e5ddd5] h-1/2 lg:h-full">
         {selectedSession ? (
           <>
             {/* Header */}
@@ -607,16 +638,50 @@ export default function AdminWhatsAppDashboard() {
                </span>
             </div>
             
-            <textarea 
-              value={broadcastMessage}
-              onChange={(e) => setBroadcastMessage(e.target.value)}
-              placeholder="Type your promotional message here..."
-              className="w-full bg-white rounded-2xl p-5 border border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-inner text-sm outline-none transition-all h-64 resize-none mb-6"
-            />
+            <div className="mb-4">
+              <div className="flex p-1 bg-slate-100 rounded-xl w-full">
+                <button 
+                  onClick={() => setMessageType('free')}
+                  className={`flex-1 py-2 font-bold text-xs rounded-lg transition-all ${messageType === 'free' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Free-Form Text (24h)
+                </button>
+                <button 
+                  onClick={() => setMessageType('template')}
+                  className={`flex-1 py-2 font-bold text-xs rounded-lg transition-all ${messageType === 'template' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Meta Template
+                </button>
+              </div>
+            </div>
+            
+            {messageType === 'free' ? (
+              <textarea 
+                value={broadcastMessage}
+                onChange={(e) => setBroadcastMessage(e.target.value)}
+                placeholder="Type your promotional message here..."
+                className="w-full bg-white rounded-2xl p-5 border border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-inner text-sm outline-none transition-all h-64 resize-none mb-6"
+              />
+            ) : (
+              <div className="w-full bg-white rounded-2xl p-6 border border-slate-300 shadow-inner mb-6 h-64 flex flex-col justify-center items-center">
+                <svg className="w-12 h-12 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <label className="text-sm font-bold text-slate-700 mb-2">Meta Template Name</label>
+                <input 
+                  type="text"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  placeholder="e.g. promotional_offer_1"
+                  className="w-full max-w-sm rounded-xl p-3 border border-slate-300 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-sm text-center font-mono text-sm outline-none transition-all"
+                />
+                <p className="text-xs text-slate-400 mt-4 text-center max-w-sm">
+                  Must exactly match the template name approved in your Meta Business portal.
+                </p>
+              </div>
+            )}
 
             <button 
               onClick={sendBroadcast}
-              disabled={isBroadcasting || selectedContacts.size === 0 || !broadcastMessage.trim()}
+              disabled={isBroadcasting || selectedContacts.size === 0 || (messageType === 'free' ? !broadcastMessage.trim() : !templateName.trim())}
               className="bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold py-4 rounded-2xl text-lg hover:from-teal-700 hover:to-teal-800 transition-all shadow-lg shadow-teal-500/30 hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isBroadcasting ? (
