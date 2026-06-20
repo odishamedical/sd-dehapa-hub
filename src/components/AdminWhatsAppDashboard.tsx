@@ -12,6 +12,17 @@ export default function AdminWhatsAppDashboard() {
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // internal tabs
+  const [internalTab, setInternalTab] = useState<'inbox' | 'crm'>('inbox');
+
+  // CRM State
+  const [contacts, setContacts] = useState<any[]>([]);
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [selectedContacts, setSelectedContacts] = useState<Set<string>>(new Set());
+  const [bulkUploadText, setBulkUploadText] = useState('');
+  const [isBroadcasting, setIsBroadcasting] = useState(false);
+  const [crmLoading, setCrmLoading] = useState(true);
+
   // API Config State
   const [waToken, setWaToken] = useState("");
   const [waPhoneId, setWaPhoneId] = useState("");
@@ -65,6 +76,17 @@ export default function AdminWhatsAppDashboard() {
     return () => unsubscribe();
   }, []);
 
+  // Fetch Contacts
+  useEffect(() => {
+    const q = query(collection(db, 'whatsapp_contacts'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const contactData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setContacts(contactData);
+      setCrmLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
   // Fetch Messages for Selected Session
   useEffect(() => {
     if (!selectedSession) return;
@@ -110,6 +132,68 @@ export default function AdminWhatsAppDashboard() {
     });
   };
 
+  const saveBulkContacts = async () => {
+    if (!bulkUploadText.trim()) return;
+    const numbers = bulkUploadText.split(/[\n,]+/).map(n => n.trim().replace(/[^0-9]/g, '')).filter(n => n.length > 5);
+    let count = 0;
+    for (const num of numbers) {
+      if (!contacts.find(c => c.phone === num)) {
+        await setDoc(doc(db, 'whatsapp_contacts', num), {
+          phone: num,
+          name: 'Imported Contact',
+          createdAt: serverTimestamp()
+        }, { merge: true });
+        count++;
+      }
+    }
+    setBulkUploadText('');
+    alert(`Imported ${count} new contacts!`);
+  };
+
+  const sendBroadcast = async () => {
+    if (selectedContacts.size === 0) {
+      alert("Please select at least one contact.");
+      return;
+    }
+    if (!broadcastMessage.trim()) {
+      alert("Please enter a message to broadcast.");
+      return;
+    }
+    setIsBroadcasting(true);
+    let success = 0;
+    for (const phoneId of Array.from(selectedContacts)) {
+      try {
+        await fetch('/api/whatsapp/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: phoneId, text: broadcastMessage })
+        });
+        success++;
+      } catch (e) {
+        console.error("Failed to send to", phoneId);
+      }
+    }
+    setIsBroadcasting(false);
+    alert(`Broadcast sent to ${success} contacts!`);
+    setBroadcastMessage('');
+    setSelectedContacts(new Set());
+  };
+
+  const toggleContactSelection = (phone: string) => {
+    const newSet = new Set(selectedContacts);
+    if (newSet.has(phone)) newSet.delete(phone);
+    else newSet.add(phone);
+    setSelectedContacts(newSet);
+  };
+
+  const toggleAllContacts = () => {
+    if (selectedContacts.size === contacts.length) {
+      setSelectedContacts(new Set());
+    } else {
+      setSelectedContacts(new Set(contacts.map(c => c.phone)));
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* API Configuration Panel */}
@@ -150,6 +234,24 @@ export default function AdminWhatsAppDashboard() {
         </button>
       </div>
 
+      {/* Internal Tabs */}
+      <div className="flex border-b border-slate-200">
+        <button 
+          onClick={() => setInternalTab('inbox')}
+          className={`py-3 px-6 font-bold text-sm border-b-2 transition-colors ${internalTab === 'inbox' ? 'border-teal-500 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+        >
+          Live Inbox
+        </button>
+        <button 
+          onClick={() => setInternalTab('crm')}
+          className={`py-3 px-6 font-bold text-sm border-b-2 transition-colors flex items-center gap-2 ${internalTab === 'crm' ? 'border-teal-500 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+        >
+          Contacts & Broadcast
+          <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">NEW</span>
+        </button>
+      </div>
+
+      {internalTab === 'inbox' && (
       {/* Live Sessions Container */}
       <div className="flex h-[700px] bg-gray-50 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
       {/* Sidebar */}
@@ -274,6 +376,95 @@ export default function AdminWhatsAppDashboard() {
         )}
       </div>
       </div>
+      )}
+
+      {internalTab === 'crm' && (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col lg:flex-row gap-8 min-h-[700px]">
+          {/* Left Column: Contacts */}
+          <div className="w-full lg:w-1/2 flex flex-col">
+            <h3 className="font-bold text-slate-900 mb-4 text-lg">Contact Manager</h3>
+            <div className="flex gap-2 mb-4">
+               <textarea 
+                 value={bulkUploadText}
+                 onChange={(e) => setBulkUploadText(e.target.value)}
+                 placeholder="Paste comma-separated phone numbers (e.g. 919876543210, 919876543211)"
+                 className="flex-1 rounded-xl p-3 border-2 border-slate-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-sm text-sm outline-none transition-all h-24 resize-none"
+               />
+            </div>
+            <button 
+              onClick={saveBulkContacts}
+              disabled={!bulkUploadText.trim()}
+              className="bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-sm mb-6 disabled:opacity-50 hover:bg-slate-700 transition-colors self-start"
+            >
+              Upload / Save Numbers
+            </button>
+
+            <div className="flex justify-between items-center mb-3">
+              <span className="font-bold text-slate-600 text-sm">Saved Contacts ({contacts.length})</span>
+              <button onClick={toggleAllContacts} className="text-teal-600 text-xs font-bold hover:underline">
+                {selectedContacts.size === contacts.length && contacts.length > 0 ? "Deselect All" : "Select All"}
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto border border-slate-200 rounded-xl max-h-[400px]">
+              {crmLoading ? (
+                <div className="p-8 text-center text-slate-500">Loading contacts...</div>
+              ) : contacts.length === 0 ? (
+                <div className="p-8 text-center text-slate-500">No contacts saved yet. Paste numbers above to start.</div>
+              ) : (
+                contacts.map(c => (
+                  <div key={c.id} className="p-3 border-b border-slate-100 flex items-center gap-3 hover:bg-slate-50">
+                    <input 
+                      type="checkbox" 
+                      checked={selectedContacts.has(c.phone)}
+                      onChange={() => toggleContactSelection(c.phone)}
+                      className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
+                    />
+                    <div>
+                      <div className="font-bold text-slate-800 text-sm">+{c.phone}</div>
+                      <div className="text-[10px] text-slate-400">Added {new Date(c.createdAt?.toMillis ? c.createdAt.toMillis() : c.createdAt).toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Broadcast */}
+          <div className="w-full lg:w-1/2 flex flex-col">
+            <h3 className="font-bold text-slate-900 mb-4 text-lg">Broadcast Engine</h3>
+            
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+              <h4 className="font-bold text-amber-800 text-sm mb-1 flex items-center gap-2">
+                ⚠️ Meta's 24-Hour Policy
+              </h4>
+              <p className="text-xs text-amber-700">
+                You can only send free-form text messages to users who have messaged your bot within the last 24 hours. For cold marketing to older contacts, you must use approved Meta Message Templates. (This tool currently sends raw text).
+              </p>
+            </div>
+
+            <div className="mb-2 flex justify-between items-center">
+               <label className="text-sm font-bold text-slate-700">Message to Broadcast</label>
+               <span className="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded-md">{selectedContacts.size} Selected</span>
+            </div>
+            
+            <textarea 
+              value={broadcastMessage}
+              onChange={(e) => setBroadcastMessage(e.target.value)}
+              placeholder="Type your promotional message here..."
+              className="w-full rounded-xl p-4 border-2 border-slate-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 shadow-sm text-sm outline-none transition-all h-64 resize-none mb-4"
+            />
+
+            <button 
+              onClick={sendBroadcast}
+              disabled={isBroadcasting || selectedContacts.size === 0 || !broadcastMessage.trim()}
+              className="bg-teal-600 text-white font-bold py-4 rounded-xl text-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isBroadcasting ? `Sending...` : `Send to ${selectedContacts.size} Contacts`}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
