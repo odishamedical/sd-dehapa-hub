@@ -72,7 +72,7 @@ export default function AmbulanceProfileView({ id, customSlug }: { id?: string, 
             rating: rawData.rating || 4.5,
             reviews: rawData.reviews || 0,
             fee: rawData.fee || "Call Emergency",
-            image: rawData.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Doc")}&background=0f766e&color=fff&size=150`,
+            image: rawData.image || (rawData.rawImages && rawData.rawImages.length > 0 ? rawData.rawImages[0] : null) || `https://ui-avatars.com/api/?name=${encodeURIComponent(rawData.name || "Ambulance")}&background=0f766e&color=fff&size=150`,
             verified: rawData.verified || false,
             about: rawData.about || notVerified,
             specialties: rawData.specialties || [rawData.subCategory || notVerified],
@@ -100,7 +100,8 @@ export default function AmbulanceProfileView({ id, customSlug }: { id?: string, 
             
             // Auth Check
             ownerEmail: rawData.ownerEmail || null,
-            galleryImages: rawData.galleryImages || []
+            galleryImages: rawData.galleryImages || [],
+            rawImages: rawData.rawImages || []
           };
           setAmbulance(docData);
 
