@@ -59,6 +59,8 @@ export default function UserDashboard() {
     }
   }, [activeTab]);
 
+  const [userUid, setUserUid] = useState<string | null>(null);
+
   // State for Identity
   const [identityData, setIdentityData] = useState({
     profilePhoto: "",
@@ -67,7 +69,7 @@ export default function UserDashboard() {
     whatsappNumber: "",
     email: ""
   });
-  const identitySaveStatus = useAutosave(identityData, 1000);
+  const identitySaveStatus = useAutosave(identityData, userUid, 'identity', 1000, 'users');
 
   // State for Address
   const [addressData, setAddressData] = useState<AddressData>({
@@ -79,11 +81,11 @@ export default function UserDashboard() {
     pincode: "",
     localAddress: ""
   });
-  const addressSaveStatus = useAutosave(addressData, 1000);
+  const addressSaveStatus = useAutosave(addressData, userUid, 'address', 1000, 'users');
 
   // State for Family Members
   const [familyMembers, setFamilyMembers] = useState<any[]>([]);
-  const familySaveStatus = useAutosave(familyMembers, 1000);
+  const familySaveStatus = useAutosave(familyMembers, userUid, 'familyMembers', 1000, 'users');
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -91,12 +93,14 @@ export default function UserDashboard() {
     if (typeof window !== "undefined") {
       const email = localStorage.getItem("sd_current_user_email");
       const name = localStorage.getItem("sd_current_user_name");
+      const uid = localStorage.getItem("sd_current_user_uid");
       
       if (!email) {
         window.location.href = "/login";
       } else {
         setUserEmail(email);
         setUserName(name || email.split("@")[0]);
+        if (uid) setUserUid(uid);
         setIdentityData(prev => ({ ...prev, fullName: name || "", email }));
         
         // Check Firestore for phone

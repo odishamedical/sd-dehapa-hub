@@ -82,6 +82,7 @@ function LoginContent() {
     
     const finalAvatar = user.photoURL || null;
     
+    localStorage.setItem("sd_current_user_uid", user.uid);
     localStorage.setItem("sd_current_user_email", userEmail);
     localStorage.setItem("sd_current_user_role", userRole);
     localStorage.setItem("sd_current_user_name", userName);

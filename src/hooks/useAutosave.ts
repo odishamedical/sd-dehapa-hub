@@ -4,8 +4,8 @@ import { doc, setDoc } from 'firebase/firestore';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
-export function useAutosave<T>(data: T, docId?: string | null | number, fieldPath?: string | number, delay?: number) {
-  if (typeof docId === 'number' && typeof fieldPath === 'undefined') {
+export function useAutosave<T>(data: T, docId?: string | null | number, fieldPath?: string | number, delay?: number, collectionName: string = 'directory') {
+  if (typeof docId === 'number') {
     delay = docId;
     docId = null;
     fieldPath = '';
@@ -14,7 +14,6 @@ export function useAutosave<T>(data: T, docId?: string | null | number, fieldPat
   const initialRender = useRef(true);
 
   useEffect(() => {
-    // Skip the first render so it doesn't immediately say "saving" on page load
     if (initialRender.current) {
       initialRender.current = false;
       return;
@@ -29,20 +28,18 @@ export function useAutosave<T>(data: T, docId?: string | null | number, fieldPat
       }
 
       try {
-        const docRef = doc(db, 'directory', docId);
-        // Create an object with dynamic key for fieldPath
-        const updateData = { [fieldPath]: data };
+        const docRef = doc(db, collectionName, docId as string);
+        const updateData = fieldPath ? { [fieldPath]: data } : data;
         
-        await setDoc(docRef, updateData, { merge: true });
+        await setDoc(docRef, updateData as any, { merge: true });
         
         setStatus('saved');
-        
         setTimeout(() => setStatus('idle'), 3000);
       } catch (err) {
         console.error("Autosave error:", err);
         setStatus('error');
       }
-    }, delay);
+    }, delay || 1000);
 
     return () => {
       clearTimeout(handler);
