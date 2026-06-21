@@ -285,7 +285,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
           </div>
           <div className="flex flex-col justify-center">
             <span className="text-2xl sm:text-3xl font-black tracking-wide text-white font-serif drop-shadow-md">
-              DehaPa
+              Dehapa
             </span>
             <span className="text-xs sm:text-sm text-teal-300 tracking-[0.1em] font-medium group-hover:text-cyan-300 transition-colors">Your Health Our Mission</span>
           </div>
