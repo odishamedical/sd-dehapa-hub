@@ -158,7 +158,10 @@ export default function JoinPage() {
                 </div>
                 <h4 className="text-xl font-bold text-white mb-2">Can't find your profile?</h4>
                 <p className="text-slate-400 mb-6 max-w-md mx-auto">We might not have added your practice to our directory yet. You can create a brand new verified profile from scratch.</p>
-                <button className="bg-slate-800 hover:bg-slate-700 text-white font-bold px-8 py-3 rounded-xl transition-colors border border-slate-700">
+                <button 
+                  onClick={() => router.push('/join/register')}
+                  className="bg-slate-800 hover:bg-slate-700 text-white font-bold px-8 py-3 rounded-xl transition-colors border border-slate-700"
+                >
                   Create New Profile
                 </button>
               </div>
