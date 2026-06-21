@@ -212,7 +212,21 @@ function ClaimProfileContent() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {!auth.currentUser ? (
+            <div className="bg-slate-800/50 border border-slate-700 p-8 rounded-2xl text-center">
+              <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-500/20">
+                <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Authentication Required</h3>
+              <p className="text-slate-400 mb-6 max-w-md mx-auto">
+                You must be logged into the Dehapa platform to securely claim and manage this profile.
+              </p>
+              <Link href={`/login?redirect=/claim-profile?id=${doctor.id}`} className="inline-flex justify-center items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                Login / Register to Continue
+              </Link>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -292,6 +306,7 @@ function ClaimProfileContent() {
             </div>
 
           </form>
+          )}
         </div>
       </div>
       
