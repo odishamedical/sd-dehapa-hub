@@ -4,10 +4,10 @@ import GlobalHeader from "@/components/GlobalHeader";
 import TenantProvider from "@/components/TenantContext";
 
 export const metadata: Metadata = {
-  title: "DehaPa Hub | Your Health, Our Mission",
+  title: "Dehapa | Your Health, Our Mission",
   description: "India's most trusted healthcare network. Instantly find and book verified top-rated doctors, premium hospitals, pharmacies, and emergency services near you.",
   openGraph: {
-    title: "DehaPa Hub | Your Health, Our Mission",
+    title: "Dehapa | Your Health, Our Mission",
     description: "India's most trusted healthcare network. Instantly find and book verified top-rated doctors, premium hospitals, pharmacies, and emergency services near you.",
     url: 'https://dehapa.com',
     type: 'website',
