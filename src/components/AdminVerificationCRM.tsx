@@ -187,11 +187,29 @@ export default function AdminVerificationCRM() {
         }
 
         if (matchedUserId) {
-           await updateDoc(doc(db, 'users', matchedUserId), {
-              role: app.appType.toLowerCase(),
-              updatedAt: serverTimestamp()
-           });
-           console.log(`Successfully upgraded user ${matchedUserId} to ${app.appType.toLowerCase()}`);
+           // We might have multiple matching documents (e.g. Google Auth doc vs Ghost CRM doc)
+           // Let's just update all of them so we never hit a dual-identity mismatch.
+           const emailToMatch = app.userEmail || app.email;
+           const userQ = query(usersRef, where('email', '==', emailToMatch));
+           const userSnap = await getDocs(userQ);
+           
+           if (!userSnap.empty) {
+             const updatePromises = userSnap.docs.map(docSnap => 
+               updateDoc(doc(db, 'users', docSnap.id), {
+                 role: app.appType.toLowerCase(),
+                 updatedAt: serverTimestamp()
+               })
+             );
+             await Promise.all(updatePromises);
+             console.log(`Successfully upgraded ${userSnap.docs.length} user documents to ${app.appType.toLowerCase()}`);
+           } else {
+             // Fallback for phone matching if email was missing
+             await updateDoc(doc(db, 'users', matchedUserId), {
+                role: app.appType.toLowerCase(),
+                updatedAt: serverTimestamp()
+             });
+             console.log(`Successfully upgraded user ${matchedUserId} to ${app.appType.toLowerCase()}`);
+           }
         } else {
            console.log("No matching user found in users table to upgrade role for application: ", app.id);
         }
