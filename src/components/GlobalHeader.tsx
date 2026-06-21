@@ -222,20 +222,24 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       try {
         const q = query(
           collection(db2, "directory"),
-          where("ownerEmail", "==", userEmail),
-          where("verified", "==", true)
+          where("ownerEmail", "==", userEmail)
         );
         const snap = await getDocs(q);
         if (!snap.empty) {
-          const profile = snap.docs[0].data();
-          let newRole = "doctor"; // default assumption if missing
-          if (profile.category) newRole = profile.category.toLowerCase();
+          // Find the first verified profile
+          const verifiedProfileDoc = snap.docs.find(d => d.data().verified === true);
           
-          const currentRole = localStorage.getItem("sd_current_user_role");
-          if (currentRole !== newRole && currentRole !== "super_admin" && currentRole !== "admin") {
-             localStorage.setItem("sd_current_user_role", newRole);
-             setUserRole(newRole);
-             window.dispatchEvent(new Event("sd_role_upgraded"));
+          if (verifiedProfileDoc) {
+            const profile = verifiedProfileDoc.data();
+            let newRole = "doctor"; // default assumption if missing
+            if (profile.category) newRole = profile.category.toLowerCase();
+            
+            const currentRole = localStorage.getItem("sd_current_user_role");
+            if (currentRole !== newRole && currentRole !== "super_admin" && currentRole !== "admin") {
+               localStorage.setItem("sd_current_user_role", newRole);
+               setUserRole(newRole);
+               window.dispatchEvent(new Event("sd_role_upgraded"));
+            }
           }
         }
       } catch(e) {
