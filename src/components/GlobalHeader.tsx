@@ -112,10 +112,14 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       setUserAvatar(localStorage.getItem("sd_current_user_avatar"));
       
       let savedRole = localStorage.getItem("sd_current_user_role");
-      if (savedRole && savedRole !== savedRole.toLowerCase()) {
+      if (savedRole) {
         savedRole = savedRole.toLowerCase();
+        if (savedRole === "user") {
+          savedRole = "patient";
+        }
         localStorage.setItem("sd_current_user_role", savedRole);
       }
+      
       if (savedEmail === 'odishamedical@gmail.com') savedRole = 'super_admin';
       setUserRole(savedRole);
       
