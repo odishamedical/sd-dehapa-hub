@@ -100,14 +100,24 @@ export default function UserDashboard() {
       } else {
         setUserEmail(email);
         setUserName(name || email.split("@")[0]);
-        if (uid) setUserUid(uid);
+        if (uid) {
+           setUserUid(uid);
+        } else {
+           // Fallback if they haven't logged in recently to get the new uid localstorage
+           import('firebase/auth').then(({ getAuth, onAuthStateChanged }) => {
+              const auth = getAuth();
+              onAuthStateChanged(auth, (user) => {
+                 if (user) {
+                    setUserUid(user.uid);
+                    localStorage.setItem("sd_current_user_uid", user.uid);
+                 }
+              });
+           });
+        }
         setIdentityData(prev => ({ ...prev, fullName: name || "", email }));
         
         // Check Firestore for phone
         const checkProfile = async () => {
-          // Find user by email since we don't have uid here directly
-          // Actually, in login page we save uid. But we can assume phone is in localStorage if saved, 
-          // or we can just check identityData.phone later. For now let's just show if it's missing.
           const isComplete = localStorage.getItem("sd_current_user_profile_complete");
           if (isComplete !== "true") {
              setShowOnboarding(true);
