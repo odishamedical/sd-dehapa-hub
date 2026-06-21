@@ -211,6 +211,7 @@ export default function AdminVerificationCRM() {
             className="border border-slate-300 rounded-xl px-4 py-2 shadow-sm text-sm focus:border-teal-500 outline-none bg-white/80 backdrop-blur-sm font-bold"
           >
             <option value="pending">Pending</option>
+            <option value="draft">Draft / Incomplete</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
             <option value="All">All Statuses</option>
@@ -276,6 +277,11 @@ export default function AdminVerificationCRM() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-xs text-slate-600">{app.userEmail}</div>
+                      {(app.phone || app.whatsapp) && (
+                        <div className="text-[10px] text-slate-500 font-bold mt-1">
+                          Ph: {app.phone || app.whatsapp}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-xs font-medium text-slate-500">{dateStr}</div>
@@ -320,6 +326,17 @@ export default function AdminVerificationCRM() {
               
               {/* Left Column: Details */}
               <div className="flex-1 space-y-6">
+                
+                {/* Contact & Draft Info */}
+                {(selectedApp.phone || selectedApp.whatsapp) && (
+                  <div className="bg-amber-50/50 p-6 rounded-2xl border border-amber-200/50 shadow-sm">
+                    <h4 className="text-xs font-bold text-amber-700 uppercase tracking-widest mb-4">Contact Information</h4>
+                    <div className="flex gap-8">
+                      {selectedApp.phone && <div><p className="text-xs text-amber-600/70">Phone</p><p className="font-bold text-amber-900">{selectedApp.phone}</p></div>}
+                      {selectedApp.whatsapp && <div><p className="text-xs text-amber-600/70">WhatsApp</p><p className="font-bold text-amber-900">{selectedApp.whatsapp}</p></div>}
+                    </div>
+                  </div>
+                )}
                 
                 {/* Doctor Specific */}
                 {selectedApp.appType === 'Doctor' && (

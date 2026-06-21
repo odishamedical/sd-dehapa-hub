@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { auth, db, storage } from '@/lib/firebase';
-import { doc, getDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, query, where, limit, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import GlobalHeader from '@/components/GlobalHeader';
 import GlobalFooter from '@/components/GlobalFooter';
@@ -18,9 +18,13 @@ function ClaimProfileContent() {
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
+  const [step, setStep] = useState(1);
+  const [draftId, setDraftId] = useState<string | null>(null);
+
   // Form State
   const [whatsapp, setWhatsapp] = useState('');
   const [phone, setPhone] = useState('');
+  const [sameAsPhone, setSameAsPhone] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   
   // Submission State
@@ -49,6 +53,96 @@ function ClaimProfileContent() {
     fetchDoctor();
   }, [doctorId]);
 
+  // Hydrate Draft
+  useEffect(() => {
+    const fetchDraft = async () => {
+      if (auth.currentUser && doctorId) {
+        try {
+          const q = query(
+            collection(db, 'listing_claims'), 
+            where('userUid', '==', auth.currentUser.uid),
+            where('listingId', '==', doctorId),
+            where('status', '==', 'draft'),
+            limit(1)
+          );
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const draftDoc = snap.docs[0];
+            const data = draftDoc.data();
+            setDraftId(draftDoc.id);
+            if (data.phone) setPhone(data.phone);
+            if (data.whatsapp) setWhatsapp(data.whatsapp);
+            if (data.phone) setStep(2);
+          }
+        } catch(e) {
+          console.error("Draft fetch error", e);
+        }
+      }
+    };
+    // Let firebase auth initialize
+    const timer = setTimeout(() => {
+      if (auth.currentUser) fetchDraft();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [doctorId]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(e.target.value);
+    if (sameAsPhone) {
+      setWhatsapp(e.target.value);
+    }
+  };
+
+  const handleSameAsPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSameAsPhone(e.target.checked);
+    if (e.target.checked) {
+      setWhatsapp(phone);
+    }
+  };
+
+  const handleNextStep = async () => {
+    if (step === 1) {
+      if (!phone || !whatsapp) {
+        setError("Phone number and WhatsApp number are required.");
+        return;
+      }
+      // Save Draft
+      try {
+        if (!draftId && auth.currentUser && doctor) {
+          const docRef = await addDoc(collection(db, 'listing_claims'), {
+            userUid: auth.currentUser.uid,
+            userEmail: auth.currentUser.email || auth.currentUser.phoneNumber || "Unknown",
+            listingId: doctor.id,
+            legalName: doctor.name,
+            entityType: 'Doctor',
+            address: doctor.clinic?.address || doctor.city || 'Odisha',
+            phone,
+            whatsapp,
+            status: 'draft',
+            timestamp: serverTimestamp(),
+            lastUpdated: serverTimestamp()
+          });
+          setDraftId(docRef.id);
+        } else if (draftId) {
+          await updateDoc(doc(db, 'listing_claims', draftId), {
+            phone,
+            whatsapp,
+            lastUpdated: serverTimestamp()
+          });
+        }
+      } catch(e) {
+        console.error("Failed to save draft", e);
+      }
+    }
+    setError('');
+    setStep(step + 1);
+  };
+
+  const handlePreviousStep = () => {
+    setError('');
+    setStep(step - 1);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth.currentUser) {
@@ -72,21 +166,31 @@ function ClaimProfileContent() {
       const uploadResult = await uploadBytes(storageRef, file);
       const downloadUrl = await getDownloadURL(uploadResult.ref);
 
-      // 2. Save Verification Request to Firestore
-      await addDoc(collection(db, 'listing_claims'), {
-        listingId: doctor.id,
-        legalName: doctor.name,
-        entityType: 'Doctor',
-        address: doctor.clinic?.address || doctor.city || 'Odisha',
-        userEmail: auth.currentUser.email || auth.currentUser.phoneNumber || "Unknown",
-        userUid: auth.currentUser.uid,
-        whatsapp,
-        phone,
-        licenseNumber: `WhatsApp: ${whatsapp}`,
-        proofUrl: downloadUrl,
-        status: 'pending',
-        timestamp: serverTimestamp()
-      });
+      // 2. Save Verification Request to Firestore (Update existing draft)
+      if (draftId) {
+        await updateDoc(doc(db, 'listing_claims', draftId), {
+          licenseNumber: `WhatsApp: ${whatsapp}`,
+          proofUrl: downloadUrl,
+          status: 'pending',
+          lastUpdated: serverTimestamp()
+        });
+      } else {
+        await addDoc(collection(db, 'listing_claims'), {
+          listingId: doctor.id,
+          legalName: doctor.name,
+          entityType: 'Doctor',
+          address: doctor.clinic?.address || doctor.city || 'Odisha',
+          userEmail: auth.currentUser.email || auth.currentUser.phoneNumber || "Unknown",
+          userUid: auth.currentUser.uid,
+          whatsapp,
+          phone,
+          licenseNumber: `WhatsApp: ${whatsapp}`,
+          proofUrl: downloadUrl,
+          status: 'pending',
+          timestamp: serverTimestamp(),
+          lastUpdated: serverTimestamp()
+        });
+      }
 
       setSubmitted(true);
     } catch (err: any) {
@@ -225,82 +329,103 @@ function ClaimProfileContent() {
                 Login / Register to Continue
               </Link>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+          ) : <form onSubmit={step === 2 ? handleSubmit : (e) => e.preventDefault()} className="space-y-6">
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">WhatsApp Number</label>
-                <input 
-                  type="tel" 
-                  required 
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition-colors"
-                  placeholder="+91"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Alternative Phone</label>
-                <input 
-                  type="tel" 
-                  required 
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition-colors"
-                  placeholder="+91"
-                />
-              </div>
-            </div>
+            {/* STEP 1: Contact Info */}
+            {step === 1 && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+                <div className="flex items-center gap-3 mb-6 border-b border-slate-700 pb-4">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                  <h3 className="text-xl font-bold text-white">Contact Information</h3>
+                </div>
+                
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Phone Number *</label>
+                  <input type="tel" required value={phone} onChange={handlePhoneChange} className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition-colors" placeholder="+91 XXXXX XXXXX" />
+                </div>
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Medical Proof / ID</label>
-              <div className="border-2 border-dashed border-slate-700 rounded-2xl p-8 text-center bg-slate-800/20 hover:bg-slate-800/40 transition-colors relative cursor-pointer">
-                <input 
-                  type="file" 
-                  required 
-                  accept="image/*,.pdf"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setFile(e.target.files[0]);
-                    }
-                  }}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                {!file ? (
-                  <>
-                    <svg className="w-10 h-10 text-slate-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                    <p className="text-sm font-bold text-cyan-400 mb-1">Click to upload or drag and drop</p>
-                    <p className="text-xs text-slate-500">Medical Council Registration or Photo ID (PNG, JPG, PDF)</p>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border border-amber-500/30">
-                      <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <p className="text-sm font-bold text-amber-400">{file.name}</p>
-                    <p className="text-xs text-slate-500 mt-1">Click to replace</p>
-                  </>
-                )}
-              </div>
-            </div>
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400">WhatsApp Number *</label>
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-400 hover:text-white transition-colors">
+                      <input type="checkbox" checked={sameAsPhone} onChange={handleSameAsPhoneChange} className="rounded border-slate-700 bg-slate-800 text-amber-500 focus:ring-amber-500/20" />
+                      Same as Phone
+                    </label>
+                  </div>
+                  <input type="tel" required value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} disabled={sameAsPhone} className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition-colors disabled:opacity-50" placeholder="+91 XXXXX XXXXX" />
+                </div>
 
-            <div className="pt-6 border-t border-slate-700/50">
-              <button 
-                type="submit" 
-                disabled={submitting}
-                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:opacity-50 flex items-center justify-center gap-3"
-              >
-                {submitting ? (
-                  <>
-                    <div className="animate-spin w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full"></div>
-                    Submitting Proof...
-                  </>
-                ) : (
-                  'Submit Verification Request'
-                )}
-              </button>
-              <p className="text-xs text-center text-slate-500 mt-4 font-medium">
+                <div className="pt-6 border-t border-slate-700/50">
+                  <button type="button" onClick={handleNextStep} className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                    Save & Continue <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                  </button>
+                  <p className="text-center text-xs text-slate-500 mt-4">Your progress is automatically saved.</p>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 2: Proof Upload */}
+            {step === 2 && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+                <div className="flex items-center gap-3 mb-6 border-b border-slate-700 pb-4">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  <h3 className="text-xl font-bold text-white">Identity Verification</h3>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Medical Proof / ID</label>
+                  <div className="border-2 border-dashed border-slate-700 rounded-2xl p-8 text-center bg-slate-800/20 hover:bg-slate-800/40 transition-colors relative cursor-pointer">
+                    <input 
+                      type="file" 
+                      required 
+                      accept="image/*,.pdf"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setFile(e.target.files[0]);
+                        }
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    {!file ? (
+                      <>
+                        <svg className="w-10 h-10 text-slate-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        <p className="text-sm font-bold text-cyan-400 mb-1">Click to upload or drag and drop</p>
+                        <p className="text-xs text-slate-500">Medical Council Registration or Photo ID (PNG, JPG, PDF)</p>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border border-amber-500/30">
+                          <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <p className="text-sm font-bold text-amber-400">{file.name}</p>
+                        <p className="text-xs text-slate-500 mt-1">Click to replace</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-slate-700/50 flex gap-4">
+                  <button type="button" onClick={handlePreviousStep} disabled={submitting} className="w-1/3 bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 py-4 rounded-xl transition-all disabled:opacity-50">
+                    Back
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={submitting}
+                    className="w-2/3 bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:opacity-50 flex items-center justify-center gap-3"
+                  >
+                    {submitting ? (
+                      <>
+                        <div className="animate-spin w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full"></div>
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Verification'
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+    <p className="text-xs text-center text-slate-500 mt-4 font-medium">
                 By submitting, you confirm that you are the authorized representative for this profile.
               </p>
             </div>

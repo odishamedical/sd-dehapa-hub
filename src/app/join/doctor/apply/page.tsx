@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { auth, db, storage } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, limit, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import GlobalHeader from '@/components/GlobalHeader';
 import GlobalFooter from '@/components/GlobalFooter';
@@ -16,44 +16,143 @@ function DoctorApplyContent() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [draftId, setDraftId] = useState<string | null>(null);
+
+  // Step 1: Contact Info
+  const [phone, setPhone] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [sameAsPhone, setSameAsPhone] = useState(false);
   
-  // Step 1: Official Identity
+  // Step 2: Legal Identity & Clinic
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
   const [specialty, setSpecialty] = useState('General Physician');
-  
-  // Step 2: Clinic & Consultation Details
   const [clinicName, setClinicName] = useState('');
   const [clinicAddress, setClinicAddress] = useState('');
-  const [consultationType, setConsultationType] = useState('both'); // online, offline, both
+  const [consultationType, setConsultationType] = useState('In-person & Online');
   const [consultationFee, setConsultationFee] = useState('');
   
-  // Step 3: Medical Credentials
+  // Step 3: Registration
   const [mciNumber, setMciNumber] = useState('');
   const [file, setFile] = useState<File | null>(null);
   
   const [submitted, setSubmitted] = useState(false);
-
-  // If not logged in, we immediately show the login prompt block instead of the form.
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    // Quick check to give auth state a moment to load from IndexedDB/localStorage
     const timer = setTimeout(() => setAuthChecked(true), 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleNextStep = () => {
+  // Hydrate Draft
+  useEffect(() => {
+    const fetchDraft = async () => {
+      if (auth.currentUser) {
+        try {
+          const q = query(
+            collection(db, 'doctor_applications'), 
+            where('userUid', '==', auth.currentUser.uid),
+            where('status', '==', 'draft'),
+            limit(1)
+          );
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const draftDoc = snap.docs[0];
+            const data = draftDoc.data();
+            setDraftId(draftDoc.id);
+            if (data.phone) setPhone(data.phone);
+            if (data.whatsapp) setWhatsapp(data.whatsapp);
+            if (data.officialName?.first) setFirstName(data.officialName.first);
+            if (data.officialName?.last) setLastName(data.officialName.last);
+            if (data.specialty) setSpecialty(data.specialty);
+            if (data.clinic?.name) setClinicName(data.clinic.name);
+            if (data.clinic?.address) setClinicAddress(data.clinic.address);
+            if (data.clinic?.consultationFee) setConsultationFee(data.clinic.consultationFee.toString());
+            // If they already filled step 1, jump to step 2
+            if (data.phone) setStep(2);
+          }
+        } catch(e) {
+          console.error("Draft fetch error", e);
+        }
+      }
+    };
+    if (authChecked && auth.currentUser) {
+      fetchDraft();
+    }
+  }, [authChecked, auth.currentUser]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(e.target.value);
+    if (sameAsPhone) {
+      setWhatsapp(e.target.value);
+    }
+  };
+
+  const handleSameAsPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSameAsPhone(e.target.checked);
+    if (e.target.checked) {
+      setWhatsapp(phone);
+    }
+  };
+
+  const handleNextStep = async () => {
     if (step === 1) {
-      if (!firstName || !lastName) {
-        setError("First name and Last name are required.");
+      if (!phone || !whatsapp) {
+        setError("Phone number and WhatsApp number are required.");
         return;
       }
+      // Save Draft
+      try {
+        if (!draftId && auth.currentUser) {
+          const docRef = await addDoc(collection(db, 'doctor_applications'), {
+            userUid: auth.currentUser.uid,
+            userEmail: auth.currentUser.email || auth.currentUser.phoneNumber || "Unknown",
+            phone,
+            whatsapp,
+            status: 'draft',
+            timestamp: serverTimestamp(),
+            lastUpdated: serverTimestamp()
+          });
+          setDraftId(docRef.id);
+        } else if (draftId) {
+          await updateDoc(doc(db, 'doctor_applications', draftId), {
+            phone,
+            whatsapp,
+            lastUpdated: serverTimestamp()
+          });
+        }
+      } catch(e) {
+        console.error("Failed to save draft", e);
+      }
+
     } else if (step === 2) {
-      if (!clinicName || !clinicAddress || !consultationFee) {
-        setError("Clinic details and consultation fees are required.");
+      if (!firstName || !lastName || !clinicName || !clinicAddress) {
+        setError("Please fill out all required fields.");
         return;
+      }
+      // Update Draft
+      try {
+        if (draftId) {
+          await updateDoc(doc(db, 'doctor_applications', draftId), {
+            officialName: {
+              first: firstName,
+              middle: middleName,
+              last: lastName,
+              full: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`.trim()
+            },
+            specialty,
+            clinic: {
+              name: clinicName,
+              address: clinicAddress,
+              consultationType,
+              consultationFee: Number(consultationFee)
+            },
+            lastUpdated: serverTimestamp()
+          });
+        }
+      } catch(e) {
+        console.error("Failed to save draft", e);
       }
     }
     setError('');
@@ -88,31 +187,17 @@ function DoctorApplyContent() {
       const uploadResult = await uploadBytes(storageRef, file);
       const downloadUrl = await getDownloadURL(uploadResult.ref);
 
-      // 2. Save Application Request to Firestore
-      // We use 'doctor_applications' so admins can distinguish it from 'listing_claims'
-      await addDoc(collection(db, 'doctor_applications'), {
-        userUid: auth.currentUser.uid,
-        userEmail: auth.currentUser.email || auth.currentUser.phoneNumber || "Unknown",
-        officialName: {
-          first: firstName,
-          middle: middleName,
-          last: lastName,
-          full: `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`.trim()
-        },
-        specialty,
-        clinic: {
-          name: clinicName,
-          address: clinicAddress,
-          consultationType,
-          consultationFee: Number(consultationFee)
-        },
-        credentials: {
-          mciNumber,
-          proofUrl: downloadUrl
-        },
-        status: 'pending',
-        timestamp: serverTimestamp()
-      });
+      // 2. Submit Application to Firestore (Update existing draft)
+      if (draftId) {
+        await updateDoc(doc(db, 'doctor_applications', draftId), {
+          credentials: {
+            mciNumber,
+            proofUrl: downloadUrl
+          },
+          status: 'pending',
+          lastUpdated: serverTimestamp()
+        });
+      }
 
       setSubmitted(true);
     } catch (err: any) {
@@ -203,22 +288,51 @@ function DoctorApplyContent() {
                 )}
 
                 <form onSubmit={step === 3 ? handleSubmit : (e) => e.preventDefault()}>
-                  {/* STEP 1 */}
+                  {/* STEP 1: Contact Info */}
                   {step === 1 && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
                       <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
                         <User className="w-5 h-5 text-teal-400" />
-                        <h3 className="text-xl font-bold text-white">Official Identity</h3>
+                        <h3 className="text-xl font-bold text-white">Contact Information</h3>
                       </div>
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Phone Number *</label>
+                        <input type="tel" required value={phone} onChange={handlePhoneChange} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors" placeholder="+91 XXXXX XXXXX" />
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400">WhatsApp Number *</label>
+                          <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-400 hover:text-white transition-colors">
+                            <input type="checkbox" checked={sameAsPhone} onChange={handleSameAsPhoneChange} className="rounded border-slate-700 bg-slate-800 text-teal-500 focus:ring-teal-500/20" />
+                            Same as Phone
+                          </label>
+                        </div>
+                        <input type="tel" required value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} disabled={sameAsPhone} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors disabled:opacity-50" placeholder="+91 XXXXX XXXXX" />
+                      </div>
+
+                      <div className="pt-6">
+                        <button type="button" onClick={handleNextStep} className="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-900 font-bold px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(20,184,166,0.2)]">
+                          Save & Continue <ArrowRight className="w-5 h-5" />
+                        </button>
+                        <p className="text-center text-xs text-slate-500 mt-4">Your progress is automatically saved.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* STEP 2: Legal Identity */}
+                  {step === 2 && (
+                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+                      <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
+                        <User className="w-5 h-5 text-teal-400" />
+                        <h3 className="text-xl font-bold text-white">Professional Identity</h3>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">First Name *</label>
-                          <input type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors" placeholder="e.g. Sanjeev" />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Middle Name</label>
-                          <input type="text" value={middleName} onChange={(e) => setMiddleName(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors" placeholder="Optional" />
+                          <input type="text" required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors" placeholder="e.g. Ramesh" />
                         </div>
                         <div>
                           <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Last Name *</label>
@@ -231,37 +345,15 @@ function DoctorApplyContent() {
                         <select value={specialty} onChange={(e) => setSpecialty(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none transition-colors">
                           <option>General Physician</option>
                           <option>Cardiologist</option>
-                          <option>Dentist</option>
                           <option>Dermatologist</option>
                           <option>Pediatrician</option>
                           <option>Orthopedic</option>
-                          <option>Gynecologist</option>
-                          <option>Neurologist</option>
-                          <option>Other</option>
+                          <option>Dentist</option>
                         </select>
                       </div>
 
-                      <div className="pt-6">
-                        <button type="button" onClick={handleNextStep} className="w-full bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all">
-                          Next Step <ArrowRight className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* STEP 2 */}
-                  {step === 2 && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-                      <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
-                        <Building2 className="w-5 h-5 text-teal-400" />
-                        <h3 className="text-xl font-bold text-white">Clinic Details</h3>
-                      </div>
-
-                      <div>
+                      <div className="pt-4 border-t border-slate-800">
                         <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Clinic / Hospital Name *</label>
-                        <input type="text" value={clinicName} onChange={(e) => setClinicName(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none transition-colors" placeholder="Where do you practice?" />
-                      </div>
-
                       <div>
                         <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Full Address *</label>
                         <textarea rows={3} value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none transition-colors resize-none" placeholder="Street, City, Pincode" />
