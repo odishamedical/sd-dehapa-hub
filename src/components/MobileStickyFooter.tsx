@@ -60,7 +60,7 @@ export default function MobileStickyFooter({ onScanClick }: Props) {
           <span className="text-[10px] font-bold tracking-wider">Vault</span>
         </Link>
 
-        <Link href="/login" className={`flex flex-col items-center gap-1 ${pathname === '/login' ? 'text-teal-400' : 'text-slate-500'}`}>
+        <Link href="/portal" className={`flex flex-col items-center gap-1 ${pathname.includes('/portal') ? 'text-teal-400' : 'text-slate-500'}`}>
           <User className="w-6 h-6" />
           <span className="text-[10px] font-bold tracking-wider">Profile</span>
         </Link>
