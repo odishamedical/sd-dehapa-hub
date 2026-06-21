@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, collection, addDoc, onSnapshot, query, where } from "firebase/firestore";
+import { getFirestore, collection, addDoc, onSnapshot, query, where, getDocs } from "firebase/firestore";
 import GlobalAvatarWidget from "./GlobalAvatarWidget";
 import DoctorStatusToggle from "./DoctorStatusToggle";
 
@@ -200,6 +200,40 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       });
     }, (err) => console.warn("Signout broadcast listener error:", err));
     return () => unsub();
+  }, [userEmail]);
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // ── AUTO-UPGRADE ROLE TO PROVIDER ────────────────────────────────────────────
+  // If the admin approved their profile in the Directory, they own a verified doc.
+  // We check this on load, and if so, upgrade their role so they see the right dashboard.
+  useEffect(() => {
+    if (!userEmail) return;
+    const checkProviderRole = async () => {
+      const app2 = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+      const db2 = getFirestore(app2, "default");
+      try {
+        const q = query(
+          collection(db2, "directory"),
+          where("ownerEmail", "==", userEmail),
+          where("verified", "==", true)
+        );
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const profile = snap.docs[0].data();
+          let newRole = "doctor"; // default assumption if missing
+          if (profile.category) newRole = profile.category.toLowerCase();
+          
+          const currentRole = localStorage.getItem("sd_current_user_role");
+          if (currentRole !== newRole && currentRole !== "super_admin" && currentRole !== "admin") {
+             localStorage.setItem("sd_current_user_role", newRole);
+             setUserRole(newRole);
+          }
+        }
+      } catch(e) {
+         console.warn("Failed to check provider role:", e);
+      }
+    };
+    checkProviderRole();
   }, [userEmail]);
   // ─────────────────────────────────────────────────────────────────────────────
 

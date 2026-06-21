@@ -16,10 +16,28 @@ import InviteWidget from '@/components/InviteWidget';
 import PatientConsultWidget from '@/components/PatientConsultWidget';
 import PatientAppointments from '@/components/PatientAppointments';
 
-function UserHomeWidget({ userName, userUid, onTabChange }: { userName: string | null, userUid: string | null, onTabChange: (id: string) => void }) {
+function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName: string | null, userUid: string | null, userRole: string | null, onTabChange: (id: string) => void }) {
   return (
     <div className="flex flex-col md:grid md:grid-cols-3 gap-4 md:gap-6">
         
+        {/* 0. Notification Banner for Providers */}
+        {userRole && userRole !== 'patient' && userRole !== 'super_admin' && userRole !== 'admin' && (
+          <div className="md:col-span-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 shadow-[0_10px_30px_rgba(16,185,129,0.3)] flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4">
+            <div className="flex items-center gap-4 text-white">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">Congratulations!</h3>
+                <p className="text-sm font-medium text-emerald-50">Your application has been approved. Your official {userRole.charAt(0).toUpperCase() + userRole.slice(1)} Dashboard is now unlocked.</p>
+              </div>
+            </div>
+            <a href={`/portal/${userRole}`} className="bg-white text-emerald-600 hover:bg-emerald-50 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] shadow-sm transition-colors whitespace-nowrap">
+              Go to Dashboard
+            </a>
+          </div>
+        )}
+
         {/* 1. Welcome Banner (Top on both) */}
         <div className="order-1 md:col-span-2 bg-gradient-to-br from-white to-slate-50 border border-slate-200 shadow-sm rounded-[24px] p-6 md:p-8 flex flex-col justify-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
@@ -66,6 +84,7 @@ export default function UserDashboard() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>("User");
+  const [userRole, setUserRole] = useState<string | null>(null);
   
   const [activeTab, setActiveTab] = useState("home");
 
@@ -141,6 +160,9 @@ export default function UserDashboard() {
            });
         }
         setIdentityData(prev => ({ ...prev, fullName: name || "", email }));
+        
+        const role = localStorage.getItem("sd_current_user_role");
+        setUserRole(role);
         
         // Check if profile is complete. If not, send to our brand new /portal/setup page
         const isComplete = localStorage.getItem("sd_current_user_profile_complete");
@@ -239,7 +261,7 @@ export default function UserDashboard() {
         subtitle: userEmail,
       }}
       hideDefaultModulesList={true}
-      homeWidget={<UserHomeWidget userName={userName} userUid={userEmail} onTabChange={handleTabChange} />}
+      homeWidget={<UserHomeWidget userName={userName} userUid={userEmail} userRole={userRole} onTabChange={handleTabChange} />}
     >
       <div className="max-w-4xl mx-auto pb-24">
         
