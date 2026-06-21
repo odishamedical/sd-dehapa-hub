@@ -116,6 +116,17 @@ export default function DashboardLayout({
         )}
         
         <nav className="flex-1 p-4 space-y-1">
+          <button 
+            onClick={() => onTabChange("home")} 
+            className={`mb-4 w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
+              activeTab === "home"
+                ? 'bg-cyan-500/20 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' 
+                : 'text-slate-400 hover:bg-cyan-950/30 hover:text-cyan-100'
+            }`}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span className="truncate">Dashboard Home</span>
+          </button>
           {Object.entries(sectionedTabs).map(([sectionName, sectionTabs], index) => {
             const isDefault = sectionName === "DEFAULT";
             const isExpanded = isDefault || expandedSections[sectionName];
@@ -184,9 +195,19 @@ export default function DashboardLayout({
         <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
 
         <header className="bg-transparent border-b border-white/30 px-4 md:px-8 py-4 md:py-6 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
-          <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
-            {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
-          </h2>
+          {activeTab !== "home" ? (
+            <button 
+                onClick={() => onTabChange("home")}
+                className="flex items-center gap-2 text-slate-700 hover:text-teal-700 hover:bg-white/60 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200/50 bg-white/40 backdrop-blur-md"
+            >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span className="font-bold text-sm md:text-base">Back to Dashboard</span>
+            </button>
+          ) : (
+            <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
+              {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
+            </h2>
+          )}
           <div className="flex items-center gap-4">
             <Link href="/" className="text-sm font-bold text-teal-700 hover:text-teal-900 hover:underline bg-teal-50 border border-teal-100 px-4 py-2 rounded-xl transition-colors">Return to Home Page</Link>
           </div>
