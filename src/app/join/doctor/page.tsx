@@ -42,11 +42,11 @@ export default function DoctorLandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="https://sd-auth-center.vercel.app/?redirect_uri=https://www.dehapa.com/join/doctor/apply" className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-black px-8 py-4 rounded-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]">
+              <Link href="/login?redirect=/join/doctor/apply" className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-black px-8 py-4 rounded-xl shadow-[0_0_30px_rgba(20,184,166,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(20,184,166,0.5)]">
                 Register as Doctor
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <Link href="https://sd-auth-center.vercel.app/?redirect_uri=https://www.dehapa.com/portal/doctor" className="inline-flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold px-8 py-4 rounded-xl border border-slate-700 transition-all">
+              <Link href="/login?redirect=/portal/doctor" className="inline-flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold px-8 py-4 rounded-xl border border-slate-700 transition-all">
                 Provider Login
               </Link>
             </div>
@@ -159,7 +159,7 @@ export default function DoctorLandingPage() {
             </ul>
           </div>
           <div className="w-full md:w-auto">
-            <Link href="https://sd-auth-center.vercel.app/?redirect_uri=https://www.dehapa.com/join/doctor/apply" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-white text-slate-900 hover:bg-slate-200 font-black px-8 py-4 rounded-xl transition-all">
+            <Link href="/login?redirect=/join/doctor/apply" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-white text-slate-900 hover:bg-slate-200 font-black px-8 py-4 rounded-xl transition-all">
               Start Verification
               <ArrowRight className="w-5 h-5" />
             </Link>
