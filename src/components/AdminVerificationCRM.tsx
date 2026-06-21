@@ -144,6 +144,23 @@ export default function AdminVerificationCRM() {
 
       await batch.commit();
       
+      // Upgrade role in users collection
+      try {
+        const usersRef = collection(db, 'users');
+        const userQ = query(usersRef, where('email', '==', app.userEmail));
+        const userSnap = await getDocs(userQ);
+        if (!userSnap.empty) {
+          userSnap.forEach((userDoc) => {
+             updateDoc(doc(db, 'users', userDoc.id), {
+                role: app.appType.toLowerCase(),
+                updatedAt: serverTimestamp()
+             });
+          });
+        }
+      } catch (roleErr) {
+        console.error("Failed to upgrade role in users table:", roleErr);
+      }
+      
       setApplications(apps => apps.map(a => a.id === app.id ? { ...a, status: 'approved' } : a));
       setSelectedApp(null);
       alert("Application Approved and Live Profile Created!");
