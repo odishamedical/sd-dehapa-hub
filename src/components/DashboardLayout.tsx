@@ -194,26 +194,26 @@ export default function DashboardLayout({
         <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
         <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
 
-        <header className="bg-transparent border-b border-white/30 px-4 md:px-8 py-4 md:py-6 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
-          {activeTab !== "home" ? (
-            <button 
-                onClick={() => onTabChange("home")}
-                className="flex items-center gap-2 text-slate-700 hover:text-teal-700 hover:bg-white/60 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200/50 bg-white/40 backdrop-blur-md"
-            >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                <span className="font-bold text-sm md:text-base">Back to Dashboard</span>
-            </button>
-          ) : (
-            <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
-              {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
-            </h2>
-          )}
-        </header>
+        <header className="bg-white/40 backdrop-blur-md border-b border-white/30 px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
+          <div className="flex items-center gap-4">
+            {activeTab !== "home" ? (
+              <button 
+                  onClick={() => onTabChange("home")}
+                  className="flex items-center gap-2 text-slate-700 hover:text-teal-700 hover:bg-white/80 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200/50 bg-white/60 backdrop-blur-md"
+              >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                  <span className="font-bold text-sm md:text-base">Back to Dashboard</span>
+              </button>
+            ) : (
+              <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize py-2">
+                {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
+              </h2>
+            )}
+          </div>
 
-        {/* Horizontal Top Stepper (Mockup Style) */}
-        {activeSection && activeTab !== "home" && (
-          <div className="bg-transparent sticky top-[73px] md:top-[81px] z-40 px-4 sm:px-8 pt-4 pb-2">
-            <div className="flex justify-start md:justify-start">
+          {/* Horizontal Top Stepper (Mockup Style) */}
+          {activeSection && activeTab !== "home" && (
+            <div className="flex items-center">
               {(() => {
                 const tabs = sectionedTabs[activeSection] || [];
                 const currentIndex = tabs.findIndex(t => t.id === activeTab);
@@ -225,20 +225,20 @@ export default function DashboardLayout({
                 const hasNext = currentIndex < totalTabs - 1;
                 
                 return (
-                  <div className="flex items-center bg-white/20 backdrop-blur-[30px] p-1.5 rounded-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_10px_20px_rgba(0,0,0,0.05)] border border-white/60">
+                  <div className="flex items-center bg-white/40 backdrop-blur-[30px] p-1.5 rounded-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_10px_20px_rgba(0,0,0,0.05)] border border-white/60">
                     {hasPrev && (
                       <button
                         onClick={() => onTabChange(tabs[currentIndex - 1].id)}
-                        className="px-6 py-2.5 bg-transparent hover:bg-white/40 rounded-xl text-slate-600 font-bold text-sm transition-all border-r border-slate-400/20 mr-1"
+                        className="px-4 py-2 bg-transparent hover:bg-white/60 rounded-xl text-slate-600 font-bold text-sm transition-all border-r border-slate-400/20 mr-1"
                       >
-                        Previous
+                        Prev
                       </button>
                     )}
                     
                     {visibleTabs.map((tab, idx) => (
                       <div
                         key={tab.id}
-                        className="px-6 sm:px-10 py-2.5 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)] rounded-xl text-slate-900 font-black text-sm relative z-10 flex items-center gap-2"
+                        className="px-4 sm:px-6 py-2 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)] rounded-xl text-slate-900 font-black text-sm relative z-10 flex items-center gap-2 whitespace-nowrap"
                       >
                         {currentIndex + 1}. {tab.label}
                       </div>
@@ -247,12 +247,11 @@ export default function DashboardLayout({
                     {hasNext && (
                       <button
                         onClick={() => onTabChange(tabs[currentIndex + 1].id)}
-                        className="px-8 py-2.5 bg-[#0f172a] text-white rounded-xl shadow-[0_4px_15px_rgba(15,23,42,0.3)] font-bold text-sm ml-2 transition-all hover:bg-[#1e293b]"
+                        className="px-6 py-2 bg-[#0f172a] text-white rounded-xl shadow-[0_4px_15px_rgba(15,23,42,0.3)] font-bold text-sm ml-2 transition-all hover:bg-[#1e293b]"
                       >
                         Next
                       </button>
                     )}
-
                     {!hasNext && (
                       <button 
                         onClick={() => {
@@ -268,8 +267,8 @@ export default function DashboardLayout({
                 );
               })()}
             </div>
-          </div>
-        )}
+          )}
+        </header>
 
         <div className="p-6 md:p-8 flex-1 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
           {activeTab === "home" ? (
