@@ -408,10 +408,22 @@ export default function AdminUserManagement() {
                     </span>
                   </td>
                   <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2.5 h-2.5 rounded-full ${(!user.status || user.status === 'active') ? 'bg-green-500' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-                      <span className="text-xs font-bold text-slate-700 uppercase tracking-widest">{user.status || 'Active'}</span>
-                    </div>
+                    {(() => {
+                      const isSuspended = user.status === 'suspended';
+                      let isOnline = false;
+                      if (!isSuspended && user.lastActiveAt) {
+                        const time = user.lastActiveAt.toMillis ? user.lastActiveAt.toMillis() : (user.lastActiveAt.seconds * 1000 || 0);
+                        isOnline = (Date.now() - time) < 5 * 60 * 1000;
+                      }
+                      return (
+                        <div className="flex items-center gap-2">
+                          <div className={`w-2.5 h-2.5 rounded-full ${isSuspended ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : isOnline ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-slate-300'}`}></div>
+                          <span className={`text-xs font-bold uppercase tracking-widest ${isSuspended ? 'text-red-600' : isOnline ? 'text-green-600' : 'text-slate-500'}`}>
+                            {isSuspended ? 'Suspended' : isOnline ? 'Online' : 'Offline'}
+                          </span>
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500 font-medium flex items-center gap-2 justify-between" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
                     <span>{user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'Recent'}</span>
@@ -443,9 +455,19 @@ export default function AdminUserManagement() {
                 <div>
                   <h2 className="text-2xl font-serif font-bold drop-shadow-md">{selectedUser.name || "Unknown User"}</h2>
                   <div className="flex items-center gap-3 mt-2">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${selectedUser.status === 'suspended' ? 'bg-rose-500/20 text-rose-300 border-rose-500/50' : 'bg-teal-500/20 text-teal-300 border-teal-500/50'}`}>
-                      {selectedUser.status === 'suspended' ? 'Suspended' : 'Active'}
-                    </span>
+                    {(() => {
+                      const isSuspended = selectedUser.status === 'suspended';
+                      let isOnline = false;
+                      if (!isSuspended && selectedUser.lastActiveAt) {
+                        const time = selectedUser.lastActiveAt.toMillis ? selectedUser.lastActiveAt.toMillis() : (selectedUser.lastActiveAt.seconds * 1000 || 0);
+                        isOnline = (Date.now() - time) < 5 * 60 * 1000;
+                      }
+                      return (
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${isSuspended ? 'bg-rose-500/20 text-rose-300 border-rose-500/50' : isOnline ? 'bg-green-500/20 text-green-300 border-green-500/50' : 'bg-slate-500/20 text-slate-300 border-slate-500/50'}`}>
+                          {isSuspended ? 'Suspended' : isOnline ? 'Online' : 'Offline'}
+                        </span>
+                      );
+                    })()}
                     <span className="text-sm font-medium text-slate-300 uppercase tracking-widest">{['member', 'user', 'patient'].includes(selectedUser.role?.toLowerCase() || 'member') ? 'Member' : selectedUser.role}</span>
                   </div>
                 </div>
