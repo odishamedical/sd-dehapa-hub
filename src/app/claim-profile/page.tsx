@@ -8,6 +8,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import GlobalHeader from '@/components/GlobalHeader';
 import GlobalFooter from '@/components/GlobalFooter';
 import Link from 'next/link';
+import RazorpayCheckout from '@/components/payments/RazorpayCheckout';
 
 function ClaimProfileContent() {
   const router = useRouter();
@@ -128,17 +129,60 @@ function ClaimProfileContent() {
     return (
       <div className="min-h-screen bg-[#060B14] flex flex-col">
         <GlobalHeader />
-        <div className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-slate-900/50 backdrop-blur-xl border border-emerald-500/30 p-8 rounded-3xl shadow-[0_0_50px_rgba(16,185,129,0.1)] max-w-lg w-full text-center">
-            <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
+        <div className="flex-1 flex items-center justify-center p-6 py-12">
+          <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 p-8 sm:p-10 rounded-[32px] shadow-2xl max-w-2xl w-full text-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 relative z-10">
               <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
-            <h2 className="text-3xl font-black text-white mb-4 font-serif">Request Submitted!</h2>
-            <p className="text-slate-400 mb-8 leading-relaxed">
-              Thank you for verifying your profile. Our administration team has received your documents and will review them shortly. You will be notified via email or WhatsApp once approved.
+            
+            <h2 className="text-3xl font-black text-white mb-2 font-serif relative z-10">Profile Claim Initiated!</h2>
+            <p className="text-slate-400 mb-8 leading-relaxed max-w-lg mx-auto relative z-10">
+              We have securely received your medical documents. Our administration team will manually review them within 24-48 hours.
             </p>
-            <Link href="/" className="bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-xl font-bold transition-colors w-full inline-block">
-              Return to Home
+
+            {/* Premium Upsell Card */}
+            <div className="bg-slate-800/50 border border-teal-500/30 rounded-2xl p-6 text-left mb-8 relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-teal-500/20 rounded-lg flex items-center justify-center border border-teal-500/30">
+                  <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Skip the wait. Go Premium!</h3>
+                  <p className="text-teal-400 text-sm">Get instantly verified today.</p>
+                </div>
+              </div>
+              
+              <ul className="space-y-3 mb-6">
+                <li className="flex items-center gap-2 text-sm text-slate-300">
+                  <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  Instant Blue Tick Verification
+                </li>
+                <li className="flex items-center gap-2 text-sm text-slate-300">
+                  <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  Rank #1 in search results in your city
+                </li>
+                <li className="flex items-center gap-2 text-sm text-slate-300">
+                  <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  Unlock unlimited Telemedicine Video Calls
+                </li>
+              </ul>
+
+              <RazorpayCheckout 
+                amount={500}
+                buttonText="UPGRADE TO PREMIUM (₹500/MO)"
+                paymentType="DOCTOR_SUBSCRIPTION"
+                onSuccess={(res) => {
+                  alert('Payment Verified! You are now Premium.');
+                  router.push('/portal/admin');
+                }}
+                className="w-full py-4 rounded-xl shadow-lg shadow-teal-500/20"
+              />
+            </div>
+
+            <Link href="/" className="text-slate-500 hover:text-white text-sm font-medium transition-colors relative z-10 underline underline-offset-4">
+              No thanks, I'll wait 48 hours for the free basic review.
             </Link>
           </div>
         </div>
