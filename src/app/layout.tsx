@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DehaPa Hub | Your Health, Our Mission",
     description: "India's most trusted healthcare network. Instantly find and book verified top-rated doctors, premium hospitals, pharmacies, and emergency services near you.",
+    url: 'https://dehapa.com',
+    type: 'website',
     images: [{
       url: '/og-home.png',
       width: 1280,
