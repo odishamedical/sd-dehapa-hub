@@ -32,9 +32,9 @@ export default function GlobalFooter() {
             </p>
             <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 mb-6 max-w-sm text-xs text-slate-400">
               <strong className="text-white block mb-1">A product by Shyam Dash Creation</strong>
-              <p>Plot No - 28/A, Kanan Vihar, Patia</p>
-              <p>Bhubaneswar, Odisha, India 751024</p>
-              <p className="mt-1 flex items-center gap-2"><PhoneCall className="w-3 h-3 text-teal-400"/> +91 78479 04847</p>
+              <p>W1/45, Jagannath Mandir Colony</p>
+              <p>Budharaja, Sambalpur, Odisha, India 768004</p>
+              <p className="mt-1 flex items-center gap-2"><PhoneCall className="w-3 h-3 text-teal-400"/> +91 63719 95051</p>
             </div>
             <div className="flex gap-4">
               <div className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 transition-colors cursor-pointer">
