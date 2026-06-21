@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, MapPin, Users, CheckCircle, ShieldCheck } from 'lucide-react';

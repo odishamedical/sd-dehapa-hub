@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 

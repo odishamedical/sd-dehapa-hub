@@ -135,6 +135,7 @@ export default function UserDashboard() {
   if (!isMounted) return null;
   if (!userEmail) return null;
 
+  const userTabs: DashboardTab[] = [
     {
       id: "settings",
       label: "Account Settings",
