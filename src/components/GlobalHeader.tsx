@@ -226,8 +226,12 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
         );
         const snap = await getDocs(q);
         if (!snap.empty) {
-          // Find the first verified profile
-          const verifiedProfileDoc = snap.docs.find(d => d.data().verified === true);
+          // Find the first verified profile for this user (tolerate boolean/string verified)
+          const verifiedProfileDoc = snap.docs.find(d => {
+            const data = d.data();
+            const isVerified = data.verified === true || data.verified === 'true';
+            return isVerified;
+          });
           
           if (verifiedProfileDoc) {
             const profile = verifiedProfileDoc.data();
