@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, doc, writeBatch, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, writeBatch, serverTimestamp, query, orderBy, updateDoc, where } from 'firebase/firestore';
 
 export default function AdminVerificationCRM() {
   const [applications, setApplications] = useState<any[]>([]);
