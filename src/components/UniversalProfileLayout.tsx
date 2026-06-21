@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import RazorpayCheckout from '@/components/payments/RazorpayCheckout';
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
 import HorizontalScrollGallery from '@/components/HorizontalScrollGallery';
@@ -41,6 +43,7 @@ export default function UniversalProfileLayout({
   const [activeTab, setActiveTab] = useState('locations');
   const [isEditMode, setIsEditMode] = useState(false);
   const isDoctor = type === 'doctor';
+  const router = useRouter();
 
   const verified = profile.verified;
 
@@ -679,6 +682,44 @@ export default function UniversalProfileLayout({
                       unwrappedParams.type === 'lab' ? "Book Home Collection" :
                       "Check Availability"}
                    </Link>
+                 )}
+                 
+                 {/* Telemedicine Video Booking */}
+                 {unwrappedParams.type === 'doctor' && verified && (
+                   <div className="mt-3">
+                     <RazorpayCheckout 
+                        amount={500}
+                        buttonText="URGENT VIDEO CONSULT (₹500)"
+                        paymentType="TELEMEDICINE_CONSULT"
+                        onSuccess={async (res) => {
+                          try {
+                            const { db } = await import('@/lib/firebase');
+                            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+                            
+                            const roomId = `video-${profile.id}-${Date.now().toString().slice(-5)}`;
+                            
+                            // Create the appointment document so the VideoRoom waiting room logic works
+                            await setDoc(doc(db, "appointments", roomId), {
+                              doctorId: profile.id,
+                              doctorName: profile.name,
+                              patientId: 'test_patient',
+                              patientName: 'Test Patient',
+                              status: 'Pending',
+                              type: 'Urgent Video',
+                              amount: 500,
+                              paymentId: res.razorpay_payment_id,
+                              createdAt: serverTimestamp()
+                            });
+                            
+                            router.push(`/consultation/${roomId}`);
+                          } catch (err) {
+                            console.error("Error creating appointment:", err);
+                            alert("Payment successful but failed to connect to room. Please contact support.");
+                          }
+                        }}
+                        className="w-full block text-center py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-900 border-none"
+                     />
+                   </div>
                  )}
                </div>
                
