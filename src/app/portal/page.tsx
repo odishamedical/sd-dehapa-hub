@@ -167,6 +167,7 @@ export default function UserDashboard() {
         // Listen for real-time role upgrade events from GlobalHeader
         const handleRoleUpgrade = () => {
            setUserRole(localStorage.getItem("sd_current_user_role"));
+           router.refresh();
         };
         window.addEventListener("sd_role_upgraded", handleRoleUpgrade);
         
