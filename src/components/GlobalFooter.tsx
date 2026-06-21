@@ -130,6 +130,12 @@ export default function GlobalFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/join/ambulance" className="group flex items-center text-sm font-medium text-slate-400 hover:text-teal-400 transition-colors">
+                  <ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-teal-400" />
+                  Ambulance Network
+                </Link>
+              </li>
+              <li>
                 <Link href="/portal/doctor" className="group flex items-center text-sm font-medium text-slate-400 hover:text-teal-400 transition-colors">
                   <ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-teal-400" />
                   Provider Portal Login
