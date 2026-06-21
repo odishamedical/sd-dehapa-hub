@@ -16,21 +16,44 @@ import InviteWidget from '@/components/InviteWidget';
 import PatientConsultWidget from '@/components/PatientConsultWidget';
 import PatientAppointments from '@/components/PatientAppointments';
 
-function UserHomeWidget({ userName, userUid }: { userName: string | null, userUid: string | null }) {
+function UserHomeWidget({ userName, userUid, onTabChange }: { userName: string | null, userUid: string | null, onTabChange: (id: string) => void }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] rounded-[24px] p-8 flex flex-col justify-center relative overflow-hidden">
-        {/* Metallic Shine Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
-        <div className="z-10 relative">
-          <h2 className="text-2xl font-serif font-bold text-slate-900 mb-2">Welcome back, {userName}</h2>
-          <p className="text-slate-500 text-sm">Your FHIR-compliant medical records are up to date.</p>
+    <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 bg-gradient-to-br from-white to-slate-50 border border-slate-200 shadow-sm rounded-[24px] p-8 flex flex-col justify-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+            <div className="z-10 relative">
+              <h2 className="text-3xl font-serif font-black text-slate-800 mb-2">Welcome back, {userName}</h2>
+              <p className="text-slate-500 font-medium">Your medical profile is secure and up to date.</p>
+            </div>
+          </div>
+          <div className="md:col-span-1">
+            <InviteWidget userUid={userUid} userName={userName} />
+          </div>
         </div>
-        <div className="absolute right-0 top-0 bottom-0 w-64 bg-gradient-to-l from-tenant-accent/10 to-transparent pointer-events-none" />
-      </div>
-      <div className="md:col-span-1">
-        <InviteWidget userUid={userUid} userName={userName} />
-      </div>
+
+        <div className="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-[24px] p-8 shadow-sm">
+            <h3 className="text-xl font-bold text-slate-800 mb-6">Quick Actions</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                    { id: 'find_doctor', label: 'Find a Doctor', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>, color: 'text-teal-600', bg: 'bg-teal-50' },
+                    { id: 'appointments', label: 'My Appointments', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>, color: 'text-blue-600', bg: 'bg-blue-50' },
+                    { id: 'settings', label: 'Family Members', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>, color: 'text-purple-600', bg: 'bg-purple-50' },
+                    { id: 'vault', label: 'Health Vault', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                ].map(action => (
+                    <button 
+                        key={action.id}
+                        onClick={() => onTabChange(action.id)}
+                        className="flex flex-col items-center justify-center p-6 bg-slate-50 border border-slate-200 hover:border-teal-300 hover:bg-white rounded-2xl transition-all hover:shadow-md group"
+                    >
+                        <div className={`w-14 h-14 ${action.bg} ${action.color} rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                            {action.icon}
+                        </div>
+                        <span className="font-bold text-slate-700 text-sm text-center">{action.label}</span>
+                    </button>
+                ))}
+            </div>
+        </div>
     </div>
   );
 }
@@ -211,7 +234,8 @@ export default function UserDashboard() {
         name: userName || "User",
         subtitle: userEmail,
       }}
-      homeWidget={<UserHomeWidget userName={userName} userUid={userEmail} />}
+      hideDefaultModulesList={true}
+      homeWidget={<UserHomeWidget userName={userName} userUid={userEmail} onTabChange={handleTabChange} />}
     >
       <div className="max-w-4xl mx-auto pb-24">
         
