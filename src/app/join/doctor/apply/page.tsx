@@ -233,6 +233,26 @@ function DoctorApplyContent() {
     );
   }
 
+  if (authChecked && !auth.currentUser) {
+    return (
+      <div className="min-h-screen bg-[#020810] flex flex-col">
+        <GlobalHeader />
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="bg-slate-900/80 backdrop-blur-xl border border-red-500/30 p-8 sm:p-10 rounded-[32px] max-w-lg w-full text-center">
+            <h2 className="text-2xl font-black text-white mb-4">Authentication Required</h2>
+            <p className="text-slate-400 mb-8 leading-relaxed">
+              You must be securely logged in to Dehapa to submit a verified provider application. Please click "Access Portal" in the top right to log in with Google.
+            </p>
+            <Link href="/" className="inline-flex justify-center items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold px-8 py-3 rounded-xl transition-all">
+              Return Home
+            </Link>
+          </div>
+        </div>
+        <GlobalFooter />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#020810] flex flex-col selection:bg-teal-500/30">
       <GlobalHeader />
