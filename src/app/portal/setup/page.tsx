@@ -35,7 +35,7 @@ export default function PatientSetupPage() {
   const [familyCount, setFamilyCount] = useState(0);
 
   const handleSkip = () => {
-    router.replace('/portal');
+    router.replace('/');
   };
 
   const handleFinish = async () => {
