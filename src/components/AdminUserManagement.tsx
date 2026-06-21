@@ -159,7 +159,8 @@ export default function AdminUserManagement() {
   };
 
   const filteredUsers = users.filter(u => {
-    if (search && !u.name?.toLowerCase().includes(search.toLowerCase()) && !u.phone?.includes(search) && !u.email?.toLowerCase().includes(search.toLowerCase())) return false;
+    const searchString = search.toLowerCase();
+    if (search && !(u.name?.toLowerCase() || '').includes(searchString) && !(u.displayName?.toLowerCase() || '').includes(searchString) && !(u.phone || '').includes(search) && !(u.email?.toLowerCase() || '').includes(searchString)) return false;
     
     if (roleFilter !== 'all') {
       const uRole = u.role?.toLowerCase() || 'member';
@@ -389,11 +390,15 @@ export default function AdminUserManagement() {
                   </td>
                   <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold uppercase shadow-sm border border-white">
-                        {user.name ? user.name.charAt(0) : '?'}
-                      </div>
+                      {user.avatar ? (
+                        <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover shadow-sm border border-white" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold uppercase shadow-sm border border-white">
+                          {(user.name || user.displayName) ? (user.name || user.displayName).charAt(0) : '?'}
+                        </div>
+                      )}
                       <div>
-                        <div className="font-bold text-slate-900 drop-shadow-sm group-hover:text-teal-700 transition-colors">{user.name || "Unknown User"}</div>
+                        <div className="font-bold text-slate-900 drop-shadow-sm group-hover:text-teal-700 transition-colors">{user.name || user.displayName || "Unknown User"}</div>
                         <div className="text-xs text-slate-500 mt-0.5">{user.gender || "Not specified"}</div>
                       </div>
                     </div>
@@ -436,24 +441,28 @@ export default function AdminUserManagement() {
         )}
       </div>
 
-      {/* Profile Drawer Overlay */}
+      {/* Profile Modal Overlay */}
       {selectedUser && (
-        <div className="fixed inset-0 z-[100] flex">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={() => setSelectedUser(null)}></div>
-          <div className="absolute right-0 top-0 bottom-0 w-full md:w-[600px] bg-white shadow-2xl flex flex-col transform transition-transform duration-300 border-l border-slate-200">
-            {/* Drawer Header */}
-            <div className="bg-slate-900 text-white p-6 shrink-0 relative overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setSelectedUser(null)}></div>
+          <div className="relative w-full max-w-3xl bg-white shadow-2xl flex flex-col transform transition-transform duration-300 rounded-3xl overflow-hidden max-h-[90vh]">
+            {/* Modal Header */}
+            <div className="bg-slate-900 text-white p-6 shrink-0 relative overflow-hidden z-20 shadow-md">
               <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500 rounded-full blur-3xl opacity-20 -mr-10 -mt-10 pointer-events-none"></div>
-              <button onClick={() => setSelectedUser(null)} className="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 p-2 rounded-full transition-all border border-slate-700 z-10">
+              <button onClick={() => setSelectedUser(null)} className="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 p-2 rounded-full transition-all border border-slate-700 z-[100]">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
               
               <div className="flex items-center gap-6 relative z-10">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg border-2 border-slate-800">
-                  {selectedUser.name ? selectedUser.name.charAt(0) : '?'}
-                </div>
+                {selectedUser.avatar ? (
+                  <img src={selectedUser.avatar} alt="Avatar" className="w-20 h-20 rounded-2xl object-cover shadow-lg border-2 border-slate-800" />
+                ) : (
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg border-2 border-slate-800">
+                    {(selectedUser.name || selectedUser.displayName) ? (selectedUser.name || selectedUser.displayName).charAt(0) : '?'}
+                  </div>
+                )}
                 <div>
-                  <h2 className="text-2xl font-serif font-bold drop-shadow-md">{selectedUser.name || "Unknown User"}</h2>
+                  <h2 className="text-2xl font-serif font-bold drop-shadow-md">{selectedUser.name || selectedUser.displayName || "Unknown User"}</h2>
                   <div className="flex items-center gap-3 mt-2">
                     {(() => {
                       const isSuspended = selectedUser.status === 'suspended';

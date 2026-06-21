@@ -40,6 +40,7 @@ function LoginContent() {
         email: user.email || '',
         phone: user.phoneNumber || additionalData.phone || '',
         displayName: userName,
+        avatar: user.photoURL || null,
         role: userRole,
         createdAt: serverTimestamp(),
         lastLogin: serverTimestamp(),
