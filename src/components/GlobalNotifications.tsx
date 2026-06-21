@@ -27,14 +27,19 @@ export default function GlobalNotifications({ userEmail }: { userEmail: string |
 
     const q = query(
       collection(db, 'notifications'),
-      where('recipientEmail', '==', userEmail),
-      orderBy('createdAt', 'desc')
+      where('recipientEmail', '==', userEmail)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const notifs: Notification[] = [];
       snapshot.forEach((doc) => {
         notifs.push({ id: doc.id, ...doc.data() } as Notification);
+      });
+      // Sort in memory to avoid requiring a Firestore composite index
+      notifs.sort((a, b) => {
+        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return timeB - timeA;
       });
       setNotifications(notifs);
     }, (error) => {
