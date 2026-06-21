@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, MapPin, Users, CheckCircle, ShieldCheck } from 'lucide-react';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 export default function PatientSetupPage() {
   const router = useRouter();
@@ -36,11 +38,26 @@ export default function PatientSetupPage() {
     router.replace('/portal');
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     // Save to local storage to mark as complete
     localStorage.setItem("sd_current_user_profile_complete", "true");
     
-    // In a real app, save to Firestore here
+    // Save to Firestore
+    try {
+        const uid = localStorage.getItem("sd_current_user_uid");
+        if (uid) {
+            const userRef = doc(db, 'users', uid);
+            await updateDoc(userRef, {
+                phone: phone,
+                whatsappNumber: sameAsPhone ? phone : whatsappNumber,
+                displayName: fullName,
+                address: addressData,
+                isProfileComplete: true
+            });
+        }
+    } catch(err) {
+        console.error("Error saving setup data", err);
+    }
 
     setStep(4);
   };

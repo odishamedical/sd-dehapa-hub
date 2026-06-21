@@ -32,6 +32,7 @@ function LoginContent() {
     const userSnap = await getDoc(userRef);
     let userRole = 'user';
     let userName = user.displayName || 'New User';
+    let isProfileComplete = false;
     
     if (!userSnap.exists()) {
       const newUserDoc: any = {
@@ -51,8 +52,16 @@ function LoginContent() {
       
       await setDoc(userRef, newUserDoc, { merge: true });
     } else {
-      userRole = userSnap.data()?.role || 'user';
-      userName = userSnap.data()?.displayName || userName;
+      const data = userSnap.data();
+      userRole = data?.role || 'user';
+      userName = data?.displayName || userName;
+      
+      if (data?.phone && data?.address?.city) {
+          isProfileComplete = true;
+      } else if (data?.isProfileComplete) {
+          isProfileComplete = true;
+      }
+
       await setDoc(userRef, { lastLogin: serverTimestamp() }, { merge: true });
     }
     
@@ -91,7 +100,7 @@ function LoginContent() {
     } else {
         localStorage.removeItem("sd_current_user_avatar");
     }
-    localStorage.setItem("sd_current_user_profile_complete", userSnap.exists() ? "true" : "false");
+    localStorage.setItem("sd_current_user_profile_complete", isProfileComplete ? "true" : "false");
     
     // Notify GlobalHeader that auth state has changed
     window.dispatchEvent(new Event("sd_auth_change"));
