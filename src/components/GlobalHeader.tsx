@@ -5,6 +5,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, onSnapshot, query, where, getDocs } from "firebase/firestore";
 import GlobalAvatarWidget from "./GlobalAvatarWidget";
 import DoctorStatusToggle from "./DoctorStatusToggle";
+import GlobalNotifications from "./GlobalNotifications";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
@@ -254,6 +255,32 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   }, [userEmail]);
   // ─────────────────────────────────────────────────────────────────────────────
 
+  // ── REAL-TIME ROLE SYNC ────────────────────────────────────────────────────
+  useEffect(() => {
+    const uid = localStorage.getItem("sd_current_user_uid");
+    if (!uid) return;
+    
+    const app2 = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    const db2 = getFirestore(app2, "default");
+    
+    // We need to dynamically import doc because it might not be imported at the top
+    import("firebase/firestore").then(({ doc, onSnapshot }) => {
+      const unsub = onSnapshot(doc(db2, "users", uid), (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          const currentRole = localStorage.getItem("sd_current_user_role");
+          if (data.role && data.role !== currentRole) {
+            localStorage.setItem("sd_current_user_role", data.role);
+            setUserRole(data.role);
+            window.dispatchEvent(new Event("sd_auth_change"));
+          }
+        }
+      });
+      return unsub;
+    }).catch(err => console.warn("Role sync failed", err));
+  }, [userEmail]);
+  // ─────────────────────────────────────────────────────────────────────────────
+
   // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -372,6 +399,9 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
 
         {/* DoctorStatusToggle */}
         <DoctorStatusToggle />
+
+        {/* Real-time Notifications */}
+        <GlobalNotifications userEmail={userEmail} />
 
         {userEmail ? (
           <div className="relative">

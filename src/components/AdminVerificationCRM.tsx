@@ -143,6 +143,18 @@ export default function AdminVerificationCRM() {
         }
       }
 
+      // Add Notification
+      const newNotificationRef = doc(collection(db, 'notifications'));
+      batch.set(newNotificationRef, {
+        recipientEmail: app.userEmail,
+        title: "Application Approved",
+        message: `Congratulations! Your ${app.appType} application has been verified and approved. You can now access your dashboard to complete your profile.`,
+        type: 'success',
+        read: false,
+        createdAt: serverTimestamp(),
+        link: `/portal/${app.appType.toLowerCase()}`
+      });
+
       await batch.commit();
       
       // Upgrade role in users collection
