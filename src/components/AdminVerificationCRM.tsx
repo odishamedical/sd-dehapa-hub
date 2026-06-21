@@ -130,10 +130,15 @@ export default function AdminVerificationCRM() {
       } else {
         // Handle legacy listing claim
         if (app.listingId && app.listingId !== "new_listing") {
-          batch.update(doc(db, 'directory', app.listingId), {
+          const updateData: any = {
             verified: true,
             ownerEmail: app.userEmail
-          });
+          };
+          
+          if (app.whatsapp) updateData.whatsapp = app.whatsapp;
+          if (app.phone) updateData.phone = app.phone;
+
+          batch.update(doc(db, 'directory', app.listingId), updateData);
         }
       }
 
