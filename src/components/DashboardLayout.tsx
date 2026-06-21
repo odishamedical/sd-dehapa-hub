@@ -183,7 +183,7 @@ export default function DashboardLayout({
         <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
         <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
 
-        <header className="bg-transparent border-b border-white/30 px-6 md:px-8 py-5 md:py-6 flex items-center justify-between sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
+        <header className="bg-transparent border-b border-white/30 px-4 md:px-8 py-4 md:py-6 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
           <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize">
             {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
           </h2>
@@ -261,10 +261,12 @@ export default function DashboardLayout({
                   {homeWidget}
                 </div>
               )}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName}</h3>
-                <p className="text-sm text-slate-500">Select a module below to get started.</p>
-              </div>
+              {!hideDefaultModulesList && (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName}</h3>
+                  <p className="text-sm text-slate-500">Select a module below to get started.</p>
+                </div>
+              )}
               {!hideDefaultModulesList && (
                 <div className="space-y-4">
                 {Object.entries(sectionedTabs).map(([sectionName, sectionTabs]) => {
