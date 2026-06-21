@@ -90,22 +90,8 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       }
       // ─────────────────────────────────────────────────────────────────────
 
-      const ssoEmail = params.get("sso_email");
-      const ssoName = params.get("sso_name");
-      const ssoAvatar = params.get("sso_avatar");
-      const ssoRole = params.get("sso_role");
-      const ssoProfileComplete = params.get("sso_profile_complete");
-
-      if (ssoEmail) {
-        localStorage.setItem("sd_current_user_email", ssoEmail);
-        if (ssoName) localStorage.setItem("sd_current_user_name", ssoName);
-        if (ssoAvatar) localStorage.setItem("sd_current_user_avatar", ssoAvatar);
-        if (ssoRole) localStorage.setItem("sd_current_user_role", ssoRole);
-        if (ssoProfileComplete) localStorage.setItem("sd_current_user_profile_complete", ssoProfileComplete);
-        
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-      }
+      // SSO connection completely severed for native Dehapa security.
+      // (SSO parameters from URL are ignored)
 
       const savedEmail = localStorage.getItem("sd_current_user_email");
       setUserEmail(savedEmail);
