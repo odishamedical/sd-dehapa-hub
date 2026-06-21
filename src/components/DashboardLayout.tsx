@@ -208,9 +208,6 @@ export default function DashboardLayout({
               {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
             </h2>
           )}
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm font-bold text-teal-700 hover:text-teal-900 hover:underline bg-teal-50 border border-teal-100 px-4 py-2 rounded-xl transition-colors">Return to Home Page</Link>
-          </div>
         </header>
 
         {/* Horizontal Top Stepper (Mockup Style) */}
