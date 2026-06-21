@@ -8,6 +8,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import GlobalHeader from '@/components/GlobalHeader';
 import GlobalFooter from '@/components/GlobalFooter';
 import Link from 'next/link';
+import AddressBlock, { AddressData } from '@/components/AddressBlock';
 
 export default function RegisterProviderPage() {
   const router = useRouter();
@@ -21,8 +22,17 @@ export default function RegisterProviderPage() {
   const [providerType, setProviderType] = useState('Doctor');
   const [legalName, setLegalName] = useState('');
   const [specialty, setSpecialty] = useState('');
-  const [city, setCity] = useState('');
-  const [fullAddress, setFullAddress] = useState('');
+  
+  const [addressData, setAddressData] = useState<AddressData>({
+    country: "India",
+    state: "Odisha",
+    district: "",
+    block: "",
+    city: "",
+    pincode: "",
+    localAddress: ""
+  });
+
   const [whatsapp, setWhatsapp] = useState('');
   const [phone, setPhone] = useState('');
   const [licenseNumber, setLicenseNumber] = useState('');
@@ -43,8 +53,8 @@ export default function RegisterProviderPage() {
 
   const handleNext = () => {
     if (step === 1 && !providerType) return;
-    if (step === 2 && (!legalName || !city || !fullAddress)) {
-      setError("Please fill in all required fields.");
+    if (step === 2 && (!legalName || !addressData.city || !addressData.district)) {
+      setError("Please fill in your Legal Name, City, and District.");
       return;
     }
     setError('');
@@ -84,8 +94,9 @@ export default function RegisterProviderPage() {
         legalName: legalName,
         entityType: providerType,
         specialty: specialty || 'General',
-        city: city,
-        address: fullAddress,
+        city: addressData.city,
+        address: `${addressData.localAddress}, ${addressData.city}, ${addressData.district}, ${addressData.state}, ${addressData.pincode}`,
+        addressData: addressData,
         userEmail: auth.currentUser.email || auth.currentUser.phoneNumber || localStorage.getItem("sd_current_user_email") || "Unknown",
         userUid: auth.currentUser.uid,
         whatsapp: whatsapp,
@@ -216,28 +227,17 @@ export default function RegisterProviderPage() {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">City / Town</label>
-                  <input 
-                    type="text" 
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors"
-                    placeholder="e.g. Bhubaneswar"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Full Address</label>
-                  <textarea 
-                    value={fullAddress}
-                    onChange={(e) => setFullAddress(e.target.value)}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors resize-none"
-                    placeholder="Street, Landmark, Pincode"
-                    rows={3}
-                  />
-                </div>
+              <div className="mt-8 mb-4 border-b border-slate-800 pb-2">
+                <h3 className="text-white font-bold tracking-wide">Location Details</h3>
+                <p className="text-slate-500 text-xs mt-1">Please provide the complete address of the facility.</p>
               </div>
+              
+              <AddressBlock 
+                data={addressData} 
+                onChange={setAddressData} 
+                darkTheme={true} 
+              />
+
 
               <button 
                 onClick={handleNext}
