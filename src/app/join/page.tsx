@@ -66,23 +66,23 @@ export default function JoinPage() {
   return (
     <div className="min-h-screen bg-[#060B14] flex flex-col font-sans">
       
-      <div className="flex-1 flex flex-col items-center pt-24 pb-16 px-6">
+      <div className="flex-1 flex flex-col items-center pt-8 pb-8 px-4 sm:px-6">
         
         {/* Header Text */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold tracking-widest uppercase mb-6">
-            <ShieldCheck className="w-4 h-4" />
+        <div className="text-center max-w-2xl mx-auto mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold tracking-widest uppercase mb-3">
+            <ShieldCheck className="w-3.5 h-3.5" />
             Healthcare Providers
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-2">
             Join the Sovereign Health Network
           </h1>
-          <p className="text-lg text-slate-400 leading-relaxed">
+          <p className="text-sm md:text-base text-slate-400 leading-relaxed max-w-xl mx-auto">
             Follow the steps below to claim your pre-generated profile or create a brand new one to connect with thousands of patients in your city.
           </p>
         </div>
 
-        <div className="w-full max-w-3xl bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-3xl shadow-2xl overflow-hidden">
+        <div className="w-full max-w-3xl bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden">
           
           {/* Progress Bar */}
           <div className="flex border-b border-slate-800">
