@@ -139,12 +139,14 @@ export default function UserDashboard() {
       const email = localStorage.getItem("sd_current_user_email");
       const name = localStorage.getItem("sd_current_user_name");
       const uid = localStorage.getItem("sd_current_user_uid");
+      const role = localStorage.getItem("sd_current_user_role");
       
       if (!email) {
         window.location.href = "/login";
       } else {
         setUserEmail(email);
         setUserName(name || email.split("@")[0]);
+        setUserRole(role);
         if (uid) {
            setUserUid(uid);
         } else {
@@ -161,13 +163,9 @@ export default function UserDashboard() {
         }
         setIdentityData(prev => ({ ...prev, fullName: name || "", email }));
         
-        const role = localStorage.getItem("sd_current_user_role");
-        setUserRole(role);
-        
-        // Listen for real-time role upgrade events from GlobalHeader
         const handleRoleUpgrade = () => {
-           setUserRole(localStorage.getItem("sd_current_user_role"));
-           router.refresh();
+           const newRole = localStorage.getItem("sd_current_user_role");
+           setUserRole(newRole);
         };
         window.addEventListener("sd_role_upgraded", handleRoleUpgrade);
         
@@ -176,6 +174,10 @@ export default function UserDashboard() {
         if (isComplete !== "true") {
            window.location.href = '/portal/setup';
         }
+
+        return () => {
+            window.removeEventListener("sd_role_upgraded", handleRoleUpgrade);
+        };
       }
     }
   }, [router]);

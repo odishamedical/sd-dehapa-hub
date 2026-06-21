@@ -147,15 +147,39 @@ export default function AdminVerificationCRM() {
       // Upgrade role in users collection
       try {
         const usersRef = collection(db, 'users');
-        const userQ = query(usersRef, where('email', '==', app.userEmail));
-        const userSnap = await getDocs(userQ);
-        if (!userSnap.empty) {
-          userSnap.forEach((userDoc) => {
-             updateDoc(doc(db, 'users', userDoc.id), {
-                role: app.appType.toLowerCase(),
-                updatedAt: serverTimestamp()
-             });
+        let matchedUserId = null;
+
+        // Try matching by email
+        const emailToMatch = app.userEmail || app.email;
+        if (emailToMatch) {
+          const userQ = query(usersRef, where('email', '==', emailToMatch));
+          const userSnap = await getDocs(userQ);
+          if (!userSnap.empty) {
+            matchedUserId = userSnap.docs[0].id;
+          }
+        }
+
+        // Try matching by phone if email didn't work
+        if (!matchedUserId && app.phone) {
+          const cleanPhone = app.phone.replace(/[^0-9]/g, '');
+          const phoneQ = query(usersRef); // Fetch all and filter in memory if needed, or query by exact match
+          const phoneSnap = await getDocs(phoneQ);
+          const matchedDoc = phoneSnap.docs.find(d => {
+             const dPhone = d.data().phone ? d.data().phone.replace(/[^0-9]/g, '') : '';
+             return dPhone.includes(cleanPhone) || cleanPhone.includes(dPhone);
           });
+          if (matchedDoc) {
+             matchedUserId = matchedDoc.id;
+          }
+        }
+
+        if (matchedUserId) {
+           updateDoc(doc(db, 'users', matchedUserId), {
+              role: app.appType.toLowerCase(),
+              updatedAt: serverTimestamp()
+           });
+        } else {
+           console.log("No matching user found in users table to upgrade role for application: ", app.id);
         }
       } catch (roleErr) {
         console.error("Failed to upgrade role in users table:", roleErr);
