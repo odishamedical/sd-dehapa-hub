@@ -63,7 +63,7 @@ export default function AdminVerificationCRM() {
   };
 
   const handleApprove = async (app: any) => {
-    if (!confirm(`Are you sure you want to approve this ${app.appType} application and create a live profile?`)) return;
+    if (!confirm(`Are you sure you want to approve this ${app.appType} application? This will upgrade their account role and generate a draft profile in their dashboard.`)) return;
     
     try {
       const batch = writeBatch(db);
