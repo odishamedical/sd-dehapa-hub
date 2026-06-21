@@ -257,17 +257,18 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
 
   // ── REAL-TIME ROLE SYNC ────────────────────────────────────────────────────
   useEffect(() => {
-    const uid = localStorage.getItem("sd_current_user_uid");
-    if (!uid) return;
+    const email = localStorage.getItem("sd_current_user_email");
+    if (!email) return;
     
     const app2 = !getApps().length ? initializeApp(firebaseConfig) : getApp();
     const db2 = getFirestore(app2, "default");
     
     // We need to dynamically import doc because it might not be imported at the top
-    import("firebase/firestore").then(({ doc, onSnapshot }) => {
-      const unsub = onSnapshot(doc(db2, "users", uid), (snap) => {
-        if (snap.exists()) {
-          const data = snap.data();
+    import("firebase/firestore").then(({ collection, query, where, onSnapshot }) => {
+      const q = query(collection(db2, "users"), where("email", "==", email));
+      const unsub = onSnapshot(q, (snap) => {
+        if (!snap.empty) {
+          const data = snap.docs[0].data();
           const currentRole = localStorage.getItem("sd_current_user_role");
           if (data.role && data.role !== currentRole) {
             localStorage.setItem("sd_current_user_role", data.role);
