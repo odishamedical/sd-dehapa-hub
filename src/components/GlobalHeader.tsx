@@ -227,6 +227,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
           if (currentRole !== newRole && currentRole !== "super_admin" && currentRole !== "admin") {
              localStorage.setItem("sd_current_user_role", newRole);
              setUserRole(newRole);
+             window.dispatchEvent(new Event("sd_role_upgraded"));
           }
         }
       } catch(e) {

@@ -164,6 +164,12 @@ export default function UserDashboard() {
         const role = localStorage.getItem("sd_current_user_role");
         setUserRole(role);
         
+        // Listen for real-time role upgrade events from GlobalHeader
+        const handleRoleUpgrade = () => {
+           setUserRole(localStorage.getItem("sd_current_user_role"));
+        };
+        window.addEventListener("sd_role_upgraded", handleRoleUpgrade);
+        
         // Check if profile is complete. If not, send to our brand new /portal/setup page
         const isComplete = localStorage.getItem("sd_current_user_profile_complete");
         if (isComplete !== "true") {
@@ -180,6 +186,14 @@ export default function UserDashboard() {
     }
     setActiveTab(tabId);
   };
+
+  useEffect(() => {
+    return () => {
+       if (typeof window !== "undefined") {
+         window.removeEventListener("sd_role_upgraded", () => setUserRole(localStorage.getItem("sd_current_user_role")));
+       }
+    };
+  }, []);
 
   if (!isMounted) return null;
   if (!userEmail) return null;
