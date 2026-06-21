@@ -22,7 +22,7 @@ export default function AdminUserManagement() {
     phone: '',
     email: '',
     gender: 'Male',
-    role: 'Patient'
+    role: 'Member'
   });
 
   // Drawer State
@@ -78,7 +78,7 @@ export default function AdminUserManagement() {
       alert(`User ${newUser.name} added successfully!`);
       
       setIsAdding(false);
-      setNewUser({ name: '', phone: '', email: '', gender: 'Male', role: 'Patient' });
+      setNewUser({ name: '', phone: '', email: '', gender: 'Male', role: 'Member' });
       fetchUsers();
     } catch (err) {
       console.error(err);
@@ -160,7 +160,18 @@ export default function AdminUserManagement() {
 
   const filteredUsers = users.filter(u => {
     if (search && !u.name?.toLowerCase().includes(search.toLowerCase()) && !u.phone?.includes(search) && !u.email?.toLowerCase().includes(search.toLowerCase())) return false;
-    if (roleFilter !== 'all' && u.role?.toLowerCase() !== roleFilter.toLowerCase()) return false;
+    
+    if (roleFilter !== 'all') {
+      const uRole = u.role?.toLowerCase() || 'member';
+      const isGenericUser = ['member', 'user', 'patient'].includes(uRole);
+      
+      if (roleFilter.toLowerCase() === 'member') {
+        if (!isGenericUser) return false;
+      } else if (uRole !== roleFilter.toLowerCase()) {
+        return false;
+      }
+    }
+    
     if (statusFilter !== 'all') {
       const uStatus = u.status || 'active';
       if (uStatus !== statusFilter) return false;
@@ -176,7 +187,7 @@ export default function AdminUserManagement() {
   }).length;
 
   // Define allowed roles in the ecosystem
-  const ecosystemRoles = ['Patient', 'Doctor', 'Hospital', 'Lab', 'Pharmacy', 'Ambulance', 'Admin', 'Super_Admin'];
+  const ecosystemRoles = ['Member', 'Doctor', 'Hospital', 'Lab', 'Pharmacy', 'Ambulance', 'Admin', 'Super_Admin'];
 
   return (
     <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[80vh] relative">
@@ -393,7 +404,7 @@ export default function AdminUserManagement() {
                   </td>
                   <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
                     <span className={`border px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
-                      {user.role || 'Patient'}
+                      {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
                     </span>
                   </td>
                   <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
@@ -435,7 +446,7 @@ export default function AdminUserManagement() {
                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${selectedUser.status === 'suspended' ? 'bg-rose-500/20 text-rose-300 border-rose-500/50' : 'bg-teal-500/20 text-teal-300 border-teal-500/50'}`}>
                       {selectedUser.status === 'suspended' ? 'Suspended' : 'Active'}
                     </span>
-                    <span className="text-sm font-medium text-slate-300 uppercase tracking-widest">{selectedUser.role || 'Patient'}</span>
+                    <span className="text-sm font-medium text-slate-300 uppercase tracking-widest">{['member', 'user', 'patient'].includes(selectedUser.role?.toLowerCase() || 'member') ? 'Member' : selectedUser.role}</span>
                   </div>
                 </div>
               </div>
