@@ -187,10 +187,11 @@ export default function AdminVerificationCRM() {
         }
 
         if (matchedUserId) {
-           updateDoc(doc(db, 'users', matchedUserId), {
+           await updateDoc(doc(db, 'users', matchedUserId), {
               role: app.appType.toLowerCase(),
               updatedAt: serverTimestamp()
            });
+           console.log(`Successfully upgraded user ${matchedUserId} to ${app.appType.toLowerCase()}`);
         } else {
            console.log("No matching user found in users table to upgrade role for application: ", app.id);
         }
