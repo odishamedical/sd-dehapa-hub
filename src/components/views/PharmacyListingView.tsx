@@ -50,7 +50,7 @@ export default function PharmacysDirectory({
         }));
         
         const mappedData = docsData
-          .filter((d: any) => d.category?.toLowerCase() === "pharmacy")
+          .filter((d: any) => d.category?.toLowerCase() === "pharmacy" && d.isPublished !== false)
           .map((d: any) => ({
             id: d.id,
             name: d.name || "Unknown Pharmacy",

@@ -77,6 +77,7 @@ export default function AdminVerificationCRM() {
         
         let directoryData: any = {
           verified: true,
+          isPublished: false,
           ownerEmail: app.userEmail,
           category: app.appType,
           createdAt: serverTimestamp(),

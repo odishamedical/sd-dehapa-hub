@@ -50,7 +50,7 @@ export default function LabsDirectory({
         }));
         
         const mappedData = docsData
-          .filter((d: any) => d.category?.toLowerCase() === "lab")
+          .filter((d: any) => d.category?.toLowerCase() === "lab" && d.isPublished !== false)
           .map((d: any) => ({
             id: d.id,
             name: d.name || "Unknown Lab",

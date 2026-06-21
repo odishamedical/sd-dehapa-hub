@@ -132,7 +132,7 @@ export default function DoctorsDirectory({
         
         // Map the backend schema to what PremiumDoctorTicket expects
         const mappedData = docsData
-          .filter((d: any) => d.category?.toLowerCase() === "doctor")
+          .filter((d: any) => d.category?.toLowerCase() === "doctor" && d.isPublished !== false)
           .map((d: any) => ({
           id: d.id,
           name: d.name || "Unknown Doctor",

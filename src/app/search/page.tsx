@@ -45,10 +45,9 @@ function SearchResultsContent() {
       try {
         const q = query(collection(db, 'directory'));
         const querySnapshot = await getDocs(q);
-        const docsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        const docsData = querySnapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter((d: any) => d.isPublished !== false);
 
         const mappedData = docsData.map((d: any) => ({
           id: d.id,
