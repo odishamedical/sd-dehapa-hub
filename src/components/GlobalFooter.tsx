@@ -20,7 +20,7 @@ export default function GlobalFooter() {
               </div>
               <div>
                 <h3 className="font-serif font-black text-2xl text-white tracking-tight leading-none mb-1">
-                  DehaPa.com
+                  Dehapa.com
                 </h3>
                 <p className="text-teal-400 font-bold text-xs tracking-widest uppercase">
                   Your Health Our Mission
@@ -101,7 +101,7 @@ export default function GlobalFooter() {
         </div>
         
         <div className="pt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-bold tracking-widest uppercase text-slate-500">
-          <p>© 2026 DehaPa.com. All Rights Reserved.</p>
+          <p>© 2026 Dehapa.com. All Rights Reserved.</p>
           <div className="flex gap-8">
             <Link href="#" className="hover:text-white transition-colors">Privacy Auth</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms of Op</Link>
