@@ -168,15 +168,40 @@ export default function UserDashboard() {
            setUserRole(newRole);
         };
         window.addEventListener("sd_role_upgraded", handleRoleUpgrade);
-        
         // Check if profile is complete. If not, send to our brand new /portal/setup page (unless they are a provider/admin)
-        const isComplete = localStorage.getItem("sd_current_user_profile_complete");
-        const currentRole = localStorage.getItem("sd_current_user_role");
-        const exemptRoles = ["doctor", "hospital", "admin", "super_admin", "lab", "pharmacy"];
-        
-        if (isComplete !== "true" && currentRole && !exemptRoles.includes(currentRole.toLowerCase())) {
-           window.location.href = '/portal/setup';
-        }
+        const checkRoleAndRedirect = async () => {
+           const isComplete = localStorage.getItem("sd_current_user_profile_complete");
+           if (isComplete === "true") return;
+
+           const exemptRoles = ["doctor", "hospital", "admin", "super_admin", "lab", "pharmacy"];
+           let currentRole = localStorage.getItem("sd_current_user_role") || "user";
+
+           // Double-check Firebase directly to prevent race conditions on immediate post-approval navigation
+           if (!exemptRoles.includes(currentRole.toLowerCase())) {
+             try {
+                const { query, collection, where, getDocs } = await import('firebase/firestore');
+                const { db } = await import('@/lib/firebase');
+                const q = query(collection(db, "users"), where("email", "==", email));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                   // If user has multiple profiles, check if ANY of them are exempt
+                   const roles = snap.docs.map(d => d.data().role?.toLowerCase() || 'user');
+                   const hasExemptRole = roles.find(r => exemptRoles.includes(r));
+                   if (hasExemptRole) {
+                      currentRole = hasExemptRole;
+                      localStorage.setItem("sd_current_user_role", currentRole);
+                   }
+                }
+             } catch(e) {
+                console.error("Role verify failed", e);
+             }
+           }
+           
+           if (!exemptRoles.includes(currentRole.toLowerCase())) {
+              window.location.href = '/portal/setup';
+           }
+        };
+        checkRoleAndRedirect();
 
         return () => {
             window.removeEventListener("sd_role_upgraded", handleRoleUpgrade);
