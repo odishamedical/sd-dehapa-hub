@@ -50,7 +50,6 @@ export default function JoinPage() {
 
   return (
     <div className="min-h-screen bg-[#060B14] flex flex-col selection:bg-amber-500/30">
-      <GlobalHeader />
 
       {/* Hero Section */}
       <div className="relative pt-24 pb-16 px-6 overflow-hidden">
@@ -170,7 +169,6 @@ export default function JoinPage() {
         )}
       </div>
 
-      <GlobalFooter />
     </div>
   );
 }

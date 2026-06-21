@@ -107,7 +107,6 @@ export default function RegisterProviderPage() {
 
   return (
     <div className="min-h-screen bg-[#060B14] flex flex-col selection:bg-amber-500/30">
-      <GlobalHeader />
       
       <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 py-12 relative mt-16">
         <div className="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-teal-900/20 via-slate-900/10 to-transparent pointer-events-none"></div>
@@ -361,7 +360,6 @@ export default function RegisterProviderPage() {
         </div>
       </div>
       
-      <GlobalFooter />
     </div>
   );
 }
