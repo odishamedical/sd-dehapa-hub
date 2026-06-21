@@ -169,9 +169,12 @@ export default function UserDashboard() {
         };
         window.addEventListener("sd_role_upgraded", handleRoleUpgrade);
         
-        // Check if profile is complete. If not, send to our brand new /portal/setup page
+        // Check if profile is complete. If not, send to our brand new /portal/setup page (unless they are a provider/admin)
         const isComplete = localStorage.getItem("sd_current_user_profile_complete");
-        if (isComplete !== "true") {
+        const currentRole = localStorage.getItem("sd_current_user_role");
+        const exemptRoles = ["doctor", "hospital", "admin", "super_admin", "lab", "pharmacy"];
+        
+        if (isComplete !== "true" && currentRole && !exemptRoles.includes(currentRole.toLowerCase())) {
            window.location.href = '/portal/setup';
         }
 
