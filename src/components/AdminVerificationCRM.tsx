@@ -188,7 +188,7 @@ export default function AdminVerificationCRM() {
       
       setApplications(apps => apps.map(a => a.id === app.id ? { ...a, status: 'approved' } : a));
       setSelectedApp(null);
-      alert("Application Approved and Live Profile Created!");
+      alert("Application Approved and Draft Profile Created!");
     } catch (err) {
       console.error("Approval error:", err);
       alert("Failed to approve application.");
