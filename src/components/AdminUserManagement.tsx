@@ -240,18 +240,18 @@ export default function AdminUserManagement() {
             </button>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          <div className="flex flex-col md:flex-row gap-3 w-full md:flex-1">
             <input 
               type="text" 
               placeholder="Search name, email, phone..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 md:w-64 border border-slate-300 hover:border-teal-400 rounded-xl px-5 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white/80 backdrop-blur-sm"
+              className="flex-1 min-w-[200px] border border-slate-300 hover:border-teal-400 rounded-xl px-5 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white/80 backdrop-blur-sm"
             />
             <select 
               value={roleFilter} 
               onChange={e => setRoleFilter(e.target.value)}
-              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
+              className="w-full md:w-auto md:min-w-[150px] border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
             >
               <option value="all">All Roles</option>
               {ecosystemRoles.map((role, idx) => (
@@ -261,7 +261,7 @@ export default function AdminUserManagement() {
             <select 
               value={statusFilter} 
               onChange={e => setStatusFilter(e.target.value)}
-              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
+              className="w-full md:w-auto md:min-w-[150px] border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
             >
               <option value="all">All Statuses</option>
               <option value="active">Active</option>
