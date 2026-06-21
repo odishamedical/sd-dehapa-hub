@@ -258,16 +258,17 @@ export default function AdminUserManagement() {
                 <option key={idx} value={role.toLowerCase()}>{role}</option>
               ))}
             </select>
-          <select 
-            value={statusFilter} 
-            onChange={e => setStatusFilter(e.target.value)}
-            className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
-          >
-            <option value="all">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
-          </select>
-        </div>
+            <select 
+              value={statusFilter} 
+              onChange={e => setStatusFilter(e.target.value)}
+              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
+            >
+              <option value="all">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
+        )}
         <button onClick={() => setIsAdding(!isAdding)} className="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-5 py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2 whitespace-nowrap">
           {isAdding ? "Cancel" : "+ Add New Patient"}
         </button>
