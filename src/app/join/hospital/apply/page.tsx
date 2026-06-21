@@ -164,7 +164,7 @@ function HospitalApplyContent() {
                 <p className="text-slate-400 mb-6 max-w-md mx-auto">
                   You must create an account or log into the Dehapa platform before submitting a hospital application.
                 </p>
-                <Link href={`/login?redirect=/join/hospital/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                <Link href={`/join/hospital/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                   Login / Register
                 </Link>
               </div>

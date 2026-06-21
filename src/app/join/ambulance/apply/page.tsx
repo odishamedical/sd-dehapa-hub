@@ -164,7 +164,7 @@ function AmbulanceApplyContent() {
                 <p className="text-slate-400 mb-6 max-w-md mx-auto">
                   You must create an account or log into the Dehapa platform before submitting an ambulance fleet application.
                 </p>
-                <Link href={`/login?redirect=/join/ambulance/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(244,63,94,0.3)]">
+                <Link href={`/join/ambulance/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(244,63,94,0.3)]">
                   Login / Register
                 </Link>
               </div>

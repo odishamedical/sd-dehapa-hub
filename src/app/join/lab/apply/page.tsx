@@ -166,7 +166,7 @@ function LabApplyContent() {
                 <p className="text-slate-400 mb-6 max-w-md mx-auto">
                   You must create an account or log into the Dehapa platform before submitting a lab application.
                 </p>
-                <Link href={`/login?redirect=/join/lab/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                <Link href={`/join/lab/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)]">
                   Login / Register
                 </Link>
               </div>

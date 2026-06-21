@@ -178,7 +178,7 @@ function DoctorApplyContent() {
                 <p className="text-slate-400 mb-6 max-w-md mx-auto">
                   You must create an account or log into the Dehapa platform before submitting a medical application.
                 </p>
-                <Link href={`/login?redirect=/join/doctor/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)]">
+                <Link href={`/join/doctor/apply`} className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-black px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)]">
                   Login / Register
                 </Link>
               </div>
