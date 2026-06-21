@@ -33,7 +33,7 @@ export default function AdminVerificationCRM() {
       ];
 
       const promises = collectionsToFetch.map(async (c) => {
-        const q = query(collection(db, c.name), orderBy('timestamp', 'desc'));
+        const q = query(collection(db, c.name), orderBy('lastUpdated', 'desc'));
         const snap = await getDocs(q);
         return snap.docs.map(doc => ({
           id: doc.id,
@@ -49,8 +49,8 @@ export default function AdminVerificationCRM() {
 
       // Sort globally by timestamp descending
       allApps.sort((a, b) => {
-        const timeA = a.timestamp?.toMillis ? a.timestamp.toMillis() : 0;
-        const timeB = b.timestamp?.toMillis ? b.timestamp.toMillis() : 0;
+        const timeA = a.lastUpdated?.toMillis ? a.lastUpdated.toMillis() : 0;
+        const timeB = b.lastUpdated?.toMillis ? b.lastUpdated.toMillis() : 0;
         return timeB - timeA;
       });
 
