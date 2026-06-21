@@ -236,8 +236,14 @@ export default function DashboardLayout({
                     )}
 
                     {!hasNext && (
-                      <button className="px-6 py-2.5 bg-transparent hover:bg-white/40 rounded-xl text-slate-600 font-bold text-sm transition-all border-l border-slate-400/20 ml-1">
-                        Review
+                      <button 
+                        onClick={() => {
+                          alert("Profile setup complete! Your dashboard is ready.");
+                          onTabChange("home");
+                        }}
+                        className="px-6 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-900 rounded-xl font-bold text-sm transition-all shadow-md ml-2"
+                      >
+                        Finish Setup
                       </button>
                     )}
                   </div>
