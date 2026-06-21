@@ -11,10 +11,10 @@ export default function GlobalFooter() {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-teal-500 to-transparent opacity-50"></div>
       
       <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-8">
           
-          {/* Brand & Contact Column */}
-          <div className="lg:col-span-1">
+          {/* Brand & Contact Column (Drops to bottom on mobile) */}
+          <div className="lg:col-span-1 order-last lg:order-first mt-8 lg:mt-0 pt-8 lg:pt-0 border-t border-slate-800 lg:border-none">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 bg-white rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] p-1 flex items-center justify-center shrink-0">
                 <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain" />
@@ -28,37 +28,32 @@ export default function GlobalFooter() {
                 </p>
               </div>
             </div>
-            <p className="text-slate-400 text-sm leading-relaxed max-w-sm mb-6">
+            <p className="text-slate-400 text-sm leading-relaxed max-w-sm mb-8">
               Dehapa is a next-generation Health Care service portal connecting users to top doctors, state-of-the-art hospitals, diagnostic labs, and rapid emergency ambulance response teams.
             </p>
-            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 mb-6 max-w-sm text-xs text-slate-400">
-              <strong className="text-white block mb-1">A product by Shyam Dash Creation</strong>
-              <p>R7/A2, Jagannath Mandir Colony</p>
-              <p>Budharaja, Sambalpur, Odisha, India 768004</p>
-              <p className="mt-2 flex items-center gap-2 flex-wrap text-teal-400 font-bold"><PhoneCall className="w-3 h-3 text-teal-400"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</p>
-            </div>
+            
             {/* Social Media Icons */}
             <div className="flex gap-3 flex-wrap">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all">
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                 <Youtube className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all">
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                 <Instagram className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all">
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                 <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all">
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                 <Twitter className="w-4 h-4" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all">
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                 <Linkedin className="w-4 h-4" />
               </a>
             </div>
           </div>
 
           {/* For Patients Column */}
-          <div>
+          <div className="order-1">
             <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
               <Users className="w-4 h-4 text-rose-500" />
               For Patients
@@ -104,7 +99,7 @@ export default function GlobalFooter() {
           </div>
 
           {/* For Providers Column */}
-          <div>
+          <div className="order-2">
             <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
               <Stethoscope className="w-4 h-4 text-blue-500" />
               For Providers
@@ -144,7 +139,7 @@ export default function GlobalFooter() {
           </div>
 
           {/* Support & Security Column */}
-          <div>
+          <div className="order-3">
             <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
               <HelpCircle className="w-4 h-4 text-purple-500" />
               Support & Legal
@@ -190,13 +185,29 @@ export default function GlobalFooter() {
 
         </div>
         
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-bold tracking-widest uppercase text-slate-500">
-          <p>© 2026 Dehapa.com. All Rights Reserved.</p>
-          <p className="flex items-center gap-2">
-            System Architect: <span className="text-white bg-slate-800 px-3 py-1 rounded-md border border-slate-700">SD IT Services</span>
-          </p>
+        {/* Bottom Bar / Official Legal Notice */}
+        <div className="pt-10 mt-12 border-t border-slate-800/80">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-8">
+            <div className="text-center lg:text-left">
+              <strong className="text-white block mb-2 text-sm uppercase tracking-widest font-black">A product by Shyam Dash Creation</strong>
+              <p className="text-xs text-slate-500 mb-2 font-medium">R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</p>
+              <p className="flex items-center justify-center lg:justify-start gap-2 text-xs text-teal-400 font-bold"><PhoneCall className="w-3 h-3 text-teal-400"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</p>
+            </div>
+            <div className="flex items-center justify-center gap-3 text-xs font-bold tracking-widest uppercase text-slate-500">
+              System Architect
+              <span className="text-white bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 shadow-sm">SD IT Services</span>
+            </div>
+          </div>
+          
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-slate-800/50 pt-6">
+            <p>© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
+            <div className="flex gap-6">
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Auth</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Terms of Op</Link>
+            </div>
+          </div>
         </div>
+
       </div>
     </footer>
   );
