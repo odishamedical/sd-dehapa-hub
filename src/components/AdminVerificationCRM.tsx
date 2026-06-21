@@ -160,58 +160,54 @@ export default function AdminVerificationCRM() {
       // Upgrade role in users collection
       try {
         const usersRef = collection(db, 'users');
-        let matchedUserId = null;
+        let matchedUserId = app.userUid || app.uid || null;
 
-        // Try matching by email
+        // Force upgrade the exact user UID if we have it
+        if (matchedUserId) {
+           try {
+             await updateDoc(doc(db, 'users', matchedUserId), {
+               role: app.appType.toLowerCase(),
+               updatedAt: serverTimestamp()
+             });
+             console.log(`Successfully upgraded exact user UID ${matchedUserId}`);
+           } catch(e) {
+             console.warn("Could not update by exact UID", e);
+           }
+        }
+
+        // Try matching by email for legacy/duplicate profiles
         const emailToMatch = app.userEmail || app.email;
         if (emailToMatch) {
-          const userQ = query(usersRef, where('email', '==', emailToMatch));
+          const userQ = query(usersRef, where('email', '==', emailToMatch.trim()));
           const userSnap = await getDocs(userQ);
           if (!userSnap.empty) {
-            matchedUserId = userSnap.docs[0].id;
+            matchedUserId = matchedUserId || userSnap.docs[0].id;
+            const updatePromises = userSnap.docs.map(docSnap => 
+              updateDoc(doc(db, 'users', docSnap.id), {
+                role: app.appType.toLowerCase(),
+                updatedAt: serverTimestamp()
+              })
+            );
+            await Promise.all(updatePromises);
+            console.log(`Successfully upgraded ${userSnap.docs.length} user documents by email`);
           }
         }
 
         // Try matching by phone if email didn't work
         if (!matchedUserId && app.phone) {
           const cleanPhone = app.phone.replace(/[^0-9]/g, '');
-          const phoneQ = query(usersRef); // Fetch all and filter in memory if needed, or query by exact match
+          const phoneQ = query(usersRef); 
           const phoneSnap = await getDocs(phoneQ);
           const matchedDoc = phoneSnap.docs.find(d => {
              const dPhone = d.data().phone ? d.data().phone.replace(/[^0-9]/g, '') : '';
              return dPhone.includes(cleanPhone) || cleanPhone.includes(dPhone);
           });
           if (matchedDoc) {
-             matchedUserId = matchedDoc.id;
-          }
-        }
-
-        if (matchedUserId) {
-           // We might have multiple matching documents (e.g. Google Auth doc vs Ghost CRM doc)
-           // Let's just update all of them so we never hit a dual-identity mismatch.
-           const emailToMatch = app.userEmail || app.email;
-           const userQ = query(usersRef, where('email', '==', emailToMatch));
-           const userSnap = await getDocs(userQ);
-           
-           if (!userSnap.empty) {
-             const updatePromises = userSnap.docs.map(docSnap => 
-               updateDoc(doc(db, 'users', docSnap.id), {
-                 role: app.appType.toLowerCase(),
-                 updatedAt: serverTimestamp()
-               })
-             );
-             await Promise.all(updatePromises);
-             console.log(`Successfully upgraded ${userSnap.docs.length} user documents to ${app.appType.toLowerCase()}`);
-           } else {
-             // Fallback for phone matching if email was missing
-             await updateDoc(doc(db, 'users', matchedUserId), {
+             await updateDoc(doc(db, 'users', matchedDoc.id), {
                 role: app.appType.toLowerCase(),
                 updatedAt: serverTimestamp()
              });
-             console.log(`Successfully upgraded user ${matchedUserId} to ${app.appType.toLowerCase()}`);
-           }
-        } else {
-           console.log("No matching user found in users table to upgrade role for application: ", app.id);
+          }
         }
       } catch (roleErr) {
         console.error("Failed to upgrade role in users table:", roleErr);
