@@ -354,9 +354,10 @@ function DoctorApplyContent() {
 
                       <div className="pt-4 border-t border-slate-800">
                         <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Clinic / Hospital Name *</label>
-                      <div>
+                        <input type="text" value={clinicName} onChange={(e) => setClinicName(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none transition-colors mb-4" placeholder="e.g. Apollo Hospital" />
+                        
                         <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Full Address *</label>
-                        <textarea rows={3} value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none transition-colors resize-none" placeholder="Street, City, Pincode" />
+                        <textarea rows={3} value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none transition-colors resize-none mb-4" placeholder="Street, City, Pincode" />
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

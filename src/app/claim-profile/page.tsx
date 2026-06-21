@@ -329,8 +329,8 @@ function ClaimProfileContent() {
                 Login / Register to Continue
               </Link>
             </div>
-          ) : <form onSubmit={step === 2 ? handleSubmit : (e) => e.preventDefault()} className="space-y-6">
-            
+          ) : (
+            <form onSubmit={step === 2 ? handleSubmit : (e) => e.preventDefault()} className="space-y-6">
             {/* STEP 1: Contact Info */}
             {step === 1 && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
@@ -428,9 +428,7 @@ function ClaimProfileContent() {
     <p className="text-xs text-center text-slate-500 mt-4 font-medium">
                 By submitting, you confirm that you are the authorized representative for this profile.
               </p>
-            </div>
-
-          </form>
+            </form>
           )}
         </div>
       </div>
