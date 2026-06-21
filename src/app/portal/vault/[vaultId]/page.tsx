@@ -27,14 +27,15 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
     setRole(currentRole);
 
     // 2. Authorization Logic (The Sovereign Rule)
-    // Patient can only view their own vault (encoded email used as ID for now)
-    const encodedUserEmail = encodeURIComponent(currentUserEmail);
+    // Patient can only view their own vault
     
     // Normalize role for robust checking
     const normalizedRole = currentRole.toLowerCase();
 
     if (normalizedRole === "patient") {
-      if (params.vaultId !== encodedUserEmail) {
+      // Decode the URL parameter safely in case Next.js passed it encoded or decoded
+      const requestedEmail = decodeURIComponent(params.vaultId);
+      if (requestedEmail !== currentUserEmail) {
         setAccessGranted(false);
         setLoading(false);
         return;
