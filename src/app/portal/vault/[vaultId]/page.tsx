@@ -30,7 +30,10 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
     // Patient can only view their own vault (encoded email used as ID for now)
     const encodedUserEmail = encodeURIComponent(currentUserEmail);
     
-    if (currentRole === "patient") {
+    // Normalize role for robust checking
+    const normalizedRole = currentRole.toLowerCase();
+
+    if (normalizedRole === "patient") {
       if (params.vaultId !== encodedUserEmail) {
         setAccessGranted(false);
         setLoading(false);
@@ -38,7 +41,7 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
       } else {
         setAccessGranted(true);
       }
-    } else if (currentRole === "doctor" || currentRole === "super_admin") {
+    } else if (normalizedRole === "doctor" || normalizedRole === "super_admin") {
       // Doctors/Admins need an active access_grant check in a real scenario
       // For now, we trust the role token
       setAccessGranted(true);

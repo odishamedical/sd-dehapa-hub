@@ -2,14 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import GlobalHeader from '@/components/GlobalHeader';
-import GlobalFooter from '@/components/GlobalFooter';
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#060B14] flex flex-col font-sans">
-      <GlobalHeader />
-      
       <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
         {/* Ambient Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-900/20 rounded-full blur-[100px] pointer-events-none"></div>
@@ -40,8 +36,6 @@ export default function NotFound() {
           </div>
         </div>
       </div>
-
-      <GlobalFooter />
     </div>
   );
 }
