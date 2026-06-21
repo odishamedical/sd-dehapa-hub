@@ -10,35 +10,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  async redirects() {
-    return [
-      {
-        source: '/portal/Doctor',
-        destination: '/portal/doctor',
-        permanent: true,
-      },
-      {
-        source: '/portal/Hospital',
-        destination: '/portal/hospital',
-        permanent: true,
-      },
-      {
-        source: '/portal/Pharmacy',
-        destination: '/portal/pharmacy',
-        permanent: true,
-      },
-      {
-        source: '/portal/Lab',
-        destination: '/portal/lab',
-        permanent: true,
-      },
-      {
-        source: '/portal/Ambulance',
-        destination: '/portal/ambulance',
-        permanent: true,
-      }
-    ];
-  },
 };
 
 export default nextConfig;
