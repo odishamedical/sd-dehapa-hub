@@ -32,7 +32,7 @@ function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName
                 <p className="text-sm font-medium text-emerald-50">Your application has been approved. Your official {userRole.charAt(0).toUpperCase() + userRole.slice(1)} Dashboard is now unlocked.</p>
               </div>
             </div>
-            <a href={`/portal/${userRole}`} className="bg-white text-emerald-600 hover:bg-emerald-50 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] shadow-sm transition-colors whitespace-nowrap">
+            <a href={`/portal/${userRole.toLowerCase()}`} className="bg-white text-emerald-600 hover:bg-emerald-50 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] shadow-sm transition-colors whitespace-nowrap">
               Go to Dashboard
             </a>
           </div>
