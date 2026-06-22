@@ -109,6 +109,38 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   if (loading) return null;
   if (!accessGranted) return null;
 
+  // Calculate Progress
+  const calculateCompletion = () => {
+    let requiredFieldsCount = 0;
+    let completedFieldsCount = 0;
+
+    const baseMandatoryKeys = ['name', 'phone', 'about', 'image', 'city'];
+    baseMandatoryKeys.forEach(k => {
+      requiredFieldsCount++;
+      if (entityData[k] && entityData[k].toString().trim() !== '') {
+        completedFieldsCount++;
+      }
+    });
+
+    categoryConfig?.tabs.forEach(tab => {
+      tab.fields.forEach(field => {
+        if (field.mandatory) {
+          requiredFieldsCount++;
+          const val = entityData[field.key];
+          if (Array.isArray(val) && val.length > 0) {
+            completedFieldsCount++;
+          } else if (val && val.toString().trim() !== '') {
+            completedFieldsCount++;
+          }
+        }
+      });
+    });
+
+    return requiredFieldsCount === 0 ? 100 : Math.round((completedFieldsCount / requiredFieldsCount) * 100);
+  };
+  
+  const completionPercentage = calculateCompletion();
+
   // Build Tabs Dynamically
   const baseTabs: DashboardTab[] = [
     {
@@ -151,6 +183,27 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
     >
       <div className="max-w-4xl mx-auto pb-24">
         
+        {/* PROGRESS BAR WIDGET */}
+        {(activeTab === "identity" || activeTab === "location" || categoryConfig?.tabs.some(t => t.id === activeTab)) && (
+          <div className="bg-white/50 backdrop-blur-[40px] rounded-[32px] p-6 mb-8 shadow-sm border border-white/60 animate-in fade-in slide-in-from-top-4">
+            <div className="flex justify-between items-center mb-3">
+              <div>
+                <h3 className="font-bold text-slate-800">Profile Completion</h3>
+                <p className="text-xs text-slate-500 font-medium">Reach 100% on mandatory fields to publish your directory page.</p>
+              </div>
+              <span className="text-2xl font-black text-teal-600">{completionPercentage}%</span>
+            </div>
+            <div className="bg-slate-200/50 rounded-full h-3 overflow-hidden shadow-inner">
+              <div 
+                className={`h-full transition-all duration-1000 ease-out relative ${completionPercentage === 100 ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-sky-400 to-cyan-500'}`}
+                style={{ width: `${Math.max(5, completionPercentage)}%` }}
+              >
+                <div className="absolute inset-0 bg-white/30 -skew-x-12 translate-x-[-150%] animate-[shimmer_2s_infinite]"></div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* IDENTITY TAB */}
         {activeTab === "identity" && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
@@ -159,13 +212,18 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             <div className="mb-8 p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
               <div>
                 <h4 className="font-bold text-slate-800">Profile Visibility</h4>
-                <p className="text-xs text-slate-500">When turned on, your profile will be visible in the public directory.</p>
+                <p className="text-xs text-slate-500">
+                  {completionPercentage < 100 
+                    ? "Complete all mandatory fields to enable publication." 
+                    : "When turned on, your profile will be visible in the public directory."}
+                </p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label className={`relative inline-flex items-center ${completionPercentage < 100 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
                 <input 
                   type="checkbox" 
                   className="sr-only peer" 
                   checked={entityData.isPublished === true}
+                  disabled={completionPercentage < 100}
                   onChange={(e) => setEntityData({ ...entityData, isPublished: e.target.checked })}
                 />
                 <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
@@ -301,7 +359,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                         </>
                       ) : (
                         <div>
-                          <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">{field.label}</label>
+                          <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                            {field.label} {field.mandatory && <span className="text-rose-500 ml-1">*</span>}
+                          </label>
                           {field.type === 'textarea' ? (
                               <textarea 
                                 value={entityData[field.key] || ''} 

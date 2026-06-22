@@ -5,6 +5,7 @@ export interface FieldConfig {
   placeholder?: string;
   options?: string[]; // For select type
   arrayFields?: { key: string; label: string; type: string }[]; // For object_array type
+  mandatory?: boolean;
 }
 
 export interface TabConfig {
@@ -27,6 +28,49 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         label: "Professional & Services",
         fields: [
           {
+            key: "qualificationsList",
+            label: "Qualifications & Education",
+            type: "object_array",
+            mandatory: true,
+            arrayFields: [
+              { key: "degree", label: "Degree (e.g., MBBS, MD)", type: "text" },
+              { key: "institution", label: "Institution / University", type: "text" },
+              { key: "year", label: "Passing Year", type: "text" }
+            ]
+          },
+          {
+            key: "primarySpecialty",
+            label: "Primary Specialty",
+            type: "text",
+            mandatory: true,
+            placeholder: "e.g., Cardiologist"
+          },
+          {
+            key: "videoFee",
+            label: "Video Consultation Fee (₹)",
+            type: "number",
+            mandatory: true,
+            placeholder: "e.g., 500"
+          },
+          {
+            key: "inClinicFee",
+            label: "In-Clinic Consultation Fee (₹)",
+            type: "number",
+            mandatory: true,
+            placeholder: "e.g., 800"
+          },
+          {
+            key: "clinicTimings",
+            label: "Clinic Timings (Supports Split Shifts)",
+            type: "object_array",
+            mandatory: true,
+            arrayFields: [
+              { key: "day", label: "Day (e.g., Monday)", type: "text" },
+              { key: "morningShift", label: "Morning Shift (e.g., 9AM-1PM)", type: "text" },
+              { key: "eveningShift", label: "Evening Shift (e.g., 5PM-9PM)", type: "text" }
+            ]
+          },
+          {
             key: "experiences",
             label: "Professional Experience",
             type: "object_array",
@@ -35,16 +79,6 @@ export const directoryConfig: Record<string, CategoryConfig> = {
               { key: "hospital", label: "Hospital / Institution", type: "text" },
               { key: "duration", label: "Duration (e.g. 2010 - Present)", type: "text" },
               { key: "description", label: "Description", type: "textarea" }
-            ]
-          },
-          {
-            key: "qualificationsList",
-            label: "Qualifications & Education",
-            type: "object_array",
-            arrayFields: [
-              { key: "degree", label: "Degree / Certification", type: "text" },
-              { key: "institution", label: "Institution / University", type: "text" },
-              { key: "year", label: "Year of Completion", type: "text" }
             ]
           },
           {
