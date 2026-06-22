@@ -7,10 +7,9 @@ import DashboardHomeGrid from '@/components/DashboardHomeGrid';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
 import ProviderProfileBuilder from '@/components/ProviderProfileBuilder';
-import { useAuth } from '@/hooks/useAuth';
+import { auth } from '@/lib/firebase';
 
 export default function DoctorDashboard() {
-  const { user } = useAuth();
   const customTabs: DashboardTab[] = [
     {
       id: "appointments",
@@ -42,7 +41,7 @@ export default function DoctorDashboard() {
     if (tabId === "profile") {
       return (
         <div className="animate-in fade-in slide-in-from-bottom-4 h-full">
-          <ProviderProfileBuilder role="doctor" userId={user?.uid || ''} />
+          <ProviderProfileBuilder role="doctor" userId={auth.currentUser?.uid || ''} />
         </div>
       );
     }

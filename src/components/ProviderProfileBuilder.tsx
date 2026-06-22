@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { CheckCircle2, Circle, Save, ChevronRight, LayoutDashboard, Stethoscope, Building2, FlaskConical, Activity, Truck } from 'lucide-react';
-import { db } from '@/lib/firebase';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 interface ProviderProfileBuilderProps {
   role: string;
