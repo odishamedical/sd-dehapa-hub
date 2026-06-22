@@ -228,7 +228,6 @@ function ApplyContent() {
   if (submitted) {
     return (
       <div className="min-h-screen bg-[#020810] flex flex-col">
-        <GlobalHeader />
         <div className="flex-1 flex items-center justify-center p-6 py-12">
           <div className="bg-slate-900/80 backdrop-blur-xl border border-teal-500/30 p-8 sm:p-10 rounded-[32px] shadow-[0_0_50px_rgba(20,184,166,0.1)] max-w-2xl w-full text-center relative overflow-hidden">
             <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 relative z-10">
@@ -245,7 +244,6 @@ function ApplyContent() {
             </Link>
           </div>
         </div>
-        <GlobalFooter />
       </div>
     );
   }
@@ -253,7 +251,6 @@ function ApplyContent() {
   if (authChecked && !auth.currentUser) {
     return (
       <div className="min-h-screen bg-[#020810] flex flex-col">
-        <GlobalHeader />
         <div className="flex-1 flex items-center justify-center p-6">
           <div className="bg-slate-900/80 backdrop-blur-xl border border-red-500/30 p-8 sm:p-10 rounded-[32px] max-w-lg w-full text-center">
             <h2 className="text-2xl font-black text-white mb-4">Authentication Required</h2>
@@ -265,14 +262,12 @@ function ApplyContent() {
             </Link>
           </div>
         </div>
-        <GlobalFooter />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#020810] flex flex-col selection:bg-teal-500/30">
-      <GlobalHeader />
       
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 py-12 relative">
         <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-teal-500/10 to-transparent pointer-events-none"></div>
@@ -513,7 +508,6 @@ function ApplyContent() {
           </div>
         </div>
       </div>
-      <GlobalFooter />
     </div>
   );
 }

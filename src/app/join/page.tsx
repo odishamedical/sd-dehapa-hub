@@ -18,7 +18,6 @@ export default function JoinHubPage() {
 
   return (
     <div className="min-h-screen bg-[#020810] flex flex-col font-sans selection:bg-teal-500/30">
-      <GlobalHeader />
       
       <div className="flex-1 flex flex-col items-center pt-16 pb-24 px-4 sm:px-6 relative overflow-hidden">
         {/* Background Glow */}
@@ -63,7 +62,6 @@ export default function JoinHubPage() {
         </div>
       </div>
 
-      <GlobalFooter />
     </div>
   );
 }
