@@ -363,10 +363,12 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
           <span className="relative z-10">Find Specialists</span>
           <div className="absolute inset-0 h-full w-full bg-cyan-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
         </a>
-        <a href="/join" className="relative group bg-slate-900 border border-amber-500/30 hover:border-orange-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-amber-300 hover:text-orange-200 transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] overflow-hidden">
-          <span className="relative z-10">Join as Provider</span>
-          <div className="absolute inset-0 h-full w-full bg-orange-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
-        </a>
+        {(!userRole || userRole === 'user' || userRole === 'patient') && (
+          <a href="/join" className="relative group bg-slate-900 border border-amber-500/30 hover:border-orange-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-amber-300 hover:text-orange-200 transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] overflow-hidden">
+            <span className="relative z-10">Join as Provider</span>
+            <div className="absolute inset-0 h-full w-full bg-orange-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+          </a>
+        )}
       </nav>
 
       {/* 3. User Menu / Auth */}

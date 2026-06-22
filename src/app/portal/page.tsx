@@ -172,11 +172,17 @@ export default function UserDashboard() {
         window.addEventListener("sd_role_upgraded", handleRoleUpgrade);
         // Check if profile is complete. If not, send to our brand new /portal/setup page (unless they are a provider/admin)
         const checkRoleAndRedirect = async () => {
-           const isComplete = localStorage.getItem("sd_current_user_profile_complete");
-           if (isComplete === "true") return;
-
-           const exemptRoles = ["doctor", "hospital", "admin", "super_admin", "lab", "pharmacy"];
            let currentRole = localStorage.getItem("sd_current_user_role") || "user";
+           const isComplete = localStorage.getItem("sd_current_user_profile_complete");
+           const exemptRoles = ["doctor", "hospital", "admin", "super_admin", "lab", "pharmacy", "ambulance"];
+
+           // CRITICAL FIX: If they are a provider, immediately boot them out of the patient portal to their correct dashboard!
+           if (exemptRoles.includes(currentRole) && currentRole !== "admin" && currentRole !== "super_admin") {
+              window.location.href = `/portal/${currentRole}`;
+              return;
+           }
+
+           if (isComplete === "true") return;
 
            // Double-check Firebase directly to prevent race conditions on immediate post-approval navigation
            if (!exemptRoles.includes(currentRole.toLowerCase())) {
