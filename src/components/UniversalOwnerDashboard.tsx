@@ -25,7 +25,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
-  const [origin, setOrigin] = useState("https://www.dehapa.com");
+  const [origin, setOrigin] = useState("https://dehapa.com");
   const [userEmail, setUserEmail] = useState("");
   const [activeTab, setActiveTab] = useState("home");
 
