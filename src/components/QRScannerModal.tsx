@@ -36,7 +36,16 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
               if (scanner) scanner.clear();
               onClose();
               if (decodedText.startsWith("http")) {
-                 window.location.href = decodedText;
+                 try {
+                   const url = new URL(decodedText);
+                   if (typeof window !== 'undefined' && url.origin === window.location.origin) {
+                     router.push(url.pathname + url.search + url.hash);
+                   } else {
+                     window.location.href = decodedText;
+                   }
+                 } catch (e) {
+                   window.location.href = decodedText;
+                 }
               } else if (decodedText.length === 8) {
                  router.push(`/invite/${decodedText}`);
               } else {
