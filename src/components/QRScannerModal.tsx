@@ -33,25 +33,35 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
 
           scanner.render(
             (decodedText) => {
-              if (scanner) scanner.clear();
-              onClose();
-              if (decodedText.startsWith("http")) {
-                 alert("DEBUG SCAN: " + decodedText);
-                 try {
-                   const url = new URL(decodedText);
-                   if (typeof window !== 'undefined' && (url.origin === window.location.origin || url.hostname.includes('dehapa.com'))) {
-                     router.push(url.pathname + url.search + url.hash);
-                   } else {
+              const handleScan = async () => {
+                if (scanner) {
+                  try {
+                    await scanner.clear();
+                  } catch (e) {
+                    console.error("Failed to clear scanner", e);
+                  }
+                }
+                
+                onClose();
+                
+                if (decodedText.startsWith("http")) {
+                   try {
+                     const url = new URL(decodedText);
+                     if (typeof window !== 'undefined' && (url.origin === window.location.origin || url.hostname.includes('dehapa.com'))) {
+                       router.push(url.pathname + url.search + url.hash);
+                     } else {
+                       window.location.href = decodedText;
+                     }
+                   } catch (e) {
                      window.location.href = decodedText;
                    }
-                 } catch (e) {
-                   window.location.href = decodedText;
-                 }
-              } else if (decodedText.length === 8) {
-                 router.push(`/invite/${decodedText}`);
-              } else {
-                 alert(`Scanned: ${decodedText}`);
-              }
+                } else if (decodedText.length === 8) {
+                   router.push(`/invite/${decodedText}`);
+                } else {
+                   alert(`Scanned: ${decodedText}`);
+                }
+              };
+              handleScan();
             },
             (errorMessage) => {
               // Ignore typical frame empty errors
