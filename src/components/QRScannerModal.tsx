@@ -33,35 +33,19 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
 
           scanner.render(
             (decodedText) => {
-              const handleScan = async () => {
-                if (scanner) {
-                  try {
-                    await scanner.clear();
-                  } catch (e) {
-                    console.error("Failed to clear scanner", e);
-                  }
-                }
-                
-                onClose();
-                
-                if (decodedText.startsWith("http")) {
-                   try {
-                     const url = new URL(decodedText);
-                     if (typeof window !== 'undefined' && (url.origin === window.location.origin || url.hostname.includes('dehapa.com'))) {
-                       router.push(url.pathname + url.search + url.hash);
-                     } else {
-                       window.location.href = decodedText;
-                     }
-                   } catch (e) {
-                     window.location.href = decodedText;
-                   }
-                } else if (decodedText.length === 8) {
-                   router.push(`/invite/${decodedText}`);
-                } else {
-                   alert(`Scanned: ${decodedText}`);
-                }
-              };
-              handleScan();
+              if (scanner) {
+                try {
+                  scanner.clear();
+                } catch (e) {}
+              }
+              onClose();
+              
+              if (decodedText.includes("dehapa.com")) {
+                alert("QR SCAN SUCCESS! Navigating to: \n" + decodedText);
+                window.location.assign(decodedText);
+              } else {
+                alert("Scanned non-Dehapa code: " + decodedText);
+              }
             },
             (errorMessage) => {
               // Ignore typical frame empty errors
