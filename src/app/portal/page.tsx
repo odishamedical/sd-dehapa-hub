@@ -76,6 +76,24 @@ function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName
             <InviteWidget userUid={userUid} userName={userName} />
         </div>
 
+        {/* 4. Upgrade to Provider Banner */}
+        {(!userRole || userRole === 'patient') && (
+            <div className="order-4 md:col-span-3 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 mt-2 border border-slate-700">
+               <div className="flex items-center gap-4 text-white">
+                  <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center shrink-0 border border-amber-500/30">
+                     <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                  </div>
+                  <div>
+                     <h3 className="text-lg font-bold text-white">Are you a Healthcare Provider?</h3>
+                     <p className="text-sm font-medium text-slate-300">Upgrade your account to list your practice, manage appointments, and connect with patients.</p>
+                  </div>
+               </div>
+               <a href="/join" className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all whitespace-nowrap">
+                  Apply Now
+               </a>
+            </div>
+        )}
+
     </div>
   );
 }
