@@ -38,7 +38,7 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
               if (decodedText.startsWith("http")) {
                  try {
                    const url = new URL(decodedText);
-                   if (typeof window !== 'undefined' && url.origin === window.location.origin) {
+                   if (typeof window !== 'undefined' && (url.origin === window.location.origin || url.hostname.includes('dehapa.com'))) {
                      router.push(url.pathname + url.search + url.hash);
                    } else {
                      window.location.href = decodedText;
