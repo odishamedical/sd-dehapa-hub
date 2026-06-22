@@ -25,7 +25,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
-  const [origin, setOrigin] = useState("https://dehapa.com");
+  const [origin, setOrigin] = useState("https://www.dehapa.com");
   const [userEmail, setUserEmail] = useState("");
   const [activeTab, setActiveTab] = useState("home");
 
@@ -181,11 +181,11 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         if (tabId === "home") setActiveTab("home");
         else setActiveTab(tabId);
       }}
-      userProfile={{
+      userProfile={entityData.id ? {
         name: entityData.name || "Provider",
         subtitle: userEmail,
         profileUrl: `${origin}/profile/${expectedRole}/${entityData.id}`
-      }}
+      } : undefined}
       homeWidget={homeWidget}
     >
       <div className="max-w-4xl mx-auto pb-24">
