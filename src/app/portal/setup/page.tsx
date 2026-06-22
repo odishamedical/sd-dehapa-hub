@@ -381,17 +381,7 @@ export default function PatientSetupPage() {
                   You have completed all your details. You can now securely search our doctors and hospitals.
                 </p>
 
-                <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-8 text-left relative overflow-hidden mb-8 shadow-2xl backdrop-blur-xl">
-                  <div className="absolute -right-16 -top-16 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl"></div>
-                  <h3 className="text-2xl font-black text-white mb-2 relative z-10">Are you a Healthcare Professional?</h3>
-                  <p className="text-slate-400 mb-6 relative z-10">Or do you represent a Hospital, Lab, or Pharmacy?</p>
-                  <button 
-                    onClick={() => router.push('/join')}
-                    className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-900 text-lg font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] relative z-10"
-                  >
-                    Join as a Service Provider
-                  </button>
-                </div>
+
 
                 <button 
                   onClick={() => router.replace('/portal')}

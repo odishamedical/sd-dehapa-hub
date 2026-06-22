@@ -42,7 +42,7 @@ export default function AmbulanceLandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/join/ambulance/apply" className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white font-black px-8 py-4 rounded-xl shadow-[0_0_30px_rgba(225,29,72,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(225,29,72,0.5)]">
+              <Link href="/join/apply?role=ambulance" className="inline-flex justify-center items-center gap-2 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white font-black px-8 py-4 rounded-xl shadow-[0_0_30px_rgba(225,29,72,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(225,29,72,0.5)]">
                 Register Fleet
                 <ArrowRight className="w-5 h-5" />
               </Link>
@@ -159,7 +159,7 @@ export default function AmbulanceLandingPage() {
             </ul>
           </div>
           <div className="w-full md:w-auto">
-            <Link href="/join/ambulance/apply" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-white text-slate-900 hover:bg-slate-200 font-black px-8 py-4 rounded-xl transition-all">
+            <Link href="/join/apply?role=ambulance" className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-white text-slate-900 hover:bg-slate-200 font-black px-8 py-4 rounded-xl transition-all">
               Start Onboarding
               <ArrowRight className="w-5 h-5" />
             </Link>
