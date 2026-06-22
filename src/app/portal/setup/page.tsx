@@ -5,18 +5,45 @@ import { useRouter } from 'next/navigation';
 import { User, MapPin, Users, CheckCircle, ShieldCheck } from 'lucide-react';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 
 export default function PatientSetupPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoadingDraft, setIsLoadingDraft] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
     // If they already completed it, don't let them back in here
     if (localStorage.getItem("sd_current_user_profile_complete") === "true") {
       router.replace('/portal');
+    } else {
+      // Fetch draft data so they don't lose progress if they skipped
+      const fetchDraft = async () => {
+        try {
+          const uid = localStorage.getItem("sd_current_user_uid");
+          if (uid) {
+            const snap = await getDoc(doc(db, 'users', uid));
+            if (snap.exists()) {
+              const data = snap.data();
+              if (data.phone) setPhone(data.phone);
+              if (data.whatsappNumber) {
+                setWhatsappNumber(data.whatsappNumber);
+                if (data.whatsappNumber !== data.phone) setSameAsPhone(false);
+              }
+              if (data.firstName) setFirstName(data.firstName);
+              if (data.lastName) setLastName(data.lastName);
+              if (data.address) setAddressData(prev => ({...prev, ...data.address}));
+            }
+          }
+        } catch(e) {
+          console.warn("Failed to fetch draft:", e);
+        } finally {
+          setIsLoadingDraft(false);
+        }
+      };
+      fetchDraft();
     }
   }, [router]);
 
@@ -54,7 +81,35 @@ export default function PatientSetupPage() {
   };
 
   const handleSkip = () => {
-    router.replace('/');
+    router.replace('/portal');
+  };
+
+  const handleNextStep1 = async () => {
+    setStep(2);
+    try {
+      const uid = localStorage.getItem("sd_current_user_uid");
+      if (uid) {
+        await updateDoc(doc(db, 'users', uid), {
+          phone: phone,
+          whatsappNumber: sameAsPhone ? phone : whatsappNumber
+        });
+      }
+    } catch(e) { console.warn(e); }
+  };
+
+  const handleNextStep2 = async () => {
+    setStep(3);
+    try {
+      const uid = localStorage.getItem("sd_current_user_uid");
+      if (uid) {
+        await updateDoc(doc(db, 'users', uid), {
+          firstName: firstName,
+          lastName: lastName,
+          displayName: `${firstName} ${lastName}`.trim(),
+          address: addressData
+        });
+      }
+    } catch(e) { console.warn(e); }
   };
 
   const handleFinish = async () => {
@@ -84,7 +139,7 @@ export default function PatientSetupPage() {
     setStep(4);
   };
 
-  if (!isMounted) return null;
+  if (!isMounted || isLoadingDraft) return null;
 
   return (
     <div className="min-h-screen bg-[#060B14] flex flex-col font-sans">
@@ -173,7 +228,7 @@ export default function PatientSetupPage() {
                       Skip for now
                     </button>
                     <button 
-                      onClick={() => setStep(2)}
+                      onClick={handleNextStep1}
                       disabled={phone.length < 10}
                       className="w-full sm:w-2/3 px-4 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-900 font-bold text-lg transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] disabled:opacity-50"
                     >
@@ -232,7 +287,7 @@ export default function PatientSetupPage() {
                       Skip for now
                     </button>
                     <button 
-                      onClick={() => setStep(3)}
+                      onClick={handleNextStep2}
                       disabled={!firstName || !lastName || !addressData.city || !addressData.district}
                       className="w-full sm:w-2/3 px-4 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-900 font-bold text-lg transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] disabled:opacity-50"
                     >
