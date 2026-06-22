@@ -25,8 +25,7 @@ export default function InviteWidget({ userUid, userName }: InviteWidgetProps) {
 
   if (!activeUid) return null;
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://dehapa.com';
-  const inviteLink = `${origin}/invite/${referralCode}`;
+  const inviteLink = `https://dehapa.com/invite/${referralCode}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(inviteLink);
@@ -58,7 +57,7 @@ export default function InviteWidget({ userUid, userName }: InviteWidgetProps) {
 
         <div className="flex items-center gap-2 bg-white border border-indigo-100 p-2 rounded-xl mb-4">
           <div className="flex-1 px-2 text-sm font-mono text-slate-600 truncate">
-            {typeof window !== 'undefined' ? window.location.host : 'dehapa.com'}/invite/<span className="font-bold text-indigo-600">{referralCode}</span>
+            dehapa.com/invite/<span className="font-bold text-indigo-600">{referralCode}</span>
           </div>
           <button 
             onClick={handleCopy}

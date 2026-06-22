@@ -43,12 +43,6 @@ export default function DashboardLayout({
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("https://dehapa.com");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setOrigin(window.location.origin);
-    }
-  }, []);
-
   // Find which section the active tab belongs to
   const activeTabDetails = tabs.find(t => t.id === activeTab);
   const activeSection = activeTabDetails?.section;
