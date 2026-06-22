@@ -67,7 +67,6 @@ export default function DashboardLayout({
   };
 
   const [expandedHomeSections, setExpandedHomeSections] = useState<Record<string, boolean>>({});
-  const [showQRModal, setShowQRModal] = useState(false);
 
   const toggleHomeSection = (sectionName: string) => {
     setExpandedHomeSections(prev => {
