@@ -139,9 +139,9 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "basic",
         label: "Basic Info",
         fields: [
-          { key: "totalBeds", label: "Total Beds", type: "text", placeholder: "e.g. 500" },
-          { key: "icuCapacity", label: "ICU Capacity", type: "text", placeholder: "e.g. 50" },
-          { key: "emergencyServices", label: "Emergency Services", type: "text", placeholder: "e.g. 24/7 Available" }
+          { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500" },
+          { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50" },
+          { key: "emergencyServices", label: "Emergency Services", type: "text", mandatory: true, placeholder: "e.g. 24/7 Available" }
         ]
       }
     ]
@@ -153,9 +153,9 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "professional",
         label: "Professional & Services",
         fields: [
-          { key: "businessType", label: "Business Type", type: "select", options: ["Retail Pharmacy", "Wholesaler / Distributor", "Pharma Manufacturer"] },
-          { key: "gstin", label: "GSTIN Number", type: "text" },
-          { key: "retailLicense", label: "Retail Drug License No.", type: "text" },
+          { key: "businessType", label: "Business Type", type: "select", mandatory: true, options: ["Retail Pharmacy", "Wholesaler / Distributor", "Pharma Manufacturer"] },
+          { key: "gstin", label: "GSTIN Number", type: "text", mandatory: true },
+          { key: "retailLicense", label: "Retail Drug License No.", type: "text", mandatory: true },
           { key: "wholesaleLicense", label: "Wholesale Drug License No.", type: "text" },
           { key: "manufacturingLicense", label: "Manufacturing License No.", type: "text" },
           { key: "homeDeliveryRadius", label: "Home Delivery Radius", type: "text", placeholder: "e.g. 5 KM" },
@@ -172,11 +172,11 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "professional",
         label: "Professional & Services",
         fields: [
-          { key: "labType", label: "Lab Type", type: "select", options: ["Pathology", "Radiology", "Blood Bank"] },
+          { key: "labType", label: "Lab Type", type: "select", mandatory: true, options: ["Pathology", "Radiology", "Blood Bank"] },
           { key: "accreditations", label: "Accreditations (e.g. NABL)", type: "string_array", placeholder: "Add accreditation" },
-          { key: "homeCollection", label: "Home Sample Collection", type: "boolean" },
+          { key: "homeCollection", label: "Home Sample Collection", type: "boolean", mandatory: true },
           { key: "is247", label: "Open 24/7", type: "boolean" },
-          { key: "timings", label: "Timings", type: "text", placeholder: "e.g. Mon-Sat 8AM - 9PM" }
+          { key: "timings", label: "Timings", type: "text", mandatory: true, placeholder: "e.g. Mon-Sat 8AM - 9PM" }
         ]
       }
     ]
@@ -188,12 +188,12 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "professional",
         label: "Professional & Services",
         fields: [
-          { key: "ambulanceType", label: "Ambulance Type", type: "select", options: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Patient Transport Vehicle"] },
-          { key: "fleetSize", label: "Fleet Size", type: "number", placeholder: "e.g. 5" },
+          { key: "ambulanceType", label: "Ambulance Type", type: "select", mandatory: true, options: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Patient Transport Vehicle"] },
+          { key: "fleetSize", label: "Fleet Size", type: "number", mandatory: true, placeholder: "e.g. 5" },
           { key: "oxygenAvailable", label: "Oxygen Available", type: "boolean" },
           { key: "ventilatorAvailable", label: "Ventilator Available", type: "boolean" },
           { key: "is247", label: "Available 24/7", type: "boolean" },
-          { key: "baseLocation", label: "Base Location / Station", type: "text" }
+          { key: "baseLocation", label: "Base Location / Station", type: "text", mandatory: true }
         ]
       }
     ]
