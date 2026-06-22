@@ -38,7 +38,6 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         window.location.href = "/login";
         return;
       }
-      setOrigin(window.location.origin);
       if (hash) {
         setActiveTab(hash);
       }
