@@ -25,6 +25,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
+  const [origin, setOrigin] = useState("https://dehapa.com");
   const [userEmail, setUserEmail] = useState("");
   const [activeTab, setActiveTab] = useState("home");
 
@@ -32,6 +33,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hash = window.location.hash.replace("#", "");
+      const email = localStorage.getItem("sd_current_user_email");
+      if (!email) {
+        window.location.href = "/login";
+        return;
+      }
+      setOrigin(window.location.origin);
       if (hash) {
         setActiveTab(hash);
       }
@@ -178,7 +185,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       userProfile={{
         name: entityData.name || "Provider",
         subtitle: userEmail,
-        profileUrl: `${typeof window !== 'undefined' ? window.location.origin : 'https://dehapa.com'}/profile/${expectedRole}/${entityData.id}`
+        profileUrl: `${origin}/profile/${expectedRole}/${entityData.id}`
       }}
       homeWidget={homeWidget}
     >

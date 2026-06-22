@@ -38,6 +38,17 @@ export default function DashboardLayout({
   homeWidget,
   hideDefaultModulesList
 }: DashboardLayoutProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [origin, setOrigin] = useState("https://dehapa.com");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
   // Find which section the active tab belongs to
   const activeTabDetails = tabs.find(t => t.id === activeTab);
   const activeSection = activeTabDetails?.section;
@@ -380,7 +391,7 @@ export default function DashboardLayout({
 
             <div className="bg-white p-6 rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.2)] mb-8">
               <QRCodeSVG 
-                value={userProfile.profileUrl || `https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
+                value={userProfile.profileUrl || `${origin}/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
                 size={200} 
                 level="H"
                 fgColor="#0f172a" 
@@ -389,7 +400,7 @@ export default function DashboardLayout({
 
             <button 
               onClick={() => {
-                const link = userProfile.profileUrl || `https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`;
+                const link = userProfile.profileUrl || `${origin}/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`;
                 navigator.clipboard.writeText(link);
                 alert("Profile Link Copied to Clipboard!");
               }}
