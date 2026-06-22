@@ -6,14 +6,23 @@ import { DashboardTab } from '@/components/DashboardLayout';
 import DashboardHomeGrid from '@/components/DashboardHomeGrid';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
+import ProviderProfileBuilder from '@/components/ProviderProfileBuilder';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function DoctorDashboard() {
+  const { user } = useAuth();
   const customTabs: DashboardTab[] = [
     {
       id: "appointments",
       label: "Appointments",
       section: "QUICK ACCESS",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "profile",
+      label: "Profile Builder",
+      section: "QUICK ACCESS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
     },
     {
       id: "inquiries",
@@ -30,6 +39,14 @@ export default function DoctorDashboard() {
   ];
 
   const renderCustomTab = (tabId: string, entityData: any) => {
+    if (tabId === "profile") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 h-full">
+          <ProviderProfileBuilder role="doctor" userId={user?.uid || ''} />
+        </div>
+      );
+    }
+    
     if (tabId === "inquiries") {
       return (
         <div className="animate-in fade-in slide-in-from-bottom-4">
