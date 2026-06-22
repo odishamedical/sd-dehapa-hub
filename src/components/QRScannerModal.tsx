@@ -33,16 +33,9 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
 
           scanner.render(
             (decodedText) => {
-              if (scanner) {
-                try {
-                  scanner.clear();
-                } catch (e) {}
-              }
-              onClose();
-              
               if (decodedText.includes("dehapa.com")) {
                 alert("QR SCAN SUCCESS! Navigating to: \n" + decodedText);
-                window.location.assign(decodedText);
+                window.location.href = decodedText;
               } else {
                 alert("Scanned non-Dehapa code: " + decodedText);
               }
