@@ -386,7 +386,7 @@ export default function DashboardLayout({
               <QRCodeSVG 
                 value={userProfile.profileUrl || `${origin}/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
                 size={200} 
-                level="H"
+                level="L"
                 fgColor="#0f172a" 
               />
             </div>
