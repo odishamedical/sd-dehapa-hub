@@ -178,6 +178,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       userProfile={{
         name: entityData.name || "Provider",
         subtitle: userEmail,
+        profileUrl: `${typeof window !== 'undefined' ? window.location.origin : 'https://dehapa.com'}/profile/${expectedRole}/${entityData.id}`
       }}
       homeWidget={homeWidget}
     >

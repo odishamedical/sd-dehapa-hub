@@ -21,6 +21,7 @@ interface DashboardLayoutProps {
     image?: string;
     name: string;
     subtitle: string;
+    profileUrl?: string;
   };
   homeWidget?: React.ReactNode;
   hideDefaultModulesList?: boolean;
@@ -379,7 +380,7 @@ export default function DashboardLayout({
 
             <div className="bg-white p-6 rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.2)] mb-8">
               <QRCodeSVG 
-                value={`https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
+                value={userProfile.profileUrl || `https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
                 size={200} 
                 level="H"
                 fgColor="#0f172a" 
@@ -388,7 +389,8 @@ export default function DashboardLayout({
 
             <button 
               onClick={() => {
-                navigator.clipboard.writeText(`https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`);
+                const link = userProfile.profileUrl || `https://dehapa.com/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`;
+                navigator.clipboard.writeText(link);
                 alert("Profile Link Copied to Clipboard!");
               }}
               className="w-full bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)]"
