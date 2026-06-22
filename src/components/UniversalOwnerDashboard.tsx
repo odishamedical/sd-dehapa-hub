@@ -231,14 +231,21 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             </div>
 
             <div className="space-y-6">
-              <ImageUpload 
-                defaultImage={entityData.image}
-                onChange={(url) => setEntityData({ ...entityData, image: url })}
-              />
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  Profile Photo <span className="text-rose-500 ml-1">*</span>
+                </label>
+                <ImageUpload 
+                  defaultImage={entityData.image}
+                  onChange={(url) => setEntityData({ ...entityData, image: url })}
+                />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">Business/Provider Name</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                    Business/Provider Name <span className="text-rose-500 ml-1">*</span>
+                  </label>
                   <input 
                     type="text" 
                     value={entityData.name || ''}
@@ -247,7 +254,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">Phone Number</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                    Phone Number <span className="text-rose-500 ml-1">*</span>
+                  </label>
                   <input 
                     type="text" 
                     value={entityData.phone || ''}
@@ -258,7 +267,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">About / Description</label>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  About / Description <span className="text-rose-500 ml-1">*</span>
+                </label>
                 <textarea 
                   value={entityData.about || ''}
                   onChange={e => setEntityData({ ...entityData, about: e.target.value })}

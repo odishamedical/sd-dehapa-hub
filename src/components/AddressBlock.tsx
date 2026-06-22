@@ -196,7 +196,9 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* City / Town / Village */}
         <div>
-          <label className={labelClass}>Town / City / Village</label>
+          <label className={labelClass}>
+            Town / City / Village <span className="text-rose-500 ml-1">*</span>
+          </label>
           <input 
             type="text" 
             value={data.city}
