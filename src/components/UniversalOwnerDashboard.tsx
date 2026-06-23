@@ -280,7 +280,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   const schemaTabs: DashboardTab[] = categoryConfig?.tabs.map(tab => ({
     id: tab.id,
     label: tab.label,
-    section: "PROFILE BUILDER",
+    section: tab.id === "b2b_network" ? "PRIVATE B2B ECOSYSTEM" : "PROFILE BUILDER",
     icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
   })) || [];
 
@@ -793,6 +793,15 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             return (
               <div key={tab.id} className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
                 <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">{tab.label}</h3>
+                
+                {tab.id === "b2b_network" && (
+                  <div className="mb-8 bg-indigo-50 border border-indigo-200 p-6 rounded-2xl">
+                    <h4 className="text-indigo-800 font-bold mb-2">🔒 Strictly Confidential Ecosystem</h4>
+                    <p className="text-sm text-indigo-700 font-medium mb-3">Your supply chain network is a trade secret. This data will NEVER be displayed publicly or shown to competitors. It is stored securely to enable private B2B digital ordering, stock requests, and communication exclusively between you and your linked partners.</p>
+                    <p className="text-sm text-indigo-900 bg-indigo-100/50 p-3 rounded-xl border border-indigo-200/50"><strong>How to connect:</strong> Write their name below. If they are already in the network, select them to connect. If not, we will save their name and let them find you when they register!</p>
+                  </div>
+                )}
+
                 <div className="space-y-8">
                   {tab.fields.map(field => {
                     if (isFieldHidden(field, entityData)) return null;

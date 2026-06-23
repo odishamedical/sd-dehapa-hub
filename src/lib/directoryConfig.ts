@@ -203,7 +203,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
       },
       {
         id: "b2b_network",
-        label: "B2B Network & Partners",
+        label: "Establish Your Network Connection",
         fields: [
           {
             key: "partnerLabs",
@@ -284,30 +284,38 @@ export const directoryConfig: Record<string, CategoryConfig> = {
       },
       {
         id: "b2b_network",
-        label: "Supply Chain & Network",
+        label: "Establish Your Network Connection",
         fields: [
           {
-            key: "suppliers",
-            label: "My Suppliers / Wholesalers",
+            key: "retailerSuppliers",
+            label: "Connect with your Wholesalers / Suppliers",
             type: "hybrid_entity_selector",
             targetEntity: "Pharmacy",
             placeholder: "Search wholesalers...",
             showIf: { field: "pharmacyType", contains: ["Retail Store"] }
           },
           {
-            key: "retailNetwork",
-            label: "My Retail Network (Customers)",
+            key: "wholesalerCompanies",
+            label: "Companies I Represent",
             type: "hybrid_entity_selector",
             targetEntity: "Pharmacy",
-            placeholder: "Search retail pharmacies...",
+            placeholder: "Search pharma companies...",
             showIf: { field: "pharmacyType", contains: ["Wholesaler"] }
           },
           {
-            key: "distributors",
-            label: "My Authorised Distributors / Super Stockists",
+            key: "distributorCompanies",
+            label: "Companies I Represent",
             type: "hybrid_entity_selector",
             targetEntity: "Pharmacy",
-            placeholder: "Search distributors...",
+            placeholder: "Search pharma companies...",
+            showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] }
+          },
+          {
+            key: "manufacturerNetwork",
+            label: "My Distributors & C&F Agents",
+            type: "hybrid_entity_selector",
+            targetEntity: "Pharmacy",
+            placeholder: "Search distributors/C&F...",
             showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] }
           }
         ]
@@ -379,7 +387,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
       },
       {
         id: "b2b_network",
-        label: "B2B Network & Partners",
+        label: "Establish Your Network Connection",
         fields: [
           {
             key: "affiliatedHospitals",
