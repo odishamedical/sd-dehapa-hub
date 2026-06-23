@@ -157,7 +157,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
     let requiredFieldsCount = 0;
     let completedFieldsCount = 0;
 
-    const baseMandatoryKeys = ['name', 'phone', 'about', 'image', 'city'];
+    // Base KYC & Identity fields
+    const baseMandatoryKeys = ['ownerName', 'legalEntityName', 'ownerPersonalId', 'businessRegistrationProof', 'name', 'phone', 'about', 'image', 'city'];
     baseMandatoryKeys.forEach(k => {
       requiredFieldsCount++;
       if (entityData[k] && entityData[k].toString().trim() !== '') {
@@ -237,10 +238,22 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   // Build Tabs Dynamically
   const baseTabs: DashboardTab[] = [
     {
-      id: "identity",
-      label: "Identity & Basic Info",
-      section: "PROFILE BUILDER",
+      id: "owner_kyc",
+      label: "Owner KYC & Verification",
+      section: "BUSINESS & OWNERSHIP",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+    },
+    {
+      id: "staff_management",
+      label: "Staff & Team Access",
+      section: "BUSINESS & OWNERSHIP",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    },
+    {
+      id: "identity",
+      label: "Property Identity & Info",
+      section: "PROFILE BUILDER",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
     },
     {
       id: "location",
@@ -329,10 +342,185 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
           </div>
         )}
 
+        {/* OWNER KYC TAB */}
+        {activeTab === "owner_kyc" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Owner Verification (KYC)</h3>
+            
+            <div className="mb-8 bg-amber-50 border border-amber-200 p-6 rounded-2xl">
+              <h4 className="text-amber-800 font-bold mb-2">Legal Verification Required</h4>
+              <p className="text-sm text-amber-700">To maintain trust in the DehaPa platform, you must verify your identity as the legal owner/director of this business before you can publish its directory listing.</p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                    Owner / Director Full Name <span className="text-rose-500 ml-1">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    value={entityData.ownerName || ''}
+                    onChange={e => setEntityData({ ...entityData, ownerName: e.target.value })}
+                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                    Legal Entity Name (e.g. XYZ Pvt Ltd) <span className="text-rose-500 ml-1">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    value={entityData.legalEntityName || ''}
+                    onChange={e => setEntityData({ ...entityData, legalEntityName: e.target.value })}
+                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                    Owner Personal ID (Aadhaar/PAN) <span className="text-rose-500 ml-1">*</span>
+                  </label>
+                  <ImageUpload 
+                    defaultImage={entityData.ownerPersonalId}
+                    onChange={(url) => setEntityData({ ...entityData, ownerPersonalId: url })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                    Business Registration / GST <span className="text-rose-500 ml-1">*</span>
+                  </label>
+                  <ImageUpload 
+                    defaultImage={entityData.businessRegistrationProof}
+                    onChange={(url) => setEntityData({ ...entityData, businessRegistrationProof: url })}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                <AutosaveIndicator status={saveStatus} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STAFF MANAGEMENT TAB */}
+        {activeTab === "staff_management" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+              <h3 className="text-xl font-bold text-slate-900">Staff & Team Access</h3>
+              <button 
+                onClick={() => {
+                  const staff = entityData.staffList || [];
+                  setEntityData({ ...entityData, staffList: [...staff, { name: "", email: "", role: "Admin" }] });
+                }}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md transition-colors"
+              >
+                + Add Staff Member
+              </button>
+            </div>
+
+            <div className="mb-6 bg-slate-50 border border-slate-200 p-6 rounded-2xl">
+              <h4 className="font-bold text-slate-800 mb-2">Delegated Access</h4>
+              <p className="text-sm text-slate-600">Invite your receptionists, managers, or doctors to access this dashboard. You can revoke their access at any time.</p>
+            </div>
+
+            <div className="space-y-4">
+              {(!entityData.staffList || entityData.staffList.length === 0) ? (
+                <div className="text-center py-12 bg-white/50 rounded-2xl border border-dashed border-slate-300">
+                  <p className="text-slate-500 font-medium">No staff members added yet. Click above to add your team.</p>
+                </div>
+              ) : (
+                entityData.staffList.map((staff: any, idx: number) => (
+                  <div key={idx} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm relative group">
+                    <button 
+                      onClick={() => {
+                        const newStaff = [...entityData.staffList];
+                        newStaff.splice(idx, 1);
+                        setEntityData({ ...entityData, staffList: newStaff });
+                      }}
+                      className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 transition-colors"
+                      title="Remove Staff"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                    
+                    <div className="grid md:grid-cols-3 gap-4 mr-8">
+                      <div>
+                        <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Name</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. Rahul Sharma"
+                          value={staff.name}
+                          onChange={e => {
+                            const newStaff = [...entityData.staffList];
+                            newStaff[idx].name = e.target.value;
+                            setEntityData({ ...entityData, staffList: newStaff });
+                          }}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Gmail / Google Account</label>
+                        <input 
+                          type="email" 
+                          placeholder="rahul@gmail.com"
+                          value={staff.email}
+                          onChange={e => {
+                            const newStaff = [...entityData.staffList];
+                            newStaff[idx].email = e.target.value;
+                            setEntityData({ ...entityData, staffList: newStaff });
+                          }}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Role</label>
+                        <div className="flex items-center gap-3">
+                          <select 
+                            value={staff.role}
+                            onChange={e => {
+                              const newStaff = [...entityData.staffList];
+                              newStaff[idx].role = e.target.value;
+                              setEntityData({ ...entityData, staffList: newStaff });
+                            }}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                          >
+                            <option value="Admin">Full Admin</option>
+                            <option value="Receptionist">Receptionist (Bookings Only)</option>
+                          </select>
+                          
+                          <button 
+                            onClick={() => {
+                              if (!staff.email) return alert("Please enter an email first.");
+                              if (confirm(`CAUTION: Sending this invitation will grant ${staff.email} access to this dashboard.\n\nAre you sure you want to send the invitation?`)) {
+                                alert(`Invitation sent to ${staff.email}!`);
+                              }
+                            }}
+                            className="bg-slate-900 hover:bg-slate-800 text-white whitespace-nowrap px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm"
+                          >
+                            Send Invite
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
+              <AutosaveIndicator status={saveStatus} />
+            </div>
+          </div>
+        )}
+
         {/* IDENTITY TAB */}
         {activeTab === "identity" && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Identity & Basic Info</h3>
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Property Identity & Info</h3>
             
             <div className="mb-8 p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
               <div>
