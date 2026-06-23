@@ -274,52 +274,60 @@ export const directoryConfig: Record<string, CategoryConfig> = {
           // Retailer Connections (Optional)
           {
             key: "retailerSuppliers",
-            label: "My Wholesalers (Optional)",
-            type: "hybrid_entity_selector",
-            targetEntity: "Pharmacy",
-            placeholder: "Search and add your wholesalers...",
-            showIf: { field: "pharmacyType", contains: ["Retail Store"] }
+            label: "My Wholesalers / Suppliers (Optional)",
+            type: "object_array",
+            showIf: { field: "pharmacyType", contains: ["Retail Store"] },
+            arrayFields: [
+              { key: "wholesalerName", label: "Wholesaler Name", type: "text" },
+              { key: "location", label: "Place / Location", type: "text" }
+            ]
           },
           
           // Wholesaler Connections
           {
             key: "wholesalerCompanies",
             label: "Companies Represented (Mandatory for Publicity)",
-            type: "hybrid_entity_selector",
+            type: "object_array",
             mandatory: true,
-            targetEntity: "Pharmacy",
-            placeholder: "Write company name and connect...",
-            showIf: { field: "pharmacyType", contains: ["Wholesaler"] }
+            showIf: { field: "pharmacyType", contains: ["Wholesaler"] },
+            arrayFields: [
+              { key: "companyName", label: "Company Name", type: "text" }
+            ]
           },
           {
             key: "wholesalerRetailers",
             label: "Retailers Served (Optional)",
-            type: "hybrid_entity_selector",
-            targetEntity: "Pharmacy",
-            placeholder: "Write retailer name to connect...",
-            showIf: { field: "pharmacyType", contains: ["Wholesaler"] }
+            type: "object_array",
+            showIf: { field: "pharmacyType", contains: ["Wholesaler"] },
+            arrayFields: [
+              { key: "retailerName", label: "Retailer Name", type: "text" },
+              { key: "location", label: "Place / Location", type: "text" }
+            ]
           },
 
           // Distributor Connections (Mandatory)
           {
             key: "distributorCompanies",
             label: "Companies Represented (Mandatory for Publicity)",
-            type: "hybrid_entity_selector",
+            type: "object_array",
             mandatory: true,
-            targetEntity: "Pharmacy",
-            placeholder: "Write company name and connect...",
-            showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] }
+            showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] },
+            arrayFields: [
+              { key: "companyName", label: "Company Name", type: "text" }
+            ]
           },
 
           // Manufacturer Connections (Mandatory)
           {
             key: "manufacturerNetwork",
             label: "My Distribution Network (C&F, Distributors)",
-            type: "hybrid_entity_selector",
+            type: "object_array",
             mandatory: true,
-            targetEntity: "Pharmacy",
-            placeholder: "Write distributor name and area of operation...",
-            showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] }
+            showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] },
+            arrayFields: [
+              { key: "distributorName", label: "Distributor / C&F Name", type: "text" },
+              { key: "areaOfOperation", label: "Place / Area of Operation", type: "text" }
+            ]
           }
         ]
       }
