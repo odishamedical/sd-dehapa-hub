@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { ConnectionService, ConnectionStatus } from '@/services/connection.service';
 import RazorpayCheckout from '@/components/payments/RazorpayCheckout';
 import CategoryNav from '@/components/CategoryNav';
@@ -49,9 +49,16 @@ export default function UniversalProfileLayout({
   const isDoctor = type === 'doctor';
   const router = useRouter();
   
-  const [user] = useAuthState(auth);
+  const [user, setUser] = useState<User | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus | null>(null);
   const [isRequestingConnection, setIsRequestingConnection] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (user && profile.id) {

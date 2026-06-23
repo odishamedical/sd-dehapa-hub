@@ -1,16 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { collection, query, where, onSnapshot, getDoc, doc } from 'firebase/firestore';
 import { ConnectionService, NetworkConnection } from '@/services/connection.service';
 
 export default function PendingConnectionsWidget({ providerId }: { providerId: string | null }) {
-  const [user] = useAuthState(auth);
+  const [user, setUser] = useState<User | null>(null);
   const [pendingRequests, setPendingRequests] = useState<NetworkConnection[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (!providerId) {
