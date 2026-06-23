@@ -12,6 +12,7 @@ import InlineEditArray from '@/components/InlineEditArray';
 import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { directoryConfig } from '@/lib/directoryConfig';
+import EntitySelector from '@/components/EntitySelector';
 
 interface UniversalOwnerDashboardProps {
   expectedRole: string; // e.g. "pharmacy", "lab", "ambulance", "doctor", "hospital"
@@ -115,6 +116,13 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   if (loading) return null;
   if (!accessGranted) return null;
 
+  // Check if a field should be hidden based on dynamic schema rules
+  const isFieldHidden = (field: any, data: any) => {
+    if (!field.hiddenIf) return false;
+    const targetValue = data[field.hiddenIf.field];
+    return field.hiddenIf.in.includes(targetValue);
+  };
+
   // Calculate Progress
   const calculateCompletion = () => {
     let requiredFieldsCount = 0;
@@ -130,6 +138,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
     categoryConfig?.tabs.forEach(tab => {
       tab.fields.forEach(field => {
+        if (isFieldHidden(field, entityData)) return; // Skip if dynamically hidden
+        
         if (field.mandatory) {
           requiredFieldsCount++;
           const val = entityData[field.key];
@@ -400,7 +410,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               <div key={tab.id} className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
                 <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">{tab.label}</h3>
                 <div className="space-y-8">
-                  {tab.fields.map(field => (
+                  {tab.fields.map(field => {
+                    if (isFieldHidden(field, entityData)) return null;
+                    return (
                     <div key={field.key} className="bg-white/40 backdrop-blur-md p-6 rounded-2xl border border-white/60 shadow-sm hover:border-white transition-all">
                       {field.type === 'object_array' && field.arrayFields ? (
                         <ObjectArrayEditor
@@ -438,7 +450,17 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                           <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
                             {field.label} {field.mandatory && <span className="text-rose-500 ml-1">*</span>}
                           </label>
-                          {field.type === 'textarea' ? (
+                          {field.type === 'entity_selector' ? (
+                              <EntitySelector
+                                targetEntity={field.targetEntity || 'Doctor'}
+                                placeholder={field.placeholder}
+                                selectedItems={entityData[field.key] || []}
+                                onChange={(items) => setEntityData({...entityData, [field.key]: items})}
+                                currentUserId={entityData.id || ''}
+                                currentUserRole={expectedRole}
+                                currentUserName={entityData.name || ''}
+                              />
+                          ) : field.type === 'textarea' ? (
                               <textarea 
                                 value={entityData[field.key] || ''} 
                                 onChange={e => setEntityData({...entityData, [field.key]: e.target.value})} 
@@ -477,7 +499,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                         </div>
                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
                 <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
                   <AutosaveIndicator status={saveStatus} />

@@ -1,11 +1,13 @@
 export interface FieldConfig {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'boolean' | 'select' | 'object_array' | 'string_array';
+  type: 'text' | 'textarea' | 'number' | 'boolean' | 'select' | 'object_array' | 'string_array' | 'entity_selector';
   placeholder?: string;
   options?: string[]; // For select type
   arrayFields?: { key: string; label: string; type: string }[]; // For object_array type
   mandatory?: boolean;
+  hiddenIf?: { field: string; in: string[] }; // Hide this field if the target field's value is in the array
+  targetEntity?: string; // e.g. "Doctor", "Hospital" for entity_selector
 }
 
 export interface TabConfig {
@@ -144,6 +146,13 @@ export const directoryConfig: Record<string, CategoryConfig> = {
             ]
           },
           {
+            key: "roster",
+            label: "Doctors Roster",
+            type: "entity_selector",
+            targetEntity: "Doctor",
+            placeholder: "Search for a verified doctor..."
+          },
+          {
             key: "healthPackages",
             label: "Health Packages & Preventive Care",
             type: "object_array",
@@ -159,8 +168,9 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "basic",
         label: "Basic Info",
         fields: [
-          { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500" },
-          { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50" },
+          { key: "facilityType", label: "Facility Type", type: "select", mandatory: true, options: ["Clinic", "Poly-Clinic", "Nursing Home", "Corporate Hospital"] },
+          { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
+          { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
           { key: "emergencyServices", label: "Emergency Services", type: "text", mandatory: true, placeholder: "e.g. 24/7 Available" }
         ]
       }

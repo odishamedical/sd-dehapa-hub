@@ -216,7 +216,7 @@ export default function UniversalProfileLayout({
                    </div>
                  )}
                </div>
-               <p className="text-xl text-cyan-400 font-medium mb-6">{profile.subtitle}</p>
+               <p className="text-xl text-cyan-400 font-medium mb-6">{profile.facilityType || profile.subtitle || "Healthcare Facility"}</p>
              
                {/* Trust Strip */}
                <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 text-sm">
@@ -250,20 +250,24 @@ export default function UniversalProfileLayout({
 
                   {type === 'hospital' && (
                     <>
-                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
-                        <svg className="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                        <div>
-                          <span className="text-white font-bold block leading-none">{profile.totalBeds || profile.stats?.beds || "Data not available"}</span>
-                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">Total Beds</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
-                        <svg className="w-5 h-5 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                        <div>
-                          <span className="text-white font-bold block leading-none">{profile.icuCapacity || profile.stats?.icu || "Data not available"}</span>
-                          <span className="text-slate-400 text-[10px] uppercase tracking-widest">ICU Capacity</span>
-                        </div>
-                      </div>
+                      {profile.facilityType !== 'Clinic' && profile.facilityType !== 'Poly-Clinic' && (
+                        <>
+                          <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                            <svg className="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <div>
+                              <span className="text-white font-bold block leading-none">{profile.totalBeds || profile.stats?.beds || "Data not available"}</span>
+                              <span className="text-slate-400 text-[10px] uppercase tracking-widest">Total Beds</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
+                            <svg className="w-5 h-5 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                            <div>
+                              <span className="text-white font-bold block leading-none">{profile.icuCapacity || profile.stats?.icu || "Data not available"}</span>
+                              <span className="text-slate-400 text-[10px] uppercase tracking-widest">ICU Capacity</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
                       <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
                         <svg className="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <div>
@@ -456,22 +460,42 @@ export default function UniversalProfileLayout({
               </div>
             )}
 
-            {/* TAB CONTENT: DEPARTMENTS (Hospital only) */}
+            {/* TAB CONTENT: DEPARTMENTS & ROSTER (Hospital only) */}
             {activeTab === 'departments' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                 <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
-                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">Departments & Roster</h2>
-                  {profile.roster?.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {profile.roster.map((dept: string, idx: number) => (
-                        <div key={idx} className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl">
-                          <h4 className="font-bold text-white text-base">{dept}</h4>
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">Departments & Centers of Excellence</h2>
+                  {profile.departments?.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                      {profile.departments.map((dept: any, idx: number) => (
+                        <div key={idx} className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl shadow-sm hover:border-cyan-500/30 transition-colors">
+                          <h4 className="font-bold text-white text-lg">{dept.name}</h4>
+                          <p className="text-sm font-bold text-cyan-400 mt-1 uppercase tracking-widest">{dept.head}</p>
+                          {dept.description && <p className="text-sm text-slate-400 mt-3 leading-relaxed">{dept.description}</p>}
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center mb-8">
                       <p className="text-sm text-slate-400 font-semibold italic">No departments listed.</p>
+                    </div>
+                  )}
+
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif border-t border-slate-700/50 pt-8">Doctors Roster</h2>
+                  {profile.roster?.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {profile.roster.map((docItem: any, idx: number) => (
+                        <Link href={`/profile/doctor/${docItem.id}`} key={idx} className="flex items-center justify-between bg-gradient-to-r from-slate-800/50 to-slate-800/20 border border-slate-700/50 p-4 rounded-2xl group hover:border-cyan-500/50 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                          <h4 className="font-bold text-white text-base group-hover:text-cyan-400 transition-colors">{docItem.name || docItem}</h4>
+                          <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">No doctors listed in the roster.</p>
                     </div>
                   )}
                 </div>
