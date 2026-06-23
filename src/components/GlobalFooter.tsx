@@ -71,7 +71,7 @@ export default function GlobalFooter() {
             </p>
             
             {/* App Store Badges */}
-            <div className="flex gap-4 mb-8">
+            <div className="flex flex-wrap gap-4">
               <button className="h-12 flex items-center bg-black border border-slate-800 hover:border-slate-600 rounded-xl px-4 py-2 transition-all hover:-translate-y-1">
                 <svg className="w-6 h-6 mr-2 text-white" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"></path></svg>
                 <div className="flex flex-col items-start justify-center">
@@ -86,25 +86,6 @@ export default function GlobalFooter() {
                   <span className="text-sm font-bold leading-none text-white mt-1">Google Play</span>
                 </div>
               </button>
-            </div>
-
-            {/* Social Media Icons */}
-            <div className="flex gap-3 flex-wrap">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-rose-500 hover:text-rose-400 hover:-translate-y-1 transition-all shadow-md group">
-                <Youtube className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-pink-500 hover:text-pink-400 hover:-translate-y-1 transition-all shadow-md group">
-                <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-blue-500 hover:text-blue-400 hover:-translate-y-1 transition-all shadow-md group">
-                <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-sky-500 hover:text-sky-400 hover:-translate-y-1 transition-all shadow-md group">
-                <Twitter className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-indigo-500 hover:text-indigo-400 hover:-translate-y-1 transition-all shadow-md group">
-                <Linkedin className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              </a>
             </div>
           </div>
 
@@ -201,53 +182,80 @@ export default function GlobalFooter() {
           </details>
 
         </div>
-        
-        {/* Horizontal HIPAA Security Block */}
-        <div className="mb-12 pt-8 border-t border-slate-800/50 flex flex-col md:flex-row items-center justify-between gap-6 bg-slate-900/20 rounded-3xl p-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-6 h-6 text-emerald-500" />
-            </div>
-            <div>
-              <h4 className="font-black uppercase tracking-widest text-emerald-400 text-xs mb-1">Security Standard</h4>
-              <h5 className="font-bold text-white text-sm">HIPAA Vault Encryption</h5>
-            </div>
-          </div>
-          <p className="text-[11px] text-slate-500 leading-relaxed max-w-2xl md:text-right font-medium">
-            All telemetry and biometric data is end-to-end encrypted via Medplum nodes executing standard HL7 FHIR protocols, ensuring maximum patient privacy.
-          </p>
-        </div>
-
       </div>
         
       {/* Bottom Legal/Copyright Area with Distinct Background */}
-      <div className="bg-[#030d1a] border-t border-slate-800/80 w-full relative z-10 pt-10 pb-28 lg:pb-10">
+      <div className="bg-[#030d1a] border-t border-slate-800/80 w-full relative z-10 pt-8 pb-28 lg:pb-8">
         <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-6">
+          
+          {/* Company Info & Badges Row */}
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8">
+            
+            {/* Left: Product & Address (Inline) */}
             <div className="text-center lg:text-left">
-              <strong className="text-white block mb-1 text-sm uppercase tracking-widest font-black">A product by Shyam Dash Creation</strong>
-              <p className="text-xs text-slate-500 mb-1 font-medium">R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</p>
-              <p className="flex items-center justify-center lg:justify-start gap-2 text-xs text-teal-400 font-bold"><PhoneCall className="w-3 h-3 text-teal-400"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</p>
+              <strong className="text-white block mb-2 text-sm uppercase tracking-widest font-black">A product by Shyam Dash Creation</strong>
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs text-slate-500 font-medium">
+                <span>R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</span>
+                <span className="hidden lg:block text-slate-700">•</span>
+                <span className="flex items-center gap-1 text-teal-400 font-bold whitespace-nowrap"><PhoneCall className="w-3 h-3"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</span>
+              </div>
             </div>
-            <div className="flex items-center justify-center gap-3 text-xs font-bold tracking-widest uppercase text-slate-500">
-              System Architect
-              <span className="text-white bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 shadow-sm">SD IT Services</span>
+
+            {/* Right: HIPAA & Architect Badges */}
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-bold tracking-widest uppercase text-slate-500">
+              <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-lg border border-emerald-500/20 shadow-sm" title="All telemetry and biometric data is end-to-end encrypted">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span className="text-emerald-400 hidden sm:block">HIPAA Encrypted</span>
+                <span className="text-emerald-400 sm:hidden">HIPAA</span>
+              </div>
+              <div className="flex items-center gap-2 text-white bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 shadow-sm">
+                <span className="text-slate-400 hidden sm:block">Architect</span>
+                <span>SD IT Services</span>
+              </div>
             </div>
+            
           </div>
           
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-slate-800/50 pt-6">
-            <p>© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
-            <div className="flex items-center gap-6">
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Auth</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms of Op</Link>
+          {/* Very Bottom Row: Copyright, Socials, Links, Back to Top */}
+          <div className="flex flex-col xl:flex-row items-center justify-between gap-6 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-slate-800/50 pt-6">
+            <p className="text-center xl:text-left whitespace-nowrap">© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
+            
+            <div className="flex flex-col md:flex-row items-center gap-6">
               
-              <button 
-                onClick={scrollToTop}
-                className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-teal-500 hover:text-slate-900 text-slate-400 transition-all border border-slate-700 hover:border-teal-400 shadow-md group"
-                title="Back to Top"
-              >
-                <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-              </button>
+              {/* Social Media Icons (Moved here from column 1) */}
+              <div className="flex gap-2">
+                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-rose-500 hover:text-rose-400 hover:-translate-y-1 transition-all">
+                  <Youtube className="w-3 h-3" />
+                </a>
+                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-pink-500 hover:text-pink-400 hover:-translate-y-1 transition-all">
+                  <Instagram className="w-3 h-3" />
+                </a>
+                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-blue-500 hover:text-blue-400 hover:-translate-y-1 transition-all">
+                  <Facebook className="w-3 h-3" />
+                </a>
+                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-sky-500 hover:text-sky-400 hover:-translate-y-1 transition-all">
+                  <Twitter className="w-3 h-3" />
+                </a>
+                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-indigo-500 hover:text-indigo-400 hover:-translate-y-1 transition-all">
+                  <Linkedin className="w-3 h-3" />
+                </a>
+              </div>
+
+              <div className="w-px h-4 bg-slate-800 hidden md:block"></div>
+
+              <div className="flex items-center gap-6">
+                <Link href="/privacy" className="hover:text-white transition-colors">Privacy Auth</Link>
+                <Link href="/terms" className="hover:text-white transition-colors">Terms of Op</Link>
+                
+                <button 
+                  onClick={scrollToTop}
+                  className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-teal-500 hover:text-slate-900 text-slate-400 transition-all border border-slate-700 hover:border-teal-400 shadow-md group"
+                  title="Back to Top"
+                >
+                  <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                </button>
+              </div>
+
             </div>
           </div>
           
