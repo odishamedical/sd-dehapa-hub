@@ -185,7 +185,7 @@ export default function GlobalFooter() {
       </div>
         
       {/* Bottom Legal/Copyright Area with Distinct Background */}
-      <div className="bg-[#030d1a] border-t border-slate-800/80 w-full relative z-10 pt-8 pb-28 lg:pb-8">
+      <div className="bg-[#030d1a] border-t border-slate-800/80 w-full relative z-10 pt-8 pb-48 lg:pb-8">
         <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
           
           {/* Company Info & Badges Row */}
