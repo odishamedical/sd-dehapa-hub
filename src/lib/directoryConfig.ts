@@ -253,25 +253,6 @@ export const directoryConfig: Record<string, CategoryConfig> = {
           { key: "facilities", label: "Available Facilities", type: "string_array", options: ["Cold Chain Storage", "Home Collection", "Consultation Room"], showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
           { key: "homeDelivery", label: "Door Delivery Available", type: "boolean", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
           { key: "deliveryCoverage", label: "Delivery Coverage Area", type: "text", placeholder: "e.g. Cuttack City, 5km radius", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-
-          // Wholesaler Operations
-          { key: "wholesalerArea", label: "Routes / Areas Covered", type: "text", placeholder: "e.g. Cuttack, Bhubaneswar route", showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-          
-          // Distributor Operations
-          { key: "distributorArea", label: "Area Covered (State, District)", type: "text", placeholder: "e.g. Odisha State, Khordha District", showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
-          
-          // Manufacturer Operations
-          { key: "productsManufactured", label: "Products & Composition", type: "object_array", showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] }, arrayFields: [
-            { key: "productName", label: "Product Name", type: "text" },
-            { key: "composition", label: "Chemical Composition", type: "text" }
-          ] }
-        ]
-      },
-      {
-        id: "b2b_network",
-        label: "Network & Connections",
-        fields: [
-          // Retailer Connections (Optional)
           {
             key: "retailerSuppliers",
             label: "My Wholesalers / Suppliers (Optional)",
@@ -282,8 +263,9 @@ export const directoryConfig: Record<string, CategoryConfig> = {
               { key: "location", label: "Place / Location", type: "text" }
             ]
           },
-          
-          // Wholesaler Connections
+
+          // Wholesaler Operations
+          { key: "wholesalerArea", label: "Routes / Areas Covered", type: "text", placeholder: "e.g. Cuttack, Bhubaneswar route", showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
           {
             key: "wholesalerCompanies",
             label: "Companies Represented (Mandatory for Publicity)",
@@ -304,8 +286,9 @@ export const directoryConfig: Record<string, CategoryConfig> = {
               { key: "location", label: "Place / Location", type: "text" }
             ]
           },
-
-          // Distributor Connections (Mandatory)
+          
+          // Distributor Operations
+          { key: "distributorArea", label: "Area Covered (State, District)", type: "text", placeholder: "e.g. Odisha State, Khordha District", showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
           {
             key: "distributorCompanies",
             label: "Companies Represented (Mandatory for Publicity)",
@@ -316,8 +299,12 @@ export const directoryConfig: Record<string, CategoryConfig> = {
               { key: "companyName", label: "Company Name", type: "text" }
             ]
           },
-
-          // Manufacturer Connections (Mandatory)
+          
+          // Manufacturer Operations
+          { key: "productsManufactured", label: "Products & Composition", type: "object_array", showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] }, arrayFields: [
+            { key: "productName", label: "Product Name", type: "text" },
+            { key: "composition", label: "Chemical Composition", type: "text" }
+          ] },
           {
             key: "manufacturerNetwork",
             label: "My Distribution Network (C&F, Distributors)",
