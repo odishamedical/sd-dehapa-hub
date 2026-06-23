@@ -192,12 +192,28 @@ export default function GlobalFooter() {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8">
             
             {/* Left: Product & Address (Inline) */}
-            <div className="text-center lg:text-left flex flex-col md:flex-row items-center gap-4">
-              <div className="w-10 h-10 bg-white rounded-lg p-1 shrink-0 hidden md:block">
-                <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain" />
+            <div className="text-center lg:text-left flex flex-col md:flex-row items-center gap-6">
+              
+              {/* Premium Transparent Logo (Matches Header) */}
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center">
+                  <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain relative z-10" />
+                  <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-lg pointer-events-none"></div>
+                </div>
+                <div className="flex flex-col justify-center text-left">
+                  <span className="text-lg sm:text-xl font-black tracking-wide text-white font-serif drop-shadow-md leading-none">
+                    Dehapa
+                  </span>
+                  <span className="text-[8px] sm:text-[9px] text-teal-400 tracking-[0.1em] font-medium mt-1">Your Health Our Mission</span>
+                </div>
               </div>
+
+              {/* Divider */}
+              <div className="w-px h-10 bg-slate-800 hidden md:block shrink-0"></div>
+
+              {/* Company Info */}
               <div>
-                <strong className="text-white block mb-2 text-[11px] sm:text-xs uppercase tracking-widest font-black">
+                <strong className="text-white block mb-2 text-[10px] sm:text-[11px] uppercase tracking-widest font-black">
                   <span className="text-teal-400">Dehapa : India's own Health Network</span> <span className="text-slate-600 mx-1">{'}'}</span> A product by : Shyam Dash Creation
                 </strong>
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-[10px] sm:text-xs text-slate-500 font-medium">
