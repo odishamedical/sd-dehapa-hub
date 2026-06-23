@@ -17,10 +17,10 @@ interface UniversalOwnerDashboardProps {
   expectedRole: string; // e.g. "pharmacy", "lab", "ambulance", "doctor", "hospital"
   customTabs?: DashboardTab[];
   renderCustomTab?: (tabId: string, entityData: any) => React.ReactNode;
-  homeWidget?: React.ReactNode;
+  renderHomeWidget?: (entityData: any) => React.ReactNode;
 }
 
-export default function UniversalOwnerDashboard({ expectedRole, customTabs = [], renderCustomTab, homeWidget }: UniversalOwnerDashboardProps) {
+export default function UniversalOwnerDashboard({ expectedRole, customTabs = [], renderCustomTab, renderHomeWidget }: UniversalOwnerDashboardProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
@@ -186,7 +186,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         subtitle: userEmail,
         profileUrl: `${origin}/profile/${expectedRole}/${entityData.id}`
       } : undefined}
-      homeWidget={homeWidget}
+      homeWidget={renderHomeWidget ? renderHomeWidget(entityData) : undefined}
     >
       <div className="max-w-4xl mx-auto pb-24">
         

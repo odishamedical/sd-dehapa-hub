@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { ConnectionService, ConnectionStatus } from '@/services/connection.service';
 import RazorpayCheckout from '@/components/payments/RazorpayCheckout';
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -44,6 +48,55 @@ export default function UniversalProfileLayout({
   const [isEditMode, setIsEditMode] = useState(false);
   const isDoctor = type === 'doctor';
   const router = useRouter();
+  
+  const [user] = useAuthState(auth);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus | null>(null);
+  const [isRequestingConnection, setIsRequestingConnection] = useState(false);
+
+  useEffect(() => {
+    if (user && profile.id) {
+      ConnectionService.checkConnectionStatus(user.uid, profile.id).then(status => {
+        setConnectionStatus(status);
+      });
+    }
+  }, [user, profile.id]);
+
+  const handleRequestConnection = async () => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    
+    setIsRequestingConnection(true);
+    try {
+      // Fetch current user details for the connection payload
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      let currentRole = 'patient';
+      let currentName = user.displayName || 'DehaPa Patient';
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        currentRole = userData.role || 'patient';
+        currentName = userData.fullName || userData.name || currentName;
+      }
+
+      await ConnectionService.requestConnection({
+        initiatorId: user.uid,
+        initiatorRole: currentRole,
+        initiatorName: currentName,
+        receiverId: profile.id,
+        receiverRole: unwrappedParams.type,
+        receiverName: profile.name,
+      });
+      
+      setConnectionStatus('pending');
+    } catch (error) {
+      console.error("Error requesting connection:", error);
+      alert("Failed to send connection request. Please try again.");
+    } finally {
+      setIsRequestingConnection(false);
+    }
+  };
 
   const verified = profile.verified;
 
@@ -719,6 +772,38 @@ export default function UniversalProfileLayout({
                         }}
                         className="w-full block text-center py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-900 border-none"
                      />
+                   </div>
+                 )}
+                 
+                 {/* Request Connection Button */}
+                 {verified && user?.uid !== profile.id && (
+                   <div className="mt-4 pt-4 border-t border-slate-700/50">
+                     {connectionStatus === 'approved' ? (
+                       <div className="w-full flex items-center justify-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 py-4 rounded-2xl text-sm font-black uppercase tracking-widest">
+                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                         Connected
+                       </div>
+                     ) : connectionStatus === 'pending' ? (
+                       <div className="w-full flex items-center justify-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/30 py-4 rounded-2xl text-sm font-black uppercase tracking-widest">
+                         <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                         Request Pending
+                       </div>
+                     ) : (
+                       <button 
+                         onClick={handleRequestConnection}
+                         disabled={isRequestingConnection}
+                         className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-slate-800 text-cyan-400 border border-cyan-500/50 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                       >
+                         {isRequestingConnection ? (
+                           <span className="animate-pulse">Sending Request...</span>
+                         ) : (
+                           <>
+                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                             Request Connection
+                           </>
+                         )}
+                       </button>
+                     )}
                    </div>
                  )}
                </div>

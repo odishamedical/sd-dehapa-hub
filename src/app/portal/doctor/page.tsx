@@ -6,6 +6,7 @@ import { DashboardTab } from '@/components/DashboardLayout';
 import DashboardHomeGrid from '@/components/DashboardHomeGrid';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
+import PendingConnectionsWidget from '@/components/PendingConnectionsWidget';
 import { auth } from '@/lib/firebase';
 
 export default function DoctorDashboard() {
@@ -90,7 +91,7 @@ export default function DoctorDashboard() {
     return null;
   };
 
-  const homeWidget = (
+  const renderHomeWidget = (entityData: any) => (
     <DashboardHomeGrid
       onNavigate={() => {}}
       tabs={customTabs}
@@ -99,6 +100,7 @@ export default function DoctorDashboard() {
       profileSubtitle="Complete your profile to rank higher in the public directory."
       pendingActions={[]}
       topRightWidget={<InviteWidget userUid={null} />}
+      middleRightWidget={<PendingConnectionsWidget providerId={entityData?.id || null} />}
     />
   );
 
@@ -107,7 +109,7 @@ export default function DoctorDashboard() {
       expectedRole="doctor"
       customTabs={customTabs}
       renderCustomTab={renderCustomTab}
-      homeWidget={homeWidget}
+      renderHomeWidget={renderHomeWidget}
     />
   );
 }
