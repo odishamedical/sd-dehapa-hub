@@ -9,6 +9,7 @@ import AutosaveIndicator from '@/components/AutosaveIndicator';
 import ImageUpload from '@/components/ImageUpload';
 import ObjectArrayEditor from '@/components/ObjectArrayEditor';
 import InlineEditArray from '@/components/InlineEditArray';
+import HybridEntitySelector from '@/components/HybridEntitySelector';
 import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { directoryConfig } from '@/lib/directoryConfig';
@@ -452,7 +453,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                             {field.label} {field.mandatory && <span className="text-rose-500 ml-1">*</span>}
                           </label>
                           {field.type === 'entity_selector' ? (
-                              <EntitySelector
+                              <HybridEntitySelector
                                 targetEntity={field.targetEntity || 'Doctor'}
                                 placeholder={field.placeholder}
                                 selectedItems={entityData[field.key] || []}

@@ -582,14 +582,54 @@ export default function UniversalProfileLayout({
                   <h2 className="text-2xl font-bold text-white mb-6 font-serif border-t border-slate-700/50 pt-8">Doctors Roster</h2>
                   {profile.roster?.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {profile.roster.map((docItem: any, idx: number) => (
-                        <Link href={`/profile/doctor/${docItem.id}`} key={idx} className="flex items-center justify-between bg-gradient-to-r from-slate-800/50 to-slate-800/20 border border-slate-700/50 p-4 rounded-2xl group hover:border-cyan-500/50 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                          <h4 className="font-bold text-white text-base group-hover:text-cyan-400 transition-colors">{docItem.name || docItem}</h4>
-                          <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                          </div>
-                        </Link>
-                      ))}
+                      {profile.roster.map((docItem: any, idx: number) => {
+                        // Legacy handling (string)
+                        if (typeof docItem === 'string') {
+                          return (
+                            <div key={idx} className="flex items-center justify-between bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl">
+                              <h4 className="font-bold text-white text-base">{docItem}</h4>
+                            </div>
+                          );
+                        }
+
+                        // Verified Profile
+                        if (docItem.type === 'verified' || !docItem.type) {
+                          return (
+                            <Link href={`/profile/doctor/${docItem.id}`} key={idx} className="flex flex-col justify-center bg-gradient-to-r from-slate-800/50 to-slate-800/20 border border-cyan-500/20 p-5 rounded-2xl group hover:border-cyan-500/50 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                              <div className="flex items-center justify-between">
+                                <h4 className="font-bold text-white text-base group-hover:text-cyan-400 transition-colors">{docItem.name}</h4>
+                                <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </div>
+                              </div>
+                              <div className="mt-2 inline-flex self-start items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Verified Profile
+                              </div>
+                            </Link>
+                          );
+                        }
+
+                        // Unverified Ghost Profile
+                        if (docItem.type === 'unverified') {
+                          return (
+                            <div key={idx} className="flex flex-col justify-center bg-slate-800/30 border border-slate-700/50 p-5 rounded-2xl">
+                              <h4 className="font-bold text-white text-base mb-1">{docItem.name}</h4>
+                              <div className="flex flex-wrap gap-2 text-xs text-slate-400 mb-2">
+                                {docItem.qualification && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.qualification}</span>}
+                                {docItem.experience && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.experience} Yrs Exp.</span>}
+                              </div>
+                              {docItem.department && (
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">
+                                  Dept: <span className="text-slate-300">{docItem.department}</span>
+                                </p>
+                              )}
+                            </div>
+                          );
+                        }
+                        
+                        return null;
+                      })}
                     </div>
                   ) : (
                     <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
