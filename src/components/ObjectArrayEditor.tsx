@@ -47,7 +47,7 @@ export default function ObjectArrayEditor({
             </button>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-10">
               {fields.map((field) => (
-                <div key={field.key} className={field.type === 'textarea' ? "md:col-span-2" : ""}>
+                <div key={field.key} className={(field.type === 'textarea' || field.type === 'hybrid_entity_selector') ? "md:col-span-2" : ""}>
                   <label className="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wider">{field.label}</label>
                   {field.type === 'textarea' ? (
                     <textarea 

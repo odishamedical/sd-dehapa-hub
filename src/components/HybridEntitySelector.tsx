@@ -153,10 +153,10 @@ export default function HybridEntitySelector({
   return (
     <div className="w-full relative space-y-4">
       
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 bg-slate-50 border border-slate-200 p-6 rounded-2xl relative z-20 shadow-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-slate-50 border border-slate-200 p-6 rounded-2xl relative z-20 shadow-sm">
         
         {/* Left Column: Smart DB Search */}
-        <div className="flex flex-col gap-4 border-b xl:border-b-0 xl:border-r border-slate-200 pb-6 xl:pb-0 xl:pr-6">
+        <div className="flex flex-col gap-4 border-b lg:border-b-0 lg:border-r border-slate-200 pb-6 lg:pb-0 lg:pr-6">
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
               <Icons.Search className="w-4 h-4 text-cyan-500" />
