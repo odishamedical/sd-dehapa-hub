@@ -80,3 +80,44 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* V2 UI Overhaul Global Rules */
+@layer components {
+  /* Boxy & Bold Form Fields */
+  .sd-input-v2 {
+    @apply w-full bg-white border-2 border-slate-200 text-slate-800 text-base md:text-lg rounded-xl px-5 py-4 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 font-medium transition-all shadow-sm;
+  }
+  
+  .sd-label-v2 {
+    @apply block text-xs md:text-sm font-bold text-slate-500 uppercase tracking-widest mb-2;
+  }
+
+  /* Interactive Live Buttons */
+  .sd-btn-v2 {
+    @apply relative overflow-hidden flex items-center justify-center gap-2 font-bold px-8 py-4 rounded-xl transition-all transform hover:-translate-y-1 active:translate-y-0 active:scale-95 shadow-md hover:shadow-xl;
+  }
+  
+  .sd-btn-primary {
+    @apply bg-indigo-600 text-white border border-indigo-700 hover:bg-indigo-500 hover:shadow-indigo-600/30;
+  }
+
+  .sd-btn-success {
+    @apply bg-emerald-500 text-white border border-emerald-600 hover:bg-emerald-400 hover:shadow-emerald-500/30;
+  }
+
+  /* Visual Color Zones */
+  .zone-clinical {
+    @apply border-blue-200 bg-blue-50/30;
+  }
+  .zone-network {
+    @apply border-emerald-200 bg-emerald-50/30;
+  }
+  .zone-admin {
+    @apply border-orange-200 bg-orange-50/30;
+  }
+
+  /* "The Pulse" Animation for Onboarding */
+  .pulse-guide {
+    @apply ring-4 ring-indigo-500/50 animate-pulse border-indigo-500;
+  }
+}

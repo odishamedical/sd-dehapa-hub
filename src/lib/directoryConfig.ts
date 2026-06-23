@@ -103,6 +103,26 @@ export const directoryConfig: Record<string, CategoryConfig> = {
             ]
           }
         ]
+      },
+      {
+        id: "consultation_setup",
+        label: "Consultation Setup",
+        fields: [
+          { key: "offersPhysical", label: "Offers Physical In-Clinic Consultations", type: "boolean", mandatory: true },
+          { key: "offersDigital", label: "Offers Digital/Video Consultations", type: "boolean", mandatory: true },
+          { key: "videoMeetingLink", label: "Default Video Meeting Link (e.g. Zoom/Meet)", type: "text", placeholder: "https://zoom.us/j/123456" }
+        ]
+      },
+      {
+        id: "bank_details",
+        label: "Bank Details & Payouts",
+        fields: [
+          { key: "accountName", label: "Account Holder Name", type: "text", mandatory: true },
+          { key: "bankName", label: "Bank Name", type: "text", mandatory: true },
+          { key: "accountNumber", label: "Account Number", type: "text", mandatory: true },
+          { key: "ifscCode", label: "IFSC Code", type: "text", mandatory: true },
+          { key: "upiId", label: "UPI ID (Optional)", type: "text" }
+        ]
       }
     ]
   },
