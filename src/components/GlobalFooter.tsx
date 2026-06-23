@@ -188,11 +188,11 @@ export default function GlobalFooter() {
       <div className="bg-[#030d1a] border-t border-slate-800/80 w-full relative z-10 pt-8 pb-48 lg:pb-8">
         <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
           
-          {/* Company Info Row */}
-          <div className="flex flex-col items-center lg:items-start mb-8 w-full">
+          {/* Company Info & Socials Row */}
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8 w-full">
             
             {/* Left: Product & Address (Inline) */}
-            <div className="text-center lg:text-left flex flex-col md:flex-row items-center gap-6 w-full">
+            <div className="text-center lg:text-left flex flex-col md:flex-row items-center gap-6 max-w-full">
               
               {/* Premium Transparent Logo (Matches Header) */}
               <div className="flex items-center gap-3 shrink-0">
@@ -212,7 +212,7 @@ export default function GlobalFooter() {
               <div className="w-px h-10 bg-slate-800 hidden md:block shrink-0"></div>
 
               {/* Company Info */}
-              <div className="flex-1 w-full overflow-hidden">
+              <div className="flex-1 overflow-hidden">
                 <strong className="text-white block mb-2 text-[10px] sm:text-[11px] uppercase tracking-widest font-black">
                   <span className="text-teal-400">Dehapa : India's own Health Network</span> <span className="text-slate-600 mx-1">{'}'}</span> A product by : Shyam Dash Creation
                 </strong>
@@ -223,35 +223,33 @@ export default function GlobalFooter() {
                 </div>
               </div>
             </div>
+
+            {/* Right: Social Media Icons */}
+            <div className="flex gap-2 shrink-0 mt-4 lg:mt-0">
+              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-rose-500 hover:text-rose-400 hover:-translate-y-1 transition-all">
+                <Youtube className="w-3 h-3" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-pink-500 hover:text-pink-400 hover:-translate-y-1 transition-all">
+                <Instagram className="w-3 h-3" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-blue-500 hover:text-blue-400 hover:-translate-y-1 transition-all">
+                <Facebook className="w-3 h-3" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-sky-500 hover:text-sky-400 hover:-translate-y-1 transition-all">
+                <Twitter className="w-3 h-3" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-indigo-500 hover:text-indigo-400 hover:-translate-y-1 transition-all">
+                <Linkedin className="w-3 h-3" />
+              </a>
+            </div>
             
           </div>
           
           {/* Very Bottom Row: Socials, Copyright, Links, Back to Top */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-slate-800/50 pt-6">
             
-            {/* Left side: Socials -> Copyright -> Links */}
-            <div className="flex flex-col xl:flex-row items-center justify-start gap-6 xl:gap-8 w-full">
-              
-              {/* Social Media Icons */}
-              <div className="flex gap-2 shrink-0">
-                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-rose-500 hover:text-rose-400 hover:-translate-y-1 transition-all">
-                  <Youtube className="w-3 h-3" />
-                </a>
-                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-pink-500 hover:text-pink-400 hover:-translate-y-1 transition-all">
-                  <Instagram className="w-3 h-3" />
-                </a>
-                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-blue-500 hover:text-blue-400 hover:-translate-y-1 transition-all">
-                  <Facebook className="w-3 h-3" />
-                </a>
-                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-sky-500 hover:text-sky-400 hover:-translate-y-1 transition-all">
-                  <Twitter className="w-3 h-3" />
-                </a>
-                <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-indigo-500 hover:text-indigo-400 hover:-translate-y-1 transition-all">
-                  <Linkedin className="w-3 h-3" />
-                </a>
-              </div>
-
-              <div className="w-px h-4 bg-slate-800 hidden xl:block shrink-0"></div>
+            {/* Left side: Copyright -> Links */}
+            <div className="flex flex-col md:flex-row items-center justify-start gap-6 md:gap-8 w-full">
 
               <p className="text-center xl:text-left whitespace-nowrap shrink-0">© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
 
