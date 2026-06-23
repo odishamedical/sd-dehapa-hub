@@ -138,9 +138,9 @@ export default function DoctorV2OwnerDashboard() {
       
       {/* Background Orbs for Glassmorphism effect */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200/40 rounded-full blur-[120px]"></div>
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[50%] bg-indigo-200/40 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] bg-rose-200/30 rounded-full blur-[100px]"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200/40 rounded-full blur-[120px] animate-float-slow"></div>
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[50%] bg-indigo-200/40 rounded-full blur-[100px] animate-float-slow-reverse"></div>
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] bg-rose-200/30 rounded-full blur-[100px] animate-float-slow"></div>
       </div>
 
       {/* Main Header (Sticky) */}
@@ -364,7 +364,7 @@ export default function DoctorV2OwnerDashboard() {
                   Return to Dashboard
                 </button>
                 
-                <button onClick={handleNextStep} className="w-full md:w-auto sd-btn-v3 bg-slate-900 text-white hover:bg-black">
+                <button onClick={handleNextStep} className="w-full md:w-auto sd-btn-premium">
                   {currentStepIndex === WIZARD_STEPS.length - 1 ? "Save & Finish ➔" : "Save & Continue ➔"}
                 </button>
               </div>
