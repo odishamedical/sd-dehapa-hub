@@ -1,10 +1,11 @@
 import React from 'react';
 import HybridEntitySelector from './HybridEntitySelector';
+import ImageUpload from './ImageUpload';
 
 interface FieldDef {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'hybrid_entity_selector';
+  type: 'text' | 'textarea' | 'hybrid_entity_selector' | 'image_upload';
   targetEntity?: string;
   placeholder?: string;
 }
@@ -66,6 +67,13 @@ export default function ObjectArrayEditor({
                         currentUserId={currentUserId || ''}
                         currentUserRole={currentUserRole || ''}
                         currentUserName={currentUserName || ''}
+                      />
+                    </div>
+                  ) : field.type === 'image_upload' ? (
+                    <div className="mt-2">
+                      <ImageUpload 
+                        defaultImage={item[field.key] || ""}
+                        onChange={(url) => onUpdate(index, field.key, url)}
                       />
                     </div>
                   ) : (

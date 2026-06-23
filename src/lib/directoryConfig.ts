@@ -1,13 +1,13 @@
 export interface FieldConfig {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'boolean' | 'select' | 'object_array' | 'string_array' | 'entity_selector';
+  type: 'text' | 'textarea' | 'number' | 'boolean' | 'select' | 'object_array' | 'string_array' | 'entity_selector' | 'hybrid_entity_selector' | 'image_upload' | 'hybrid_test_array';
   placeholder?: string;
   options?: string[]; // For select type
-  arrayFields?: { key: string; label: string; type: string }[]; // For object_array type
+  arrayFields?: { key: string; label: string; type: string, targetEntity?: string, placeholder?: string }[]; // For object_array type
   mandatory?: boolean;
   hiddenIf?: { field: string; in: string[] }; // Hide this field if the target field's value is in the array
-  targetEntity?: string; // e.g. "Doctor", "Hospital" for entity_selector
+  targetEntity?: string; // e.g. "Doctor", "Hospital" for entity_selector or hybrid_entity_selector
 }
 
 export interface TabConfig {
@@ -136,6 +136,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         label: "Basic Info",
         fields: [
           { key: "facilityType", label: "Facility Type", type: "select", mandatory: true, options: ["Clinic", "Poly-Clinic", "Nursing Home", "Corporate Hospital"] },
+          { key: "facadeImage", label: "Main Building / Facade Photo", type: "image_upload" },
           { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
           { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
           { key: "emergencyServices", label: "Emergency Services", type: "text", mandatory: true, placeholder: "e.g. 24/7 Available" }
@@ -150,6 +151,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
           { key: "hasPathologyLab", label: "Pathology Lab", type: "boolean" },
           { key: "hasImaging", label: "Diagnostic Imaging (X-Ray, MRI, CT)", type: "boolean" },
           { key: "operationTheaters", label: "Number of Operation Theaters", type: "number", placeholder: "e.g. 4" },
+          { key: "icuImage", label: "ICU / Emergency Ward Photo", type: "image_upload" },
           { key: "hasAmbulance", label: "Ambulance Services", type: "boolean" }
         ]
       },
@@ -173,6 +175,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
               { key: "name", label: "Department Name (e.g. Cardiology)", type: "text" },
               { key: "head", label: "Head of Department", type: "text" },
               { key: "description", label: "Description", type: "textarea" },
+              { key: "departmentImage", label: "Department / Ward Photo", type: "image_upload" },
               {
                 key: "roster",
                 label: "Department Doctors",
@@ -225,14 +228,49 @@ export const directoryConfig: Record<string, CategoryConfig> = {
     name: "Lab",
     tabs: [
       {
-        id: "professional",
-        label: "Professional & Services",
+        id: "identity_infrastructure",
+        label: "Identity & Infrastructure",
         fields: [
-          { key: "labType", label: "Lab Type", type: "select", mandatory: true, options: ["Pathology", "Radiology", "Blood Bank"] },
-          { key: "accreditations", label: "Accreditations (e.g. NABL)", type: "string_array", placeholder: "Add accreditation" },
+          { key: "labType", label: "Lab Type", type: "select", mandatory: true, options: ["Pathology", "Radiology & Imaging", "Integrated Diagnostics", "Blood Bank"] },
+          { key: "facadeImage", label: "Facility / Reception Photo", type: "image_upload" },
+          { key: "accreditations", label: "Accreditations", type: "string_array", placeholder: "e.g. NABL, NABH, ISO" },
           { key: "homeCollection", label: "Home Sample Collection", type: "boolean", mandatory: true },
           { key: "is247", label: "Open 24/7", type: "boolean" },
-          { key: "timings", label: "Timings", type: "text", mandatory: true, placeholder: "e.g. Mon-Sat 8AM - 9PM" }
+          { key: "timings", label: "Timings", type: "text", mandatory: true, placeholder: "e.g. Mon-Sat 8AM - 9PM" },
+          {
+            key: "machinery",
+            label: "Heavy Machinery & Equipment",
+            type: "object_array",
+            arrayFields: [
+              { key: "machineName", label: "Machine Name (e.g. 3 Tesla MRI)", type: "text" },
+              { key: "manufacturer", label: "Manufacturer / Model (e.g. Siemens Magnetom)", type: "text" },
+              { key: "machineImage", label: "Machine Photo", type: "image_upload" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "test_menu",
+        label: "Diagnostic Test Menu",
+        fields: [
+          {
+            key: "tests",
+            label: "Available Tests & Scans",
+            type: "hybrid_test_array"
+          }
+        ]
+      },
+      {
+        id: "personnel",
+        label: "Key Personnel & Roster",
+        fields: [
+          {
+            key: "signingAuthorities",
+            label: "Chief Pathologists & Radiologists",
+            type: "hybrid_entity_selector",
+            targetEntity: "Doctor",
+            placeholder: "Search verified doctors to add to lab roster..."
+          }
         ]
       }
     ]

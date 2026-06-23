@@ -59,6 +59,21 @@ export default function ContextHelpDrawer({ isOpen, onClose, activeTab, userProf
           title: "Health Packages",
           content: "Preventive care is a growing sector. List your comprehensive health packages (e.g., 'Full Body Checkup') with pricing and features to attract proactive patients."
         };
+      case 'identity_infrastructure':
+        return {
+          title: "Identity & Infrastructure",
+          content: "This is the core of your diagnostic facility. Uploading pictures of your actual heavy machinery (like your 3T MRI) builds massive trust with patients. Make sure to accurately list your accreditations like NABL/NABH."
+        };
+      case 'test_menu':
+        return {
+          title: "Diagnostic Test Menu",
+          content: "Start typing to add tests. Our smart system will auto-suggest tests from our global medical dictionary! If you offer a unique test that isn't in our database, simply type it out and we will save it for the future."
+        };
+      case 'personnel':
+        return {
+          title: "Key Personnel & Roster",
+          content: "Link Verified Doctors (Chief Pathologists and Radiologists) to your lab here. This shows patients exactly who is signing their reports."
+        };
       case 'home':
         return {
           title: "Dashboard Home",

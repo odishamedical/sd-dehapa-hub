@@ -10,6 +10,7 @@ import ImageUpload from '@/components/ImageUpload';
 import ObjectArrayEditor from '@/components/ObjectArrayEditor';
 import InlineEditArray from '@/components/InlineEditArray';
 import HybridEntitySelector from '@/components/HybridEntitySelector';
+import HybridTestMenuEditor from '@/components/HybridTestMenuEditor';
 import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { directoryConfig } from '@/lib/directoryConfig';
@@ -472,6 +473,17 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                                 placeholder={field.placeholder}
                                 rows={3}
                                 className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all resize-none"
+                              />
+                          ) : field.type === 'image_upload' ? (
+                              <ImageUpload 
+                                defaultImage={entityData[field.key] || ''}
+                                onChange={(url) => setEntityData({...entityData, [field.key]: url})}
+                              />
+                          ) : field.type === 'hybrid_test_array' ? (
+                              <HybridTestMenuEditor
+                                items={entityData[field.key] || []}
+                                onChange={(items) => setEntityData({...entityData, [field.key]: items})}
+                                labId={entityData.id || ''}
                               />
                           ) : field.type === 'select' ? (
                               <select 
