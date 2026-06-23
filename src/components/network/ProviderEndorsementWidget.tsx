@@ -78,9 +78,6 @@ export default function ProviderEndorsementWidget({ targetProviderId, targetProv
 
   if (loading) return null;
 
-  // If no endorsements and user can't endorse, don't show the widget
-  if (endorsements.length === 0 && !canEndorse) return null;
-
   return (
     <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-6 border border-slate-700/50 shadow-xl mt-6 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-[40px] pointer-events-none"></div>

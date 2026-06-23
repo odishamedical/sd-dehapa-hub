@@ -887,7 +887,7 @@ export default function UniversalProfileLayout({
             )}
 
             {/* Professional Endorsement Widget */}
-            {unwrappedParams.type !== 'patient' && verified && (
+            {unwrappedParams.type !== 'patient' && (
               <ProviderEndorsementWidget 
                 targetProviderId={profile.id} 
                 targetProviderRole={unwrappedParams.type}
