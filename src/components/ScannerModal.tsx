@@ -77,9 +77,8 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
       if (url.startsWith('dehapa-auth://scan?uid=')) {
         const uid = new URLSearchParams(url.split('?')[1]).get('uid');
         if (uid) {
-          // Route to doctor portal to view patient
-          router.push(`/portal/doctor?patientId=${encodeURIComponent(uid)}`);
-          onClose();
+          // Native navigation is safest to prevent Next.js history state corruption
+          window.location.href = `/portal/doctor?patientId=${encodeURIComponent(uid)}`;
           return;
         }
       }
@@ -90,8 +89,8 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
         const parsedUrl = new URL(url);
         // Ensure it's a dehapa URL or route it anyway if we trust it
         if (parsedUrl.hostname.includes('dehapa.com') || parsedUrl.hostname.includes('localhost') || parsedUrl.hostname.includes('vercel.app')) {
-          router.push(parsedUrl.pathname + parsedUrl.search);
-          onClose();
+          // Native navigation is safest to prevent Next.js history state corruption
+          window.location.href = url.trim();
           return;
         }
       }
