@@ -2,16 +2,54 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, ArrowRight, HeartPulse, PhoneCall, Youtube, Instagram, Facebook, Twitter, Linkedin, Users, Stethoscope, HelpCircle } from 'lucide-react';
+import { ShieldCheck, ArrowRight, HeartPulse, PhoneCall, Youtube, Instagram, Facebook, Twitter, Linkedin, Users, Stethoscope, HelpCircle, Mail, MessageCircle, ArrowUp } from 'lucide-react';
 
 export default function GlobalFooter() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="bg-[#020810] text-slate-400 pt-16 relative overflow-hidden">
+    <footer className="bg-[#020810] text-slate-400 pt-20 relative overflow-hidden">
+      {/* Ambient Noise & Glow Texture */}
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay"></div>
+      <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[80%] h-[50%] bg-teal-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+
       {/* Glowing top line */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-teal-500 to-transparent opacity-50"></div>
+      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-teal-500/80 to-transparent"></div>
       
       <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1.5fr_1.5fr] gap-8 lg:gap-12 mb-12">
+        
+        {/* =========================================================================
+            SUBSCRIPTION BANNER (Top of Footer)
+           ========================================================================= */}
+        <div className="mb-16 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+          <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-teal-500/10 to-transparent pointer-events-none"></div>
+          
+          <div className="w-full lg:w-1/3 text-center lg:text-left z-10">
+            <h3 className="text-xl font-black text-white mb-2">Get Health Insights</h3>
+            <p className="text-sm text-slate-400">Join 50,000+ users receiving weekly updates on healthcare, new hospitals, and wellness tips.</p>
+          </div>
+          
+          <form className="w-full lg:w-2/3 flex flex-col md:flex-row gap-4 z-10" onSubmit={(e) => e.preventDefault()}>
+            <div className="flex-1 relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <input type="email" placeholder="Your Email Address" className="w-full bg-[#020810] border border-slate-700 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all placeholder:text-slate-500 text-sm font-medium" />
+            </div>
+            <div className="flex-1 relative">
+              <MessageCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <input type="tel" placeholder="WhatsApp Number" className="w-full bg-[#020810] border border-slate-700 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-500 text-sm font-medium" />
+            </div>
+            <button type="submit" className="bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all whitespace-nowrap active:scale-95">
+              Subscribe Free
+            </button>
+          </form>
+        </div>
+
+        {/* =========================================================================
+            MAIN NAVIGATION GRID
+           ========================================================================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1.5fr_1.5fr] gap-8 lg:gap-10 mb-16">
           
           {/* Brand & Contact Column (Drops to bottom on mobile) */}
           <div className="order-last lg:order-first mt-8 lg:mt-0 pt-8 lg:pt-0 border-t border-slate-800 lg:border-none pr-0 lg:pr-8">
@@ -32,28 +70,46 @@ export default function GlobalFooter() {
               Dehapa is a next-generation Health Care service portal connecting users to top doctors, state-of-the-art hospitals, diagnostic labs, and rapid emergency ambulance response teams.
             </p>
             
+            {/* App Store Badges */}
+            <div className="flex gap-4 mb-8">
+              <button className="h-12 flex items-center bg-black border border-slate-800 hover:border-slate-600 rounded-xl px-4 py-2 transition-all hover:-translate-y-1">
+                <svg className="w-6 h-6 mr-2 text-white" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"></path></svg>
+                <div className="flex flex-col items-start justify-center">
+                  <span className="text-[9px] font-medium leading-none text-slate-300">Download on the</span>
+                  <span className="text-sm font-bold leading-none text-white mt-1">App Store</span>
+                </div>
+              </button>
+              <button className="h-12 flex items-center bg-black border border-slate-800 hover:border-slate-600 rounded-xl px-4 py-2 transition-all hover:-translate-y-1">
+                <svg className="w-6 h-6 mr-2 text-white" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"></path></svg>
+                <div className="flex flex-col items-start justify-center">
+                  <span className="text-[9px] font-medium leading-none text-slate-300">GET IT ON</span>
+                  <span className="text-sm font-bold leading-none text-white mt-1">Google Play</span>
+                </div>
+              </button>
+            </div>
+
             {/* Social Media Icons */}
             <div className="flex gap-3 flex-wrap">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                <Youtube className="w-4 h-4" />
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-rose-500 hover:text-rose-400 hover:-translate-y-1 transition-all shadow-md group">
+                <Youtube className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                <Instagram className="w-4 h-4" />
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-pink-500 hover:text-pink-400 hover:-translate-y-1 transition-all shadow-md group">
+                <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                <Facebook className="w-4 h-4" />
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-blue-500 hover:text-blue-400 hover:-translate-y-1 transition-all shadow-md group">
+                <Facebook className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                <Twitter className="w-4 h-4" />
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-sky-500 hover:text-sky-400 hover:-translate-y-1 transition-all shadow-md group">
+                <Twitter className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-teal-500 hover:text-teal-400 hover:-translate-y-1 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                <Linkedin className="w-4 h-4" />
+              <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-indigo-500 hover:text-indigo-400 hover:-translate-y-1 transition-all shadow-md group">
+                <Linkedin className="w-4 h-4 group-hover:scale-110 transition-transform" />
               </a>
             </div>
           </div>
 
           {/* For Patients Column (Desktop) */}
-          <div className="hidden lg:block order-1">
+          <div className="hidden lg:block order-1 lg:border-l lg:border-slate-800/80 lg:pl-8">
             <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
               <Users className="w-4 h-4 text-rose-500" />
               For Patients
@@ -85,7 +141,7 @@ export default function GlobalFooter() {
           </details>
 
           {/* For Providers Column (Desktop) */}
-          <div className="hidden lg:block order-2">
+          <div className="hidden lg:block order-2 lg:border-l lg:border-slate-800/80 lg:pl-8">
             <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
               <Stethoscope className="w-4 h-4 text-blue-500" />
               For Providers
@@ -117,7 +173,7 @@ export default function GlobalFooter() {
           </details>
 
           {/* Support & Security Column (Desktop) */}
-          <div className="hidden lg:block order-3">
+          <div className="hidden lg:block order-3 lg:border-l lg:border-slate-800/80 lg:pl-8">
             <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
               <HelpCircle className="w-4 h-4 text-purple-500" />
               Support & Legal
@@ -181,11 +237,30 @@ export default function GlobalFooter() {
           
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-slate-800/50 pt-6">
             <p>© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
-            <div className="flex gap-6">
+            <div className="flex items-center gap-6">
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy Auth</Link>
               <Link href="/terms" className="hover:text-white transition-colors">Terms of Op</Link>
+              
+              <button 
+                onClick={scrollToTop}
+                className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-teal-500 hover:text-slate-900 text-slate-400 transition-all border border-slate-700 hover:border-teal-400 shadow-md group"
+                title="Back to Top"
+              >
+                <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+              </button>
             </div>
           </div>
+          
+          {/* Mobile Back to Top */}
+          <div className="md:hidden flex justify-center mt-8">
+            <button 
+              onClick={scrollToTop}
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors bg-slate-900 px-4 py-2 rounded-full border border-slate-800"
+            >
+              <ArrowUp className="w-3 h-3" /> Back to Top
+            </button>
+          </div>
+
         </div>
       </div>
     </footer>
