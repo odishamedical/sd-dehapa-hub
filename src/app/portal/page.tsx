@@ -16,6 +16,8 @@ import InviteWidget from '@/components/InviteWidget';
 import PatientConsultWidget from '@/components/PatientConsultWidget';
 import PatientAppointments from '@/components/PatientAppointments';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
+import CareTeamSeatingChart from '@/components/network/CareTeamSeatingChart';
+import LiveHealthFeed from '@/components/network/LiveHealthFeed';
 
 function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName: string | null, userUid: string | null, userRole: string | null, onTabChange: (id: string) => void }) {
   return (
@@ -73,12 +75,20 @@ function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName
             </div>
         </div>
 
-        {/* 3. Invite Widget (Bottom on mobile, Top Right on desktop) */}
-        <div className="order-3 md:order-2 md:col-span-1">
-            <InviteWidget userUid={userUid} userName={userName} />
+        {/* 3. Care Team Seating Chart (Full width) */}
+        <div className="order-3 md:col-span-3">
+            <CareTeamSeatingChart currentUserId={userUid} />
         </div>
 
+        {/* 4. Live Health Feed (Left side desktop) */}
+        <div className="order-4 md:col-span-2">
+            <LiveHealthFeed userName={userName} />
+        </div>
 
+        {/* 5. Invite Widget (Right side desktop) */}
+        <div className="order-5 md:col-span-1">
+            <InviteWidget userUid={userUid} userName={userName} />
+        </div>
 
     </div>
   );
