@@ -192,17 +192,24 @@ export default function GlobalFooter() {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8">
             
             {/* Left: Product & Address (Inline) */}
-            <div className="text-center lg:text-left">
-              <strong className="text-white block mb-2 text-sm uppercase tracking-widest font-black">A product by Shyam Dash Creation</strong>
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs text-slate-500 font-medium">
-                <span>R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</span>
-                <span className="hidden lg:block text-slate-700">•</span>
-                <span className="flex items-center gap-1 text-teal-400 font-bold whitespace-nowrap"><PhoneCall className="w-3 h-3"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</span>
+            <div className="text-center lg:text-left flex flex-col md:flex-row items-center gap-4">
+              <div className="w-10 h-10 bg-white rounded-lg p-1 shrink-0 hidden md:block">
+                <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain" />
+              </div>
+              <div>
+                <strong className="text-white block mb-2 text-[11px] sm:text-xs uppercase tracking-widest font-black">
+                  <span className="text-teal-400">Dehapa : India's own Health Network</span> <span className="text-slate-600 mx-1">}</span> A product by : Shyam Dash Creation
+                </strong>
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-[10px] sm:text-xs text-slate-500 font-medium">
+                  <span>R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</span>
+                  <span className="hidden lg:block text-slate-700">•</span>
+                  <span className="flex items-center gap-1 text-teal-400 font-bold whitespace-nowrap"><PhoneCall className="w-3 h-3"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</span>
+                </div>
               </div>
             </div>
 
             {/* Right: HIPAA & Architect Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-bold tracking-widest uppercase text-slate-500">
+            <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 shrink-0">
               <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-lg border border-emerald-500/20 shadow-sm" title="All telemetry and biometric data is end-to-end encrypted">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
                 <span className="text-emerald-400 hidden sm:block">HIPAA Encrypted</span>
@@ -216,14 +223,14 @@ export default function GlobalFooter() {
             
           </div>
           
-          {/* Very Bottom Row: Copyright, Socials, Links, Back to Top */}
-          <div className="flex flex-col xl:flex-row items-center justify-between gap-6 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-slate-800/50 pt-6">
-            <p className="text-center xl:text-left whitespace-nowrap">© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
+          {/* Very Bottom Row: Socials, Copyright, Links, Back to Top */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-slate-800/50 pt-6">
             
-            <div className="flex flex-col md:flex-row items-center gap-6">
+            {/* Left side: Socials -> Copyright -> Links */}
+            <div className="flex flex-col xl:flex-row items-center justify-start gap-6 xl:gap-8 w-full">
               
-              {/* Social Media Icons (Moved here from column 1) */}
-              <div className="flex gap-2">
+              {/* Social Media Icons */}
+              <div className="flex gap-2 shrink-0">
                 <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-rose-500 hover:text-rose-400 hover:-translate-y-1 transition-all">
                   <Youtube className="w-3 h-3" />
                 </a>
@@ -241,26 +248,32 @@ export default function GlobalFooter() {
                 </a>
               </div>
 
-              <div className="w-px h-4 bg-slate-800 hidden md:block"></div>
+              <div className="w-px h-4 bg-slate-800 hidden xl:block shrink-0"></div>
 
-              <div className="flex items-center gap-6">
-                <Link href="/privacy" className="hover:text-white transition-colors">Privacy Auth</Link>
-                <Link href="/terms" className="hover:text-white transition-colors">Terms of Op</Link>
-                
-                <button 
-                  onClick={scrollToTop}
-                  className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-teal-500 hover:text-slate-900 text-slate-400 transition-all border border-slate-700 hover:border-teal-400 shadow-md group"
-                  title="Back to Top"
-                >
-                  <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-                </button>
+              <p className="text-center xl:text-left whitespace-nowrap shrink-0">© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
+
+              <div className="w-px h-4 bg-slate-800 hidden xl:block shrink-0"></div>
+
+              <div className="flex items-center gap-6 shrink-0">
+                <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
               </div>
 
             </div>
+
+            {/* Right side: Back to Top */}
+            <button 
+              onClick={scrollToTop}
+              className="hidden md:flex shrink-0 items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-teal-500 hover:text-slate-900 text-slate-400 transition-all border border-slate-700 hover:border-teal-400 shadow-md group"
+              title="Back to Top"
+            >
+              <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
+            
           </div>
           
           {/* Mobile Back to Top */}
-          <div className="md:hidden flex justify-center mt-8">
+          <div className="md:hidden flex justify-center mt-8 border-t border-slate-800/50 pt-6">
             <button 
               onClick={scrollToTop}
               className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors bg-slate-900 px-4 py-2 rounded-full border border-slate-800"
