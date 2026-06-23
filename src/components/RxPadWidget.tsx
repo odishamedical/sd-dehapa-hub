@@ -152,10 +152,10 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
   }
 
   return (
-    <div className="bg-white rounded-[32px] border border-slate-200 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] overflow-hidden">
+    <div className="bg-white rounded-[32px] border border-slate-200 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] relative">
       
       {/* Header */}
-      <div className="bg-slate-900 p-6 md:p-8 flex items-center justify-between text-white">
+      <div className="bg-slate-900 p-6 md:p-8 flex items-center justify-between text-white rounded-t-[32px]">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-teal-500/20 text-teal-400 rounded-2xl flex items-center justify-center border border-teal-500/30">
              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -318,7 +318,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
       </div>
 
       {/* Sticky Footer Actions */}
-      <div className="sticky bottom-0 z-50 bg-white/90 backdrop-blur-xl border-t border-slate-200 p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+      <div className="sticky bottom-4 z-50 bg-white/95 backdrop-blur-xl border border-slate-200 p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[0_20px_60px_rgba(0,0,0,0.15)] rounded-[24px] mx-4 mb-4">
          <div className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
             <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
             End-to-End Encrypted

@@ -88,7 +88,7 @@ export default function PrescriptionTemplate({ doctorData, rxData, date }: Presc
             </div>
           )}
 
-          {rxData.tests && rxData.tests[0].name && (
+          {rxData.tests && rxData.tests.length > 0 && rxData.tests[0].name && (
             <div>
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-2">Investigations</h3>
               <ul className="list-disc pl-4 space-y-2">

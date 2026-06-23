@@ -193,11 +193,13 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0 flex flex-col bg-[#aab6c4] bg-gradient-to-br from-[#c6d1dd] via-[#d4dde8] to-[#92a1b5] rounded-[24px] md:rounded-[32px] shadow-[inset_0_1px_3px_rgba(255,255,255,0.8),0_20px_50px_rgba(0,0,0,0.2)] border border-[#e2e8f0] relative overflow-hidden relative">
+      <main className="flex-1 min-w-0 flex flex-col bg-[#aab6c4] bg-gradient-to-br from-[#c6d1dd] via-[#d4dde8] to-[#92a1b5] rounded-[24px] md:rounded-[32px] shadow-[inset_0_1px_3px_rgba(255,255,255,0.8),0_20px_50px_rgba(0,0,0,0.2)] border border-[#e2e8f0] relative">
         
         {/* Subtle Brushed Metal Texture Overlay */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
-        <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
+        <div className="absolute inset-0 overflow-hidden rounded-[inherit] pointer-events-none">
+          <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
+          <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
+        </div>
 
         <header className="bg-white/40 backdrop-blur-md border-b border-white/30 px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
           <div className="flex items-center gap-4">
