@@ -50,7 +50,14 @@ export default function PharmacyDashboard() {
   };
 
   const renderHomeWidget = (entityData: any) => (
-    <DashboardHomeGrid stats={[]} userUid="" role="pharmacy" />
+    <DashboardHomeGrid
+      onNavigate={() => {}}
+      tabs={customTabs}
+      profileStrength={80}
+      profileTitle="Pharmacy Profile Strength"
+      profileSubtitle="Complete your facility profile to rank higher in the public directory and unlock premium features."
+      pendingActions={[]}
+    />
   );
 
   return (
