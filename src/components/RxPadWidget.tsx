@@ -31,7 +31,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
   const [generating, setGenerating] = useState(false);
   const [generatedRx, setGeneratedRx] = useState<any>(null);
   const [connectedPartners, setConnectedPartners] = useState<any[]>([]);
-  const [dictionary, setDictionary] = useState<{medicines: string[], tests: string[], diagnoses: string[]}>({ medicines: [], tests: [], diagnoses: [] });
+  const [dictionary, setDictionary] = useState<{medicines: string[], tests: string[], diagnoses: string[], icdCodes: string[]}>({ medicines: [], tests: [], diagnoses: [], icdCodes: ['J06.9', 'I10', 'E11.9', 'J01.90', 'J02.9'] });
 
   // Fetch connected patients for dropdown
   useEffect(() => {
@@ -79,7 +79,8 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
           setDictionary({
             medicines: data.medicines || [],
             tests: data.tests || [],
-            diagnoses: data.diagnoses || []
+            diagnoses: data.diagnoses || [],
+            icdCodes: data.icdCodes || ['J06.9', 'I10', 'E11.9', 'J01.90', 'J02.9']
           });
         }
       } catch (err) {
@@ -157,13 +158,15 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
       const uniqueMeds = Array.from(new Set(rxDoc.medicines.map(m => m.name)));
       const uniqueTests = Array.from(new Set(rxDoc.tests.map(t => t.name)));
       const diagnoses = rxDoc.clinical.diagnosis ? [rxDoc.clinical.diagnosis] : [];
+      const icds = rxDoc.clinical.icdCode ? [rxDoc.clinical.icdCode] : [];
 
-      if (uniqueMeds.length > 0 || uniqueTests.length > 0 || diagnoses.length > 0) {
+      if (uniqueMeds.length > 0 || uniqueTests.length > 0 || diagnoses.length > 0 || icds.length > 0) {
         const dictRef = doc(db, "doctor_dictionaries", doctorData.id);
         const updateData: any = {};
         if (uniqueMeds.length > 0) updateData.medicines = arrayUnion(...uniqueMeds);
         if (uniqueTests.length > 0) updateData.tests = arrayUnion(...uniqueTests);
         if (diagnoses.length > 0) updateData.diagnoses = arrayUnion(...diagnoses);
+        if (icds.length > 0) updateData.icdCodes = arrayUnion(...icds);
         await setDoc(dictRef, updateData, { merge: true });
       }
 
@@ -312,6 +315,9 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
       <datalist id="diagnosesList">
         {dictionary.diagnoses.map(d => <option key={d} value={d} />)}
       </datalist>
+      <datalist id="icdList">
+        {dictionary.icdCodes.map(c => <option key={c} value={c} />)}
+      </datalist>
       <datalist id="medicinesList">
         {dictionary.medicines.map(m => <option key={m} value={m} />)}
       </datalist>
@@ -359,19 +365,21 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
 
           {patientMode === 'registered' ? (
             <div className="mb-4 relative">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Search Connected Patients</label>
-              <input 
-                type="text"
-                placeholder="Type patient name to search..."
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 font-medium mb-2"
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Select Connected Patient</label>
+              <select 
+                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 font-medium mb-2 appearance-none"
+                value={patientInfo.id || ''}
                 onChange={(e) => {
-                  const val = e.target.value.toLowerCase();
-                  // simple search filter for UI demonstration
-                  const p = connectedPatients.find(x => x.name.toLowerCase().includes(val));
+                  const p = connectedPatients.find(x => x.id === e.target.value);
                   if (p) setPatientInfo({ ...patientInfo, id: p.id, name: p.name });
+                  else setPatientInfo({ ...patientInfo, id: '', name: '' });
                 }}
-              />
-              <div className="text-xs text-slate-500 font-medium">Selected: <strong className="text-slate-800">{patientInfo.name || 'None'}</strong></div>
+              >
+                <option value="">-- Choose from your Network Hub --</option>
+                {connectedPatients.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
             </div>
           ) : (
              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -416,7 +424,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
                     <span>ICD-10 Code</span>
                     <span className="text-teal-600 font-normal lowercase bg-teal-50 px-1 rounded">optional</span>
                   </label>
-                  <input type="text" value={clinical.icdCode} onChange={e => setClinical({...clinical, icdCode: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:border-teal-500 outline-none" placeholder="e.g. J06.9" />
+                  <input type="text" list="icdList" value={clinical.icdCode} onChange={e => setClinical({...clinical, icdCode: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:border-teal-500 outline-none" placeholder="e.g. J06.9" />
                 </div>
              </div>
           </div>
