@@ -97,10 +97,10 @@ export default function DoctorV2OwnerDashboard() {
   // Completion Logic (0 - 100%)
   const calculateProgress = () => {
     let score = 0;
-    if (entityData.name && entityData.primarySpecialty) score += 20;
+    if (entityData.name && entityData.primarySpecialty && entityData.image) score += 20;
+    if (entityData.registrationNumber) score += 20;
     if (entityData.qualificationsList?.length > 0) score += 20;
     if (entityData.offersPhysical || entityData.offersDigital) score += 20;
-    if (entityData.address && entityData.city && entityData.district) score += 20;
     if (entityData.accountNumber && entityData.ifscCode) score += 20;
     return score;
   };
