@@ -37,7 +37,7 @@ export default function HybridEntitySelector({
 }: HybridEntitySelectorProps) {
   
   // Search & Verified State
-  const [searchQuery, setSearchQuery] = useState("");
+  // Search & Verified State
   const [results, setResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   
@@ -53,7 +53,9 @@ export default function HybridEntitySelector({
 
   // Fuzzy Search Effect
   useEffect(() => {
-    if (searchQuery.length < 2) {
+    // Search using the first name field
+    const queryStr = ghostData.firstName.trim();
+    if (queryStr.length < 2) {
       setResults([]);
       return;
     }
@@ -70,7 +72,7 @@ export default function HybridEntitySelector({
         const fetched = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
         // Simple client side text search filter
-        const filtered = fetched.filter((item: any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        const filtered = fetched.filter((item: any) => item.name.toLowerCase().includes(queryStr.toLowerCase()));
         setResults(filtered);
       } catch (err) {
         console.error("Search error:", err);
@@ -79,7 +81,7 @@ export default function HybridEntitySelector({
     }, 500);
 
     return () => clearTimeout(searchTimer);
-  }, [searchQuery, targetEntity]);
+  }, [ghostData.firstName, targetEntity]);
 
   const handleSelectVerified = async (item: any) => {
     if (selectedItems.find(s => s.id === item.id)) return;
@@ -91,9 +93,7 @@ export default function HybridEntitySelector({
     };
     
     onChange([...selectedItems, newItem]);
-    setSearchQuery("");
     setResults([]);
-    setShowManualForm(false);
     // Automatically trigger Connection Request!
     if (currentUserId && item.id) {
       try {
@@ -153,155 +153,132 @@ export default function HybridEntitySelector({
   return (
     <div className="w-full relative space-y-4">
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-slate-50 border border-slate-200 p-6 rounded-2xl relative z-20 shadow-sm">
+      <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl relative z-20 shadow-sm max-w-2xl">
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+          <Icons.UserPlus className="w-4 h-4 text-emerald-500" />
+          Add Doctor to Roster
+        </label>
+        <p className="text-[10px] text-slate-400 mb-4">Type the doctor's name. If they are already on DehaPa, we will suggest their verified profile!</p>
         
-        {/* Left Column: Smart DB Search */}
-        <div className="flex flex-col gap-4 border-b lg:border-b-0 lg:border-r border-slate-200 pb-6 lg:pb-0 lg:pr-6">
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-              <Icons.Search className="w-4 h-4 text-cyan-500" />
-              Search Verified Doctors
-            </label>
-            <p className="text-[10px] text-slate-400 mb-3">If your doctor is already on DehaPa, search and connect them instantly.</p>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Icons.Search className="h-5 w-5 text-slate-400" />
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={placeholder || `Type doctor name...`}
-                className="w-full bg-white border border-slate-200 focus:border-cyan-500 rounded-xl pl-10 pr-5 py-3 shadow-inner outline-none transition-all"
+        <div className="bg-white border border-slate-200 p-5 rounded-xl shadow-sm space-y-5 relative">
+          
+          {/* Name Row with Smart Dropdown */}
+          <div className="grid grid-cols-12 gap-3 relative">
+            <div className="col-span-3">
+              <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Prefix</label>
+              <select 
+                value={ghostData.prefix}
+                onChange={e => setGhostData({...ghostData, prefix: e.target.value})}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all"
+              >
+                <option>Dr.</option>
+                <option>Prof.</option>
+                <option>Mr.</option>
+                <option>Ms.</option>
+              </select>
+            </div>
+            
+            <div className="col-span-4 relative">
+              <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1 flex justify-between">
+                <span>First Name <span className="text-rose-500">*</span></span>
+                {isSearching && <Icons.Loader2 className="h-3 w-3 text-cyan-500 animate-spin" />}
+              </label>
+              <input 
+                type="text" 
+                value={ghostData.firstName}
+                onChange={e => setGhostData({...ghostData, firstName: e.target.value})}
+                placeholder="e.g. John"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 focus:bg-white transition-all shadow-inner"
               />
-              {isSearching && (
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                  <Icons.Loader2 className="h-5 w-5 text-cyan-500 animate-spin" />
+              
+              {/* SMART DROPDOWN ABSOLUTELY POSITIONED */}
+              {results.length > 0 && ghostData.firstName.length >= 2 && (
+                <div className="absolute top-full left-0 right-[-120%] mt-2 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-cyan-200 max-h-60 overflow-y-auto z-[100] animate-in slide-in-from-top-2">
+                  <div className="px-4 py-2 bg-cyan-50/50 border-b border-cyan-100 text-xs font-bold text-cyan-700 uppercase tracking-widest flex items-center gap-2 sticky top-0 backdrop-blur-md">
+                    <Icons.CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    Verified Matches Found!
+                  </div>
+                  {results.map((res, idx) => (
+                    <button
+                      key={idx}
+                      onClick={(e) => { e.preventDefault(); handleSelectVerified(res); setGhostData({...ghostData, firstName: '', lastName: ''}); }}
+                      className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group focus:outline-none"
+                    >
+                      <div>
+                        <div className="font-bold text-slate-800">{res.name}</div>
+                        <div className="text-xs text-slate-500">{res.city || 'Verified DehaPa Doctor'}</div>
+                      </div>
+                      <div className="text-xs font-bold text-white bg-cyan-600 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 shadow-sm">
+                        Connect <Icons.Link className="w-3 h-3" />
+                      </div>
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Smart DB Matches */}
-            {results.length > 0 && searchQuery.length >= 2 && (
-              <div className="mt-2 bg-white rounded-xl shadow-lg border border-slate-200 max-h-60 overflow-y-auto relative z-30">
-                <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  <Icons.CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  Verified Matches
-                </div>
-                {results.map((res, idx) => (
-                  <button
-                    key={idx}
-                    onClick={(e) => { e.preventDefault(); handleSelectVerified(res); }}
-                    className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group focus:outline-none"
-                  >
-                    <div>
-                      <div className="font-bold text-slate-800">{res.name}</div>
-                      <div className="text-xs text-slate-500">{res.city || 'Verified Profile'}</div>
-                    </div>
-                    <div className="text-xs font-bold text-cyan-600 bg-cyan-50 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                      Connect +
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column: Manual Ghost Form */}
-        <div className="flex flex-col gap-4 relative z-10">
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-              <Icons.UserPlus className="w-4 h-4 text-emerald-500" />
-              Add Unverified Doctor Manually
-            </label>
-            <p className="text-[10px] text-slate-400 mb-3">Add doctors who are not yet on DehaPa.</p>
-            
-            <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm space-y-4">
-              <div className="grid grid-cols-12 gap-2">
-                <div className="col-span-3">
-                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Prefix</label>
-                  <select 
-                    value={ghostData.prefix}
-                    onChange={e => setGhostData({...ghostData, prefix: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 text-sm outline-none focus:border-cyan-500"
-                  >
-                    <option>Dr.</option>
-                    <option>Prof.</option>
-                    <option>Mr.</option>
-                    <option>Ms.</option>
-                  </select>
-                </div>
-                <div className="col-span-4">
-                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">First Name <span className="text-rose-500">*</span></label>
-                  <input 
-                    type="text" 
-                    value={ghostData.firstName}
-                    onChange={e => setGhostData({...ghostData, firstName: e.target.value})}
-                    placeholder="e.g. John"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 text-sm outline-none focus:border-cyan-500"
-                  />
-                </div>
-                <div className="col-span-5">
-                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Last Name</label>
-                  <input 
-                    type="text" 
-                    value={ghostData.lastName}
-                    onChange={e => setGhostData({...ghostData, lastName: e.target.value})}
-                    placeholder="e.g. Doe"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 text-sm outline-none focus:border-cyan-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Qualifications</label>
-                  <input 
-                    type="text" 
-                    value={ghostData.qualification}
-                    onChange={e => setGhostData({...ghostData, qualification: e.target.value})}
-                    placeholder="e.g. MBBS, MD"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Experience (Yrs)</label>
-                  <input 
-                    type="number" 
-                    value={ghostData.experience}
-                    onChange={e => setGhostData({...ghostData, experience: e.target.value})}
-                    placeholder="e.g. 10"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest flex items-center gap-1">
-                  <Icons.Phone className="w-3 h-3 text-emerald-500" /> Phone Number <span className="text-rose-500">*</span>
-                </label>
-                <input 
-                  type="tel" 
-                  value={ghostData.phone}
-                  onChange={e => setGhostData({...ghostData, phone: e.target.value})}
-                  placeholder="Required for WhatsApp invite"
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
-                />
-                <p className="text-[9px] text-slate-400 italic mt-1 flex items-center gap-1">
-                  <Icons.Shield className="w-3 h-3 text-slate-400" /> Phone number is NOT visible to the public. Used only for verification & WhatsApp invites.
-                </p>
-              </div>
-
-              <button 
-                onClick={(e) => { e.preventDefault(); handleAddGhost(); }}
-                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-md transition-colors flex justify-center items-center gap-2"
-              >
-                <Icons.Plus className="w-4 h-4" />
-                Add to Roster
-              </button>
+            <div className="col-span-5">
+              <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Last Name</label>
+              <input 
+                type="text" 
+                value={ghostData.lastName}
+                onChange={e => setGhostData({...ghostData, lastName: e.target.value})}
+                placeholder="e.g. Doe"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all"
+              />
             </div>
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Qualifications</label>
+              <input 
+                type="text" 
+                value={ghostData.qualification}
+                onChange={e => setGhostData({...ghostData, qualification: e.target.value})}
+                placeholder="e.g. MBBS, MD"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Experience (Yrs)</label>
+              <input 
+                type="number" 
+                value={ghostData.experience}
+                onChange={e => setGhostData({...ghostData, experience: e.target.value})}
+                placeholder="e.g. 10"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1 bg-slate-50/80 p-4 rounded-xl border border-slate-200 relative overflow-hidden">
+            {/* Accent styling for phone box */}
+            <div className="absolute top-0 left-0 w-1 h-full bg-emerald-400"></div>
+            
+            <label className="text-[10px] uppercase font-bold text-slate-700 tracking-widest flex items-center gap-1.5 mb-2">
+              <Icons.Phone className="w-3.5 h-3.5 text-emerald-500" /> Phone Number <span className="text-rose-500">*</span>
+            </label>
+            <input 
+              type="tel" 
+              value={ghostData.phone}
+              onChange={e => setGhostData({...ghostData, phone: e.target.value})}
+              placeholder="Required to send WhatsApp invite"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition-all shadow-sm"
+            />
+            <p className="text-[10px] text-slate-500 italic mt-2 flex items-start gap-1.5 leading-tight">
+              <Icons.Shield className="w-3.5 h-3.5 text-slate-400 shrink-0" /> 
+              Phone number is NOT visible to the public. It is securely stored and used exclusively to send an automated WhatsApp invite to the doctor.
+            </p>
+          </div>
+
+          <button 
+            onClick={(e) => { e.preventDefault(); handleAddGhost(); }}
+            className="w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-bold shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5 flex justify-center items-center gap-2"
+          >
+            <Icons.Plus className="w-4 h-4" />
+            Add Doctor to Roster
+          </button>
         </div>
       </div>
 
