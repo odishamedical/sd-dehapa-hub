@@ -1,9 +1,12 @@
 import React from 'react';
+import HybridEntitySelector from './HybridEntitySelector';
 
 interface FieldDef {
   key: string;
   label: string;
-  type: 'text' | 'textarea';
+  type: 'text' | 'textarea' | 'hybrid_entity_selector';
+  targetEntity?: string;
+  placeholder?: string;
 }
 
 interface ObjectArrayEditorProps {
@@ -13,6 +16,9 @@ interface ObjectArrayEditorProps {
   onUpdate: (index: number, key: string, value: string) => void;
   onAdd: () => void;
   onRemove: (index: number) => void;
+  currentUserId?: string;
+  currentUserRole?: string;
+  currentUserName?: string;
 }
 
 export default function ObjectArrayEditor({
@@ -21,7 +27,10 @@ export default function ObjectArrayEditor({
   fields,
   onUpdate,
   onAdd,
-  onRemove
+  onRemove,
+  currentUserId,
+  currentUserRole,
+  currentUserName
 }: ObjectArrayEditorProps) {
   return (
     <div className="w-full">
@@ -47,6 +56,18 @@ export default function ObjectArrayEditor({
                       className="w-full border-2 border-slate-200 focus:border-teal-500 rounded-lg px-3 py-2 outline-none transition-colors text-sm"
                       rows={2}
                     />
+                  ) : field.type === 'hybrid_entity_selector' ? (
+                    <div className="mt-2">
+                      <HybridEntitySelector 
+                        targetEntity={field.targetEntity || "Doctor"}
+                        placeholder={field.placeholder || "Search or Add..."}
+                        selectedItems={item[field.key] || []}
+                        onChange={(newItems) => onUpdate(index, field.key, newItems as any)}
+                        currentUserId={currentUserId || ''}
+                        currentUserRole={currentUserRole || ''}
+                        currentUserName={currentUserName || ''}
+                      />
+                    </div>
                   ) : (
                     <input 
                       type="text" 

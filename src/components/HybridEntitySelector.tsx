@@ -42,11 +42,12 @@ export default function HybridEntitySelector({
   const [isSearching, setIsSearching] = useState(false);
   
   // Unverified/Ghost Form State
-  const [showManualForm, setShowManualForm] = useState(false);
   const [ghostData, setGhostData] = useState({
+    prefix: 'Dr.',
+    firstName: '',
+    lastName: '',
     qualification: '',
     experience: '',
-    department: '',
     phone: ''
   });
 
@@ -93,7 +94,6 @@ export default function HybridEntitySelector({
     setSearchQuery("");
     setResults([]);
     setShowManualForm(false);
-
     // Automatically trigger Connection Request!
     if (currentUserId && item.id) {
       try {
@@ -112,28 +112,26 @@ export default function HybridEntitySelector({
   };
 
   const handleAddGhost = () => {
-    if (!searchQuery.trim() || !ghostData.phone.trim()) {
-      alert("Name and Phone Number are strictly required.");
+    if (!ghostData.firstName.trim() || !ghostData.phone.trim()) {
+      alert("First Name and Phone Number are strictly required.");
       return;
     }
 
+    const fullName = `${ghostData.prefix} ${ghostData.firstName.trim()} ${ghostData.lastName.trim()}`.trim();
     const newGhostId = `ghost_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     const newItem: RosterItem = {
       id: newGhostId,
       type: 'unverified',
-      name: searchQuery.trim(),
+      name: fullName,
       phone: ghostData.phone.trim(),
       qualification: ghostData.qualification.trim(),
-      experience: ghostData.experience.trim(),
-      department: ghostData.department.trim()
+      experience: ghostData.experience.trim()
     };
 
     onChange([...selectedItems, newItem]);
     
     // Reset
-    setSearchQuery("");
-    setGhostData({ qualification: '', experience: '', department: '', phone: '' });
-    setShowManualForm(false);
+    setGhostData({ prefix: 'Dr.', firstName: '', lastName: '', qualification: '', experience: '', phone: '' });
   };
 
   const handleRemove = (idToRemove: string) => {
@@ -155,72 +153,134 @@ export default function HybridEntitySelector({
   return (
     <div className="w-full relative space-y-4">
       
-      {/* Search Input Box */}
-      <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl relative z-20 shadow-sm">
-        <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Search or Add New Doctor</label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Icons.Search className="h-5 w-5 text-slate-400" />
-          </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={placeholder || `Type doctor name...`}
-            className="w-full bg-white border border-slate-200 focus:border-cyan-500 rounded-xl pl-10 pr-5 py-3 shadow-inner outline-none transition-all"
-          />
-          {isSearching && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <Icons.Loader2 className="h-5 w-5 text-cyan-500 animate-spin" />
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 bg-slate-50 border border-slate-200 p-6 rounded-2xl relative z-20 shadow-sm">
+        
+        {/* Left Column: Smart DB Search */}
+        <div className="flex flex-col gap-4 border-b xl:border-b-0 xl:border-r border-slate-200 pb-6 xl:pb-0 xl:pr-6">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Icons.Search className="w-4 h-4 text-cyan-500" />
+              Search Verified Doctors
+            </label>
+            <p className="text-[10px] text-slate-400 mb-3">If your doctor is already on DehaPa, search and connect them instantly.</p>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Icons.Search className="h-5 w-5 text-slate-400" />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={placeholder || `Type doctor name...`}
+                className="w-full bg-white border border-slate-200 focus:border-cyan-500 rounded-xl pl-10 pr-5 py-3 shadow-inner outline-none transition-all"
+              />
+              {isSearching && (
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <Icons.Loader2 className="h-5 w-5 text-cyan-500 animate-spin" />
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Smart DB Matches */}
+            {results.length > 0 && searchQuery.length >= 2 && (
+              <div className="mt-2 bg-white rounded-xl shadow-lg border border-slate-200 max-h-60 overflow-y-auto relative z-30">
+                <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                  <Icons.CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  Verified Matches
+                </div>
+                {results.map((res, idx) => (
+                  <button
+                    key={idx}
+                    onClick={(e) => { e.preventDefault(); handleSelectVerified(res); }}
+                    className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group focus:outline-none"
+                  >
+                    <div>
+                      <div className="font-bold text-slate-800">{res.name}</div>
+                      <div className="text-xs text-slate-500">{res.city || 'Verified Profile'}</div>
+                    </div>
+                    <div className="text-xs font-bold text-cyan-600 bg-cyan-50 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                      Connect +
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Smart DB Matches */}
-        {results.length > 0 && searchQuery.length >= 2 && !showManualForm && (
-          <div className="mt-2 bg-white rounded-xl shadow-lg border border-slate-200 max-h-60 overflow-y-auto relative z-30">
-            <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-              <Icons.CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              Verified DehaPa Matches Found
-            </div>
-            {results.map((res, idx) => (
-              <button
-                key={idx}
-                onClick={(e) => { e.preventDefault(); handleSelectVerified(res); }}
-                className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group focus:outline-none"
-              >
-                <div>
-                  <div className="font-bold text-slate-800">{res.name}</div>
-                  <div className="text-xs text-slate-500">{res.city || 'Verified Profile'}</div>
-                </div>
-                <div className="text-xs font-bold text-cyan-600 bg-cyan-50 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                  Add & Connect +
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Show Manual Entry Trigger if searching but no exact selection made */}
-        {searchQuery.length >= 2 && !showManualForm && (
-          <div className="mt-3 text-center">
-            <p className="text-sm text-slate-500 mb-2">Doctor not listed above?</p>
-            <button 
-              onClick={(e) => { e.preventDefault(); setShowManualForm(true); }}
-              className="text-cyan-600 font-bold hover:text-cyan-700 underline text-sm"
-            >
+        {/* Right Column: Manual Ghost Form */}
+        <div className="flex flex-col gap-4 relative z-10">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Icons.UserPlus className="w-4 h-4 text-emerald-500" />
               Add Unverified Doctor Manually
-            </button>
-          </div>
-        )}
+            </label>
+            <p className="text-[10px] text-slate-400 mb-3">Add doctors who are not yet on DehaPa.</p>
+            
+            <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm space-y-4">
+              <div className="grid grid-cols-12 gap-2">
+                <div className="col-span-3">
+                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Prefix</label>
+                  <select 
+                    value={ghostData.prefix}
+                    onChange={e => setGhostData({...ghostData, prefix: e.target.value})}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 text-sm outline-none focus:border-cyan-500"
+                  >
+                    <option>Dr.</option>
+                    <option>Prof.</option>
+                    <option>Mr.</option>
+                    <option>Ms.</option>
+                  </select>
+                </div>
+                <div className="col-span-4">
+                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">First Name <span className="text-rose-500">*</span></label>
+                  <input 
+                    type="text" 
+                    value={ghostData.firstName}
+                    onChange={e => setGhostData({...ghostData, firstName: e.target.value})}
+                    placeholder="e.g. John"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 text-sm outline-none focus:border-cyan-500"
+                  />
+                </div>
+                <div className="col-span-5">
+                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Last Name</label>
+                  <input 
+                    type="text" 
+                    value={ghostData.lastName}
+                    onChange={e => setGhostData({...ghostData, lastName: e.target.value})}
+                    placeholder="e.g. Doe"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 text-sm outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
 
-        {/* Manual Ghost Form */}
-        {showManualForm && (
-          <div className="mt-4 bg-slate-100 border border-slate-300 p-4 rounded-xl animate-in slide-in-from-top-2 relative z-10">
-            <h4 className="font-bold text-slate-700 text-sm mb-4">Add Unverified Doctor</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Phone Number <span className="text-rose-500">*</span></label>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Qualifications</label>
+                  <input 
+                    type="text" 
+                    value={ghostData.qualification}
+                    onChange={e => setGhostData({...ghostData, qualification: e.target.value})}
+                    placeholder="e.g. MBBS, MD"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Experience (Yrs)</label>
+                  <input 
+                    type="number" 
+                    value={ghostData.experience}
+                    onChange={e => setGhostData({...ghostData, experience: e.target.value})}
+                    placeholder="e.g. 10"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest flex items-center gap-1">
+                  <Icons.Phone className="w-3 h-3 text-emerald-500" /> Phone Number <span className="text-rose-500">*</span>
+                </label>
                 <input 
                   type="tel" 
                   value={ghostData.phone}
@@ -228,54 +288,21 @@ export default function HybridEntitySelector({
                   placeholder="Required for WhatsApp invite"
                   className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
                 />
+                <p className="text-[9px] text-slate-400 italic mt-1 flex items-center gap-1">
+                  <Icons.Shield className="w-3 h-3 text-slate-400" /> Phone number is NOT visible to the public. Used only for verification & WhatsApp invites.
+                </p>
               </div>
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Department</label>
-                <input 
-                  type="text" 
-                  value={ghostData.department}
-                  onChange={e => setGhostData({...ghostData, department: e.target.value})}
-                  placeholder="e.g. Cardiology"
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Qualifications</label>
-                <input 
-                  type="text" 
-                  value={ghostData.qualification}
-                  onChange={e => setGhostData({...ghostData, qualification: e.target.value})}
-                  placeholder="e.g. MBBS, MD"
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Experience (Years)</label>
-                <input 
-                  type="number" 
-                  value={ghostData.experience}
-                  onChange={e => setGhostData({...ghostData, experience: e.target.value})}
-                  placeholder="e.g. 10"
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-500"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2">
-              <button 
-                onClick={(e) => { e.preventDefault(); setShowManualForm(false); }}
-                className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700"
-              >
-                Cancel
-              </button>
+
               <button 
                 onClick={(e) => { e.preventDefault(); handleAddGhost(); }}
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-sm font-bold shadow-md"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-md transition-colors flex justify-center items-center gap-2"
               >
-                Save Doctor
+                <Icons.Plus className="w-4 h-4" />
+                Add to Roster
               </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Selected Items (The Roster) */}

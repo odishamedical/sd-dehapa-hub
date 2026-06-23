@@ -163,7 +163,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
       },
       {
         id: "departments",
-        label: "Departments & Centers of Excellence",
+        label: "Departments & Roster",
         fields: [
           {
             key: "departments",
@@ -172,21 +172,15 @@ export const directoryConfig: Record<string, CategoryConfig> = {
             arrayFields: [
               { key: "name", label: "Department Name (e.g. Cardiology)", type: "text" },
               { key: "head", label: "Head of Department", type: "text" },
-              { key: "description", label: "Description", type: "textarea" }
+              { key: "description", label: "Description", type: "textarea" },
+              {
+                key: "roster",
+                label: "Department Doctors",
+                type: "hybrid_entity_selector",
+                targetEntity: "Doctor",
+                placeholder: "Search verified doctors..."
+              }
             ]
-          }
-        ]
-      },
-      {
-        id: "doctors_roster",
-        label: "Doctors Roster",
-        fields: [
-          {
-            key: "roster",
-            label: "Doctors Roster",
-            type: "entity_selector",
-            targetEntity: "Doctor",
-            placeholder: "Search for a verified doctor..."
           }
         ]
       },

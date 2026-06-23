@@ -435,6 +435,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                             newArr.splice(idx, 1);
                             setEntityData({...entityData, [field.key]: newArr});
                           }}
+                          currentUserId={entityData.id || ''}
+                          currentUserRole={expectedRole}
+                          currentUserName={entityData.name || ''}
                         />
                       ) : field.type === 'string_array' ? (
                         <>

@@ -562,14 +562,81 @@ export default function UniversalProfileLayout({
             {activeTab === 'departments' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                 <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
-                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">Departments & Centers of Excellence</h2>
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif">Departments & Roster</h2>
+                  
+                  {/* Department-Centric Rendering */}
                   {profile.departments?.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div className="space-y-8 mb-8">
                       {profile.departments.map((dept: any, idx: number) => (
-                        <div key={idx} className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl shadow-sm hover:border-cyan-500/30 transition-colors">
-                          <h4 className="font-bold text-white text-lg">{dept.name}</h4>
-                          <p className="text-sm font-bold text-cyan-400 mt-1 uppercase tracking-widest">{dept.head}</p>
-                          {dept.description && <p className="text-sm text-slate-400 mt-3 leading-relaxed">{dept.description}</p>}
+                        <div key={idx} className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 md:p-8 rounded-3xl shadow-sm hover:border-cyan-500/30 transition-colors relative overflow-hidden">
+                          {/* Top accent */}
+                          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-emerald-500 opacity-50"></div>
+                          
+                          <div className="mb-6">
+                            <h4 className="font-bold text-white text-2xl tracking-tight">{dept.name}</h4>
+                            {dept.head && (
+                              <p className="text-sm font-bold text-emerald-400 mt-2 uppercase tracking-widest flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                HOD: {dept.head}
+                              </p>
+                            )}
+                            {dept.description && <p className="text-sm text-slate-400 mt-3 leading-relaxed max-w-3xl">{dept.description}</p>}
+                          </div>
+
+                          {/* Department Roster */}
+                          {dept.roster && dept.roster.length > 0 ? (
+                            <div className="mt-4 border-t border-slate-700/50 pt-6">
+                              <h5 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Department Doctors ({dept.roster.length})</h5>
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                {dept.roster.map((docItem: any, docIdx: number) => {
+                                  // Legacy handling
+                                  if (typeof docItem === 'string') {
+                                    return (
+                                      <div key={docIdx} className="flex items-center justify-between bg-slate-900/50 border border-slate-700/50 p-4 rounded-2xl">
+                                        <h4 className="font-bold text-white text-base">{docItem}</h4>
+                                      </div>
+                                    );
+                                  }
+
+                                  // Verified Profile
+                                  if (docItem.type === 'verified' || !docItem.type) {
+                                    return (
+                                      <Link href={`/profile/doctor/${docItem.id}`} key={docIdx} className="flex flex-col justify-center bg-gradient-to-r from-slate-800/80 to-slate-800/40 border border-cyan-500/20 p-5 rounded-2xl group hover:border-cyan-500/50 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                                        <div className="flex items-center justify-between">
+                                          <h4 className="font-bold text-white text-base group-hover:text-cyan-400 transition-colors">{docItem.name}</h4>
+                                          <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                          </div>
+                                        </div>
+                                        <div className="mt-2 inline-flex self-start items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
+                                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                          Verified Profile
+                                        </div>
+                                      </Link>
+                                    );
+                                  }
+
+                                  // Unverified Ghost Profile
+                                  if (docItem.type === 'unverified') {
+                                    return (
+                                      <div key={docIdx} className="flex flex-col justify-center bg-slate-800/30 border border-slate-700/50 p-5 rounded-2xl">
+                                        <h4 className="font-bold text-white text-base mb-1">{docItem.name}</h4>
+                                        <div className="flex flex-wrap gap-2 text-xs text-slate-400">
+                                          {docItem.qualification && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.qualification}</span>}
+                                          {docItem.experience && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.experience} Yrs Exp.</span>}
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                })}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="mt-4 border-t border-slate-700/50 pt-4">
+                              <p className="text-xs text-slate-500 italic">No doctors assigned to this department yet.</p>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -579,62 +646,50 @@ export default function UniversalProfileLayout({
                     </div>
                   )}
 
-                  <h2 className="text-2xl font-bold text-white mb-6 font-serif border-t border-slate-700/50 pt-8">Doctors Roster</h2>
-                  {profile.roster?.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {profile.roster.map((docItem: any, idx: number) => {
-                        // Legacy handling (string)
-                        if (typeof docItem === 'string') {
-                          return (
-                            <div key={idx} className="flex items-center justify-between bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl">
-                              <h4 className="font-bold text-white text-base">{docItem}</h4>
-                            </div>
-                          );
-                        }
-
-                        // Verified Profile
-                        if (docItem.type === 'verified' || !docItem.type) {
-                          return (
-                            <Link href={`/profile/doctor/${docItem.id}`} key={idx} className="flex flex-col justify-center bg-gradient-to-r from-slate-800/50 to-slate-800/20 border border-cyan-500/20 p-5 rounded-2xl group hover:border-cyan-500/50 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                              <div className="flex items-center justify-between">
-                                <h4 className="font-bold text-white text-base group-hover:text-cyan-400 transition-colors">{docItem.name}</h4>
-                                <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                  {/* Legacy Global Roster Fallback */}
+                  {profile.roster?.length > 0 && (!profile.departments || profile.departments.length === 0) && (
+                    <>
+                      <h2 className="text-2xl font-bold text-white mb-6 font-serif border-t border-slate-700/50 pt-8">General Roster</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {profile.roster.map((docItem: any, idx: number) => {
+                          if (typeof docItem === 'string') {
+                            return (
+                              <div key={idx} className="flex items-center justify-between bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl">
+                                <h4 className="font-bold text-white text-base">{docItem}</h4>
+                              </div>
+                            );
+                          }
+                          if (docItem.type === 'verified' || !docItem.type) {
+                            return (
+                              <Link href={`/profile/doctor/${docItem.id}`} key={idx} className="flex flex-col justify-center bg-gradient-to-r from-slate-800/50 to-slate-800/20 border border-cyan-500/20 p-5 rounded-2xl group hover:border-cyan-500/50 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                                <div className="flex items-center justify-between">
+                                  <h4 className="font-bold text-white text-base group-hover:text-cyan-400 transition-colors">{docItem.name}</h4>
+                                  <div className="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                  </div>
+                                </div>
+                                <div className="mt-2 inline-flex self-start items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                  Verified Profile
+                                </div>
+                              </Link>
+                            );
+                          }
+                          if (docItem.type === 'unverified') {
+                            return (
+                              <div key={idx} className="flex flex-col justify-center bg-slate-800/30 border border-slate-700/50 p-5 rounded-2xl">
+                                <h4 className="font-bold text-white text-base mb-1">{docItem.name}</h4>
+                                <div className="flex flex-wrap gap-2 text-xs text-slate-400 mb-2">
+                                  {docItem.qualification && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.qualification}</span>}
+                                  {docItem.experience && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.experience} Yrs Exp.</span>}
                                 </div>
                               </div>
-                              <div className="mt-2 inline-flex self-start items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Verified Profile
-                              </div>
-                            </Link>
-                          );
-                        }
-
-                        // Unverified Ghost Profile
-                        if (docItem.type === 'unverified') {
-                          return (
-                            <div key={idx} className="flex flex-col justify-center bg-slate-800/30 border border-slate-700/50 p-5 rounded-2xl">
-                              <h4 className="font-bold text-white text-base mb-1">{docItem.name}</h4>
-                              <div className="flex flex-wrap gap-2 text-xs text-slate-400 mb-2">
-                                {docItem.qualification && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.qualification}</span>}
-                                {docItem.experience && <span className="bg-slate-900/50 px-2 py-1 rounded text-slate-300 font-semibold">{docItem.experience} Yrs Exp.</span>}
-                              </div>
-                              {docItem.department && (
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">
-                                  Dept: <span className="text-slate-300">{docItem.department}</span>
-                                </p>
-                              )}
-                            </div>
-                          );
-                        }
-                        
-                        return null;
-                      })}
-                    </div>
-                  ) : (
-                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
-                      <p className="text-sm text-slate-400 font-semibold italic">No doctors listed in the roster.</p>
-                    </div>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
