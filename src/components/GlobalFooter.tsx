@@ -10,7 +10,7 @@ export default function GlobalFooter() {
   };
 
   return (
-    <footer className="bg-[#020810] text-slate-400 pt-20 relative overflow-hidden">
+    <footer className="bg-[#020810] text-slate-400 pt-10 relative overflow-hidden">
       {/* Ambient Noise & Glow Texture */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay"></div>
       <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[80%] h-[50%] bg-teal-500/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -23,7 +23,7 @@ export default function GlobalFooter() {
         {/* =========================================================================
             SUBSCRIPTION BANNER (Top of Footer)
            ========================================================================= */}
-        <div className="mb-16 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+        <div className="mb-8 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-teal-500/10 to-transparent pointer-events-none"></div>
           
           <div className="w-full lg:w-1/3 text-center lg:text-left z-10">
@@ -49,7 +49,7 @@ export default function GlobalFooter() {
         {/* =========================================================================
             MAIN NAVIGATION GRID
            ========================================================================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1.5fr_1.5fr] gap-8 lg:gap-10 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1.5fr_1.5fr] gap-8 lg:gap-10 mb-8">
           
           {/* Brand & Contact Column (Drops to bottom on mobile) */}
           <div className="order-last lg:order-first mt-8 lg:mt-0 pt-8 lg:pt-0 border-t border-slate-800 lg:border-none pr-0 lg:pr-8">
@@ -178,23 +178,12 @@ export default function GlobalFooter() {
               <HelpCircle className="w-4 h-4 text-purple-500" />
               Support & Legal
             </h4>
-            <ul className="space-y-4 mb-8">
+            <ul className="space-y-4 mb-0 lg:mb-8">
               <li><Link href="/about" className="group flex items-center text-sm font-medium text-slate-400 hover:text-teal-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-teal-400" />About Dehapa</Link></li>
               <li><Link href="/contact" className="group flex items-center text-sm font-medium text-slate-400 hover:text-teal-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-teal-400" />Contact Us</Link></li>
               <li><Link href="/privacy" className="group flex items-center text-sm font-medium text-slate-400 hover:text-teal-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-teal-400" />Privacy Policy</Link></li>
               <li><Link href="/terms" className="group flex items-center text-sm font-medium text-slate-400 hover:text-teal-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-teal-400" />Terms of Service</Link></li>
             </ul>
-
-            <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-4 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              Security Standard
-            </h4>
-            <div className="bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
-              <h5 className="font-bold text-white text-xs mb-1">HIPAA Vault Encryption</h5>
-              <p className="text-[10px] text-slate-500 leading-relaxed">
-                All telemetry and biometric data is end-to-end encrypted via Medplum nodes executing standard HL7 FHIR protocols.
-              </p>
-            </div>
           </div>
 
           {/* Support Accordion (Mobile) */}
@@ -203,21 +192,32 @@ export default function GlobalFooter() {
               <div className="flex items-center gap-2"><HelpCircle className="w-4 h-4 text-purple-500" />Support & Legal</div>
               <span className="transition group-open:rotate-180"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></span>
             </summary>
-            <ul className="space-y-4 mt-6 px-2 mb-8">
+            <ul className="space-y-4 mt-6 px-2 mb-4">
               <li><Link href="/about" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">About Dehapa</Link></li>
               <li><Link href="/contact" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Contact Us</Link></li>
               <li><Link href="/privacy" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Privacy Policy</Link></li>
               <li><Link href="/terms" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Terms of Service</Link></li>
             </ul>
-            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 mt-4">
-              <h5 className="font-bold text-white text-xs mb-1 flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-500" /> HIPAA Vault Encryption</h5>
-              <p className="text-[10px] text-slate-500 leading-relaxed">
-                All telemetry and biometric data is end-to-end encrypted via Medplum nodes executing standard HL7 FHIR protocols.
-              </p>
-            </div>
           </details>
 
         </div>
+        
+        {/* Horizontal HIPAA Security Block */}
+        <div className="mb-12 pt-8 border-t border-slate-800/50 flex flex-col md:flex-row items-center justify-between gap-6 bg-slate-900/20 rounded-3xl p-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-6 h-6 text-emerald-500" />
+            </div>
+            <div>
+              <h4 className="font-black uppercase tracking-widest text-emerald-400 text-xs mb-1">Security Standard</h4>
+              <h5 className="font-bold text-white text-sm">HIPAA Vault Encryption</h5>
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-500 leading-relaxed max-w-2xl md:text-right font-medium">
+            All telemetry and biometric data is end-to-end encrypted via Medplum nodes executing standard HL7 FHIR protocols, ensuring maximum patient privacy.
+          </p>
+        </div>
+
       </div>
         
       {/* Bottom Legal/Copyright Area with Distinct Background */}
