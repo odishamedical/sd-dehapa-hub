@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs, setDoc, doc, getDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import PrescriptionTemplate from '@/components/PrescriptionTemplate';
 
@@ -31,6 +31,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
   const [generating, setGenerating] = useState(false);
   const [generatedRx, setGeneratedRx] = useState<any>(null);
   const [connectedPartners, setConnectedPartners] = useState<any[]>([]);
+  const [dictionary, setDictionary] = useState<{medicines: string[], tests: string[], diagnoses: string[]}>({ medicines: [], tests: [], diagnoses: [] });
 
   // Fetch connected patients for dropdown
   useEffect(() => {
@@ -70,8 +71,25 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
       }
     };
 
+    const fetchDictionary = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, "doctor_dictionaries", doctorData.id));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setDictionary({
+            medicines: data.medicines || [],
+            tests: data.tests || [],
+            diagnoses: data.diagnoses || []
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch dictionary", err);
+      }
+    };
+
     fetchPatients();
     fetchPartners();
+    fetchDictionary();
   }, [doctorData.id]);
 
   const addMedicine = () => setMedicines([...medicines, { name: '', dosage: '', frequency: '', duration: '', route: 'Oral', instructions: '', substitutionAllowed: true }]);
@@ -134,6 +152,21 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
     try {
       const docRef = await addDoc(collection(db, "prescriptions"), rxDoc);
       setGeneratedRx({ ...rxDoc, id: docRef.id });
+
+      // Silent Learner Data Capture
+      const uniqueMeds = Array.from(new Set(rxDoc.medicines.map(m => m.name)));
+      const uniqueTests = Array.from(new Set(rxDoc.tests.map(t => t.name)));
+      const diagnoses = rxDoc.clinical.diagnosis ? [rxDoc.clinical.diagnosis] : [];
+
+      if (uniqueMeds.length > 0 || uniqueTests.length > 0 || diagnoses.length > 0) {
+        const dictRef = doc(db, "doctor_dictionaries", doctorData.id);
+        const updateData: any = {};
+        if (uniqueMeds.length > 0) updateData.medicines = arrayUnion(...uniqueMeds);
+        if (uniqueTests.length > 0) updateData.tests = arrayUnion(...uniqueTests);
+        if (diagnoses.length > 0) updateData.diagnoses = arrayUnion(...diagnoses);
+        await setDoc(dictRef, updateData, { merge: true });
+      }
+
     } catch (err) {
       console.error(err);
       alert("Failed to save prescription");
@@ -275,6 +308,17 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
   return (
     <div className="bg-white rounded-[32px] border border-slate-200 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] relative">
       
+      {/* Smart Dictionary DataLists */}
+      <datalist id="diagnosesList">
+        {dictionary.diagnoses.map(d => <option key={d} value={d} />)}
+      </datalist>
+      <datalist id="medicinesList">
+        {dictionary.medicines.map(m => <option key={m} value={m} />)}
+      </datalist>
+      <datalist id="testsList">
+        {dictionary.tests.map(t => <option key={t} value={t} />)}
+      </datalist>
+
       {/* Header */}
       <div className="bg-slate-900 p-6 md:p-8 flex items-center justify-between text-white rounded-t-[32px]">
         <div className="flex items-center gap-4">
@@ -365,7 +409,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Provisional Diagnosis</label>
-                  <input type="text" value={clinical.diagnosis} onChange={e => setClinical({...clinical, diagnosis: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:border-teal-500 outline-none" placeholder="e.g. Viral URI" />
+                  <input type="text" list="diagnosesList" value={clinical.diagnosis} onChange={e => setClinical({...clinical, diagnosis: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:border-teal-500 outline-none" placeholder="e.g. Viral URI" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 flex justify-between">
@@ -395,7 +439,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
               <div key={idx} className="flex flex-col md:flex-row gap-2 items-start md:items-center bg-slate-50 p-3 rounded-xl border border-slate-100 relative group">
                 <div className="flex-1 w-full grid grid-cols-2 md:grid-cols-5 gap-2">
                   <div className="col-span-2 md:col-span-2 relative">
-                    <input type="text" value={med.name} onChange={e => updateMedicine(idx, 'name', e.target.value)} placeholder="Medicine Name (e.g. Paracetamol 500mg)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-teal-500" />
+                    <input type="text" list="medicinesList" value={med.name} onChange={e => updateMedicine(idx, 'name', e.target.value)} placeholder="Medicine Name (e.g. Paracetamol 500mg)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-teal-500" />
                   </div>
                   <div className="col-span-1">
                     <input type="text" value={med.dosage} onChange={e => updateMedicine(idx, 'dosage', e.target.value)} placeholder="Dose (1 tab)" className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium text-slate-800 outline-none focus:border-teal-500" />
@@ -429,7 +473,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
           <div className="space-y-2">
             {tests.map((test, idx) => (
               <div key={idx} className="flex items-center gap-2">
-                <input type="text" value={test.name} onChange={e => updateTest(idx, 'name', e.target.value)} placeholder="e.g. CBC, Lipid Profile" className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-teal-500" />
+                <input type="text" list="testsList" value={test.name} onChange={e => updateTest(idx, 'name', e.target.value)} placeholder="e.g. CBC, Lipid Profile" className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-teal-500" />
                 <button onClick={() => removeTest(idx)} className="p-2 text-slate-400 hover:text-rose-500"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
               </div>
             ))}
