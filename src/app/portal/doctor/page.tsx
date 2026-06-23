@@ -8,6 +8,7 @@ import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
 import PendingConnectionsWidget from '@/components/PendingConnectionsWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
+import RxPadWidget from '@/components/RxPadWidget';
 import { auth } from '@/lib/firebase';
 
 export default function DoctorDashboard() {
@@ -35,6 +36,12 @@ export default function DoctorDashboard() {
       label: "Secure Medical Vault",
       section: "CLINIC MANAGEMENT",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+    },
+    {
+      id: "rxpad",
+      label: "Digital Rx Pad",
+      section: "CLINIC MANAGEMENT",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
     }
   ];
 
@@ -94,6 +101,24 @@ export default function DoctorDashboard() {
               Lookup Vault
             </button>
           </form>
+        </div>
+      );
+    }
+
+    if (tabId === "rxpad") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4">
+          <RxPadWidget 
+            doctorData={{
+              id: entityData.id || "unknown",
+              name: entityData.name || "Dr. Provider",
+              speciality: entityData.subtitle || "Specialist",
+              degrees: entityData.credentials || "MBBS",
+              registrationNo: entityData.registrationNo || "123456",
+              phone: entityData.phone || "N/A",
+              address: entityData.address || "Clinic Address"
+            }} 
+          />
         </div>
       );
     }

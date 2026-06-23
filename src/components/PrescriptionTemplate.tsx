@@ -16,8 +16,18 @@ interface PrescriptionTemplateProps {
 }
 
 export default function PrescriptionTemplate({ doctorData, rxData, date }: PrescriptionTemplateProps) {
-  return (
-    <div id="prescription-pdf-content" className="bg-white text-black p-10 font-sans w-[800px] h-auto relative overflow-hidden hidden print:block shadow-none border-none">
+    <>
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          @page { size: A4; margin: 0; }
+          body { -webkit-print-color-adjust: exact; margin: 0; }
+          body * { visibility: hidden; }
+          #prescription-pdf-content, #prescription-pdf-content * { visibility: visible; }
+          #prescription-pdf-content { position: absolute; left: 0; top: 0; width: 100% !important; min-height: 297mm; padding: 20mm !important; }
+          .print-break-avoid { break-inside: avoid; page-break-inside: avoid; }
+        }
+      `}} />
+      <div id="prescription-pdf-content" className="bg-white text-black p-10 font-sans w-[800px] min-h-[1122px] relative overflow-hidden hidden print:block shadow-none border-none">
       
       {/* Background Watermark */}
       <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
@@ -67,10 +77,13 @@ export default function PrescriptionTemplate({ doctorData, rxData, date }: Presc
             </div>
           )}
           
-          {rxData.diagnosis && (
-            <div>
+          {rxData.clinical?.diagnosis && (
+            <div className="print-break-avoid">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-2">Diagnosis</h3>
-              <p className="text-sm font-semibold text-teal-700 bg-teal-50 px-3 py-2 rounded-lg">{rxData.diagnosis}</p>
+              <p className="text-sm font-semibold text-teal-700 bg-teal-50 px-3 py-2 rounded-lg">{rxData.clinical.diagnosis}</p>
+              {rxData.clinical.icdCode && (
+                <p className="text-xs text-slate-500 font-bold mt-2">ICD-10: <span className="text-slate-800">{rxData.clinical.icdCode}</span></p>
+              )}
             </div>
           )}
 
@@ -100,7 +113,7 @@ export default function PrescriptionTemplate({ doctorData, rxData, date }: Presc
 
           <div className="space-y-6">
             {rxData.medicines.map((med: any, i: number) => med.name && (
-              <div key={i} className="flex items-start gap-4 pb-4 border-b border-slate-50 last:border-0">
+              <div key={i} className="print-break-avoid flex items-start gap-4 pb-4 border-b border-slate-50 last:border-0">
                 <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-xs font-bold text-slate-500 shrink-0 mt-0.5">
                   {i + 1}
                 </div>
@@ -139,6 +152,7 @@ export default function PrescriptionTemplate({ doctorData, rxData, date }: Presc
         </div>
       </div>
 
-    </div>
+      </div>
+    </>
   );
 }
