@@ -134,10 +134,10 @@ export default function DoctorV2OwnerDashboard() {
   if (!accessGranted) return null;
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans relative overflow-x-hidden">
+    <div className="min-h-screen bg-white text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
       
       {/* Background Orbs for Glassmorphism effect */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200/40 rounded-full blur-[120px]"></div>
         <div className="absolute top-[20%] right-[-5%] w-[30%] h-[50%] bg-indigo-200/40 rounded-full blur-[100px]"></div>
         <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] bg-rose-200/30 rounded-full blur-[100px]"></div>
@@ -166,215 +166,272 @@ export default function DoctorV2OwnerDashboard() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-12">
+      <div className="flex flex-1 relative z-10 w-full max-w-[1400px] mx-auto">
         
         {/* =========================================================================
-            HOME TAB: THE "SMART GUIDED ONBOARDING" PULSE UI 
+            LEFT SIDEBAR (Glassmorphism)
            ========================================================================= */}
-        {activeTab === "home" && (
-          <div className="space-y-12 animate-in fade-in zoom-in-95 duration-500">
-            
-            {/* Massive Glassmorphism Hero */}
-            <div className="sd-glass-panel overflow-hidden relative p-10 md:p-16">
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-indigo-500/10 pointer-events-none"></div>
-              
-              <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center justify-between">
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">
-                    {entityData.isPublic ? "Your profile is Live." : "Activate Your Doctor Profile."}
-                  </h1>
-                  <p className="text-slate-600 text-lg md:text-xl max-w-xl font-medium">
-                    {entityData.isPublic 
-                      ? "Patients can now find you in the directory. Keep your app open to receive emergency video calls." 
-                      : "Complete your setup to unlock the 'Publish' button. Auto-save is always on."}
-                  </p>
-                </div>
-
-                {/* The Giant Publish Switch */}
-                <div className="shrink-0 bg-white/80 backdrop-blur-md border border-white p-6 rounded-3xl shadow-xl flex flex-col items-center gap-4 min-w-[280px]">
-                  <div className="text-sm font-bold text-slate-500 uppercase tracking-widest">Profile Strength</div>
-                  
-                  {/* Progress Bar */}
-                  <div className="w-full bg-slate-100 rounded-full h-4 mb-2 overflow-hidden shadow-inner">
-                    <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-4 rounded-full transition-all duration-1000 ease-out relative" style={{ width: `${progress}%` }}>
-                       {progress > 10 && <span className="absolute right-2 top-0 text-[10px] text-white font-bold leading-4">{progress}%</span>}
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={handlePublishToggle}
-                    disabled={!isReady}
-                    className={`w-full py-4 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-lg ${
-                      entityData.isPublic 
-                        ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500 shadow-emerald-500/20" 
-                        : isReady 
-                          ? "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/30 hover:scale-105" 
-                          : "bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200"
-                    }`}
-                  >
-                    {entityData.isPublic ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
-                  </button>
-                  {!isReady && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
-                </div>
+        <aside className="hidden lg:block w-72 shrink-0 p-6">
+          <div className="sticky top-[100px] sd-glass-panel p-6">
+            <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
+              <div className="w-12 h-12 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
+                {entityData.name ? entityData.name.charAt(0).toUpperCase() : "D"}
+              </div>
+              <div className="overflow-hidden">
+                <h3 className="font-bold text-slate-900 truncate">{entityData.name || "Doctor"}</h3>
+                <p className="text-xs text-slate-500 truncate">{entityData.primarySpecialty || "Setup Required"}</p>
               </div>
             </div>
 
-            {/* Quick Actions Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <button onClick={() => setActiveTab("identity")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
-                 <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-teal-500/30 group-hover:rotate-12 transition-transform">👤</div>
-                 <h3 className="text-xl font-black text-slate-900 mb-2">Setup Profile</h3>
-                 <p className="text-sm text-slate-500 font-medium">Identity, Media & Bio</p>
+            <nav className="space-y-1">
+              <button 
+                onClick={() => setActiveTab('home')} 
+                className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'home' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+              >
+                🏠 Dashboard Home
               </button>
+              
+              <div className="pt-4 pb-2">
+                <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Profile Wizard Steps</p>
+              </div>
+              
+              {WIZARD_STEPS.map(step => (
+                <button 
+                  key={step.id}
+                  onClick={() => setActiveTab(step.id)} 
+                  className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === step.id ? 'bg-teal-50 text-teal-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${activeTab === step.id ? 'bg-teal-500' : 'bg-slate-300'}`}></span>
+                  {step.label}
+                </button>
+              ))}
 
-              <button onClick={() => setActiveTab("rxpad")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
-                 <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-500/30 group-hover:rotate-12 transition-transform">📝</div>
-                 <h3 className="text-xl font-black text-slate-900 mb-2">Digital Rx Pad</h3>
-                 <p className="text-sm text-slate-500 font-medium">Write Prescriptions</p>
+              <div className="pt-6 pb-2 border-t border-slate-200/50 mt-4">
+                <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Clinical Tools</p>
+              </div>
+
+              <button 
+                onClick={() => setActiveTab('rxpad')} 
+                className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'rxpad' ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+              >
+                📝 Digital Rx Pad
               </button>
-
-              <button onClick={() => setActiveTab("network")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
-                 <div className="w-14 h-14 bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-rose-500/30 group-hover:rotate-12 transition-transform">🤝</div>
-                 <h3 className="text-xl font-black text-slate-900 mb-2">My Network</h3>
-                 <p className="text-sm text-slate-500 font-medium">Manage Partners</p>
+              <button 
+                onClick={() => setActiveTab('network')} 
+                className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'network' ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+              >
+                🤝 My Network
               </button>
-
-              <button onClick={() => setActiveTab("vault")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
-                 <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-orange-500/30 group-hover:rotate-12 transition-transform">🗄️</div>
-                 <h3 className="text-xl font-black text-slate-900 mb-2">Patient Vault</h3>
-                 <p className="text-sm text-slate-500 font-medium">Access Records</p>
+              <button 
+                onClick={() => setActiveTab('vault')} 
+                className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'vault' ? 'bg-orange-50 text-orange-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+              >
+                🗄️ Patient Vault
               </button>
-            </div>
-
+            </nav>
           </div>
-        )}
+        </aside>
 
         {/* =========================================================================
-            WIZARD SETUP TABS
+            MAIN CONTENT AREA
            ========================================================================= */}
-        {WIZARD_STEPS.map(s => s.id).includes(activeTab) && (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 max-w-4xl mx-auto">
-            
-            {/* Top Breadcrumbs */}
-            <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
-              <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
-              <span>/</span>
-              <span className="text-teal-600">{WIZARD_STEPS.find(s => s.id === activeTab)?.label}</span>
-            </div>
-
-            <div className="sd-glass-panel p-8 md:p-12 mb-8">
+        <main className="flex-1 px-4 py-8 md:px-8 md:py-12 max-w-5xl">
+          
+          {/* =========================================================================
+              HOME TAB: THE "SMART GUIDED ONBOARDING" PULSE UI 
+             ========================================================================= */}
+          {activeTab === "home" && (
+            <div className="space-y-8 md:space-y-12 animate-in fade-in zoom-in-95 duration-500">
               
-              {/* Form Content Wrapper */}
-              {activeTab === "location" ? (
-                <>
-                  <h2 className="text-3xl font-black text-slate-900 mb-8">Clinic Location</h2>
-                  <AddressBlock 
-                    data={{
-                      country: entityData.country || 'India',
-                      state: entityData.state || 'Odisha',
-                      district: entityData.district || '',
-                      block: entityData.block || '',
-                      city: entityData.city || '',
-                      pincode: entityData.pincode || '',
-                      localAddress: entityData.address || ''
-                    }}
-                    onChange={(addr) => {
-                      setEntityData({ 
-                        ...entityData, 
-                        country: addr.country,
-                        state: addr.state,
-                        district: addr.district,
-                        block: addr.block,
-                        city: addr.city,
-                        pincode: addr.pincode,
-                        address: addr.localAddress
-                      });
-                    }}
+              {/* Massive Glassmorphism Hero */}
+              <div className="sd-glass-panel overflow-hidden relative p-8 md:p-16">
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-indigo-500/10 pointer-events-none"></div>
+                
+                <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center justify-between">
+                  <div>
+                    <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">
+                      {entityData.isPublic ? "Your profile is Live." : "Activate Your Doctor Profile."}
+                    </h1>
+                    <p className="text-slate-600 text-lg md:text-xl max-w-xl font-medium">
+                      {entityData.isPublic 
+                        ? "Patients can now find you in the directory. Keep your app open to receive emergency video calls." 
+                        : "Complete your setup to unlock the 'Publish' button. Auto-save is always on."}
+                    </p>
+                  </div>
+
+                  {/* The Giant Publish Switch */}
+                  <div className="shrink-0 bg-white/80 backdrop-blur-md border border-white p-6 rounded-3xl shadow-xl flex flex-col items-center gap-4 w-full lg:min-w-[280px]">
+                    <div className="text-sm font-bold text-slate-500 uppercase tracking-widest">Profile Strength</div>
+                    
+                    {/* Progress Bar */}
+                    <div className="w-full bg-slate-100 rounded-full h-4 mb-2 overflow-hidden shadow-inner">
+                      <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-4 rounded-full transition-all duration-1000 ease-out relative" style={{ width: `${progress}%` }}>
+                         {progress > 10 && <span className="absolute right-2 top-0 text-[10px] text-white font-bold leading-4">{progress}%</span>}
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={handlePublishToggle}
+                      disabled={!isReady}
+                      className={`w-full py-4 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-lg ${
+                        entityData.isPublic 
+                          ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500 shadow-emerald-500/20" 
+                          : isReady 
+                            ? "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/30 hover:scale-105" 
+                            : "bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200"
+                      }`}
+                    >
+                      {entityData.isPublic ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
+                    </button>
+                    {!isReady && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile Quick Actions Grid (Since sidebar is hidden on mobile) */}
+              <div className="grid lg:hidden grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onClick={() => setActiveTab("identity")} className="sd-glass-panel p-6 text-left hover:scale-105 transition-all group">
+                   <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-lg group-hover:rotate-12 transition-transform">👤</div>
+                   <h3 className="text-lg font-black text-slate-900 mb-1">Setup Profile</h3>
+                   <p className="text-xs text-slate-500 font-medium">Identity, Media & Bio</p>
+                </button>
+                <button onClick={() => setActiveTab("rxpad")} className="sd-glass-panel p-6 text-left hover:scale-105 transition-all group">
+                   <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-lg group-hover:rotate-12 transition-transform">📝</div>
+                   <h3 className="text-lg font-black text-slate-900 mb-1">Digital Rx Pad</h3>
+                   <p className="text-xs text-slate-500 font-medium">Write Prescriptions</p>
+                </button>
+              </div>
+
+            </div>
+          )}
+
+          {/* =========================================================================
+              WIZARD SETUP TABS
+             ========================================================================= */}
+          {WIZARD_STEPS.map(s => s.id).includes(activeTab) && (
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
+              
+              {/* Top Breadcrumbs */}
+              <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+                <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+                <span>/</span>
+                <span className="text-teal-600">{WIZARD_STEPS.find(s => s.id === activeTab)?.label}</span>
+              </div>
+
+              <div className="sd-glass-panel p-6 md:p-12 mb-8">
+                
+                {/* Form Content Wrapper */}
+                {activeTab === "location" ? (
+                  <>
+                    <h2 className="text-3xl font-black text-slate-900 mb-8 tracking-tight">Clinic Location</h2>
+                    <AddressBlock 
+                      data={{
+                        country: entityData.country || 'India',
+                        state: entityData.state || 'Odisha',
+                        district: entityData.district || '',
+                        block: entityData.block || '',
+                        city: entityData.city || '',
+                        pincode: entityData.pincode || '',
+                        localAddress: entityData.address || ''
+                      }}
+                      onChange={(addr) => {
+                        setEntityData({ 
+                          ...entityData, 
+                          country: addr.country,
+                          state: addr.state,
+                          district: addr.district,
+                          block: addr.block,
+                          city: addr.city,
+                          pincode: addr.pincode,
+                          address: addr.localAddress
+                        });
+                      }}
+                    />
+                  </>
+                ) : (
+                  <DoctorV2Forms 
+                    activeTab={activeTab} 
+                    entityData={entityData} 
+                    setEntityData={setEntityData} 
                   />
-                </>
-              ) : (
-                <DoctorV2Forms 
-                  activeTab={activeTab} 
-                  entityData={entityData} 
-                  setEntityData={setEntityData} 
+                )}
+
+              </div>
+
+              {/* Bottom Wizard Navigation (Psychological Save) */}
+              <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6 mt-12 mb-20">
+                <button onClick={() => setActiveTab("home")} className="text-slate-500 hover:text-slate-900 font-bold px-6 py-4 transition-colors">
+                  Return to Dashboard
+                </button>
+                
+                <button onClick={handleNextStep} className="w-full md:w-auto sd-btn-v3 bg-slate-900 text-white hover:bg-black">
+                  {currentStepIndex === WIZARD_STEPS.length - 1 ? "Save & Finish ➔" : "Save & Continue ➔"}
+                </button>
+              </div>
+
+            </div>
+          )}
+
+          {/* =========================================================================
+              CLINICAL TOOLS
+             ========================================================================= */}
+          {activeTab === "rxpad" && (
+            <div className="animate-in fade-in slide-in-from-bottom-8">
+              <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+                <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+                <span>/</span>
+                <span className="text-teal-600">Digital Rx Pad</span>
+              </div>
+              <div className="sd-glass-panel p-6">
+                <RxPadWidget 
+                  doctorData={{
+                    id: entityData.id,
+                    name: entityData.name || "Dr. Name",
+                    speciality: entityData.primarySpecialty || "Specialty",
+                    degrees: entityData.credentials || "MBBS",
+                    registrationNo: entityData.registrationNo || "",
+                    phone: entityData.phone || "",
+                    address: entityData.address || "Clinic Address"
+                  }} 
                 />
-              )}
-
+              </div>
             </div>
+          )}
 
-            {/* Bottom Wizard Navigation (Psychological Save) */}
-            <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6 mt-12 mb-20">
-              <button onClick={() => setActiveTab("home")} className="text-slate-500 hover:text-slate-900 font-bold px-6 py-4 transition-colors">
-                Return to Dashboard
-              </button>
-              
-              <button onClick={handleNextStep} className="w-full md:w-auto sd-btn-v3 bg-slate-900 text-white hover:bg-black">
-                {currentStepIndex === WIZARD_STEPS.length - 1 ? "Save & Finish ➔" : "Save & Continue ➔"}
-              </button>
+          {activeTab === "network" && (
+            <div className="animate-in fade-in slide-in-from-bottom-8">
+              <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+                <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+                <span>/</span>
+                <span className="text-teal-600">My Network</span>
+              </div>
+              <div className="sd-glass-panel p-8">
+                <MyNetworkHub providerId={entityData.id} providerRole="doctor" />
+              </div>
             </div>
+          )}
 
-          </div>
-        )}
-
-        {/* =========================================================================
-            CLINICAL TOOLS
-           ========================================================================= */}
-        {activeTab === "rxpad" && (
-          <div className="animate-in fade-in slide-in-from-bottom-8">
-            <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
-              <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
-              <span>/</span>
-              <span className="text-teal-600">Digital Rx Pad</span>
-            </div>
-            <div className="sd-glass-panel p-6">
-              <RxPadWidget 
-                doctorData={{
-                  id: entityData.id,
-                  name: entityData.name || "Dr. Name",
-                  speciality: entityData.primarySpecialty || "Specialty",
-                  degrees: entityData.credentials || "MBBS",
-                  registrationNo: entityData.registrationNo || "",
-                  phone: entityData.phone || "",
-                  address: entityData.address || "Clinic Address"
-                }} 
-              />
-            </div>
-          </div>
-        )}
-
-        {activeTab === "network" && (
-          <div className="animate-in fade-in slide-in-from-bottom-8">
-            <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
-              <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
-              <span>/</span>
-              <span className="text-teal-600">My Network</span>
-            </div>
-            <div className="sd-glass-panel p-8">
-              <MyNetworkHub providerId={entityData.id} providerRole="doctor" />
-            </div>
-          </div>
-        )}
-
-        {activeTab === "vault" && (
-           <div className="animate-in fade-in slide-in-from-bottom-8">
-             <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
-               <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
-               <span>/</span>
-               <span className="text-teal-600">Patient Vault</span>
-             </div>
-             <div className="sd-glass-panel p-12 text-center py-24">
-               <div className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl mb-6 shadow-inner">🗄️</div>
-               <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Sovereign Vault Access</h2>
-               <p className="text-slate-600 text-lg max-w-lg mx-auto mb-10 font-medium">Enter a Patient's Vault ID to securely access their medical history or upload prescriptions.</p>
-               <div className="flex flex-col md:flex-row max-w-lg mx-auto gap-4">
-                 <input type="text" placeholder="patient@example.com" className="sd-input-v3 text-center md:text-left" />
-                 <button className="sd-btn-v3 bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 whitespace-nowrap">Lookup</button>
+          {activeTab === "vault" && (
+             <div className="animate-in fade-in slide-in-from-bottom-8">
+               <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+                 <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+                 <span>/</span>
+                 <span className="text-teal-600">Patient Vault</span>
+               </div>
+               <div className="sd-glass-panel p-8 md:p-12 text-center py-16 md:py-24">
+                 <div className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl mb-6 shadow-inner">🗄️</div>
+                 <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Sovereign Vault Access</h2>
+                 <p className="text-slate-600 text-lg max-w-lg mx-auto mb-10 font-medium">Enter a Patient's Vault ID to securely access their medical history or upload prescriptions.</p>
+                 <div className="flex flex-col md:flex-row max-w-lg mx-auto gap-4">
+                   <input type="text" placeholder="patient@example.com" className="sd-input-v3 text-center md:text-left" />
+                   <button className="sd-btn-v3 bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 whitespace-nowrap">Lookup</button>
+                 </div>
                </div>
              </div>
-           </div>
-        )}
+          )}
 
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
