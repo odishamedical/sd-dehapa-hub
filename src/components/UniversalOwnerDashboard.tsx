@@ -15,6 +15,7 @@ import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/fire
 import { db } from '@/lib/firebase';
 import { directoryConfig } from '@/lib/directoryConfig';
 import EntitySelector from '@/components/EntitySelector';
+import PremiumSlugModal from '@/components/PremiumSlugModal';
 
 interface UniversalOwnerDashboardProps {
   expectedRole: string; // e.g. "pharmacy", "lab", "ambulance", "doctor", "hospital"
@@ -55,6 +56,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   // Dynamic State for the Entity
   const [entityData, setEntityData] = useState<any>({});
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
   const isInitialMount = React.useRef(true);
   
   useEffect(() => {
@@ -584,22 +586,18 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
-                    Custom Profile URL
+                  <label className="sd-label-v3 flex justify-between">
+                    Custom Vanity URL
+                    <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold">Premium</span>
                   </label>
-                  <div className="flex items-center">
-                    <span className="bg-slate-100 border border-slate-200 border-r-0 rounded-l-xl px-4 py-3.5 text-sm font-bold text-slate-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
-                      dehapa.com/
-                    </span>
-                    <input 
-                      type="text" 
-                      value={entityData.customUrl || ''}
-                      onChange={e => setEntityData({ ...entityData, customUrl: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
-                      placeholder="e.g. city-hospital"
-                      className="w-full bg-white/60 backdrop-blur-md border border-slate-200 hover:border-white rounded-r-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
-                    />
+                  <div className="flex w-full">
+                    <span className="inline-flex items-center px-4 bg-slate-100 border border-r-0 border-slate-200 text-slate-500 rounded-l-2xl font-mono text-sm shrink-0">dehapa.com/{expectedRole === 'pharmacy' ? 'pharmacies' : `${expectedRole}s`}/</span>
+                    <input type="text" className="sd-input-v3 rounded-none bg-slate-50" disabled value={entityData.customSlug || ""} />
+                    <button onClick={() => setIsSlugModalOpen(true)} className="px-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-r-2xl text-sm transition-colors whitespace-nowrap shadow-sm">
+                      Reserve URL
+                    </button>
                   </div>
-                  <p className="text-xs text-slate-400 mt-2">Only letters, numbers, and hyphens allowed.</p>
+                  <p className="text-xs text-slate-400 mt-2">Reserve your exclusive {expectedRole} web address.</p>
                 </div>
               </div>
 
@@ -619,6 +617,13 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                 <AutosaveIndicator status={saveStatus} />
               </div>
             </div>
+
+            <PremiumSlugModal 
+              isOpen={isSlugModalOpen} 
+              onClose={() => setIsSlugModalOpen(false)} 
+              currentName={entityData.name || ""} 
+              currentUglyUrl={`dehapa.com/${expectedRole === 'pharmacy' ? 'pharmacies' : `${expectedRole}s`}/${entityData.id || "new"}`} 
+            />
           </div>
         )}
 
