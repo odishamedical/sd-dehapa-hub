@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -38,32 +38,76 @@ export default function DashboardLayout({
   homeWidget,
   hideDefaultModulesList
 }: DashboardLayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("https://dehapa.com");
 
-  // Find which section the active tab belongs to
-  const activeTabDetails = tabs.find(t => t.id === activeTab);
-  const activeSection = activeTabDetails?.section;
-
-  // Track expanded state for sections (auto-expand the active section)
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    if (activeSection) {
-      initial[activeSection] = true;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
     }
-    return initial;
+  }, []);
+
+  // Group tabs by section (maintain order)
+  const sectionedTabsList: { section: string, tabs: DashboardTab[] }[] = [];
+  tabs.forEach(tab => {
+    const sectionName = tab.section || "DEFAULT";
+    let existingSection = sectionedTabsList.find(s => s.section === sectionName);
+    if (!existingSection) {
+      existingSection = { section: sectionName, tabs: [] };
+      sectionedTabsList.push(existingSection);
+    }
+    existingSection.tabs.push(tab);
   });
 
-  const toggleSection = (sectionName: string) => {
-    setExpandedSections(prev => {
-      // If expanding, close all others. If collapsing, close this one.
-      if (!prev[sectionName]) {
-        return { [sectionName]: true };
-      }
-      return { ...prev, [sectionName]: false };
-    });
+  const renderNavLinks = (isMobile = false) => {
+    return (
+      <nav className="space-y-1 w-full">
+        <button 
+          onClick={() => { onTabChange('home'); if (isMobile) setIsMobileMenuOpen(false); }} 
+          className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'home' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+        >
+          <span className={`w-2 h-2 rounded-full ${activeTab === 'home' ? 'bg-indigo-500' : 'bg-slate-300'}`}></span>
+          {roleName === "Patient" ? "User Dashboard" : `${roleName} Dashboard`}
+        </button>
+        
+        {sectionedTabsList.map((sectionObj, idx) => (
+          <React.Fragment key={sectionObj.section}>
+            {sectionObj.section !== "DEFAULT" && (
+              <div className={`pt-6 pb-2 ${idx > 0 ? 'border-t border-slate-200/50 mt-4' : ''}`}>
+                <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400">{sectionObj.section}</p>
+              </div>
+            )}
+            
+            {sectionObj.tabs.map(tab => {
+              if (tab.id === "home") return null;
+              const isActive = activeTab === tab.id;
+              const tintClasses = isActive ? 'bg-teal-50 text-teal-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900';
+              
+              return (
+                <button 
+                  key={tab.id}
+                  onClick={() => { onTabChange(tab.id); if (isMobile) setIsMobileMenuOpen(false); }} 
+                  className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between group ${tintClasses}`}
+                >
+                  <div className="flex items-center gap-3 truncate">
+                    <div className={isActive ? 'text-teal-600' : 'text-slate-400 group-hover:text-slate-600'}>
+                      {tab.icon}
+                    </div>
+                    <span className="truncate">{tab.label}</span>
+                  </div>
+                  {tab.badge !== undefined && (
+                    <span className="ml-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </React.Fragment>
+        ))}
+      </nav>
+    );
   };
 
   const [expandedHomeSections, setExpandedHomeSections] = useState<Record<string, boolean>>({});
@@ -77,274 +121,162 @@ export default function DashboardLayout({
     });
   };
 
-  // Group tabs by section
-  const sectionedTabs = tabs.reduce((acc, tab) => {
-    const section = tab.section || "DEFAULT";
-    if (!acc[section]) acc[section] = [];
-    acc[section].push(tab);
-    return acc;
-  }, {} as Record<string, DashboardTab[]>);
-
   return (
-    <>
-      <div className="min-h-screen bg-[#040815] text-slate-900 font-sans selection:bg-cyan-500/30 flex p-2 md:p-4 gap-4 md:gap-6">
+    <div className="min-h-screen bg-white text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
       
-      {/* Sidebar Navigation - Floating Pill */}
-      <aside className="w-[280px] bg-[#0a1229] text-slate-200 shrink-0 hidden md:flex flex-col h-[calc(100vh-32px)] sticky top-4 overflow-y-auto scrollbar-hide rounded-[24px] shadow-2xl shadow-cyan-900/10 border border-cyan-500/20">
-        {/* The top 'DEHAPA DOCTOR DASHBOARD' box has been completely removed to save space */}
+      {/* Background Orbs for Glassmorphism effect */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200/40 rounded-full blur-[120px] animate-float-slow"></div>
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[50%] bg-indigo-200/40 rounded-full blur-[100px] animate-float-slow-reverse"></div>
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] bg-rose-200/30 rounded-full blur-[100px] animate-float-slow"></div>
+      </div>
 
-        {userProfile && (
-          <div className="p-6 border-b border-cyan-500/10 bg-[#040815]/50">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-full border-2 border-teal-500 p-1 mb-3">
+      {/* Main Header (Sticky) */}
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3 md:gap-4">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)} 
+            className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <button onClick={() => onTabChange("home")} className="text-xl md:text-2xl font-black text-slate-800 tracking-tight hover:text-teal-600 transition-colors">
+            DehaPa Portal
+          </button>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-slate-900">
+            Sign Out
+          </button>
+        </div>
+      </header>
+
+      <div className="flex flex-1 relative z-10 w-full max-w-[1400px] mx-auto">
+        
+        {/* =========================================================================
+            LEFT SIDEBAR (Glassmorphism)
+           ========================================================================= */}
+        <aside className="hidden lg:block w-72 shrink-0 p-6">
+          <div className="sticky top-[100px] sd-glass-panel p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white">
+            {userProfile && (
+              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
                 {userProfile.image ? (
-                  <img src={userProfile.image} alt={userProfile.name} className="w-full h-full rounded-full object-cover" />
+                  <img src={userProfile.image} alt={userProfile.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
                 ) : (
-                  <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                  <div className="w-12 h-12 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
+                    {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                 )}
+                <div className="overflow-hidden cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setShowQRModal(true)}>
+                  <h3 className="font-bold text-slate-900 truncate" title={userProfile.name}>{userProfile.name}</h3>
+                  <p className="text-xs text-slate-500 truncate" title={userProfile.subtitle}>{userProfile.subtitle}</p>
+                </div>
               </div>
-              <h3 className="font-bold text-white text-base">{userProfile.name}</h3>
-              <p className="text-teal-400 text-xs font-medium mt-1 mb-4">{userProfile.subtitle}</p>
-              
-              {/* Sleek Teal QR Button */}
-              <button 
-                onClick={() => setShowQRModal(true)}
-                className="mt-4 w-full bg-teal-500/20 hover:bg-teal-500/30 border border-teal-400/50 rounded-xl py-2.5 px-4 flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_0_15px_rgba(20,184,166,0.15)] hover:shadow-[0_0_25px_rgba(20,184,166,0.25)] group"
-              >
-                <svg className="w-4 h-4 text-teal-300 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                <span className="text-teal-300 font-bold text-xs uppercase tracking-widest">Show Profile QR</span>
-              </button>
+            )}
+
+            {renderNavLinks(false)}
+          </div>
+        </aside>
+
+        {/* =========================================================================
+            MOBILE SLIDE-IN SIDEBAR (Drawer)
+           ========================================================================= */}
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 z-[100] lg:hidden flex">
+            <div 
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+              onClick={() => setIsMobileMenuOpen(false)}
+            ></div>
+            <div className="relative w-72 max-w-sm bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {userProfile?.image ? (
+                    <img src={userProfile.image} alt={userProfile.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-lg shrink-0">
+                      {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                  )}
+                  <div className="overflow-hidden" onClick={() => setShowQRModal(true)}>
+                    <h3 className="font-bold text-slate-900 truncate text-sm">{userProfile?.name || roleName}</h3>
+                  </div>
+                </div>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                {renderNavLinks(true)}
+              </div>
             </div>
           </div>
         )}
-        
-        <nav className="flex-1 p-4 space-y-1">
-          <button 
-            onClick={() => onTabChange("home")} 
-            className={`mb-4 w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
-              activeTab === "home"
-                ? 'bg-cyan-500/20 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' 
-                : 'text-slate-400 hover:bg-cyan-950/30 hover:text-cyan-100'
-            }`}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span className="truncate">{roleName === "Patient" ? "User Dashboard" : `${roleName} Dashboard`}</span>
-          </button>
-          {Object.entries(sectionedTabs).map(([sectionName, sectionTabs], index) => {
-            const isDefault = sectionName === "DEFAULT";
-            const isExpanded = isDefault || expandedSections[sectionName];
 
-            return (
-              <React.Fragment key={sectionName}>
-                {!isDefault && (
-                  <div className="mb-2">
-                    <button 
-                      onClick={() => {
-                        toggleSection(sectionName);
-                        // Also trigger navigation to the first tab instantly when opening the group
-                        if (!isExpanded) {
-                           onTabChange(sectionTabs[0].id);
-                        }
-                      }}
-                      className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all border ${
-                        isExpanded
-                          ? 'bg-cyan-950/40 border-cyan-500/30 text-cyan-50 shadow-[0_0_15px_rgba(6,182,212,0.15)]' 
-                          : 'bg-transparent border-transparent text-slate-400 hover:bg-[#040815] hover:border-cyan-500/20 hover:text-slate-200'
-                      }`}
-                    >
-                      <span className="text-xs font-bold tracking-widest uppercase flex items-center gap-3">
-                        <svg className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-90 text-teal-400' : 'text-slate-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
-                        {sectionName}
-                      </span>
-                    </button>
-                  </div>
-                )}
-                
-                {isExpanded && (
-                  <div className={!isDefault ? "mt-1 pl-2 border-l border-slate-800 ml-5 space-y-1" : "space-y-1"}>
-                    {sectionTabs.map(tab => {
-                      const isActive = activeTab === tab.id;
-                      return (
-                        <button 
-                          key={tab.id}
-                          onClick={() => onTabChange(tab.id)} 
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
-                            isActive 
-                              ? 'bg-cyan-500/20 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]' 
-                              : 'text-slate-400 hover:bg-cyan-950/30 hover:text-cyan-100'
-                          }`}
-                        >
-                          {tab.icon}
-                          <span className="truncate">{tab.label}</span>
-                          {tab.badge !== undefined && (
-                            <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{tab.badge}</span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </nav>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 min-w-0 flex flex-col bg-[#aab6c4] bg-gradient-to-br from-[#c6d1dd] via-[#d4dde8] to-[#92a1b5] rounded-[24px] md:rounded-[32px] shadow-[inset_0_1px_3px_rgba(255,255,255,0.8),0_20px_50px_rgba(0,0,0,0.2)] border border-[#e2e8f0] relative">
-        
-        {/* Subtle Brushed Metal Texture Overlay */}
-        <div className="absolute inset-0 overflow-hidden rounded-[inherit] pointer-events-none">
-          <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
-          <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 1px, #fff 1px, #fff 2px)' }}></div>
-        </div>
-
-        <header className="bg-white/40 backdrop-blur-md border-b border-white/30 px-4 md:px-8 py-3 md:py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50 rounded-t-[24px] md:rounded-t-[32px]">
-          <div className="flex items-center gap-4">
-            {activeTab !== "home" ? (
-              <button 
-                  onClick={() => onTabChange("home")}
-                  className="flex items-center gap-2 text-slate-700 hover:text-teal-700 hover:bg-white/80 px-3 py-2 rounded-xl transition-all shadow-sm border border-slate-200/50 bg-white/60 backdrop-blur-md"
-              >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                  <span className="font-bold text-sm md:text-base">Back to Dashboard</span>
-              </button>
-            ) : (
-              <h2 className="text-xl md:text-2xl font-serif font-bold text-slate-900 capitalize py-2">
-                {activeSection ? activeSection.replace("-", " ").toLowerCase() : "Dashboard"}
-              </h2>
-            )}
-          </div>
-
-          {/* Horizontal Top Stepper (Mockup Style) */}
-          {activeSection && activeTab !== "home" && (
-            <div className="flex items-center">
-              {(() => {
-                const tabs = sectionedTabs[activeSection] || [];
-                const currentIndex = tabs.findIndex(t => t.id === activeTab);
-                if (currentIndex === -1) return null;
-                
-                const totalTabs = tabs.length;
-                const visibleTabs = [tabs[currentIndex]];
-                const hasPrev = currentIndex > 0;
-                const hasNext = currentIndex < totalTabs - 1;
-                
-                return (
-                  <div className="flex items-center bg-white/40 backdrop-blur-[30px] p-1.5 rounded-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_10px_20px_rgba(0,0,0,0.05)] border border-white/60">
-                    {hasPrev && (
-                      <button
-                        onClick={() => onTabChange(tabs[currentIndex - 1].id)}
-                        className="px-4 py-2 bg-transparent hover:bg-white/60 rounded-xl text-slate-600 font-bold text-sm transition-all border-r border-slate-400/20 mr-1"
-                      >
-                        Prev
-                      </button>
-                    )}
-                    
-                    {visibleTabs.map((tab, idx) => (
-                      <div
-                        key={tab.id}
-                        className="px-4 sm:px-6 py-2 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)] rounded-xl text-slate-900 font-black text-sm relative z-10 flex items-center gap-2 whitespace-nowrap"
-                      >
-                        {currentIndex + 1}. {tab.label}
-                      </div>
-                    ))}
-                    
-                    {hasNext && (
-                      <button
-                        onClick={() => onTabChange(tabs[currentIndex + 1].id)}
-                        className="px-6 py-2 bg-[#0f172a] text-white rounded-xl shadow-[0_4px_15px_rgba(15,23,42,0.3)] font-bold text-sm ml-2 transition-all hover:bg-[#1e293b]"
-                      >
-                        Next
-                      </button>
-                    )}
-                    {!hasNext && (
-                      <button 
-                        onClick={() => {
-                          alert("Profile setup complete! Your dashboard is ready.");
-                          onTabChange("home");
-                        }}
-                        className="px-6 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-900 rounded-xl font-bold text-sm transition-all shadow-md ml-2"
-                      >
-                        Finish Setup
-                      </button>
-                    )}
-                  </div>
-                );
-              })()}
-            </div>
-          )}
-        </header>
-
-        <div className="p-6 md:p-8 flex-1 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+        {/* =========================================================================
+            MAIN CONTENT AREA
+           ========================================================================= */}
+        <main className="flex-1 py-8 px-4 md:px-8 w-full max-w-5xl mx-auto overflow-x-hidden min-h-[calc(100vh-80px)]">
           {activeTab === "home" ? (
-            <div className="max-w-6xl mx-auto">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
               {homeWidget && (
                 <div className="mb-6">
                   {homeWidget}
                 </div>
               )}
+              
               {!hideDefaultModulesList && (
                 <div className="mb-6">
-                  <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName}</h3>
+                  <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName} Dashboard</h3>
                   <p className="text-sm text-slate-500">Select a module below to get started.</p>
                 </div>
               )}
+              
               {!hideDefaultModulesList && (
                 <div className="space-y-4">
-                {Object.entries(sectionedTabs).map(([sectionName, sectionTabs]) => {
+                {sectionedTabsList.map((sectionObj) => {
+                  const sectionName = sectionObj.section;
                   const isDefault = sectionName === "DEFAULT";
                   const displayName = isDefault ? "General Modules" : sectionName;
                   const isExpanded = isDefault || expandedHomeSections[sectionName];
                   
-                  const displayTabs = sectionTabs.filter(t => t.id !== "home");
+                  const displayTabs = sectionObj.tabs.filter(t => t.id !== "home");
                   if (displayTabs.length === 0) return null;
 
                   return (
-                    <div key={sectionName} className="bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-[24px] overflow-hidden shadow-xl shadow-slate-200/50 transition-all duration-300">
+                    <div key={sectionName} className="bg-white border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm transition-all duration-300">
                       <button 
                         onClick={() => toggleHomeSection(sectionName)}
-                        className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-white/60 to-white/90 hover:from-white/80 hover:to-white transition-colors"
+                        className="w-full flex items-center justify-between p-5 bg-slate-50/50 hover:bg-slate-50 transition-colors"
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${isExpanded ? 'bg-[#0a1229] text-cyan-400 shadow-lg shadow-cyan-900/20 border border-cyan-500/30' : 'bg-slate-100/80 text-slate-500'}`}>
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isExpanded ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-500'}`}>
                             {isExpanded ? (
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                             ) : (
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                             )}
                           </div>
                           <div className="text-left">
-                            <h3 className="text-lg font-bold text-slate-900">{displayName}</h3>
-                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{sectionTabs.length} Modules</p>
+                            <h3 className="text-sm md:text-base font-bold text-slate-900">{displayName}</h3>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{displayTabs.length} Modules</p>
                           </div>
                         </div>
                       </button>
 
                       <div className={`transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-                        <div className="p-6 pt-0 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 bg-slate-50/50">
+                        <div className="p-5 pt-0 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 bg-white">
                           {displayTabs.map(tab => (
                             <button 
                               key={tab.id} 
                               onClick={() => onTabChange(tab.id)} 
-                              className="bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#e2e8f0] p-5 border border-slate-200/60 hover:border-cyan-400/50 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-cyan-900/10 transition-all duration-300 text-left group flex flex-col items-start h-full relative overflow-hidden"
+                              className="group flex flex-col p-4 rounded-xl border border-slate-100 bg-white hover:border-teal-200 hover:shadow-md hover:shadow-teal-900/5 transition-all text-left"
                             >
-                              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-teal-50/30 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full duration-700 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
-                              
-                              <h4 className="font-bold text-slate-800 text-sm mb-1 z-10 group-hover:text-teal-700 transition-colors w-full">{tab.label}</h4>
-                              <p className="text-[10px] text-slate-500 mb-4 z-10 line-clamp-1 w-full">Manage {tab.label.toLowerCase()}</p>
-                              
-                              <div className="w-10 h-10 bg-white/80 text-cyan-600 rounded-xl flex items-center justify-center mb-3 group-hover:bg-[#0a1229] group-hover:text-cyan-400 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm border border-slate-200/50 group-hover:border-cyan-500/30 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                              <div className="w-8 h-8 bg-slate-50 text-slate-500 rounded-lg flex items-center justify-center mb-3 group-hover:bg-teal-50 group-hover:text-teal-600 transition-colors">
                                 {tab.icon}
                               </div>
-                              
-                              <div className="mt-auto pt-2 w-full flex items-center justify-between text-cyan-600 text-[9px] font-bold uppercase tracking-widest z-10 border-t border-slate-200/50">
-                                <span className="group-hover:text-cyan-700">Open</span>
-                                <div className="w-6 h-6 rounded-full bg-white group-hover:bg-cyan-100 flex items-center justify-center group-hover:translate-x-1 transition-all shadow-sm">
-                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                                </div>
-                              </div>
+                              <h4 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-teal-700 transition-colors">{tab.label}</h4>
+                              <p className="text-xs text-slate-500 line-clamp-1">Manage {tab.label.toLowerCase()}</p>
                             </button>
                           ))}
                         </div>
@@ -356,35 +288,33 @@ export default function DashboardLayout({
               )}
             </div>
           ) : (
-            children
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-6 md:p-8">
+              {children}
+            </div>
           )}
-        </div>
-      </main>
-
-    </div>
+        </main>
+      </div>
       
       {/* QR Code Modal */}
       {showQRModal && userProfile && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-[#040815]/80 backdrop-blur-sm cursor-pointer"
+            className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer transition-opacity"
             onClick={() => setShowQRModal(false)}
           ></div>
           
-          {/* Modal Content */}
-          <div className="relative bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[32px] p-10 flex flex-col items-center shadow-2xl shadow-cyan-900/50 animate-in fade-in zoom-in-95 max-w-sm w-full">
+          <div className="relative bg-white rounded-3xl p-10 flex flex-col items-center shadow-2xl max-w-sm w-full animate-in zoom-in-95">
             <button 
               onClick={() => setShowQRModal(false)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
 
-            <h3 className="text-xl font-serif font-bold text-white mb-2 text-center">{userProfile.name}'s Profile</h3>
-            <p className="text-sm text-teal-400 mb-8 text-center">{userProfile.subtitle}</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-1 text-center">{userProfile.name}'s Profile</h3>
+            <p className="text-sm text-teal-600 mb-8 text-center">{userProfile.subtitle}</p>
 
-            <div className="bg-white p-6 rounded-3xl shadow-[0_0_40px_rgba(255,255,255,0.2)] mb-8">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
               <QRCodeSVG 
                 value={userProfile.profileUrl || `${origin}/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`} 
                 size={200} 
@@ -399,13 +329,14 @@ export default function DashboardLayout({
                 navigator.clipboard.writeText(link);
                 alert("Profile Link Copied to Clipboard!");
               }}
-              className="w-full bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)]"
+              className="w-full bg-slate-900 hover:bg-teal-600 text-white rounded-xl py-3 font-bold text-sm transition-colors flex items-center justify-center gap-2"
             >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
               Copy Profile Link
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
