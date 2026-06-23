@@ -14,7 +14,7 @@ import HorizontalScrollGallery from '@/components/HorizontalScrollGallery';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
-import DoctorEndorsementWidget from '@/components/network/DoctorEndorsementWidget';
+import ProviderEndorsementWidget from '@/components/network/ProviderEndorsementWidget';
 
 const TABS_DOCTOR = ['locations', 'overview', 'experience', 'research', 'media'];
 const TABS_HOSPITAL = ['locations', 'overview', 'packages', 'departments', 'facilities', 'media'];
@@ -796,9 +796,20 @@ export default function UniversalProfileLayout({
                  {verified && user?.uid !== profile.id && (
                    <div className="mt-4 pt-4 border-t border-slate-700/50">
                      {connectionStatus === 'approved' ? (
-                       <div className="w-full flex items-center justify-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 py-4 rounded-2xl text-sm font-black uppercase tracking-widest">
-                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                         Connected
+                       <div className="space-y-3">
+                         <div className="w-full flex items-center justify-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 py-4 rounded-2xl text-sm font-black uppercase tracking-widest">
+                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                           Connected
+                         </div>
+                         {currentUserRole !== 'patient' && currentUserRole !== 'user' && (
+                           <button 
+                             onClick={() => alert(`Urgent Ping feature: This will instantly notify ${profile.name} via SMS and dashboard push notification. (Coming soon)`)}
+                             className="w-full flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)] py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all"
+                           >
+                             <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                             Send Urgent Ping
+                           </button>
+                         )}
                        </div>
                      ) : connectionStatus === 'pending' ? (
                        <div className="w-full flex items-center justify-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/30 py-4 rounded-2xl text-sm font-black uppercase tracking-widest">
@@ -875,10 +886,11 @@ export default function UniversalProfileLayout({
               </div>
             )}
 
-            {/* Doctor Endorsement Widget */}
-            {unwrappedParams.type === 'doctor' && verified && (
-              <DoctorEndorsementWidget 
-                targetDoctorId={profile.id} 
+            {/* Professional Endorsement Widget */}
+            {unwrappedParams.type !== 'patient' && verified && (
+              <ProviderEndorsementWidget 
+                targetProviderId={profile.id} 
+                targetProviderRole={unwrappedParams.type}
                 currentUserId={user?.uid || null} 
                 currentUserRole={currentUserRole} 
               />
