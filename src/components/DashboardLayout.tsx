@@ -1,6 +1,7 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
+import ContextHelpDrawer from './ContextHelpDrawer';
 
 export type DashboardTab = {
   id: string;
@@ -40,6 +41,7 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [origin, setOrigin] = useState("https://dehapa.com");
 
   useEffect(() => {
@@ -145,7 +147,22 @@ export default function DashboardLayout({
           </button>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 md:gap-6">
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            className="hidden md:flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Help & Guide
+          </button>
+          
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            className="md:hidden p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </button>
+
           <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-slate-900">
             Sign Out
           </button>
@@ -337,6 +354,15 @@ export default function DashboardLayout({
           </div>
         </div>
       )}
+
+      {/* Context-Aware Help Drawer */}
+      <ContextHelpDrawer 
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        activeTab={activeTab}
+        userProfile={userProfile}
+        roleName={roleName}
+      />
     </div>
   );
 }
