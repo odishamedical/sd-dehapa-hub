@@ -229,7 +229,6 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "identity_infrastructure",
         label: "Identity & Infrastructure",
         fields: [
-        fields: [
           { key: "labType", label: "Primary Lab Identity", type: "select", mandatory: true, options: ["Pathology", "Radiology & Imaging", "Integrated Diagnostics", "Blood Bank"] },
           { key: "clinicalEstablishmentLicense", label: "Clinical Establishment License (Mandatory)", type: "image_upload", mandatory: true },
           { key: "pcpndtCertificate", label: "PCPNDT Certificate for Scans (Mandatory)", type: "image_upload", mandatory: true, showIf: { field: "labType", contains: ["Radiology & Imaging", "Integrated Diagnostics"] } },
