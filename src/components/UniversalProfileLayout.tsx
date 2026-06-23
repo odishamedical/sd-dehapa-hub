@@ -417,10 +417,37 @@ export default function UniversalProfileLayout({
                 )}
 
                 {/* Infrastructure & Facilities (Hospital specific) */}
-                {type === 'hospital' && (profile.has247Pharmacy || profile.hasBloodBank || profile.hasPathologyLab || profile.hasImaging || profile.operationTheaters || profile.hasAmbulance) && (
+                {type === 'hospital' && (profile.totalBeds || profile.icuCapacity || profile.emergencyServices || profile.has247Pharmacy || profile.hasBloodBank || profile.hasPathologyLab || profile.hasImaging || profile.operationTheaters || profile.hasAmbulance) && (
                   <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl mt-8">
                     <h2 className="text-2xl font-bold text-white mb-6 font-serif">Infrastructure & Facilities</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {profile.totalBeds && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">{profile.totalBeds}</span>
+                          <span className="text-slate-400 text-xs uppercase tracking-widest mt-1">Total Beds</span>
+                        </div>
+                      )}
+                      {profile.icuCapacity && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">{profile.icuCapacity}</span>
+                          <span className="text-slate-400 text-xs uppercase tracking-widest mt-1">ICU Beds</span>
+                        </div>
+                      )}
+                      {profile.emergencyServices && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                          </div>
+                          <span className="text-white font-bold truncate max-w-full px-2" title={profile.emergencyServices}>{profile.emergencyServices}</span>
+                          <span className="text-slate-400 text-xs uppercase tracking-widest mt-1">Emergency</span>
+                        </div>
+                      )}
                       {profile.operationTheaters && (
                         <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
                           <div className="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-4">
