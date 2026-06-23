@@ -68,6 +68,29 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
   };
   const removeTest = (index: number) => setTests(tests.filter((_, i) => i !== index));
 
+  const [draftSaved, setDraftSaved] = useState(false);
+
+  // Load draft on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('rxpad_draft');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        setPatientInfo(data.patientInfo || patientInfo);
+        setClinical(data.clinical || clinical);
+        setMedicines(data.medicines || medicines);
+        setTests(data.tests || tests);
+        setPatientMode(data.patientMode || 'guest');
+      } catch(e){}
+    }
+  }, []);
+
+  const saveDraft = () => {
+    localStorage.setItem('rxpad_draft', JSON.stringify({ patientInfo, clinical, medicines, tests, patientMode }));
+    setDraftSaved(true);
+    setTimeout(() => setDraftSaved(false), 3000);
+  };
+
   const handleGenerate = async () => {
     if (!patientInfo.name) return alert("Patient name is required");
     setGenerating(true);
@@ -170,20 +193,20 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
           </div>
 
           {patientMode === 'registered' ? (
-            <div className="mb-4">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Select from Connected Patients</label>
-              <select 
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 font-medium"
+            <div className="mb-4 relative">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Search Connected Patients</label>
+              <input 
+                type="text"
+                placeholder="Type patient name to search..."
+                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 font-medium mb-2"
                 onChange={(e) => {
-                  const p = connectedPatients.find(x => x.id === e.target.value);
+                  const val = e.target.value.toLowerCase();
+                  // simple search filter for UI demonstration
+                  const p = connectedPatients.find(x => x.name.toLowerCase().includes(val));
                   if (p) setPatientInfo({ ...patientInfo, id: p.id, name: p.name });
                 }}
-              >
-                <option value="">-- Choose Patient --</option>
-                {connectedPatients.map(p => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
-                ))}
-              </select>
+              />
+              <div className="text-xs text-slate-500 font-medium">Selected: <strong className="text-slate-800">{patientInfo.name || 'None'}</strong></div>
             </div>
           ) : (
              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -294,26 +317,34 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
 
       </div>
 
-      {/* Footer Actions */}
-      <div className="bg-white border-t border-slate-200 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Sticky Footer Actions */}
+      <div className="sticky bottom-0 z-50 bg-white/90 backdrop-blur-xl border-t border-slate-200 p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
          <div className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
             <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
             End-to-End Encrypted
          </div>
-         <button 
-           onClick={handleGenerate}
-           disabled={generating}
-           className="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-10 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.3)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-         >
-           {generating ? (
-             <span className="animate-pulse">Generating...</span>
-           ) : (
-             <>
-               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-               {patientMode === 'registered' ? "Send to Vault" : "Generate & Print Rx"}
-             </>
-           )}
-         </button>
+         <div className="flex gap-3 w-full md:w-auto">
+           <button 
+             onClick={saveDraft}
+             className="w-full md:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 md:py-4 px-6 rounded-2xl transition-all flex items-center justify-center gap-2"
+           >
+             {draftSaved ? "✓ Saved" : "Save Draft"}
+           </button>
+           <button 
+             onClick={handleGenerate}
+             disabled={generating}
+             className="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 md:py-4 px-10 rounded-2xl shadow-[0_10px_30px_rgba(15,23,42,0.3)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+           >
+             {generating ? (
+               <span className="animate-pulse">Generating...</span>
+             ) : (
+               <>
+                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                 {patientMode === 'registered' ? "Send to Vault" : "Generate & Print Rx"}
+               </>
+             )}
+           </button>
+         </div>
       </div>
     </div>
   );
