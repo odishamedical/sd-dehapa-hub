@@ -228,94 +228,97 @@ export const directoryConfig: Record<string, CategoryConfig> = {
     tabs: [
       {
         id: "pharmacy_identity",
-        label: "Pharmacy Profile & Licenses",
+        label: "Pharmacy Profile & Identity",
         fields: [
           { key: "pharmacyType", label: "Primary Pharmacy Identity", type: "select", mandatory: true, options: ["Retail Store", "Wholesaler", "Company Distributor / Franchise", "Pharma Manufacturer"] },
           { key: "facadeImage", label: "Storefront / Facility Photo", type: "image_upload" },
           
-          // Retail Store
           { key: "retailLicense", label: "Retail Drug License No. (Mandatory)", type: "text", mandatory: true, showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
           { key: "pharmacistName", label: "Registered Pharmacist Name", type: "text", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "pharmacistRegNo", label: "Pharmacist Reg No.", type: "text", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "is247", label: "Open 24/7", type: "boolean", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "homeDelivery", label: "Home Delivery Available", type: "boolean", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "deliveryRadius", label: "Delivery Radius (in km)", type: "number", placeholder: "e.g. 5", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "ePrescription", label: "Accepts E-Prescriptions", type: "boolean", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "medicineTypes", label: "Medicine Types Stocked", type: "string_array", options: ["Allopathic", "Ayurvedic", "Homeopathic", "Veterinary"], showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "specialtyStock", label: "Specialty Stock", type: "string_array", options: ["Insulin & Cold Chain", "Surgicals", "Orthopedic Implants", "Baby Care", "Cosmetics"], showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-          { key: "standardDiscount", label: "Standard Discount Rate", type: "text", placeholder: "e.g. Flat 10% Off", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
-
-          // Wholesaler
+          
           { key: "wholesaleLicense", label: "Wholesale Drug License No. (Mandatory)", type: "text", mandatory: true, showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-          { key: "wholesalerCompanies", label: "Companies Represented", type: "object_array", showIf: { field: "pharmacyType", contains: ["Wholesaler"] }, arrayFields: [
-            { key: "companyName", label: "Company Name", type: "text" },
-            { key: "companyAddress", label: "Company Address / Location", type: "text" }
-          ] },
-          { key: "coverageArea", label: "Routes / Areas Covered", type: "text", placeholder: "e.g. Cuttack, Bhubaneswar route", showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-          { key: "totalRetailers", label: "Total Retailers Served", type: "number", placeholder: "e.g. 150", showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-          { key: "deliveryFrequency", label: "Delivery Frequency", type: "select", options: ["Daily", "Bi-Weekly", "Weekly", "On-Demand"], showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-          { key: "minOrderValue", label: "Minimum Order Value (₹)", type: "number", placeholder: "e.g. 5000", showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-          { key: "creditPeriod", label: "Credit Period Offered", type: "select", options: ["None (Advance Payment)", "7 Days", "15 Days", "21 Days", "30 Days"], showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-          { key: "coldChainTransport", label: "Cold Chain Transport Available", type: "boolean", showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
-
-          // Distributor / Super Stockist
+          
           { key: "cfaLicense", label: "CFA / Distributor License No. (Mandatory)", type: "text", mandatory: true, showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
-          { key: "distributionLevel", label: "Distribution Rights Level", type: "select", options: ["State Level", "District Level", "City Level", "Zonal"], showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
-          { key: "distributorCompanies", label: "Companies Represented", type: "object_array", showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] }, arrayFields: [
-            { key: "companyName", label: "Company Name", type: "text" },
-            { key: "companyAddress", label: "Company Address / Location", type: "text" }
-          ] },
-          { key: "popularProducts", label: "Popular Products / Top Brands", type: "text", placeholder: "e.g. Dolo, Corex, Augmentin", showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
-          { key: "distributorNetwork", label: "Network Size (No. of Wholesalers)", type: "number", placeholder: "e.g. 45", showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
-          { key: "storageCapacity", label: "Warehouse Storage Capacity (Sq Ft)", type: "text", placeholder: "e.g. 5000 sq ft", showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
+          
+          { key: "manufacturingLicense", label: "Manufacturing License No. (Mandatory)", type: "text", mandatory: true, showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] } }
+        ]
+      },
+      {
+        id: "operations",
+        label: "Operations & Services",
+        fields: [
+          // Retail Store Operations
+          { key: "routineTiming", label: "Store Timing / Routine", type: "text", placeholder: "e.g. 9 AM - 10 PM", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
+          { key: "is247", label: "Open 24/7", type: "boolean", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
+          { key: "facilities", label: "Available Facilities", type: "string_array", options: ["Cold Chain Storage", "Home Collection", "Consultation Room"], showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
+          { key: "homeDelivery", label: "Door Delivery Available", type: "boolean", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
+          { key: "deliveryCoverage", label: "Delivery Coverage Area", type: "text", placeholder: "e.g. Cuttack City, 5km radius", showIf: { field: "pharmacyType", contains: ["Retail Store"] } },
 
-          // Manufacturer / Company
-          { key: "manufacturingLicense", label: "Manufacturing License No. (Mandatory)", type: "text", mandatory: true, showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] } },
-          { key: "plantAddress", label: "Factory / Plant Address", type: "textarea", showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] } },
-          { key: "productsManufactured", label: "Product Portfolio", type: "object_array", showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] }, arrayFields: [
+          // Wholesaler Operations
+          { key: "wholesalerArea", label: "Routes / Areas Covered", type: "text", placeholder: "e.g. Cuttack, Bhubaneswar route", showIf: { field: "pharmacyType", contains: ["Wholesaler"] } },
+          
+          // Distributor Operations
+          { key: "distributorArea", label: "Area Covered (State, District)", type: "text", placeholder: "e.g. Odisha State, Khordha District", showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] } },
+          
+          // Manufacturer Operations
+          { key: "productsManufactured", label: "Products & Composition", type: "object_array", showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] }, arrayFields: [
             { key: "productName", label: "Product Name", type: "text" },
-            { key: "composition", label: "Chemical Composition", type: "text" },
-            { key: "indication", label: "Indication / Usage", type: "text" }
-          ] },
-          { key: "certifications", label: "Quality Certifications", type: "string_array", options: ["WHO-GMP", "ISO 9001", "US-FDA", "EU-GMP", "GLP"], showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] } },
-          { key: "businessOpportunities", label: "Business Opportunities Offered", type: "string_array", options: ["Third-Party Manufacturing", "PCD Pharma Franchise", "Loan License", "Contract Research"], showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] } },
-          { key: "lookingForDistributors", label: "Looking for New Distributors?", type: "boolean", showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] } }
+            { key: "composition", label: "Chemical Composition", type: "text" }
+          ] }
         ]
       },
       {
         id: "b2b_network",
-        label: "Establish Your Network Connection",
+        label: "Network & Connections",
         fields: [
+          // Retailer Connections (Optional)
           {
             key: "retailerSuppliers",
-            label: "Connect with your Wholesalers / Suppliers",
+            label: "My Wholesalers (Optional)",
             type: "hybrid_entity_selector",
             targetEntity: "Pharmacy",
-            placeholder: "Search wholesalers...",
+            placeholder: "Search and add your wholesalers...",
             showIf: { field: "pharmacyType", contains: ["Retail Store"] }
           },
+          
+          // Wholesaler Connections
           {
             key: "wholesalerCompanies",
-            label: "Companies I Represent",
+            label: "Companies Represented (Mandatory for Publicity)",
             type: "hybrid_entity_selector",
+            mandatory: true,
             targetEntity: "Pharmacy",
-            placeholder: "Search pharma companies...",
+            placeholder: "Write company name and connect...",
             showIf: { field: "pharmacyType", contains: ["Wholesaler"] }
           },
           {
-            key: "distributorCompanies",
-            label: "Companies I Represent",
+            key: "wholesalerRetailers",
+            label: "Retailers Served (Optional)",
             type: "hybrid_entity_selector",
             targetEntity: "Pharmacy",
-            placeholder: "Search pharma companies...",
+            placeholder: "Write retailer name to connect...",
+            showIf: { field: "pharmacyType", contains: ["Wholesaler"] }
+          },
+
+          // Distributor Connections (Mandatory)
+          {
+            key: "distributorCompanies",
+            label: "Companies Represented (Mandatory for Publicity)",
+            type: "hybrid_entity_selector",
+            mandatory: true,
+            targetEntity: "Pharmacy",
+            placeholder: "Write company name and connect...",
             showIf: { field: "pharmacyType", contains: ["Company Distributor / Franchise"] }
           },
+
+          // Manufacturer Connections (Mandatory)
           {
             key: "manufacturerNetwork",
-            label: "My Distributors & C&F Agents",
+            label: "My Distribution Network (C&F, Distributors)",
             type: "hybrid_entity_selector",
+            mandatory: true,
             targetEntity: "Pharmacy",
-            placeholder: "Search distributors/C&F...",
+            placeholder: "Write distributor name and area of operation...",
             showIf: { field: "pharmacyType", contains: ["Pharma Manufacturer"] }
           }
         ]
