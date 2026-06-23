@@ -225,13 +225,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
                       <button className="bg-blue-600 text-white px-4 rounded-lg font-bold text-sm hover:bg-blue-700">Send</button>
                     </div>
                   ) : (
-                    <p className="text-xs text-blue-600 mb-2">You have no connected pharmacies. Add their WhatsApp number below:</p>
-                  )}
-                  {pharmacies.length === 0 && (
-                    <div className="flex gap-2">
-                      <input type="text" placeholder="+91 99999 99999" className="flex-1 bg-white border border-blue-200 text-sm rounded-lg px-3 py-2 outline-none" />
-                      <button className="bg-[#25D366] text-white px-4 rounded-lg font-bold text-sm">WhatsApp</button>
-                    </div>
+                    <p className="text-xs text-blue-600">You have no connected pharmacies. Connect with a pharmacy in your Network Hub to route orders directly to their secure vault.</p>
                   )}
                 </div>
               )}
@@ -247,13 +241,7 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
                       <button className="bg-fuchsia-600 text-white px-4 rounded-lg font-bold text-sm hover:bg-fuchsia-700">Send</button>
                     </div>
                   ) : (
-                    <p className="text-xs text-fuchsia-600 mb-2">You have no connected labs. Add their WhatsApp number below:</p>
-                  )}
-                  {labs.length === 0 && (
-                    <div className="flex gap-2">
-                      <input type="text" placeholder="+91 99999 99999" className="flex-1 bg-white border border-fuchsia-200 text-sm rounded-lg px-3 py-2 outline-none" />
-                      <button className="bg-[#25D366] text-white px-4 rounded-lg font-bold text-sm">WhatsApp</button>
-                    </div>
+                    <p className="text-xs text-fuchsia-600">You have no connected labs. Connect with a diagnostic lab in your Network Hub to route tests directly to their secure vault.</p>
                   )}
                 </div>
               )}
