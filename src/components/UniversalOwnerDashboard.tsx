@@ -146,6 +146,54 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   };
   
   const completionPercentage = calculateCompletion();
+  const isReady = completionPercentage === 100;
+
+  const defaultPulseHero = (
+    <div className="sd-glass-panel overflow-hidden relative p-8 md:p-12 mb-8 bg-white border border-slate-200 rounded-3xl shadow-sm animate-in fade-in zoom-in-95 duration-500">
+      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-indigo-500/5 pointer-events-none"></div>
+      
+      <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center justify-between">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">
+            {entityData.isPublished ? "Your profile is Live." : "Activate Your Profile."}
+          </h1>
+          <p className="text-slate-600 text-lg max-w-xl font-medium">
+            {entityData.isPublished 
+              ? "Patients can now find you in the directory. Access your tools below." 
+              : "Complete your setup to unlock the 'Publish' switch. Auto-save is always on."}
+          </p>
+        </div>
+
+        <div className="shrink-0 bg-white/80 backdrop-blur-md border border-slate-100 p-6 rounded-3xl shadow-lg flex flex-col items-center gap-4 w-full lg:min-w-[280px]">
+          <div className="text-sm font-bold text-slate-500 uppercase tracking-widest">Profile Strength</div>
+          
+          <div className="w-full bg-slate-100 rounded-full h-4 mb-2 overflow-hidden shadow-inner">
+            <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-4 rounded-full transition-all duration-1000 ease-out relative" style={{ width: `${Math.max(5, completionPercentage)}%` }}>
+               {completionPercentage > 10 && <span className="absolute right-2 top-0 text-[10px] text-white font-bold leading-4">{completionPercentage}%</span>}
+            </div>
+          </div>
+
+          <button 
+            onClick={() => {
+              if (!isReady) return;
+              setEntityData({ ...entityData, isPublished: !entityData.isPublished });
+            }}
+            disabled={!isReady}
+            className={`w-full py-4 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-md ${
+              entityData.isPublished 
+                ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500" 
+                : isReady 
+                  ? "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/30 hover:scale-105" 
+                  : "bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200"
+            }`}
+          >
+            {entityData.isPublished ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
+          </button>
+          {!isReady && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
+        </div>
+      </div>
+    </div>
+  );
 
   // Build Tabs Dynamically
   const baseTabs: DashboardTab[] = [
@@ -186,9 +234,19 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         subtitle: userEmail,
         profileUrl: `${origin}/profile/${expectedRole}/${entityData.id}`
       } : undefined}
-      homeWidget={renderHomeWidget ? renderHomeWidget(entityData) : undefined}
+      homeWidget={entityData.isPublished && renderHomeWidget ? renderHomeWidget(entityData) : defaultPulseHero}
+      hideDefaultModulesList={!entityData.isPublished}
     >
       <div className="max-w-4xl mx-auto pb-24">
+
+        {/* BREADCRUMBS */}
+        {activeTab !== "home" && (
+          <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500 animate-in fade-in slide-in-from-top-2">
+            <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+            <span>/</span>
+            <span className="text-teal-600">{allTabs.find(t => t.id === activeTab)?.label || "Step"}</span>
+          </div>
+        )}
         
         {/* PROGRESS BAR WIDGET */}
         {(activeTab === "identity" || activeTab === "location" || categoryConfig?.tabs.some(t => t.id === activeTab)) && (
@@ -432,6 +490,30 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* CUSTOM TABS RENDERER */}
         {renderCustomTab && renderCustomTab(activeTab, entityData)}
+
+        {/* BOTTOM WIZARD NAVIGATION */}
+        {activeTab !== "home" && (
+          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6 mt-12 mb-20 animate-in fade-in slide-in-from-bottom-2">
+            <button onClick={() => setActiveTab("home")} className="text-slate-500 hover:text-slate-900 font-bold px-6 py-4 transition-colors">
+              Return to Dashboard
+            </button>
+            
+            <button 
+              onClick={() => {
+                const currentIndex = allTabs.findIndex(t => t.id === activeTab);
+                if (currentIndex >= 0 && currentIndex < allTabs.length - 1) {
+                  setActiveTab(allTabs[currentIndex + 1].id);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                  setActiveTab("home");
+                }
+              }} 
+              className="w-full md:w-auto sd-btn-premium bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-all"
+            >
+              {allTabs.findIndex(t => t.id === activeTab) === allTabs.length - 1 ? "Save & Finish ➔" : "Save & Continue ➔"}
+            </button>
+          </div>
+        )}
 
       </div>
     </DashboardLayout>
