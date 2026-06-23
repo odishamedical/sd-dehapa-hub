@@ -139,45 +139,48 @@ export default function ContextHelpDrawer({ isOpen, onClose, activeTab, userProf
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex justify-end">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
 
-      {/* Drawer */}
-      <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      {/* Modal Container */}
+      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh] animate-in zoom-in-95 duration-300">
         
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-teal-600 to-indigo-600 text-white shrink-0">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold font-serif flex items-center gap-2">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              Help & Guide
+        <div className="p-6 md:p-8 border-b border-slate-100 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white shrink-0 relative overflow-hidden">
+          {/* Subtle brand watermark background */}
+          <div className="absolute top-[-50%] right-[-10%] opacity-10 text-9xl font-black italic select-none pointer-events-none">D</div>
+          
+          <div className="flex items-center justify-between mb-6 relative z-10">
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <span className="text-teal-400 font-black tracking-tight text-3xl">DehaPa</span> 
+              <span className="font-serif text-white/90">Help & Guide</span>
             </h2>
-            <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <button onClick={onClose} className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors backdrop-blur-md">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
           </div>
           
           {/* Navigation */}
-          <div className="flex bg-white/10 p-1 rounded-xl">
+          <div className="flex bg-slate-800/50 p-1.5 rounded-2xl relative z-10 border border-slate-700/50">
             <button 
               onClick={() => setView('guide')} 
-              className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest rounded-lg transition-all ${view === 'guide' ? 'bg-white text-teal-700 shadow-md' : 'text-white/80 hover:bg-white/20'}`}
+              className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all ${view === 'guide' ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
             >
               Guide
             </button>
             <button 
               onClick={() => setView('chat')} 
-              className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest rounded-lg transition-all ${view === 'chat' ? 'bg-white text-indigo-700 shadow-md' : 'text-white/80 hover:bg-white/20'}`}
+              className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all ${view === 'chat' ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
             >
               Live Chat
             </button>
             <button 
               onClick={() => setView('ticket')} 
-              className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest rounded-lg transition-all ${view === 'ticket' ? 'bg-white text-rose-700 shadow-md' : 'text-white/80 hover:bg-white/20'}`}
+              className={`flex-1 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all ${view === 'ticket' ? 'bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
             >
               Ticket
             </button>
