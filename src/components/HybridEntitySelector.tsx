@@ -45,6 +45,7 @@ export default function HybridEntitySelector({
   const [ghostData, setGhostData] = useState({
     prefix: 'Dr.',
     firstName: '',
+    middleName: '',
     lastName: '',
     qualification: '',
     experience: '',
@@ -117,7 +118,7 @@ export default function HybridEntitySelector({
       return;
     }
 
-    const fullName = `${ghostData.prefix} ${ghostData.firstName.trim()} ${ghostData.lastName.trim()}`.trim();
+    const fullName = `${ghostData.prefix} ${ghostData.firstName} ${ghostData.middleName ? ghostData.middleName + ' ' : ''}${ghostData.lastName}`.trim();
     const newGhostId = `ghost_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     const newItem: RosterItem = {
       id: newGhostId,
@@ -131,7 +132,7 @@ export default function HybridEntitySelector({
     onChange([...selectedItems, newItem]);
     
     // Reset
-    setGhostData({ prefix: 'Dr.', firstName: '', lastName: '', qualification: '', experience: '', phone: '' });
+    setGhostData({ prefix: 'Dr.', firstName: '', middleName: '', lastName: '', qualification: '', experience: '', phone: '' });
   };
 
   const handleRemove = (idToRemove: string) => {
@@ -164,7 +165,7 @@ export default function HybridEntitySelector({
           
           {/* Name Row with Smart Dropdown */}
           <div className="grid grid-cols-12 gap-3 relative">
-            <div className="col-span-3">
+            <div className="col-span-2">
               <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Prefix</label>
               <select 
                 value={ghostData.prefix}
@@ -201,7 +202,7 @@ export default function HybridEntitySelector({
                   {results.map((res, idx) => (
                     <button
                       key={idx}
-                      onClick={(e) => { e.preventDefault(); handleSelectVerified(res); setGhostData({...ghostData, firstName: '', lastName: ''}); }}
+                      onClick={(e) => { e.preventDefault(); handleSelectVerified(res); setGhostData({...ghostData, firstName: '', middleName: '', lastName: ''}); }}
                       className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group focus:outline-none"
                     >
                       <div>
@@ -217,7 +218,18 @@ export default function HybridEntitySelector({
               )}
             </div>
 
-            <div className="col-span-5">
+            <div className="col-span-3">
+              <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Middle</label>
+              <input 
+                type="text" 
+                value={ghostData.middleName}
+                onChange={e => setGhostData({...ghostData, middleName: e.target.value})}
+                placeholder="Optional"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all"
+              />
+            </div>
+
+            <div className="col-span-3">
               <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Last Name</label>
               <input 
                 type="text" 
