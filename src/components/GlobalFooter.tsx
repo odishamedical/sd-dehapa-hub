@@ -198,7 +198,7 @@ export default function GlobalFooter() {
               </div>
               <div>
                 <strong className="text-white block mb-2 text-[11px] sm:text-xs uppercase tracking-widest font-black">
-                  <span className="text-teal-400">Dehapa : India's own Health Network</span> <span className="text-slate-600 mx-1">}</span> A product by : Shyam Dash Creation
+                  <span className="text-teal-400">Dehapa : India's own Health Network</span> <span className="text-slate-600 mx-1">{'}'}</span> A product by : Shyam Dash Creation
                 </strong>
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-[10px] sm:text-xs text-slate-500 font-medium">
                   <span>R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</span>
