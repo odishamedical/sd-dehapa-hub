@@ -24,6 +24,7 @@ export default function DoctorV2OwnerDashboard() {
   const [accessGranted, setAccessGranted] = useState(false);
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Dashboard State
   const [activeTab, setActiveTab] = useState("home");
@@ -144,9 +145,15 @@ export default function DoctorV2OwnerDashboard() {
       </div>
 
       {/* Main Header (Sticky) */}
-      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button onClick={() => setActiveTab("home")} className="text-2xl font-black text-slate-800 tracking-tight hover:text-teal-600 transition-colors">
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3 md:gap-4">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)} 
+            className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <button onClick={() => setActiveTab("home")} className="text-xl md:text-2xl font-black text-slate-800 tracking-tight hover:text-teal-600 transition-colors">
             DehaPa Portal
           </button>
           
@@ -231,6 +238,81 @@ export default function DoctorV2OwnerDashboard() {
             </nav>
           </div>
         </aside>
+
+        {/* =========================================================================
+            MOBILE SLIDE-IN SIDEBAR (Drawer)
+           ========================================================================= */}
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 z-[100] lg:hidden flex">
+            <div 
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+              onClick={() => setIsMobileMenuOpen(false)}
+            ></div>
+            <div className="relative w-72 max-w-sm bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-lg">
+                    {entityData.name ? entityData.name.charAt(0).toUpperCase() : "D"}
+                  </div>
+                  <div className="overflow-hidden">
+                    <h3 className="font-bold text-slate-900 truncate text-sm">{entityData.name || "Doctor"}</h3>
+                  </div>
+                </div>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                <nav className="space-y-1">
+                  <button 
+                    onClick={() => { setActiveTab('home'); setIsMobileMenuOpen(false); }} 
+                    className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'home' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                  >
+                    🏠 Dashboard Home
+                  </button>
+                  
+                  <div className="pt-4 pb-2">
+                    <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Profile Wizard Steps</p>
+                  </div>
+                  
+                  {WIZARD_STEPS.map(step => (
+                    <button 
+                      key={step.id}
+                      onClick={() => { setActiveTab(step.id); setIsMobileMenuOpen(false); }} 
+                      className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === step.id ? 'bg-teal-50 text-teal-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                    >
+                      <span className={`w-2 h-2 rounded-full ${activeTab === step.id ? 'bg-teal-500' : 'bg-slate-300'}`}></span>
+                      {step.label}
+                    </button>
+                  ))}
+
+                  <div className="pt-6 pb-2 border-t border-slate-100 mt-4">
+                    <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Clinical Tools</p>
+                  </div>
+
+                  <button 
+                    onClick={() => { setActiveTab('rxpad'); setIsMobileMenuOpen(false); }} 
+                    className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'rxpad' ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                  >
+                    📝 Digital Rx Pad
+                  </button>
+                  <button 
+                    onClick={() => { setActiveTab('network'); setIsMobileMenuOpen(false); }} 
+                    className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'network' ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                  >
+                    🤝 My Network
+                  </button>
+                  <button 
+                    onClick={() => { setActiveTab('vault'); setIsMobileMenuOpen(false); }} 
+                    className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'vault' ? 'bg-orange-50 text-orange-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                  >
+                    🗄️ Patient Vault
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* =========================================================================
             MAIN CONTENT AREA
