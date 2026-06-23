@@ -135,7 +135,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "basic",
         label: "Basic Info",
         fields: [
-          { key: "facilityType", label: "Facility Type", type: "string_array", mandatory: true, placeholder: "Select Facility Types", options: ["Clinic", "Poly-Clinic", "Nursing Home", "Corporate Hospital", "Maternity Home", "Surgical Center"] },
+          { key: "facilityType", label: "Primary Facility Identity", type: "select", mandatory: true, options: ["Clinic", "Poly-Clinic", "Nursing Home", "Corporate Hospital", "Maternity Home", "Surgical Center"] },
           { key: "facadeImage", label: "Main Building / Facade Photo", type: "image_upload" },
           { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Maternity Home", "Surgical Center"] } },
           { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Surgical Center"] } },
@@ -146,19 +146,17 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "infrastructure",
         label: "Infrastructure & Facilities",
         fields: [
-          { key: "has247Pharmacy", label: "24/7 Pharmacy", type: "boolean" },
-          { key: "hasBloodBank", label: "Blood Bank", type: "boolean" },
-          { key: "hasPathologyLab", label: "Pathology Lab", type: "boolean" },
-          { key: "hasImaging", label: "Diagnostic Imaging (X-Ray, MRI, CT)", type: "boolean" },
+          { key: "additionalServices", label: "Add-On Services & Facilities", type: "string_array", placeholder: "Select Available Services", options: ["In-House Pharmacy", "Blood Bank", "Pathology Lab", "Diagnostic Imaging", "Ambulance Fleet", "24/7 Trauma Center"] },
           { key: "operationTheaters", label: "Number of Operation Theaters", type: "number", placeholder: "e.g. 4", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Surgical Center", "Maternity Home"] } },
-          { key: "icuImage", label: "ICU / Emergency Ward Photo", type: "image_upload", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Surgical Center"] } },
-          { key: "hasAmbulance", label: "Ambulance Services", type: "boolean" }
+          { key: "icuImage", label: "ICU / Emergency Ward Photo", type: "image_upload", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Surgical Center"] } }
         ]
       },
       {
         id: "accreditations_insurance",
-        label: "Accreditations & Insurance",
         fields: [
+          { key: "clinicalEstablishmentLicense", label: "Clinical Establishment License (Mandatory)", type: "image_upload", mandatory: true },
+          { key: "bloodBankLicense", label: "Blood Bank License (Mandatory)", type: "image_upload", mandatory: true, showIf: { field: "additionalServices", contains: "Blood Bank" } },
+          { key: "inHousePharmacyLicense", label: "In-House Pharmacy Retail License (Mandatory)", type: "image_upload", mandatory: true, showIf: { field: "additionalServices", contains: "In-House Pharmacy" } },
           { key: "accreditations", label: "Accreditations", type: "string_array", placeholder: "e.g. NABH, NABL, JCI", options: ["NABH", "NABL", "JCI", "ISO 9001", "ISO 27001", "Joint Commission International"] },
           { key: "insuranceTieUps", label: "Insurance & TPA Tie-Ups", type: "string_array", placeholder: "Type a provider or select", options: ["Ayushman Bharat (PM-JAY)", "ESI (Employees' State Insurance)", "CGHS", "Star Health Insurance", "HDFC ERGO General Insurance", "ICICI Lombard", "Bajaj Allianz", "Care Health Insurance", "Niva Bupa Health Insurance", "Aditya Birla Health Insurance", "SBI General Insurance", "Reliance General Insurance", "Tata AIG"] }
         ]
@@ -231,7 +229,10 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "identity_infrastructure",
         label: "Identity & Infrastructure",
         fields: [
-          { key: "labType", label: "Lab Type", type: "string_array", mandatory: true, placeholder: "Select Lab Types", options: ["Pathology", "Radiology & Imaging", "Integrated Diagnostics", "Blood Bank"] },
+        fields: [
+          { key: "labType", label: "Primary Lab Identity", type: "select", mandatory: true, options: ["Pathology", "Radiology & Imaging", "Integrated Diagnostics", "Blood Bank"] },
+          { key: "clinicalEstablishmentLicense", label: "Clinical Establishment License (Mandatory)", type: "image_upload", mandatory: true },
+          { key: "pcpndtCertificate", label: "PCPNDT Certificate for Scans (Mandatory)", type: "image_upload", mandatory: true, showIf: { field: "labType", contains: ["Radiology & Imaging", "Integrated Diagnostics"] } },
           { key: "facadeImage", label: "Facility / Reception Photo", type: "image_upload" },
           { key: "accreditations", label: "Accreditations", type: "string_array", placeholder: "e.g. NABL, NABH, ISO" },
           { key: "homeCollection", label: "Home Sample Collection", type: "boolean", mandatory: true, showIf: { field: "labType", contains: ["Pathology", "Integrated Diagnostics"] } },

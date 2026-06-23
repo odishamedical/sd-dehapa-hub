@@ -216,7 +216,17 @@ export default function UniversalProfileLayout({
                    </div>
                  )}
                </div>
-                <p className="text-xl text-cyan-400 font-medium mb-6">{Array.isArray(profile.facilityType) ? profile.facilityType.join(" • ") : profile.facilityType || profile.subtitle || "Healthcare Facility"}</p>
+                <p className="text-xl text-cyan-400 font-medium mb-4">{profile.facilityType || profile.subtitle || "Healthcare Facility"}</p>
+                {profile.additionalServices && profile.additionalServices.length > 0 && (
+                  <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
+                    {profile.additionalServices.map((service: string, idx: number) => (
+                      <span key={idx} className="bg-slate-800/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-700/50 text-xs text-white uppercase tracking-widest flex items-center gap-1">
+                        <svg className="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        {service}
+                      </span>
+                    ))}
+                  </div>
+                )}
              
                {/* Trust Strip */}
                <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 text-sm">
@@ -309,7 +319,7 @@ export default function UniversalProfileLayout({
                       <div className="flex items-center gap-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50">
                         <svg className="w-5 h-5 text-indigo-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                         <div>
-                          <span className="text-white font-bold block leading-none">{Array.isArray(profile.labType) ? profile.labType.join(", ") : profile.labType || "Diagnostic Center"}</span>
+                          <span className="text-white font-bold block leading-none">{profile.labType || "Diagnostic Center"}</span>
                           <span className="text-slate-400 text-[10px] uppercase tracking-widest">Facility Type</span>
                         </div>
                       </div>
@@ -417,7 +427,7 @@ export default function UniversalProfileLayout({
                 )}
 
                 {/* Infrastructure & Facilities (Hospital specific) */}
-                {type === 'hospital' && (profile.totalBeds || profile.icuCapacity || profile.emergencyServices || profile.has247Pharmacy || profile.hasBloodBank || profile.hasPathologyLab || profile.hasImaging || profile.operationTheaters || profile.hasAmbulance) && (
+                {type === 'hospital' && (profile.totalBeds || profile.icuCapacity || profile.emergencyServices || profile.operationTheaters || profile.additionalServices?.length > 0) && (
                   <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl mt-8">
                     <h2 className="text-2xl font-bold text-white mb-6 font-serif">Infrastructure & Facilities</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -462,16 +472,16 @@ export default function UniversalProfileLayout({
                           <span className="text-slate-400 text-xs uppercase tracking-widest mt-1">Operation Theaters</span>
                         </div>
                       )}
-                      {profile.has247Pharmacy && (
+                      {profile.additionalServices?.includes("In-House Pharmacy") && (
                         <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
                           <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                           </div>
-                          <span className="text-white font-bold">24/7 Pharmacy</span>
+                          <span className="text-white font-bold">In-House Pharmacy</span>
                           <span className="text-emerald-400 text-[10px] uppercase tracking-widest mt-1">Available</span>
                         </div>
                       )}
-                      {profile.hasBloodBank && (
+                      {profile.additionalServices?.includes("Blood Bank") && (
                         <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
                           <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mb-4">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -480,7 +490,7 @@ export default function UniversalProfileLayout({
                           <span className="text-rose-400 text-[10px] uppercase tracking-widest mt-1">Available</span>
                         </div>
                       )}
-                      {profile.hasPathologyLab && (
+                      {profile.additionalServices?.includes("Pathology Lab") && (
                         <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
                           <div className="w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -489,7 +499,7 @@ export default function UniversalProfileLayout({
                           <span className="text-purple-400 text-[10px] uppercase tracking-widest mt-1">Available</span>
                         </div>
                       )}
-                      {profile.hasImaging && (
+                      {profile.additionalServices?.includes("Diagnostic Imaging") && (
                         <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
                           <div className="w-12 h-12 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
