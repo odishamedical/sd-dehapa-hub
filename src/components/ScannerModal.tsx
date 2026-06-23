@@ -50,11 +50,20 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
     };
   }, []);
 
-  const handleScan = (text: string) => {
-    setIsProcessing(true);
+  const handleScan = async (text: string) => {
+    // Crucial fix: We MUST completely clear the scanner before changing React state.
+    // If we set isProcessing(true) first, React unmounts the <div id="qr-reader">
+    // which causes html5-qrcode to fatally crash the Android WebView when it tries to stop.
     if (scannerRef.current) {
-      scannerRef.current.stop().catch(e => console.error(e));
+      try {
+        await scannerRef.current.clear();
+      } catch (e) {
+        console.error("Error clearing scanner", e);
+      }
+      scannerRef.current = null;
     }
+    
+    setIsProcessing(true);
     
     setTimeout(() => {
       processUrlLogic(text);
