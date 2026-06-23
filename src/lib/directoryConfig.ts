@@ -262,15 +262,26 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         ]
       },
       {
-        id: "personnel",
-        label: "Key Personnel & Roster",
+        id: "departments",
+        label: "Departments & Roster",
         fields: [
           {
-            key: "signingAuthorities",
-            label: "Chief Pathologists & Radiologists",
-            type: "hybrid_entity_selector",
-            targetEntity: "Doctor",
-            placeholder: "Search verified doctors to add to lab roster..."
+            key: "departments",
+            label: "Departments",
+            type: "object_array",
+            arrayFields: [
+              { key: "name", label: "Department Name (e.g. Pathology)", type: "text" },
+              { key: "head", label: "Head Pathologist / Radiologist", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+              { key: "departmentImage", label: "Department Photo", type: "image_upload" },
+              {
+                key: "roster",
+                label: "Department Doctors",
+                type: "hybrid_entity_selector",
+                targetEntity: "Doctor",
+                placeholder: "Search verified doctors to add to lab roster..."
+              }
+            ]
           }
         ]
       }
