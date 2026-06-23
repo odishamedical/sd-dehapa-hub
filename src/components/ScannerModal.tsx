@@ -50,24 +50,21 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
     };
   }, []);
 
-  const handleScan = async (text: string) => {
-    // Crucial fix: We MUST completely clear the scanner before changing React state.
-    // If we set isProcessing(true) first, React unmounts the <div id="qr-reader">
-    // which causes html5-qrcode to fatally crash the Android WebView when it tries to stop.
+  const handleScan = (text: string) => {
+    // 1. Instantly freeze the camera stream so it stops scanning,
+    // but DO NOT destroy or unmount it (which causes the fatal crash).
     if (scannerRef.current) {
       try {
-        await scannerRef.current.clear();
+        scannerRef.current.pause(true);
       } catch (e) {
-        console.error("Error clearing scanner", e);
+        console.error("Pause error", e);
       }
-      scannerRef.current = null;
     }
     
-    setIsProcessing(true);
-    
+    // 2. Add an artificial delay so the user sees the freeze, then route natively.
     setTimeout(() => {
       processUrlLogic(text);
-    }, 1000); // Artificial delay to show the "Processing" UI
+    }, 500);
   };
 
   const processUrlLogic = (url: string) => {
@@ -77,8 +74,8 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
       if (url.startsWith('dehapa-auth://scan?uid=')) {
         const uid = new URLSearchParams(url.split('?')[1]).get('uid');
         if (uid) {
-          // Native navigation is safest to prevent Next.js history state corruption
-          window.location.href = `/portal/doctor?patientId=${encodeURIComponent(uid)}`;
+          router.push(`/portal/doctor?patientId=${encodeURIComponent(uid)}`);
+          setTimeout(() => { onClose(); }, 1000);
           return;
         }
       }
@@ -89,8 +86,14 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
         const parsedUrl = new URL(url);
         // Ensure it's a dehapa URL or route it anyway if we trust it
         if (parsedUrl.hostname.includes('dehapa.com') || parsedUrl.hostname.includes('localhost') || parsedUrl.hostname.includes('vercel.app')) {
-          // Native navigation is safest to prevent Next.js history state corruption
-          window.location.href = url.trim();
+          // 3. Use seamless Next.js router.push so we never trigger a native Android browser navigation,
+          // which is causing the "This page couldn't load" system crash in Custom Tabs.
+          router.push(parsedUrl.pathname + parsedUrl.search);
+          
+          // 4. Delay the onClose so the DOM isn't destroyed while router is transitioning.
+          setTimeout(() => {
+            onClose();
+          }, 1000);
           return;
         }
       }
