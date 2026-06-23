@@ -403,7 +403,7 @@ export default function UniversalProfileLayout({
                 </div>
 
                 {(!isDoctor && profile.details?.length > 0) && (
-                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl mt-8">
                     <h2 className="text-2xl font-bold text-white mb-6 font-serif">Contact Details</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {profile.details.map((det: any, idx: number) => (
@@ -413,6 +413,104 @@ export default function UniversalProfileLayout({
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Infrastructure & Facilities (Hospital specific) */}
+                {type === 'hospital' && (profile.has247Pharmacy || profile.hasBloodBank || profile.hasPathologyLab || profile.hasImaging || profile.operationTheaters || profile.hasAmbulance) && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl mt-8">
+                    <h2 className="text-2xl font-bold text-white mb-6 font-serif">Infrastructure & Facilities</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {profile.operationTheaters && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">{profile.operationTheaters}</span>
+                          <span className="text-slate-400 text-xs uppercase tracking-widest mt-1">Operation Theaters</span>
+                        </div>
+                      )}
+                      {profile.has247Pharmacy && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">24/7 Pharmacy</span>
+                          <span className="text-emerald-400 text-[10px] uppercase tracking-widest mt-1">Available</span>
+                        </div>
+                      )}
+                      {profile.hasBloodBank && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">Blood Bank</span>
+                          <span className="text-rose-400 text-[10px] uppercase tracking-widest mt-1">Available</span>
+                        </div>
+                      )}
+                      {profile.hasPathologyLab && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">Pathology Lab</span>
+                          <span className="text-purple-400 text-[10px] uppercase tracking-widest mt-1">Available</span>
+                        </div>
+                      )}
+                      {profile.hasImaging && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">Diagnostic Imaging</span>
+                          <span className="text-indigo-400 text-[10px] uppercase tracking-widest mt-1">X-Ray, MRI, CT</span>
+                        </div>
+                      )}
+                      {profile.hasAmbulance && (
+                        <div className="flex flex-col items-center justify-center bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl text-center hover:bg-slate-800 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mb-4">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                          </div>
+                          <span className="text-white font-bold">Ambulance</span>
+                          <span className="text-amber-400 text-[10px] uppercase tracking-widest mt-1">Emergency Services</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Accreditations & Insurance */}
+                {(profile.accreditations?.length > 0 || profile.insuranceTieUps?.length > 0) && (
+                  <div className="bg-gradient-to-br from-slate-900/40 to-slate-800/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl mt-8">
+                    {profile.accreditations?.length > 0 && (
+                      <div className="mb-10">
+                        <h2 className="text-2xl font-bold text-white mb-6 font-serif">Accreditations & Certifications</h2>
+                        <div className="flex flex-wrap gap-4">
+                          {profile.accreditations.map((acc: string, idx: number) => (
+                            <div key={idx} className="flex items-center gap-3 bg-slate-900/80 border border-cyan-500/30 px-5 py-3 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                              <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                              <span className="text-white font-bold uppercase tracking-widest text-sm">{acc}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {profile.insuranceTieUps?.length > 0 && (
+                      <div>
+                        <h2 className="text-2xl font-bold text-white mb-6 font-serif flex items-center gap-3">
+                          <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                          Accepted Insurance & Cashless TPA
+                        </h2>
+                        <div className="flex flex-wrap gap-3">
+                          {profile.insuranceTieUps.map((ins: string, idx: number) => (
+                            <span key={idx} className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-lg text-sm font-semibold">
+                              {ins}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

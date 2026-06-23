@@ -6,6 +6,7 @@ interface InlineEditArrayProps {
   isEditMode: boolean;
   itemClassName?: string;
   placeholder?: string;
+  suggestions?: string[];
 }
 
 export default function InlineEditArray({
@@ -13,10 +14,12 @@ export default function InlineEditArray({
   onSave,
   isEditMode,
   itemClassName = "bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1.5 rounded-lg text-xs font-semibold",
-  placeholder = "Add an item..."
+  placeholder = "Add an item...",
+  suggestions
 }: InlineEditArrayProps) {
   const [currentItems, setCurrentItems] = useState<string[]>([...items]);
   const [newItemText, setNewItemText] = useState("");
+  const datalistId = React.useId();
 
   useEffect(() => {
     setCurrentItems([...items]);
@@ -78,9 +81,17 @@ export default function InlineEditArray({
           value={newItemText}
           onChange={(e) => setNewItemText(e.target.value)}
           onKeyDown={handleKeyDown}
+          list={suggestions ? datalistId : undefined}
           className="flex-1 bg-white border-2 border-slate-200 focus:border-teal-500 rounded-lg px-3 py-1.5 text-sm outline-none shadow-inner"
           placeholder={placeholder}
         />
+        {suggestions && (
+          <datalist id={datalistId}>
+            {suggestions.map((sug, idx) => (
+              <option key={idx} value={sug} />
+            ))}
+          </datalist>
+        )}
         <button 
           onClick={handleAdd}
           disabled={!newItemText.trim()}

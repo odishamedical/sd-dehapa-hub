@@ -132,39 +132,6 @@ export const directoryConfig: Record<string, CategoryConfig> = {
     name: "Hospital",
     tabs: [
       {
-        id: "professional",
-        label: "Professional & Services",
-        fields: [
-          {
-            key: "departments",
-            label: "Departments & Centers of Excellence",
-            type: "object_array",
-            arrayFields: [
-              { key: "name", label: "Department Name (e.g. Cardiology)", type: "text" },
-              { key: "head", label: "Head of Department", type: "text" },
-              { key: "description", label: "Description", type: "textarea" }
-            ]
-          },
-          {
-            key: "roster",
-            label: "Doctors Roster",
-            type: "entity_selector",
-            targetEntity: "Doctor",
-            placeholder: "Search for a verified doctor..."
-          },
-          {
-            key: "healthPackages",
-            label: "Health Packages & Preventive Care",
-            type: "object_array",
-            arrayFields: [
-              { key: "name", label: "Package Name", type: "text" },
-              { key: "price", label: "Price (₹)", type: "text" },
-              { key: "features", label: "Features (Comma separated)", type: "textarea" }
-            ]
-          }
-        ]
-      },
-      {
         id: "basic",
         label: "Basic Info",
         fields: [
@@ -172,6 +139,71 @@ export const directoryConfig: Record<string, CategoryConfig> = {
           { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
           { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
           { key: "emergencyServices", label: "Emergency Services", type: "text", mandatory: true, placeholder: "e.g. 24/7 Available" }
+        ]
+      },
+      {
+        id: "infrastructure",
+        label: "Infrastructure & Facilities",
+        fields: [
+          { key: "has247Pharmacy", label: "24/7 Pharmacy", type: "boolean" },
+          { key: "hasBloodBank", label: "Blood Bank", type: "boolean" },
+          { key: "hasPathologyLab", label: "Pathology Lab", type: "boolean" },
+          { key: "hasImaging", label: "Diagnostic Imaging (X-Ray, MRI, CT)", type: "boolean" },
+          { key: "operationTheaters", label: "Number of Operation Theaters", type: "number", placeholder: "e.g. 4" },
+          { key: "hasAmbulance", label: "Ambulance Services", type: "boolean" }
+        ]
+      },
+      {
+        id: "accreditations_insurance",
+        label: "Accreditations & Insurance",
+        fields: [
+          { key: "accreditations", label: "Accreditations", type: "string_array", placeholder: "e.g. NABH, NABL, JCI", options: ["NABH", "NABL", "JCI", "ISO 9001", "ISO 27001", "Joint Commission International"] },
+          { key: "insuranceTieUps", label: "Insurance & TPA Tie-Ups", type: "string_array", placeholder: "Type a provider or select", options: ["Ayushman Bharat (PM-JAY)", "ESI (Employees' State Insurance)", "CGHS", "Star Health Insurance", "HDFC ERGO General Insurance", "ICICI Lombard", "Bajaj Allianz", "Care Health Insurance", "Niva Bupa Health Insurance", "Aditya Birla Health Insurance", "SBI General Insurance", "Reliance General Insurance", "Tata AIG"] }
+        ]
+      },
+      {
+        id: "departments",
+        label: "Departments & Centers of Excellence",
+        fields: [
+          {
+            key: "departments",
+            label: "Departments",
+            type: "object_array",
+            arrayFields: [
+              { key: "name", label: "Department Name (e.g. Cardiology)", type: "text" },
+              { key: "head", label: "Head of Department", type: "text" },
+              { key: "description", label: "Description", type: "textarea" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "doctors_roster",
+        label: "Doctors Roster",
+        fields: [
+          {
+            key: "roster",
+            label: "Doctors Roster",
+            type: "entity_selector",
+            targetEntity: "Doctor",
+            placeholder: "Search for a verified doctor..."
+          }
+        ]
+      },
+      {
+        id: "health_packages",
+        label: "Health Packages & Preventive Care",
+        fields: [
+          {
+            key: "healthPackages",
+            label: "Health Packages",
+            type: "object_array",
+            arrayFields: [
+              { key: "name", label: "Package Name", type: "text" },
+              { key: "price", label: "Price (₹)", type: "text" },
+              { key: "features", label: "Features (Comma separated)", type: "textarea" }
+            ]
+          }
         ]
       }
     ]

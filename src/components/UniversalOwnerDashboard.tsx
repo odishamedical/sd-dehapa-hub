@@ -443,6 +443,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                             onSave={(newItems) => setEntityData({...entityData, [field.key]: newItems})} 
                             isEditMode={true}
                             placeholder={field.placeholder || "Add item..."} 
+                            suggestions={field.options}
                           />
                         </>
                       ) : (
