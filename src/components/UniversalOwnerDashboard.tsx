@@ -268,6 +268,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       label: "Bank & Payout Details",
       section: "PROFILE BUILDER",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+    },
+    {
+      id: "document_vault",
+      label: "Document Vault",
+      section: "BUSINESS & OWNERSHIP",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
     }
   ];
 
@@ -701,6 +707,35 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   onChange={(url) => setEntityData({ ...entityData, cancelledChequeImage: url })}
                 />
               </div>
+
+              <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
+                <AutosaveIndicator status={saveStatus} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* DOCUMENT VAULT TAB */}
+        {activeTab === "document_vault" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Document Vault</h3>
+            
+            <div className="mb-8 bg-blue-50 border border-blue-200 p-6 rounded-2xl">
+              <h4 className="text-blue-800 font-bold mb-2">Secure Operational Licenses</h4>
+              <p className="text-sm text-blue-700">Upload your operational licenses (e.g. NABH, Fire Safety, Trade License, Pollution Control). These documents remain strictly confidential and are used only for internal verification and compliance checks by DehaPa administration.</p>
+            </div>
+
+            <div className="space-y-6">
+              <ObjectArrayEditor 
+                title="Operational Licenses & Certificates"
+                description="Add multiple operational certificates. Click below to upload a new document."
+                items={entityData.documentVault || []}
+                onChange={(items) => setEntityData({ ...entityData, documentVault: items })}
+                fields={[
+                  { key: "documentName", label: "Document Name (e.g. Fire Safety Certificate)", type: "text" },
+                  { key: "documentImage", label: "Upload Document Scan", type: "image_upload" }
+                ]}
+              />
 
               <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
                 <AutosaveIndicator status={saveStatus} />
