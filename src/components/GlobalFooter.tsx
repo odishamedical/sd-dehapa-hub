@@ -23,7 +23,7 @@ export default function GlobalFooter() {
         {/* =========================================================================
             SUBSCRIPTION BANNER (Top of Footer)
            ========================================================================= */}
-        <div className="mb-8 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-3xl p-4 lg:py-5 lg:px-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden">
+        <div className="mb-8 bg-slate-900/50 backdrop-blur-sm border border-slate-800 hover:border-teal-500/50 rounded-3xl p-4 lg:py-5 lg:px-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden transition-all duration-500 hover:shadow-[0_0_40px_rgba(20,184,166,0.15)] hover:-translate-y-1 group cursor-default">
           <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-teal-500/10 to-transparent pointer-events-none"></div>
           
           <div className="w-full lg:w-1/3 text-center lg:text-left z-10">
