@@ -53,6 +53,15 @@ export default function UniversalProfileLayout({
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus | null>(null);
   const [isRequestingConnection, setIsRequestingConnection] = useState(false);
 
+  const [currentUserRole, setCurrentUserRole] = useState<string>('patient');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem("sd_current_user_role");
+      if (role) setCurrentUserRole(role);
+    }
+  }, []);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -796,7 +805,7 @@ export default function UniversalProfileLayout({
                          Request Pending
                        </div>
                      ) : (
-                       <button 
+                         <button 
                          onClick={handleRequestConnection}
                          disabled={isRequestingConnection}
                          className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-slate-800 text-cyan-400 border border-cyan-500/50 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -806,7 +815,7 @@ export default function UniversalProfileLayout({
                          ) : (
                            <>
                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                             Request Connection
+                             {currentUserRole === 'doctor' && unwrappedParams.type === 'doctor' ? 'Connect as Colleague' : 'Request Connection'}
                            </>
                          )}
                        </button>

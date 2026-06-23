@@ -96,7 +96,7 @@ export default function PendingConnectionsWidget({ providerId }: { providerId: s
           </div>
         ) : (
           <div className="space-y-3">
-            {pendingRequests.map(req => (
+            {pendingRequests.slice(0, 3).map(req => (
               <div key={req.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:border-indigo-200 transition-colors">
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -126,6 +126,24 @@ export default function PendingConnectionsWidget({ providerId }: { providerId: s
                 </div>
               </div>
             ))}
+            
+            {pendingRequests.length > 3 && (
+              <button 
+                onClick={() => { window.location.hash = 'network'; }}
+                className="w-full bg-white hover:bg-indigo-50 border border-indigo-100 hover:border-indigo-200 text-indigo-600 text-xs font-bold py-3 rounded-xl transition-colors mt-2"
+              >
+                View All {pendingRequests.length} Requests
+              </button>
+            )}
+            
+            {pendingRequests.length <= 3 && (
+              <button 
+                onClick={() => { window.location.hash = 'network'; }}
+                className="w-full bg-transparent hover:bg-white border border-indigo-100 text-indigo-500 text-xs font-bold py-3 rounded-xl transition-colors mt-2"
+              >
+                Go to My Network
+              </button>
+            )}
           </div>
         )}
       </div>
