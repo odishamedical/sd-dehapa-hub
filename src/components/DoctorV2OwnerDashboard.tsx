@@ -5,11 +5,18 @@ import { useRouter } from 'next/navigation';
 import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import AddressBlock from '@/components/AddressBlock';
-import ImageUpload from '@/components/ImageUpload';
 import RxPadWidget from '@/components/RxPadWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
-import { directoryConfig } from '@/lib/directoryConfig';
-import DoctorV2Forms from '@/components/DoctorV2Forms'; // We will create this next
+import DoctorV2Forms from '@/components/DoctorV2Forms';
+import IncomingPingWidget from '@/components/IncomingPingWidget';
+
+const WIZARD_STEPS = [
+  { id: "identity", label: "Identity & Media" },
+  { id: "professional", label: "Professional Bio" },
+  { id: "consultation_setup", label: "Consultations" },
+  { id: "location", label: "Clinic Location" },
+  { id: "bank_details", label: "Bank & Payouts" }
+];
 
 export default function DoctorV2OwnerDashboard() {
   const router = useRouter();
@@ -17,12 +24,15 @@ export default function DoctorV2OwnerDashboard() {
   const [accessGranted, setAccessGranted] = useState(false);
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
+  
+  // Dashboard State
   const [activeTab, setActiveTab] = useState("home");
   const [entityData, setEntityData] = useState<any>({});
+  
+  // Auto-save logic
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const isInitialMount = useRef(true);
 
-  // Sync tab with URL Hash
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hash = window.location.hash.replace("#", "");
@@ -80,209 +90,248 @@ export default function DoctorV2OwnerDashboard() {
       } catch (err) {
         setSaveStatus("error");
       }
-    }, 1500);
+    }, 1000);
     return () => clearTimeout(timeout);
   }, [entityData, entityDocId]);
 
-  // Completion Logic
-  const hasIdentity = !!(entityData.name && entityData.phone && entityData.primarySpecialty);
-  const hasLocation = !!(entityData.address && entityData.city);
-  const hasBank = !!(entityData.accountNumber && entityData.ifscCode);
-  const isReady = hasIdentity && hasLocation && hasBank;
+  // Completion Logic (0 - 100%)
+  const calculateProgress = () => {
+    let score = 0;
+    if (entityData.name && entityData.primarySpecialty) score += 20;
+    if (entityData.qualificationsList?.length > 0) score += 20;
+    if (entityData.offersPhysical || entityData.offersDigital) score += 20;
+    if (entityData.address && entityData.city && entityData.district) score += 20;
+    if (entityData.accountNumber && entityData.ifscCode) score += 20;
+    return score;
+  };
+  
+  const progress = calculateProgress();
+  const isReady = progress === 100;
+
+  const handlePublishToggle = async () => {
+    if (!isReady) return;
+    const newStatus = !entityData.isPublic;
+    setEntityData({ ...entityData, isPublic: newStatus });
+    // Autosave will handle the DB update
+  };
+
+  // Wizard Navigation
+  const currentStepIndex = WIZARD_STEPS.findIndex(s => s.id === activeTab);
+  const handleNextStep = () => {
+    if (currentStepIndex < WIZARD_STEPS.length - 1) {
+      setActiveTab(WIZARD_STEPS[currentStepIndex + 1].id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setActiveTab("home");
+    }
+  };
 
   if (loading) return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-      <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
   if (!accessGranted) return null;
 
-  // Sidebar Tabs Config
-  const sidebarNav = [
-    {
-      section: "Day-to-Day Clinical",
-      colorClass: "text-blue-600 bg-blue-50 hover:bg-blue-100",
-      tabs: [
-        { id: "rxpad", label: "📝 Write Prescription" },
-        { id: "vault", label: "🗄️ Patient Vaults" },
-      ]
-    },
-    {
-      section: "Growth & Network",
-      colorClass: "text-emerald-600 bg-emerald-50 hover:bg-emerald-100",
-      tabs: [
-        { id: "network", label: "🤝 My Network Hub" },
-      ]
-    },
-    {
-      section: "Clinic Setup & Admin",
-      colorClass: "text-orange-600 bg-orange-50 hover:bg-orange-100",
-      tabs: [
-        { id: "identity", label: "👤 Public Profile" },
-        { id: "location", label: "📍 Address & Location" },
-        { id: "professional", label: "💼 Professional Details" },
-        { id: "consultation_setup", label: "💻 Consultation Modes" },
-        { id: "bank_details", label: "🏦 Bank & Payouts" },
-      ]
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-slate-50 flex text-slate-900 font-sans">
+    <div className="min-h-screen bg-white text-slate-900 font-sans relative overflow-x-hidden">
       
-      {/* V2 Sidebar - Clean White */}
-      <aside className="w-72 bg-white border-r border-slate-200 shrink-0 hidden lg:flex flex-col h-screen sticky top-0">
-        <div className="p-6 border-b border-slate-100 flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab("home")}>
-          <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30">
-             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-          </div>
-          <div>
-            <h1 className="font-black text-lg text-slate-800 leading-tight">DehaPa V2</h1>
-            <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Provider Portal</p>
+      {/* Background Orbs for Glassmorphism effect */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200/40 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[50%] bg-indigo-200/40 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] bg-rose-200/30 rounded-full blur-[100px]"></div>
+      </div>
+
+      {/* Main Header (Sticky) */}
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button onClick={() => setActiveTab("home")} className="text-2xl font-black text-slate-800 tracking-tight hover:text-teal-600 transition-colors">
+            DehaPa Portal
+          </button>
+          
+          {/* Incoming Ping Service (Emergency Video Calls) */}
+          <div className="hidden md:block">
+            <IncomingPingWidget doctorId={entityData.id} doctorSpecialty={entityData.primarySpecialty} />
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
-          {sidebarNav.map((group, idx) => (
-            <div key={idx}>
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 px-3">{group.section}</h3>
-              <div className="space-y-1">
-                {group.tabs.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-left ${
-                      activeTab === tab.id 
-                        ? `${group.colorClass} shadow-sm border border-black/5` 
-                        : 'text-slate-600 hover:bg-slate-100'
+        <div className="flex items-center gap-6">
+          {saveStatus === "saving" && <span className="text-sm font-bold text-teal-600 animate-pulse">Autosaving...</span>}
+          {saveStatus === "saved" && <span className="text-sm font-bold text-emerald-500">✓ Saved</span>}
+          
+          <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-slate-900">
+            Sign Out
+          </button>
+        </div>
+      </header>
+
+      <main className="relative z-10 max-w-5xl mx-auto px-6 py-12">
+        
+        {/* =========================================================================
+            HOME TAB: THE "SMART GUIDED ONBOARDING" PULSE UI 
+           ========================================================================= */}
+        {activeTab === "home" && (
+          <div className="space-y-12 animate-in fade-in zoom-in-95 duration-500">
+            
+            {/* Massive Glassmorphism Hero */}
+            <div className="sd-glass-panel overflow-hidden relative p-10 md:p-16">
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 to-indigo-500/10 pointer-events-none"></div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center justify-between">
+                <div>
+                  <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">
+                    {entityData.isPublic ? "Your profile is Live." : "Activate Your Doctor Profile."}
+                  </h1>
+                  <p className="text-slate-600 text-lg md:text-xl max-w-xl font-medium">
+                    {entityData.isPublic 
+                      ? "Patients can now find you in the directory. Keep your app open to receive emergency video calls." 
+                      : "Complete your setup to unlock the 'Publish' button. Auto-save is always on."}
+                  </p>
+                </div>
+
+                {/* The Giant Publish Switch */}
+                <div className="shrink-0 bg-white/80 backdrop-blur-md border border-white p-6 rounded-3xl shadow-xl flex flex-col items-center gap-4 min-w-[280px]">
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-widest">Profile Strength</div>
+                  
+                  {/* Progress Bar */}
+                  <div className="w-full bg-slate-100 rounded-full h-4 mb-2 overflow-hidden shadow-inner">
+                    <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-4 rounded-full transition-all duration-1000 ease-out relative" style={{ width: `${progress}%` }}>
+                       {progress > 10 && <span className="absolute right-2 top-0 text-[10px] text-white font-bold leading-4">{progress}%</span>}
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={handlePublishToggle}
+                    disabled={!isReady}
+                    className={`w-full py-4 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-lg ${
+                      entityData.isPublic 
+                        ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500 shadow-emerald-500/20" 
+                        : isReady 
+                          ? "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/30 hover:scale-105" 
+                          : "bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200"
                     }`}
                   >
-                    {tab.label}
+                    {entityData.isPublic ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
                   </button>
-                ))}
+                  {!isReady && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
+                </div>
               </div>
             </div>
-          ))}
-        </nav>
 
-        {/* User Profile Mini */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
-          <div className="flex items-center gap-3">
-             {entityData.image ? (
-               <img src={entityData.image} className="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-200" />
-             ) : (
-               <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-400">👤</div>
-             )}
-             <div className="flex-1 min-w-0">
-               <p className="font-bold text-sm text-slate-800 truncate">{entityData.name || "Setup Required"}</p>
-               <p className="text-xs text-slate-500 truncate">{userEmail}</p>
-             </div>
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <button onClick={() => setActiveTab("identity")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
+                 <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-teal-500/30 group-hover:rotate-12 transition-transform">👤</div>
+                 <h3 className="text-xl font-black text-slate-900 mb-2">Setup Profile</h3>
+                 <p className="text-sm text-slate-500 font-medium">Identity, Media & Bio</p>
+              </button>
+
+              <button onClick={() => setActiveTab("rxpad")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
+                 <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-500/30 group-hover:rotate-12 transition-transform">📝</div>
+                 <h3 className="text-xl font-black text-slate-900 mb-2">Digital Rx Pad</h3>
+                 <p className="text-sm text-slate-500 font-medium">Write Prescriptions</p>
+              </button>
+
+              <button onClick={() => setActiveTab("network")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
+                 <div className="w-14 h-14 bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-rose-500/30 group-hover:rotate-12 transition-transform">🤝</div>
+                 <h3 className="text-xl font-black text-slate-900 mb-2">My Network</h3>
+                 <p className="text-sm text-slate-500 font-medium">Manage Partners</p>
+              </button>
+
+              <button onClick={() => setActiveTab("vault")} className="sd-glass-panel p-8 text-left hover:scale-105 transition-all group">
+                 <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-orange-500/30 group-hover:rotate-12 transition-transform">🗄️</div>
+                 <h3 className="text-xl font-black text-slate-900 mb-2">Patient Vault</h3>
+                 <p className="text-sm text-slate-500 font-medium">Access Records</p>
+              </button>
+            </div>
+
           </div>
-        </div>
-      </aside>
+        )}
 
-      {/* Main Content Area */}
-      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
-        
-        {/* Top Header with Autosave Status */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
-          <h2 className="text-2xl font-black text-slate-800 capitalize flex items-center gap-3">
-            {activeTab === 'home' ? "Welcome back, Doctor." : activeTab.replace('_', ' ')}
-          </h2>
-          
-          <div className="flex items-center gap-4">
-            {saveStatus === "saving" && <span className="text-sm font-bold text-indigo-500 flex items-center gap-2"><div className="w-2 h-2 bg-indigo-500 rounded-full animate-ping"></div> Saving changes...</span>}
-            {saveStatus === "saved" && <span className="text-sm font-bold text-emerald-500 flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg> Saved</span>}
+        {/* =========================================================================
+            WIZARD SETUP TABS
+           ========================================================================= */}
+        {WIZARD_STEPS.map(s => s.id).includes(activeTab) && (
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 max-w-4xl mx-auto">
             
-            <button onClick={() => setActiveTab("home")} className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-              Dashboard Home
-            </button>
-          </div>
-        </header>
+            {/* Top Breadcrumbs */}
+            <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+              <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+              <span>/</span>
+              <span className="text-teal-600">{WIZARD_STEPS.find(s => s.id === activeTab)?.label}</span>
+            </div>
 
-        <div className="p-8 max-w-5xl mx-auto w-full">
-          
-          {/* =========================================================================
-              HOME TAB: THE "SMART GUIDED ONBOARDING" PULSE UI 
-             ========================================================================= */}
-          {activeTab === "home" && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+            <div className="sd-glass-panel p-8 md:p-12 mb-8">
               
-              <div className="bg-indigo-600 rounded-3xl p-8 md:p-12 text-white shadow-2xl shadow-indigo-600/20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-                <h1 className="text-3xl md:text-5xl font-black mb-4 relative z-10">
-                  {isReady ? "Your Clinic is Live." : "Let's activate your clinic."}
-                </h1>
-                <p className="text-indigo-100 text-lg max-w-xl relative z-10">
-                  {isReady 
-                    ? "Your public directory page is active and your Rx Pad is ready. Start growing your network today." 
-                    : "Complete the 3 critical steps below to activate your public directory page and start writing digital prescriptions."}
-                </p>
-              </div>
-
-              {/* The Visual Journey */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                {/* Step 1: Identity */}
-                <div 
-                  onClick={() => setActiveTab("identity")}
-                  className={`bg-white rounded-3xl p-8 cursor-pointer transition-all border-2 ${hasIdentity ? 'border-emerald-500' : 'border-indigo-100 hover:border-indigo-300'} ${!hasIdentity ? 'pulse-guide' : ''} shadow-sm hover:shadow-xl`}
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${hasIdentity ? 'bg-emerald-100 text-emerald-500' : 'bg-indigo-100 text-indigo-600'}`}>
-                      {hasIdentity ? '✓' : '1'}
-                    </div>
-                    {hasIdentity && <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">Completed</span>}
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">Public Profile</h3>
-                  <p className="text-slate-500 text-sm">Add your name, photo, and primary specialty to build trust with patients.</p>
-                </div>
-
-                {/* Step 2: Location */}
-                <div 
-                  onClick={() => setActiveTab("location")}
-                  className={`bg-white rounded-3xl p-8 cursor-pointer transition-all border-2 ${hasLocation ? 'border-emerald-500' : 'border-indigo-100 hover:border-indigo-300'} ${hasIdentity && !hasLocation ? 'pulse-guide' : ''} shadow-sm hover:shadow-xl`}
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${hasLocation ? 'bg-emerald-100 text-emerald-500' : 'bg-indigo-100 text-indigo-600'}`}>
-                      {hasLocation ? '✓' : '2'}
-                    </div>
-                    {hasLocation && <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">Completed</span>}
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">Clinic Location</h3>
-                  <p className="text-slate-500 text-sm">Provide your physical address so patients and ambulances can find you.</p>
-                </div>
-
-                {/* Step 3: Bank Details */}
-                <div 
-                  onClick={() => setActiveTab("bank_details")}
-                  className={`bg-white rounded-3xl p-8 cursor-pointer transition-all border-2 ${hasBank ? 'border-emerald-500' : 'border-indigo-100 hover:border-indigo-300'} ${hasIdentity && hasLocation && !hasBank ? 'pulse-guide' : ''} shadow-sm hover:shadow-xl`}
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${hasBank ? 'bg-emerald-100 text-emerald-500' : 'bg-orange-100 text-orange-600'}`}>
-                      {hasBank ? '✓' : '3'}
-                    </div>
-                    {hasBank && <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">Completed</span>}
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">Bank & Payouts</h3>
-                  <p className="text-slate-500 text-sm">Add your secure bank details to receive payments for digital consultations.</p>
-                </div>
-
-              </div>
+              {/* Form Content Wrapper */}
+              {activeTab === "location" ? (
+                <>
+                  <h2 className="text-3xl font-black text-slate-900 mb-8">Clinic Location</h2>
+                  <AddressBlock 
+                    data={{
+                      country: entityData.country || 'India',
+                      state: entityData.state || 'Odisha',
+                      district: entityData.district || '',
+                      block: entityData.block || '',
+                      city: entityData.city || '',
+                      pincode: entityData.pincode || '',
+                      localAddress: entityData.address || ''
+                    }}
+                    onChange={(addr) => {
+                      setEntityData({ 
+                        ...entityData, 
+                        country: addr.country,
+                        state: addr.state,
+                        district: addr.district,
+                        block: addr.block,
+                        city: addr.city,
+                        pincode: addr.pincode,
+                        address: addr.localAddress
+                      });
+                    }}
+                  />
+                </>
+              ) : (
+                <DoctorV2Forms 
+                  activeTab={activeTab} 
+                  entityData={entityData} 
+                  setEntityData={setEntityData} 
+                />
+              )}
 
             </div>
-          )}
 
-          {/* =========================================================================
-              CLINICAL TABS (BLUE ZONE)
-             ========================================================================= */}
-          {activeTab === "rxpad" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 zone-clinical p-6 rounded-3xl border-2">
+            {/* Bottom Wizard Navigation (Psychological Save) */}
+            <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6 mt-12 mb-20">
+              <button onClick={() => setActiveTab("home")} className="text-slate-500 hover:text-slate-900 font-bold px-6 py-4 transition-colors">
+                Return to Dashboard
+              </button>
+              
+              <button onClick={handleNextStep} className="w-full md:w-auto sd-btn-v3 bg-slate-900 text-white hover:bg-black">
+                {currentStepIndex === WIZARD_STEPS.length - 1 ? "Save & Finish ➔" : "Save & Continue ➔"}
+              </button>
+            </div>
+
+          </div>
+        )}
+
+        {/* =========================================================================
+            CLINICAL TOOLS
+           ========================================================================= */}
+        {activeTab === "rxpad" && (
+          <div className="animate-in fade-in slide-in-from-bottom-8">
+            <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+              <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+              <span>/</span>
+              <span className="text-teal-600">Digital Rx Pad</span>
+            </div>
+            <div className="sd-glass-panel p-6">
               <RxPadWidget 
                 doctorData={{
                   id: entityData.id,
-                  name: entityData.name || "Dr. Setup Required",
-                  speciality: entityData.primarySpecialty || "Specialist",
+                  name: entityData.name || "Dr. Name",
+                  speciality: entityData.primarySpecialty || "Specialty",
                   degrees: entityData.credentials || "MBBS",
                   registrationNo: entityData.registrationNo || "",
                   phone: entityData.phone || "",
@@ -290,54 +339,41 @@ export default function DoctorV2OwnerDashboard() {
                 }} 
               />
             </div>
-          )}
+          </div>
+        )}
 
-          {activeTab === "vault" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 zone-clinical p-8 rounded-3xl border-2 text-center py-20">
-              <div className="text-6xl mb-4">🗄️</div>
-              <h2 className="text-2xl font-black text-slate-800 mb-2">Patient Vault Access</h2>
-              <p className="text-slate-500 max-w-md mx-auto mb-8">Enter a Patient's Sovereign Vault ID to view their medical history or upload documents securely.</p>
-              <div className="flex max-w-md mx-auto gap-2">
-                <input type="text" placeholder="patient@example.com" className="sd-input-v2" />
-                <button className="sd-btn-v2 sd-btn-primary">Lookup</button>
-              </div>
+        {activeTab === "network" && (
+          <div className="animate-in fade-in slide-in-from-bottom-8">
+            <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+              <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+              <span>/</span>
+              <span className="text-teal-600">My Network</span>
             </div>
-          )}
-
-          {/* =========================================================================
-              NETWORK TAB (GREEN ZONE)
-             ========================================================================= */}
-          {activeTab === "network" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 zone-network p-6 rounded-3xl border-2">
-               <MyNetworkHub providerId={entityData.id} providerRole="doctor" />
+            <div className="sd-glass-panel p-8">
+              <MyNetworkHub providerId={entityData.id} providerRole="doctor" />
             </div>
-          )}
+          </div>
+        )}
 
-          {/* =========================================================================
-              SETUP TABS (ORANGE ZONE)
-             ========================================================================= */}
-          {["identity", "professional", "consultation_setup", "bank_details"].includes(activeTab) && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 zone-admin p-8 rounded-3xl border-2">
-              <DoctorV2Forms 
-                activeTab={activeTab} 
-                entityData={entityData} 
-                setEntityData={setEntityData} 
-              />
-            </div>
-          )}
+        {activeTab === "vault" && (
+           <div className="animate-in fade-in slide-in-from-bottom-8">
+             <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+               <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+               <span>/</span>
+               <span className="text-teal-600">Patient Vault</span>
+             </div>
+             <div className="sd-glass-panel p-12 text-center py-24">
+               <div className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl mb-6 shadow-inner">🗄️</div>
+               <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Sovereign Vault Access</h2>
+               <p className="text-slate-600 text-lg max-w-lg mx-auto mb-10 font-medium">Enter a Patient's Vault ID to securely access their medical history or upload prescriptions.</p>
+               <div className="flex flex-col md:flex-row max-w-lg mx-auto gap-4">
+                 <input type="text" placeholder="patient@example.com" className="sd-input-v3 text-center md:text-left" />
+                 <button className="sd-btn-v3 bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 whitespace-nowrap">Lookup</button>
+               </div>
+             </div>
+           </div>
+        )}
 
-          {activeTab === "location" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 zone-admin p-8 rounded-3xl border-2">
-               <h2 className="text-2xl font-black text-slate-800 mb-6">Clinic Location</h2>
-               <AddressBlock 
-                 initialData={entityData}
-                 onSave={(addr) => setEntityData({ ...entityData, ...addr })}
-                 isInline={false}
-               />
-            </div>
-          )}
-
-        </div>
       </main>
     </div>
   );
