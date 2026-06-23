@@ -135,10 +135,10 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "basic",
         label: "Basic Info",
         fields: [
-          { key: "facilityType", label: "Facility Type", type: "select", mandatory: true, options: ["Clinic", "Poly-Clinic", "Nursing Home", "Corporate Hospital"] },
+          { key: "facilityType", label: "Facility Type", type: "string_array", mandatory: true, placeholder: "Select Facility Types", options: ["Clinic", "Poly-Clinic", "Nursing Home", "Corporate Hospital", "Maternity Home", "Surgical Center"] },
           { key: "facadeImage", label: "Main Building / Facade Photo", type: "image_upload" },
-          { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
-          { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50", hiddenIf: { field: "facilityType", in: ["Clinic", "Poly-Clinic"] } },
+          { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Maternity Home", "Surgical Center"] } },
+          { key: "icuCapacity", label: "ICU Capacity", type: "text", mandatory: true, placeholder: "e.g. 50", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Surgical Center"] } },
           { key: "emergencyServices", label: "Emergency Services", type: "text", mandatory: true, placeholder: "e.g. 24/7 Available" }
         ]
       },
@@ -150,8 +150,8 @@ export const directoryConfig: Record<string, CategoryConfig> = {
           { key: "hasBloodBank", label: "Blood Bank", type: "boolean" },
           { key: "hasPathologyLab", label: "Pathology Lab", type: "boolean" },
           { key: "hasImaging", label: "Diagnostic Imaging (X-Ray, MRI, CT)", type: "boolean" },
-          { key: "operationTheaters", label: "Number of Operation Theaters", type: "number", placeholder: "e.g. 4" },
-          { key: "icuImage", label: "ICU / Emergency Ward Photo", type: "image_upload" },
+          { key: "operationTheaters", label: "Number of Operation Theaters", type: "number", placeholder: "e.g. 4", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Surgical Center", "Maternity Home"] } },
+          { key: "icuImage", label: "ICU / Emergency Ward Photo", type: "image_upload", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Surgical Center"] } },
           { key: "hasAmbulance", label: "Ambulance Services", type: "boolean" }
         ]
       },
@@ -212,13 +212,13 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "professional",
         label: "Professional & Services",
         fields: [
-          { key: "businessType", label: "Business Type", type: "select", mandatory: true, options: ["Retail Pharmacy", "Wholesaler / Distributor", "Pharma Manufacturer"] },
+          { key: "businessType", label: "Business Type", type: "string_array", mandatory: true, placeholder: "Select Business Types", options: ["Retail Pharmacy", "Wholesaler / Distributor", "Pharma Manufacturer"] },
           { key: "gstin", label: "GSTIN Number", type: "text", mandatory: true },
-          { key: "retailLicense", label: "Retail Drug License No.", type: "text", mandatory: true },
-          { key: "wholesaleLicense", label: "Wholesale Drug License No.", type: "text" },
-          { key: "manufacturingLicense", label: "Manufacturing License No.", type: "text" },
-          { key: "homeDeliveryRadius", label: "Home Delivery Radius", type: "text", placeholder: "e.g. 5 KM" },
-          { key: "is247", label: "Open 24/7", type: "boolean" },
+          { key: "retailLicense", label: "Retail Drug License No.", type: "text", showIf: { field: "businessType", contains: "Retail Pharmacy" }, mandatory: true },
+          { key: "wholesaleLicense", label: "Wholesale Drug License No.", type: "text", showIf: { field: "businessType", contains: "Wholesaler / Distributor" }, mandatory: true },
+          { key: "manufacturingLicense", label: "Manufacturing License No.", type: "text", showIf: { field: "businessType", contains: "Pharma Manufacturer" }, mandatory: true },
+          { key: "homeDeliveryRadius", label: "Home Delivery Radius", type: "text", placeholder: "e.g. 5 KM", showIf: { field: "businessType", contains: "Retail Pharmacy" } },
+          { key: "is247", label: "Open 24/7", type: "boolean", showIf: { field: "businessType", contains: "Retail Pharmacy" } },
           { key: "timings", label: "Timings", type: "text", placeholder: "e.g. Mon-Sat 8AM - 9PM" }
         ]
       }
@@ -231,16 +231,17 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "identity_infrastructure",
         label: "Identity & Infrastructure",
         fields: [
-          { key: "labType", label: "Lab Type", type: "select", mandatory: true, options: ["Pathology", "Radiology & Imaging", "Integrated Diagnostics", "Blood Bank"] },
+          { key: "labType", label: "Lab Type", type: "string_array", mandatory: true, placeholder: "Select Lab Types", options: ["Pathology", "Radiology & Imaging", "Integrated Diagnostics", "Blood Bank"] },
           { key: "facadeImage", label: "Facility / Reception Photo", type: "image_upload" },
           { key: "accreditations", label: "Accreditations", type: "string_array", placeholder: "e.g. NABL, NABH, ISO" },
-          { key: "homeCollection", label: "Home Sample Collection", type: "boolean", mandatory: true },
+          { key: "homeCollection", label: "Home Sample Collection", type: "boolean", mandatory: true, showIf: { field: "labType", contains: ["Pathology", "Integrated Diagnostics"] } },
           { key: "is247", label: "Open 24/7", type: "boolean" },
           { key: "timings", label: "Timings", type: "text", mandatory: true, placeholder: "e.g. Mon-Sat 8AM - 9PM" },
           {
             key: "machinery",
             label: "Heavy Machinery & Equipment",
             type: "object_array",
+            showIf: { field: "labType", contains: ["Radiology & Imaging", "Integrated Diagnostics"] },
             arrayFields: [
               { key: "machineName", label: "Machine Name (e.g. 3 Tesla MRI)", type: "text" },
               { key: "manufacturer", label: "Manufacturer / Model (e.g. Siemens Magnetom)", type: "text" },
@@ -282,10 +283,10 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "professional",
         label: "Professional & Services",
         fields: [
-          { key: "ambulanceType", label: "Ambulance Type", type: "select", mandatory: true, options: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Patient Transport Vehicle"] },
+          { key: "ambulanceType", label: "Ambulance Type", type: "string_array", mandatory: true, placeholder: "Select Ambulance Types", options: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Patient Transport Vehicle", "Mortuary Van"] },
           { key: "fleetSize", label: "Fleet Size", type: "number", mandatory: true, placeholder: "e.g. 5" },
-          { key: "oxygenAvailable", label: "Oxygen Available", type: "boolean" },
-          { key: "ventilatorAvailable", label: "Ventilator Available", type: "boolean" },
+          { key: "oxygenAvailable", label: "Oxygen Available", type: "boolean", showIf: { field: "ambulanceType", contains: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)"] } },
+          { key: "ventilatorAvailable", label: "Ventilator Available", type: "boolean", showIf: { field: "ambulanceType", contains: ["Advanced Life Support (ALS)"] } },
           { key: "is247", label: "Available 24/7", type: "boolean" },
           { key: "baseLocation", label: "Base Location / Station", type: "text", mandatory: true }
         ]

@@ -120,9 +120,36 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
   // Check if a field should be hidden based on dynamic schema rules
   const isFieldHidden = (field: any, data: any) => {
-    if (!field.hiddenIf) return false;
-    const targetValue = data[field.hiddenIf.field];
-    return field.hiddenIf.in.includes(targetValue);
+    if (field.showIf) {
+      const targetValue = data[field.showIf.field];
+      if (!targetValue) return true; // Hide if no value
+      
+      const conditionValues = field.showIf.contains;
+      const conditionArr = Array.isArray(conditionValues) ? conditionValues : [conditionValues];
+      
+      if (Array.isArray(targetValue)) {
+        // If target is array (multi-select), check if it shares ANY elements with the condition array
+        return !targetValue.some(val => conditionArr.includes(val));
+      } else {
+        return !conditionArr.includes(targetValue);
+      }
+    }
+
+    if (field.hiddenIf) {
+      const targetValue = data[field.hiddenIf.field];
+      if (!targetValue) return false;
+      
+      const conditionValues = field.hiddenIf.in;
+      const conditionArr = Array.isArray(conditionValues) ? conditionValues : [conditionValues];
+
+      if (Array.isArray(targetValue)) {
+        return targetValue.some(val => conditionArr.includes(val));
+      } else {
+        return conditionArr.includes(targetValue);
+      }
+    }
+    
+    return false;
   };
 
   // Calculate Progress
