@@ -23,24 +23,24 @@ export default function GlobalFooter() {
         {/* =========================================================================
             SUBSCRIPTION BANNER (Top of Footer)
            ========================================================================= */}
-        <div className="mb-8 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-3xl p-6 lg:p-8 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
+        <div className="mb-8 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-3xl p-4 lg:py-5 lg:px-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-teal-500/10 to-transparent pointer-events-none"></div>
           
           <div className="w-full lg:w-1/3 text-center lg:text-left z-10">
-            <h3 className="text-xl font-black text-white mb-2">Get Health Insights</h3>
-            <p className="text-sm text-slate-400">Join 50,000+ users receiving weekly updates on healthcare, new hospitals, and wellness tips.</p>
+            <h3 className="text-lg font-black text-white mb-0.5">Get Health Insights</h3>
+            <p className="text-xs text-slate-400">Updates on healthcare, new hospitals, and wellness tips.</p>
           </div>
           
-          <form className="w-full lg:w-2/3 flex flex-col md:flex-row gap-4 z-10" onSubmit={(e) => e.preventDefault()}>
+          <form className="w-full lg:w-2/3 flex flex-col md:flex-row gap-3 z-10" onSubmit={(e) => e.preventDefault()}>
             <div className="flex-1 relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-              <input type="email" placeholder="Your Email Address" className="w-full bg-[#020810] border border-slate-700 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all placeholder:text-slate-500 text-sm font-medium" />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input type="email" placeholder="Your Email Address" className="w-full bg-[#020810] border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all placeholder:text-slate-500 text-sm font-medium" />
             </div>
             <div className="flex-1 relative">
-              <MessageCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-              <input type="tel" placeholder="WhatsApp Number" className="w-full bg-[#020810] border border-slate-700 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-500 text-sm font-medium" />
+              <MessageCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input type="tel" placeholder="WhatsApp Number" className="w-full bg-[#020810] border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-500 text-sm font-medium" />
             </div>
-            <button type="submit" className="bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all whitespace-nowrap active:scale-95">
+            <button type="submit" className="bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-3 px-6 rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all whitespace-nowrap active:scale-95 text-sm">
               Subscribe Free
             </button>
           </form>
