@@ -225,21 +225,21 @@ export default function GlobalFooter() {
             </div>
 
             {/* Right: Social Media Icons */}
-            <div className="flex gap-2 shrink-0 mt-4 lg:mt-0">
-              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-rose-500 hover:text-rose-400 hover:-translate-y-1 transition-all">
-                <Youtube className="w-3 h-3" />
+            <div className="flex gap-2.5 shrink-0 mt-4 lg:mt-0">
+              <a href="#" className="w-8 h-8 rounded-full bg-[#FF0000] text-white flex items-center justify-center hover:-translate-y-1 hover:shadow-lg hover:shadow-[#FF0000]/40 transition-all" title="YouTube">
+                <Youtube className="w-4 h-4" />
               </a>
-              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-pink-500 hover:text-pink-400 hover:-translate-y-1 transition-all">
-                <Instagram className="w-3 h-3" />
+              <a href="#" className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center hover:-translate-y-1 hover:shadow-lg hover:shadow-[#ee2a7b]/40 transition-all" title="Instagram">
+                <Instagram className="w-4 h-4" />
               </a>
-              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-blue-500 hover:text-blue-400 hover:-translate-y-1 transition-all">
-                <Facebook className="w-3 h-3" />
+              <a href="#" className="w-8 h-8 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:-translate-y-1 hover:shadow-lg hover:shadow-[#1877F2]/40 transition-all" title="Facebook">
+                <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-sky-500 hover:text-sky-400 hover:-translate-y-1 transition-all">
-                <Twitter className="w-3 h-3" />
+              <a href="#" className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:-translate-y-1 hover:shadow-lg hover:shadow-white/20 border border-slate-800 transition-all" title="X (Twitter)">
+                <Twitter className="w-4 h-4" />
               </a>
-              <a href="#" className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center hover:border-indigo-500 hover:text-indigo-400 hover:-translate-y-1 transition-all">
-                <Linkedin className="w-3 h-3" />
+              <a href="#" className="w-8 h-8 rounded-full bg-[#0A66C2] text-white flex items-center justify-center hover:-translate-y-1 hover:shadow-lg hover:shadow-[#0A66C2]/40 transition-all" title="LinkedIn">
+                <Linkedin className="w-4 h-4" />
               </a>
             </div>
             
