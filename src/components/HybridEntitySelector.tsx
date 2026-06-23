@@ -173,8 +173,8 @@ export default function HybridEntitySelector({
               >
                 <option>Dr.</option>
                 <option>Prof.</option>
-                <option>Mr.</option>
-                <option>Ms.</option>
+                <option>Asst. Prof.</option>
+                <option>Assoc. Prof.</option>
               </select>
             </div>
             
