@@ -51,20 +51,20 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
   }, []);
 
   const handleScan = (text: string) => {
-    // 1. Instantly freeze the camera stream so it stops scanning,
-    // but DO NOT destroy or unmount it (which causes the fatal crash).
-    if (scannerRef.current) {
-      try {
-        scannerRef.current.pause(true);
-      } catch (e) {
-        console.error("Pause error", e);
-      }
-    }
+    // Prevent double-scans
+    if (isProcessing) return;
+    setIsProcessing(true);
     
-    // 2. Add an artificial delay so the user sees the freeze, then route natively.
+    // We do absolutely nothing to the scanner here. No pause, no clear, no stop.
+    // We let the natural React unmount cleanup handle it to prevent WebView crashes.
+    
+    // 1. Immediately close the modal so the normal unmount cleanup runs safely
+    onClose();
+    
+    // 2. Wait 300ms for the modal to completely disappear and camera to shut down safely
     setTimeout(() => {
       processUrlLogic(text);
-    }, 500);
+    }, 300);
   };
 
   const processUrlLogic = (url: string) => {
@@ -75,7 +75,6 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
         const uid = new URLSearchParams(url.split('?')[1]).get('uid');
         if (uid) {
           router.push(`/portal/doctor?patientId=${encodeURIComponent(uid)}`);
-          setTimeout(() => { onClose(); }, 1000);
           return;
         }
       }
@@ -86,14 +85,7 @@ export default function ScannerModal({ onClose }: ScannerModalProps) {
         const parsedUrl = new URL(url);
         // Ensure it's a dehapa URL or route it anyway if we trust it
         if (parsedUrl.hostname.includes('dehapa.com') || parsedUrl.hostname.includes('localhost') || parsedUrl.hostname.includes('vercel.app')) {
-          // 3. Use seamless Next.js router.push so we never trigger a native Android browser navigation,
-          // which is causing the "This page couldn't load" system crash in Custom Tabs.
           router.push(parsedUrl.pathname + parsedUrl.search);
-          
-          // 4. Delay the onClose so the DOM isn't destroyed while router is transitioning.
-          setTimeout(() => {
-            onClose();
-          }, 1000);
           return;
         }
       }
