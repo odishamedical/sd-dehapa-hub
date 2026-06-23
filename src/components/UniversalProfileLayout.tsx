@@ -14,6 +14,7 @@ import HorizontalScrollGallery from '@/components/HorizontalScrollGallery';
 import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
+import DoctorEndorsementWidget from '@/components/network/DoctorEndorsementWidget';
 
 const TABS_DOCTOR = ['locations', 'overview', 'experience', 'research', 'media'];
 const TABS_HOSPITAL = ['locations', 'overview', 'packages', 'departments', 'facilities', 'media'];
@@ -872,6 +873,15 @@ export default function UniversalProfileLayout({
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Doctor Endorsement Widget */}
+            {unwrappedParams.type === 'doctor' && verified && (
+              <DoctorEndorsementWidget 
+                targetDoctorId={profile.id} 
+                currentUserId={user?.uid || null} 
+                currentUserRole={currentUserRole} 
+              />
             )}
 
           </div>

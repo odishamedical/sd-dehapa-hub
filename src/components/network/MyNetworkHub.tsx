@@ -6,6 +6,7 @@ import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { ConnectionService, NetworkConnection, ConnectionStatus } from '@/services/connection.service';
+import SuggestedConnectionsWidget from './SuggestedConnectionsWidget';
 
 export default function MyNetworkHub({ 
   providerId, 
@@ -15,7 +16,7 @@ export default function MyNetworkHub({
   providerRole: string;
 }) {
   const [user, setUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'patients' | 'colleagues' | 'facilities' | 'requests'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'patients' | 'colleagues' | 'facilities' | 'requests' | 'family'>('overview');
   
   const [connections, setConnections] = useState<NetworkConnection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,8 +104,9 @@ export default function MyNetworkHub({
   const navItems = [
     { id: 'overview', label: 'Overview', count: null },
     { id: 'requests', label: 'Requests', count: pendingRequests.length },
-    { id: 'patients', label: 'Patients', count: patients.length },
-    { id: 'colleagues', label: 'Colleagues', count: colleagues.length },
+    ...(providerRole === 'patient' ? [{ id: 'family', label: 'Family & Dependents', count: null } as const] : []),
+    ...(providerRole !== 'patient' ? [{ id: 'patients', label: 'Patients', count: patients.length } as const] : []),
+    ...(providerRole !== 'patient' ? [{ id: 'colleagues', label: 'Colleagues', count: colleagues.length } as const] : []),
     { id: 'facilities', label: 'Facilities', count: facilities.length },
   ] as const;
 
@@ -201,6 +203,12 @@ export default function MyNetworkHub({
                  </div>
               </div>
             )}
+            
+            <SuggestedConnectionsWidget 
+              currentUserId={providerId} 
+              currentUserRole={providerRole} 
+              currentConnections={connections} 
+            />
           </div>
         )}
 
@@ -247,6 +255,21 @@ export default function MyNetworkHub({
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* FAMILY / CARE CIRCLE TAB */}
+        {activeTab === 'family' && providerRole === 'patient' && (
+          <div className="animate-in fade-in">
+            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-3xl p-8 text-center relative overflow-hidden">
+              <h3 className="text-xl font-bold text-slate-800 mb-2 relative z-10">Your Care Circle</h3>
+              <p className="text-slate-600 max-w-md mx-auto mb-8 relative z-10">Add family members to securely share health records and book appointments on their behalf.</p>
+              
+              <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-900/20 transition-all flex items-center justify-center gap-2 mx-auto">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Invite Family Member
+              </button>
+            </div>
           </div>
         )}
 
