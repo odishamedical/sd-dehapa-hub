@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import UniversalShareModal from '@/components/UniversalShareModal';
 
 // NOTE: In production, import firebase db and perform real checks
 // import { db, collection, getDocs, query, where } from '@/utils/firebase';
@@ -13,6 +14,10 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
   const [accessGranted, setAccessGranted] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   const [records, setRecords] = useState<any[]>([]);
+
+  // Share Modal State
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [documentToShare, setDocumentToShare] = useState<any>(null);
 
   useEffect(() => {
     // 1. Authentication & Role Check
@@ -288,11 +293,17 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
                       {/* Actions: Print & Share */}
                       {rec.type === 'prescription' && (
                         <div className="mt-4 pt-4 border-t border-[#1e293b] flex justify-end gap-4">
-                          <button className="text-xs font-bold uppercase tracking-widest text-[#94a3b8] hover:text-white flex items-center gap-1.5 transition-colors">
+                          <button 
+                            onClick={() => {
+                              setDocumentToShare(rec);
+                              setShareModalOpen(true);
+                            }}
+                            className="text-xs font-bold uppercase tracking-widest text-[#06b6d4] hover:text-white flex items-center gap-1.5 transition-colors"
+                          >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-                            Share via WhatsApp
+                            Share to Network Vault
                           </button>
-                          <button className="text-xs font-bold uppercase tracking-widest text-[#06b6d4] hover:text-[#0891b2] flex items-center gap-1.5 transition-colors">
+                          <button className="text-xs font-bold uppercase tracking-widest text-[#64748b] hover:text-[#f8fafc] flex items-center gap-1.5 transition-colors">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                             Print Original PDF
                           </button>
@@ -326,6 +337,18 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
         </div>
 
       </main>
+
+      {/* The Universal Share Modal */}
+      <UniversalShareModal 
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        documentData={documentToShare}
+        senderData={{
+          id: decodeURIComponent(params.vaultId), // using vault owner as sender
+          name: decodeURIComponent(params.vaultId).split("@")[0],
+          role: role || 'patient'
+        }}
+      />
 
     </div>
   );
