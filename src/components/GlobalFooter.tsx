@@ -188,11 +188,11 @@ export default function GlobalFooter() {
       <div className="bg-[#030d1a] border-t border-slate-800/80 w-full relative z-10 pt-8 pb-48 lg:pb-8">
         <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
           
-          {/* Company Info & Badges Row */}
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8">
+          {/* Company Info Row */}
+          <div className="flex flex-col items-center lg:items-start mb-8 w-full">
             
             {/* Left: Product & Address (Inline) */}
-            <div className="text-center lg:text-left flex flex-col md:flex-row items-center gap-6">
+            <div className="text-center lg:text-left flex flex-col md:flex-row items-center gap-6 w-full">
               
               {/* Premium Transparent Logo (Matches Header) */}
               <div className="flex items-center gap-3 shrink-0">
@@ -212,28 +212,15 @@ export default function GlobalFooter() {
               <div className="w-px h-10 bg-slate-800 hidden md:block shrink-0"></div>
 
               {/* Company Info */}
-              <div>
+              <div className="flex-1 w-full overflow-hidden">
                 <strong className="text-white block mb-2 text-[10px] sm:text-[11px] uppercase tracking-widest font-black">
                   <span className="text-teal-400">Dehapa : India's own Health Network</span> <span className="text-slate-600 mx-1">{'}'}</span> A product by : Shyam Dash Creation
                 </strong>
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-[10px] sm:text-xs text-slate-500 font-medium">
-                  <span>R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</span>
-                  <span className="hidden lg:block text-slate-700">•</span>
-                  <span className="flex items-center gap-1 text-teal-400 font-bold whitespace-nowrap"><PhoneCall className="w-3 h-3"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</span>
+                <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center lg:justify-start gap-1 lg:gap-3 text-[10px] sm:text-[11px] text-slate-400 font-medium">
+                  <span className="truncate">R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</span>
+                  <span className="hidden lg:block text-slate-700 shrink-0">•</span>
+                  <span className="flex items-center gap-1 text-teal-400 font-bold shrink-0"><PhoneCall className="w-3 h-3"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</span>
                 </div>
-              </div>
-            </div>
-
-            {/* Right: HIPAA & Architect Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 shrink-0">
-              <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-lg border border-emerald-500/20 shadow-sm" title="All telemetry and biometric data is end-to-end encrypted">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span className="text-emerald-400 hidden sm:block">HIPAA Encrypted</span>
-                <span className="text-emerald-400 sm:hidden">HIPAA</span>
-              </div>
-              <div className="flex items-center gap-2 text-white bg-slate-800 px-4 py-2 rounded-lg border border-slate-700 shadow-sm">
-                <span className="text-slate-400 hidden sm:block">Architect</span>
-                <span>SD IT Services</span>
               </div>
             </div>
             
@@ -277,14 +264,28 @@ export default function GlobalFooter() {
 
             </div>
 
-            {/* Right side: Back to Top */}
-            <button 
-              onClick={scrollToTop}
-              className="hidden md:flex shrink-0 items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-teal-500 hover:text-slate-900 text-slate-400 transition-all border border-slate-700 hover:border-teal-400 shadow-md group"
-              title="Back to Top"
-            >
-              <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-            </button>
+            {/* Right side: Badges & Back to Top */}
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 shadow-sm" title="All telemetry and biometric data is end-to-end encrypted">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="text-emerald-400 text-[9px] uppercase tracking-widest font-bold hidden xl:block">HIPAA Encrypted</span>
+                <span className="text-emerald-400 text-[9px] uppercase tracking-widest font-bold xl:hidden hidden sm:block">HIPAA</span>
+              </div>
+              <div className="flex items-center gap-2 text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 shadow-sm">
+                <span className="text-slate-400 text-[9px] uppercase tracking-widest font-bold hidden xl:block">Architect</span>
+                <span className="text-[9px] uppercase tracking-widest font-bold">SD IT Services</span>
+              </div>
+              
+              <div className="w-px h-6 bg-slate-800 mx-1 hidden md:block"></div>
+              
+              <button 
+                onClick={scrollToTop}
+                className="hidden md:flex shrink-0 items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-teal-500 hover:text-slate-900 text-slate-400 transition-all border border-slate-700 hover:border-teal-400 shadow-md group"
+                title="Back to Top"
+              >
+                <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+              </button>
+            </div>
             
           </div>
           
