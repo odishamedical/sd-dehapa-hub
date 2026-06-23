@@ -16,6 +16,7 @@ interface PrescriptionTemplateProps {
 }
 
 export default function PrescriptionTemplate({ doctorData, rxData, date }: PrescriptionTemplateProps) {
+  return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
