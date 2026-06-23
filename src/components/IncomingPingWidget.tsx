@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import { ConnectionService } from '@/services/connection.service';
 
 interface IncomingPingWidgetProps {
   doctorId: string;
@@ -90,6 +91,22 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
           acceptedByDoctorId: doctorId,
           acceptedAt: new Date()
         });
+        
+        // IMPLICIT CONNECTION: Automatically connect the patient and doctor
+        try {
+          // In real life we'd want the doctor's name, but we might just have ID here.
+          // We can just pass "Doctor" as a fallback, it will be pulled from directory later.
+          await ConnectionService.createApprovedConnection({
+            initiatorId: incomingRequest.patientId,
+            initiatorRole: 'patient',
+            initiatorName: incomingRequest.patientName || 'Patient',
+            receiverId: doctorId,
+            receiverRole: 'doctor',
+            receiverName: 'Doctor'
+          });
+        } catch (connErr) {
+          console.error("Failed to implicitly connect:", connErr);
+        }
         
         // Success! Route the doctor to the video consultation room
         router.push(`/consultation/${incomingRequest.id}`);

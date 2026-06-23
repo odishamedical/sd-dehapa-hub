@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { auth, db } from '@/lib/firebase';
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { ConnectionService } from '@/services/connection.service';
 
 function LoginContent() {
   const router = useRouter();
@@ -68,21 +69,29 @@ function LoginContent() {
     
     const userEmail = user.email || user.phoneNumber || additionalData.phone;
     
-    // Ghost Onboarding Auto-Assign
+    // Auto-Connect Invite Logic
     if (referralCode) {
       try {
         const dirRef = doc(db, 'directory', referralCode);
         const dirSnap = await getDoc(dirRef);
+        
         if (dirSnap.exists()) {
-          await updateDoc(dirRef, {
-            verified: true,
-            ownerEmail: userEmail,
-            assignedOwnerEmail: userEmail
+          const inviterData = dirSnap.data();
+          
+          // Create a connection request from the new user to the inviter
+          await ConnectionService.requestConnection({
+            initiatorId: user.uid,
+            initiatorRole: userRole,
+            initiatorName: userName,
+            receiverId: referralCode,
+            receiverRole: inviterData.role || 'doctor', // assume doctor if undefined
+            receiverName: inviterData.entityName || 'Network Provider'
           });
-          userRole = 'doctor'; // Assume doctors claim profiles typically
+          
+          console.log("Successfully created connection request to", inviterData.entityName);
         }
       } catch (err) {
-        console.error("Ghost onboarding failed", err);
+        console.error("Invite connection failed", err);
       }
     }
 
