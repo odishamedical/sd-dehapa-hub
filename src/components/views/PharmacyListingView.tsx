@@ -70,6 +70,28 @@ export default function PharmacysDirectory({
             country: d.country || "India"
         }));
 
+        // Inject Cipla Mock Premium Listing
+        if (!mappedData.find((d: any) => d.id === 'cipla')) {
+          mappedData.push({
+            id: 'cipla',
+            name: 'Cipla Limited',
+            specialty: 'Global Pharmaceutical Company',
+            experience: 'Since 1935',
+            rating: 4.8,
+            reviews: 15400,
+            hospital: 'Cipla HQ',
+            address: 'Peninsula Business Park, Lower Parel, Mumbai',
+            fee: 'Contact Admin',
+            img: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=400&auto=format&fit=crop',
+            verified: false,
+            available: true,
+            phone: '+91 22 4191 6000',
+            district: 'Mumbai City',
+            state: 'Maharashtra',
+            country: 'India'
+          });
+        }
+
         setPharmacys(mappedData);
       } catch (err: any) {
         console.error("Error fetching pharmacies:", err);
