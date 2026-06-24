@@ -70,6 +70,27 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
               { name: "Asthalin Inhaler", price: "Respiratory", included: "Widely used reliever inhaler for Asthma and COPD management." },
               { name: "Foracort Inhaler", price: "Respiratory", included: "Combination maintenance inhaler for chronic asthma." },
               { name: "Triomune", price: "Anti-retroviral", included: "Pioneering affordable 3-in-1 fixed-dose combination for HIV/AIDS." }
+            ],
+            // Fully populated data for premium showcase:
+            homeDeliveryRadius: "Global Distribution",
+            registrationNumber: "WHO-GMP / US FDA Approved",
+            hours: [
+              { day: "Corporate", time: "Mon-Fri: 09:00 AM - 06:00 PM" },
+              { day: "Manufacturing", time: "24/7 Operations" }
+            ],
+            topProducts: ["Asthalin Inhaler", "Foracort", "Triomune", "Ciplox", "Omnigel", "Aerocort", "Cofils", "Montair LC"],
+            pharmacyType: "Distributor",
+            distributorBrands: ["Cipla Limited", "Cipla Health", "InvaGen Pharmaceuticals", "GoApples"],
+            clinic: {
+              name: "Cipla Global Headquarters",
+              address: "Cipla House, Peninsula Business Park, Ganpatrao Kadam Marg, Lower Parel, Mumbai-400013",
+              phone: "+91 22 4191 6000",
+              website: "https://www.cipla.com",
+              mapUrl: "https://maps.google.com/maps?q=Cipla+House+Mumbai&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            },
+            youtubeLinks: [
+              { title: "Caring for Life - The Cipla Story", url: "https://www.youtube.com/watch?v=1234567890" },
+              { title: "Manufacturing Excellence", url: "https://www.youtube.com/watch?v=0987654321" }
             ]
           });
           setLoading(false);
