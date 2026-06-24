@@ -368,7 +368,7 @@ export default function GlobalTelemedicineFAB() {
   return (
     <>
       {/* Floating Action Button */}
-      <div className={`fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[100] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-50 pointer-events-none'}`}>
+      <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[100] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]">
         <button 
           onClick={handleOpen}
           className="bg-gradient-to-r from-red-500 to-rose-600 text-white p-4 rounded-full shadow-2xl hover:shadow-red-500/50 hover:scale-105 transition-all flex items-center justify-center group"
