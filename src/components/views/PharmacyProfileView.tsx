@@ -73,11 +73,8 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
             ],
             // Fully populated data for premium showcase:
             homeDeliveryRadius: "Global Distribution",
-            registrationNumber: "WHO-GMP / US FDA Approved",
-            hours: [
-              { day: "Corporate", time: "Mon-Fri: 09:00 AM - 06:00 PM" },
-              { day: "Manufacturing", time: "24/7 Operations" }
-            ],
+            retailLicense: "WHO-GMP / US FDA Approved",
+            timings: "Corporate: 09:00 AM - 06:00 PM | Mfg: 24/7",
             topProducts: ["Asthalin Inhaler", "Foracort", "Triomune", "Ciplox", "Omnigel", "Aerocort", "Cofils", "Montair LC"],
             pharmacyType: "Distributor",
             distributorBrands: ["Cipla Limited", "Cipla Health", "InvaGen Pharmaceuticals", "GoApples"],
@@ -89,8 +86,8 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
               mapUrl: "https://maps.google.com/maps?q=Cipla+House+Mumbai&t=&z=15&ie=UTF8&iwloc=&output=embed"
             },
             youtubeLinks: [
-              "https://www.youtube.com/watch?v=1234567890",
-              "https://www.youtube.com/watch?v=0987654321"
+              "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+              "https://www.youtube.com/watch?v=jNQXAC9IVRw"
             ]
           });
           setLoading(false);
