@@ -67,40 +67,46 @@ export default function DoctorCommandDock() {
   if (userRole !== "doctor" && userRole !== "super_admin") return null;
 
   return (
-    <div className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
-      <div className="bg-white/70 backdrop-blur-3xl border border-white/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] rounded-full px-1.5 py-1.5 md:px-2 md:py-2 flex items-center gap-1.5 md:gap-2">
+    <div className="fixed bottom-24 md:bottom-6 left-4 md:left-6 z-[100] animate-in slide-in-from-left-4 fade-in duration-500">
+      <div className="bg-slate-900/90 backdrop-blur-3xl border border-slate-700/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] rounded-full px-2 py-2 flex items-center gap-2 md:gap-3">
         
         {/* Dashboard Quick Link */}
         <button 
           onClick={() => window.location.href = "/portal/doctor"}
-          className="w-8 h-8 md:w-10 md:h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors"
+          className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
           title="Go to Dashboard"
         >
-          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
         </button>
 
-        <div className="w-px h-5 md:h-6 bg-slate-200"></div>
-
-        {/* The Toggle */}
-        <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 bg-slate-800 rounded-full shadow-inner cursor-pointer" onClick={toggleStatus}>
-          <div className={`relative inline-flex h-5 md:h-6 w-9 md:w-11 items-center rounded-full transition-colors ${isOnline ? "bg-teal-500 shadow-[0_0_15px_rgba(20,184,166,0.5)]" : "bg-slate-600"}`}>
-            <span className={`inline-block h-3.5 w-3.5 md:h-4 md:w-4 transform rounded-full bg-white transition-transform ${isOnline ? "translate-x-5 md:translate-x-6" : "translate-x-0.5 md:translate-x-1"}`} />
-          </div>
-          <span className={`text-[9px] md:text-[11px] font-black uppercase tracking-widest ${isOnline ? "text-teal-400 drop-shadow-[0_0_8px_rgba(45,212,191,0.5)]" : "text-slate-400"}`}>
-            {isOnline ? "Online" : "Offline"}
-          </span>
-        </div>
-
-        <div className="w-px h-5 md:h-6 bg-slate-200"></div>
+        {/* Round Online Toggle */}
+        <button 
+          onClick={toggleStatus}
+          className={`relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all border ${
+            isOnline 
+              ? "bg-green-500 border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.6)] animate-[pulse_2s_ease-in-out_infinite]" 
+              : "bg-slate-500 border-slate-400 hover:bg-slate-400 opacity-70"
+          }`}
+          title={isOnline ? "Go Offline" : "Go Online"}
+        >
+          {isOnline && (
+            <div className="absolute inset-0 rounded-full border-2 border-green-300 animate-ping opacity-40"></div>
+          )}
+          <div className="w-3 h-3 md:w-4 md:h-4 bg-white rounded-full"></div>
+        </button>
 
         {/* Notifications */}
         <button 
           onClick={() => window.location.href = "/portal/doctor"}
-          className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all relative ${pendingPings > 0 ? "bg-red-50 text-red-500 hover:bg-red-100 animate-pulse" : "hover:bg-slate-100 text-slate-500 hover:text-slate-800"}`}
+          className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all border relative ${
+            pendingPings > 0 
+              ? "bg-red-500 border-red-400 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse" 
+              : "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white"
+          }`}
         >
-          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
           {pendingPings > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] md:text-[10px] font-bold w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center border border-white shadow-sm">
+            <span className="absolute -top-1 -right-1 bg-white text-red-600 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-red-500 shadow-sm">
               {pendingPings}
             </span>
           )}

@@ -368,13 +368,15 @@ export default function GlobalTelemedicineFAB() {
   return (
     <>
       {/* Floating Action Button */}
-      <button 
-        onClick={handleOpen}
-        className="fixed bottom-[100px] md:bottom-6 right-6 z-50 bg-gradient-to-r from-red-500 to-rose-600 text-white p-4 rounded-full shadow-2xl hover:shadow-red-500/50 hover:scale-105 transition-all flex items-center justify-center group"
-      >
-        <svg className="w-6 h-6 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-        <span className="hidden md:block ml-2 font-bold uppercase tracking-wider text-sm">Consult Doctor</span>
-      </button>
+      <div className={`fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[100] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-50 pointer-events-none'}`}>
+        <button 
+          onClick={handleOpen}
+          className="bg-gradient-to-r from-red-500 to-rose-600 text-white p-4 rounded-full shadow-2xl hover:shadow-red-500/50 hover:scale-105 transition-all flex items-center justify-center group"
+        >
+          <svg className="w-6 h-6 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          <span className="hidden md:block ml-2 font-bold uppercase tracking-wider text-sm">Consult Doctor</span>
+        </button>
+      </div>
 
       {/* Slide-over Modal Backdrop */}
       {isOpen && (

@@ -73,7 +73,7 @@ export default function DehapaHome() {
     <main className="min-h-screen bg-[#020810] font-sans selection:bg-teal-500/30 overflow-x-hidden text-slate-100">
       
       {/* 1. HERO SECTION (The Gateway) - Futuristic Edition */}
-      <section className="relative pt-12 pb-12 lg:pt-28 lg:pb-36 overflow-hidden">
+      <section className="relative pt-6 pb-8 lg:pt-28 lg:pb-36 overflow-hidden">
         {/* Dynamic Holographic Background Matrix */}
         <div className="absolute inset-0 bg-[#020810] z-0">
           {/* Animated Grid */}
@@ -278,7 +278,7 @@ export default function DehapaHome() {
           </div>
 
           {/* Shareable Banner Image */}
-          <div className="mt-16 max-w-5xl mx-auto rounded-[32px] overflow-hidden border border-teal-500/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] relative group cursor-pointer animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-150">
+          <div className="mt-8 md:mt-16 max-w-5xl mx-auto rounded-[32px] overflow-hidden border border-teal-500/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] relative group cursor-pointer animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-150">
             <div className="absolute inset-0 bg-gradient-to-t from-[#020810] via-transparent to-transparent z-10 pointer-events-none"></div>
             <img src="/og-home.png" alt="DehaPa Hub - Sovereign Health Network" className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
             <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -300,7 +300,7 @@ export default function DehapaHome() {
           </div>
 
           {/* Giant Living Consult Button */}
-          <div className="mt-16 flex flex-col items-center justify-center relative z-20 animate-in zoom-in duration-1000 delay-300">
+          <div className="mt-8 md:mt-16 flex flex-col items-center justify-center relative z-20 animate-in zoom-in duration-1000 delay-300">
             <div className="relative group">
               {/* Massive radar ping effect */}
               <div className="absolute -inset-10 bg-red-500/20 rounded-full blur-2xl animate-pulse group-hover:bg-red-500/30 transition-all duration-500"></div>
@@ -388,14 +388,14 @@ export default function DehapaHome() {
       </section>
 
       {/* 3. UBER-LIKE AMBULANCE PING (Holographic Map) */}
-      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-4 lg:py-8 mb-8 lg:mb-16 scroll-mt-24 relative">
+      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 lg:py-8 mb-8 lg:mb-16 scroll-mt-24 relative">
         {/* Background ambient glow for map section */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[500px] bg-red-900/10 blur-[150px] pointer-events-none rounded-full"></div>
 
         <div className="bg-slate-900/80 backdrop-blur-2xl rounded-[3rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-slate-700/50 flex flex-col lg:flex-row relative z-10">
           
           {/* Left Side: Cyberpunk Interface */}
-          <div className="w-full lg:w-5/12 p-6 sm:p-12 lg:p-20 flex flex-col justify-center relative z-20 border-r border-slate-800">
+          <div className="w-full lg:w-5/12 p-5 sm:p-12 lg:p-20 flex flex-col justify-center relative z-20 border-r border-slate-800">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-black uppercase tracking-widest mb-8 w-max shadow-[0_0_15px_rgba(239,68,68,0.2)]">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
               Emergency Override
