@@ -89,8 +89,8 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
               mapUrl: "https://maps.google.com/maps?q=Cipla+House+Mumbai&t=&z=15&ie=UTF8&iwloc=&output=embed"
             },
             youtubeLinks: [
-              { title: "Caring for Life - The Cipla Story", url: "https://www.youtube.com/watch?v=1234567890" },
-              { title: "Manufacturing Excellence", url: "https://www.youtube.com/watch?v=0987654321" }
+              "https://www.youtube.com/watch?v=1234567890",
+              "https://www.youtube.com/watch?v=0987654321"
             ]
           });
           setLoading(false);
