@@ -545,25 +545,28 @@ export default function AdminDataCRM() {
             
             
             {/* TABS HEADER */}
-            <div className="flex border-b border-slate-200 bg-white px-8 pt-4 gap-6 shrink-0">
+            <div className="flex border-b border-slate-200 bg-white px-8 pt-4 gap-6 shrink-0 overflow-x-auto no-scrollbar">
               <button 
                 onClick={() => setActiveTab('basic')}
-                className={`pb-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'basic' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                className={`pb-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === 'basic' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
               >
                 Basic Info
               </button>
               <button 
                 onClick={() => setActiveTab('locations')}
-                className={`pb-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'locations' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                className={`pb-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === 'locations' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
               >
                 Locations & Clinics
               </button>
-              <button 
-                onClick={() => setActiveTab('professional')}
-                className={`pb-4 text-sm font-bold border-b-2 transition-colors ${activeTab === 'professional' ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
-              >
-                Professional & Services
-              </button>
+              {selectedListing.category && directoryConfig[selectedListing.category]?.tabs?.filter(t => t.id !== 'basic').map(tab => (
+                <button 
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`pb-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id ? 'border-teal-600 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
             <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
@@ -824,9 +827,9 @@ export default function AdminDataCRM() {
                 </div>
               )}
 
-              {activeTab === 'professional' && (
+              {activeTab !== 'basic' && activeTab !== 'locations' && (
                 <div className="space-y-8">
-                  {selectedListing.category && directoryConfig[selectedListing.category]?.tabs?.find(t => t.id === 'professional')?.fields?.map(field => (
+                  {selectedListing.category && directoryConfig[selectedListing.category]?.tabs?.find(t => t.id === activeTab)?.fields?.map(field => (
                     <div key={field.key} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                       {field.type === 'object_array' && field.arrayFields ? (
                         <ObjectArrayEditor
@@ -902,9 +905,9 @@ export default function AdminDataCRM() {
                     </div>
                   ))}
                   
-                  {(!selectedListing.category || !directoryConfig[selectedListing.category]) && (
+                  {(!selectedListing.category || !directoryConfig[selectedListing.category] || !directoryConfig[selectedListing.category]?.tabs?.find(t => t.id === activeTab)) && (
                     <div className="bg-slate-50 border-2 border-dashed border-slate-200 p-8 rounded-2xl text-center">
-                      <p className="text-slate-500 font-bold text-sm">Please select a valid category to edit Professional & Services data.</p>
+                      <p className="text-slate-500 font-bold text-sm">No specific configuration available for this tab in {selectedListing.category || "this category"}.</p>
                     </div>
                   )}
                 </div>

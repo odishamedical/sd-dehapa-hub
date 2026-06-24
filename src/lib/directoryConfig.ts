@@ -208,16 +208,14 @@ export const directoryConfig: Record<string, CategoryConfig> = {
           {
             key: "partnerLabs",
             label: "Partner Diagnostic Labs (Outsourced Tests)",
-            type: "hybrid_entity_selector",
-            targetEntity: "Lab",
-            placeholder: "Search verified labs to link..."
+            type: "string_array",
+            placeholder: "Type lab name and press enter..."
           },
           {
             key: "partnerPharmacies",
             label: "Recommended / Partner Pharmacies",
-            type: "hybrid_entity_selector",
-            targetEntity: "Pharmacy",
-            placeholder: "Search verified pharmacies to link..."
+            type: "string_array",
+            placeholder: "Type pharmacy name and press enter..."
           }
         ]
       }
@@ -390,16 +388,14 @@ export const directoryConfig: Record<string, CategoryConfig> = {
           {
             key: "affiliatedHospitals",
             label: "Affiliated Hospitals (Incoming Samples)",
-            type: "hybrid_entity_selector",
-            targetEntity: "Hospital",
-            placeholder: "Search verified hospitals to link..."
+            type: "string_array",
+            placeholder: "Type hospital name and press enter..."
           },
           {
             key: "collectionCenters",
             label: "Authorized Collection Centers / Franchises",
-            type: "hybrid_entity_selector",
-            targetEntity: "Lab",
-            placeholder: "Search verified labs/centers to link..."
+            type: "string_array",
+            placeholder: "Type center name and press enter..."
           }
         ]
       }
@@ -409,15 +405,56 @@ export const directoryConfig: Record<string, CategoryConfig> = {
     name: "Ambulance",
     tabs: [
       {
-        id: "professional",
-        label: "Professional & Services",
+        id: "ambulance_identity",
+        label: "Agency Identity & Operations",
         fields: [
-          { key: "ambulanceType", label: "Ambulance Type", type: "string_array", mandatory: true, placeholder: "Select Ambulance Types", options: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Patient Transport Vehicle", "Mortuary Van"] },
-          { key: "fleetSize", label: "Fleet Size", type: "number", mandatory: true, placeholder: "e.g. 5" },
-          { key: "oxygenAvailable", label: "Oxygen Available", type: "boolean", showIf: { field: "ambulanceType", contains: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)"] } },
-          { key: "ventilatorAvailable", label: "Ventilator Available", type: "boolean", showIf: { field: "ambulanceType", contains: ["Advanced Life Support (ALS)"] } },
+          { key: "registrationNumber", label: "Agency Registration No.", type: "text", mandatory: true },
+          { key: "establishedYear", label: "Established Year", type: "text" },
+          { key: "coverageRadius", label: "Coverage Radius", type: "text", placeholder: "e.g., 50km from base" },
           { key: "is247", label: "Available 24/7", type: "boolean" },
           { key: "baseLocation", label: "Base Location / Station", type: "text", mandatory: true }
+        ]
+      },
+      {
+        id: "fleet_operations",
+        label: "Fleet Details & Capabilities",
+        fields: [
+          { key: "ambulanceTypes", label: "Types of Ambulances Operated", type: "string_array", mandatory: true, placeholder: "Type (e.g. ALS, BLS) and press enter", options: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Patient Transport Vehicle", "Mortuary Van"] },
+          { key: "fleetSize", label: "Total Fleet Size", type: "number", mandatory: true, placeholder: "e.g. 5" },
+          {
+            key: "vehicles",
+            label: "Detailed Vehicle Roster",
+            type: "object_array",
+            arrayFields: [
+              { key: "vehicleNumber", label: "Vehicle Number Plate", type: "text" },
+              { key: "type", label: "Vehicle Type", type: "text", placeholder: "ALS / BLS" },
+              { key: "specialEquipment", label: "Special Equipment (Ventilator, ECMO, etc)", type: "textarea" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "b2b_network",
+        label: "Establish Your Network Connection",
+        fields: [
+          {
+            key: "partnerHospitals",
+            label: "Partner / Associated Hospitals",
+            type: "string_array",
+            placeholder: "Type hospital name and press enter..."
+          },
+          {
+            key: "partnerClinics",
+            label: "Partner Clinics",
+            type: "string_array",
+            placeholder: "Type clinic name and press enter..."
+          },
+          {
+            key: "corporateTieUps",
+            label: "Corporate / Industrial Tie-ups",
+            type: "string_array",
+            placeholder: "Type corporate client name and press enter..."
+          }
         ]
       }
     ]

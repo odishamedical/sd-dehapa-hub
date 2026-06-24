@@ -17,10 +17,10 @@ import InlineEditArray from '@/components/InlineEditArray';
 import ProviderEndorsementWidget from '@/components/network/ProviderEndorsementWidget';
 
 const TABS_DOCTOR = ['locations', 'overview', 'experience', 'research', 'media'];
-const TABS_HOSPITAL = ['locations', 'overview', 'packages', 'departments', 'facilities', 'media'];
+const TABS_HOSPITAL = ['locations', 'overview', 'packages', 'departments', 'facilities', 'network', 'media'];
 const TABS_PHARMACY = ['locations', 'overview', 'products', 'distributors', 'media'];
-const TABS_LAB = ['locations', 'overview', 'tests', 'facilities', 'media'];
-const TABS_AMBULANCE = ['locations', 'overview', 'fleet', 'media'];
+const TABS_LAB = ['locations', 'overview', 'tests', 'facilities', 'network', 'media'];
+const TABS_AMBULANCE = ['locations', 'overview', 'fleet', 'network', 'media'];
 
 export default function UniversalProfileLayout({ 
   profile, 
@@ -422,6 +422,72 @@ export default function UniversalProfileLayout({
                           <p className="text-base text-white mt-2">{det.value}</p>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Ambulance Operations (Ambulance specific) */}
+                {type === 'ambulance' && (profile.registrationNumber || profile.coverageRadius || profile.fleetSize) && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl mt-8">
+                    <h2 className="text-2xl font-bold text-white mb-6 font-serif">Operations Details</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {profile.registrationNumber && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest">Registration No.</h4>
+                          <p className="text-base text-white mt-2 break-all">{profile.registrationNumber}</p>
+                        </div>
+                      )}
+                      {profile.coverageRadius && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest">Coverage</h4>
+                          <p className="text-base text-white mt-2 break-all">{profile.coverageRadius}</p>
+                        </div>
+                      )}
+                      {profile.fleetSize && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest">Fleet Size</h4>
+                          <p className="text-base text-white mt-2 break-all">{profile.fleetSize} Vehicles</p>
+                        </div>
+                      )}
+                      {profile.is247 && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl items-center justify-center">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest mb-2">Availability</h4>
+                          <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-bold uppercase tracking-wider">24/7 Service</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Pharmacy Operations (Pharmacy specific) */}
+                {type === 'pharmacy' && (profile.drugLicense || profile.gstin || profile.establishedYear || profile.timings) && (
+                  <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl mt-8">
+                    <h2 className="text-2xl font-bold text-white mb-6 font-serif">Operations Details</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {profile.drugLicense && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest">Drug License</h4>
+                          <p className="text-base text-white mt-2 break-all">{profile.drugLicense}</p>
+                        </div>
+                      )}
+                      {profile.gstin && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest">GSTIN</h4>
+                          <p className="text-base text-white mt-2 break-all">{profile.gstin}</p>
+                        </div>
+                      )}
+                      {profile.establishedYear && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest">Est. Year</h4>
+                          <p className="text-base text-white mt-2 break-all">{profile.establishedYear}</p>
+                        </div>
+                      )}
+                      {profile.timings && (
+                        <div className="flex flex-col bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+                          <h4 className="font-bold text-slate-400 text-xs uppercase tracking-widest">Timings</h4>
+                          <p className="text-base text-white mt-2 break-all">{profile.timings}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -958,6 +1024,95 @@ export default function UniversalProfileLayout({
               </div>
             )}
 
+            {/* TAB CONTENT: PRODUCTS (Pharmacy) */}
+            {activeTab === 'products' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif flex items-center gap-3">
+                    <svg className="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    Product Inventory
+                  </h2>
+                  {profile.topProducts && profile.topProducts.length > 0 ? (
+                    <div className="flex flex-wrap gap-3">
+                      {profile.topProducts.map((prod: string, idx: number) => (
+                        <div key={idx} className="bg-slate-800/80 border border-slate-700 px-4 py-2 rounded-xl text-white font-medium shadow-sm hover:border-cyan-500/50 hover:bg-slate-700 transition-all">
+                          {prod}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">No specific products listed yet. Most regular medicines are usually available.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TAB CONTENT: DISTRIBUTORS / NETWORK (Pharmacy) */}
+            {activeTab === 'distributors' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif flex items-center gap-3">
+                    <svg className="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    B2B Network Connections
+                  </h2>
+                  
+                  {profile.pharmacyType === 'Retailer' && profile.retailerSuppliers?.length > 0 && (
+                    <div className="mb-8">
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Supplying Wholesalers & Distributors</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {profile.retailerSuppliers.map((supplier: string, idx: number) => (
+                          <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                            {supplier}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {profile.pharmacyType === 'Wholesaler' && profile.wholesalerCompanies?.length > 0 && (
+                    <div className="mb-8">
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Represented Companies / Brands</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {profile.wholesalerCompanies.map((company: string, idx: number) => (
+                          <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+                            {company}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {profile.pharmacyType === 'Distributor' && profile.distributorBrands?.length > 0 && (
+                    <div className="mb-8">
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Auth. Distributor For Brands</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {profile.distributorBrands.map((brand: string, idx: number) => (
+                          <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+                            {brand}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(!profile.pharmacyType || (
+                      (!profile.retailerSuppliers || profile.retailerSuppliers.length === 0) &&
+                      (!profile.wholesalerCompanies || profile.wholesalerCompanies.length === 0) &&
+                      (!profile.distributorBrands || profile.distributorBrands.length === 0)
+                  )) && (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">No B2B connections mapped yet. Network building in progress.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* TAB CONTENT: LAB TESTS */}
             {activeTab === 'tests' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
@@ -1034,6 +1189,190 @@ export default function UniversalProfileLayout({
                       <p className="text-sm text-slate-400 font-semibold italic">Infrastructure details not available.</p>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* TAB CONTENT: FLEET (Ambulance) */}
+            {activeTab === 'fleet' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif flex items-center gap-3">
+                    <svg className="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    Vehicle Roster & Capabilities
+                  </h2>
+                  
+                  {profile.vehicles?.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                      {profile.vehicles.map((veh: any, idx: number) => (
+                        <div key={idx} className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 shadow-lg hover:border-cyan-500/30 transition-all group">
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <span className="px-3 py-1 bg-slate-900 border border-slate-600 text-cyan-400 text-[10px] font-bold uppercase rounded-md mb-2 inline-block">
+                                {veh.type || "Ambulance"}
+                              </span>
+                              <h3 className="text-xl font-bold text-white">{veh.vehicleNumber}</h3>
+                            </div>
+                            <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
+                              <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                          </div>
+                          
+                          {veh.specialEquipment && (
+                            <div className="mt-4 pt-4 border-t border-slate-700/50">
+                              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Equipped With:</h4>
+                              <p className="text-sm text-slate-300">{veh.specialEquipment}</p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                      <p className="text-sm text-slate-400 font-semibold italic">Detailed vehicle roster not available.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TAB CONTENT: NETWORK (Hospital, Lab, Ambulance) */}
+            {activeTab === 'network' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+                <div className="bg-slate-900/40 backdrop-blur-xl rounded-[32px] p-8 md:p-10 border border-slate-700/50 shadow-xl">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-serif flex items-center gap-3">
+                    <svg className="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    B2B Network Connections
+                  </h2>
+                  
+                  {type === 'hospital' && (
+                    <>
+                      {profile.partnerLabs?.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Partner Diagnostic Labs</h3>
+                          <div className="flex flex-wrap gap-3">
+                            {profile.partnerLabs.map((lab: string, idx: number) => (
+                              <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+                                {lab}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {profile.partnerPharmacies?.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Recommended Pharmacies</h3>
+                          <div className="flex flex-wrap gap-3">
+                            {profile.partnerPharmacies.map((pharmacy: string, idx: number) => (
+                              <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                {pharmacy}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {(!profile.partnerLabs || profile.partnerLabs.length === 0) && (!profile.partnerPharmacies || profile.partnerPharmacies.length === 0) && (
+                        <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                          <p className="text-sm text-slate-400 font-semibold italic">No partner network mapped yet.</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {type === 'lab' && (
+                    <>
+                      {profile.affiliatedHospitals?.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Affiliated Hospitals</h3>
+                          <div className="flex flex-wrap gap-3">
+                            {profile.affiliatedHospitals.map((hospital: string, idx: number) => (
+                              <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+                                {hospital}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {profile.collectionCenters?.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Collection Centers</h3>
+                          <div className="flex flex-wrap gap-3">
+                            {profile.collectionCenters.map((center: string, idx: number) => (
+                              <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                {center}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {(!profile.affiliatedHospitals || profile.affiliatedHospitals.length === 0) && (!profile.collectionCenters || profile.collectionCenters.length === 0) && (
+                        <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                          <p className="text-sm text-slate-400 font-semibold italic">No partner network mapped yet.</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {type === 'ambulance' && (
+                    <>
+                      {profile.partnerHospitals?.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Partner Hospitals</h3>
+                          <div className="flex flex-wrap gap-3">
+                            {profile.partnerHospitals.map((hospital: string, idx: number) => (
+                              <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+                                {hospital}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {profile.partnerClinics?.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Partner Clinics</h3>
+                          <div className="flex flex-wrap gap-3">
+                            {profile.partnerClinics.map((clinic: string, idx: number) => (
+                              <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+                                {clinic}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {profile.corporateTieUps?.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Corporate / Industrial Tie-ups</h3>
+                          <div className="flex flex-wrap gap-3">
+                            {profile.corporateTieUps.map((corporate: string, idx: number) => (
+                              <div key={idx} className="bg-gradient-to-r from-slate-800 to-slate-800/80 border border-slate-700 px-5 py-3 rounded-xl text-white font-bold shadow-md hover:border-cyan-500/50 transition-all flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                {corporate}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {(!profile.partnerHospitals || profile.partnerHospitals.length === 0) && (!profile.partnerClinics || profile.partnerClinics.length === 0) && (!profile.corporateTieUps || profile.corporateTieUps.length === 0) && (
+                        <div className="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-center">
+                          <p className="text-sm text-slate-400 font-semibold italic">No partner network mapped yet.</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
                 </div>
               </div>
             )}
