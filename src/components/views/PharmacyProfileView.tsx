@@ -45,6 +45,37 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
+        if (id === 'cipla') {
+          setPharmacy({
+            id: 'cipla',
+            name: "Cipla Limited",
+            subtitle: "Global Pharmaceutical Company",
+            image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=400&auto=format&fit=crop",
+            verified: false,
+            isPremium: true,
+            stats: { products: "1,500+", network: "80+ Countries", founded: "1935" },
+            about: "Cipla is a leading Indian multinational pharmaceutical company. Guided by its core purpose of \"Caring for Life,\" the company is dedicated to providing high-quality, affordable medicines to patients across the globe.",
+            details: [
+              { label: "Phone", value: "+91 22 4191 6000" },
+              { label: "Email", value: "contactus@cipla.com" },
+              { label: "Address", value: "Peninsula Business Park, Lower Parel, Mumbai" }
+            ],
+            roster: ["Respiratory", "Cardiovascular", "Oncology", "Anti-infectives", "HIV/AIDS"],
+            rawImages: [
+              "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?q=80&w=1200&auto=format&fit=crop"
+            ],
+            healthPackages: [
+              { name: "Asthalin Inhaler", price: "Respiratory", included: "Widely used reliever inhaler for Asthma and COPD management." },
+              { name: "Foracort Inhaler", price: "Respiratory", included: "Combination maintenance inhaler for chronic asthma." },
+              { name: "Triomune", price: "Anti-retroviral", included: "Pioneering affordable 3-in-1 fixed-dose combination for HIV/AIDS." }
+            ]
+          });
+          setLoading(false);
+          return;
+        }
+
         let docSnap: any;
         let docId = id;
         
