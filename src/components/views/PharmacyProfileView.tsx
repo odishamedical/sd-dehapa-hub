@@ -45,7 +45,7 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        if (id === 'cipla') {
+        if (id === 'cipla' || customSlug === 'cipla') {
           setPharmacy({
             id: 'cipla',
             name: "Cipla Limited",
