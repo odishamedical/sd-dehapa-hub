@@ -339,20 +339,20 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-[#020810]/80 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-6 lg:px-12 h-24 transition-all duration-300">
+    <header className="sticky top-0 z-[100] bg-[#020810]/80 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-3 md:px-6 lg:px-12 h-20 md:h-24 transition-all duration-300">
       {/* 1. Web Name / Logo */}
-      <div className="flex items-center gap-4">
-        <a href="/" className="flex items-center gap-4 group">
-          <div className="relative w-16 h-16 flex items-center justify-center transition-transform group-hover:scale-105">
+      <div className="flex items-center gap-2 md:gap-4 shrink-0">
+        <a href="/" className="flex items-center gap-2 md:gap-4 group">
+          <div className="relative w-10 h-10 md:w-16 md:h-16 flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
             {/* Added unoptimized tag or use a regular img tag to prevent Next.js from breaking the path if not configured */}
             <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain relative z-10" />
             <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-xl group-hover:bg-teal-400/40 transition-colors pointer-events-none"></div>
           </div>
           <div className="flex flex-col justify-center">
-            <span className="text-2xl sm:text-3xl font-black tracking-wide text-white font-serif drop-shadow-md">
+            <span className="text-xl sm:text-3xl font-black tracking-wide text-white font-serif drop-shadow-md leading-tight">
               Dehapa
             </span>
-            <span className="text-xs sm:text-sm text-teal-300 tracking-[0.1em] font-medium group-hover:text-cyan-300 transition-colors">Your Health Our Mission</span>
+            <span className="text-[9px] sm:text-sm text-teal-300 tracking-[0.1em] font-medium group-hover:text-cyan-300 transition-colors leading-tight max-w-[120px] sm:max-w-none">Your Health Our Mission</span>
           </div>
         </a>
       </div>
@@ -372,7 +372,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       </nav>
 
       {/* 3. User Menu / Auth */}
-      <div className="flex items-center gap-2 md:gap-4 relative" ref={dropdownRef}>
+      <div className="flex items-center gap-1 md:gap-4 relative shrink-0" ref={dropdownRef}>
         
         {/* Hamburger Button (Mobile Only) */}
         <button 
@@ -396,12 +396,12 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
           <div className="relative">
             <button 
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-3 focus:outline-none cursor-pointer bg-slate-800/50 hover:bg-slate-700/80 border border-slate-700 hover:border-teal-500/50 rounded-full py-1.5 px-2 pr-4 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] group"
+              className="flex items-center gap-2 focus:outline-none cursor-pointer bg-slate-800/50 hover:bg-slate-700/80 border border-slate-700 hover:border-teal-500/50 rounded-full py-1 px-1.5 md:py-1.5 md:px-2 md:pr-4 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] group"
             >
               {userAvatar ? (
-                <img src={userAvatar} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-teal-500/50 group-hover:shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all" />
+                <img src={userAvatar} alt="Profile" className="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover border border-teal-500/50 group-hover:shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all shrink-0" />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-600 to-cyan-600 text-white flex items-center justify-center font-black text-xs shadow-[0_0_10px_rgba(20,184,166,0.5)]">
+                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-teal-600 to-cyan-600 text-white flex items-center justify-center font-black text-[10px] md:text-xs shadow-[0_0_10px_rgba(20,184,166,0.5)] shrink-0">
                   {userName ? userName.charAt(0).toUpperCase() : userEmail.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -409,7 +409,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
                  <span className="text-xs font-bold text-white tracking-wide max-w-[120px] truncate">{userName || "User"}</span>
                  {userRole && <span className="text-[9px] text-cyan-400 font-mono uppercase tracking-widest leading-none mt-0.5">{userRole.replace("_", " ")}</span>}
               </div>
-              <svg className={`w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
+              <svg className={`w-3 h-3 md:w-4 md:h-4 text-slate-400 group-hover:text-cyan-400 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
             </button>
             
             {/* The Dropdown Menu */}
