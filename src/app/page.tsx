@@ -388,7 +388,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 3. UBER-LIKE AMBULANCE PING (Holographic Map) */}
-      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 lg:py-8 mb-8 lg:mb-16 scroll-mt-24 relative">
+      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 lg:py-8 mb-2 lg:mb-16 scroll-mt-24 relative">
         {/* Background ambient glow for map section */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[500px] bg-red-900/10 blur-[150px] pointer-events-none rounded-full"></div>
 
@@ -449,7 +449,7 @@ export default function DehapaHome() {
           </div>
 
           {/* Right Side: Holographic Radar Map */}
-          <div className="w-full lg:w-7/12 min-h-[300px] lg:min-h-full bg-[#030b14] relative overflow-hidden flex items-center justify-center py-10 lg:py-0">
+          <div className="w-full lg:w-7/12 min-h-[300px] lg:min-h-full bg-[#030b14] relative overflow-hidden flex items-center justify-center py-4 lg:py-0">
             {/* Base Dark Map Grid */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.1)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-30"></div>
             
@@ -500,10 +500,10 @@ export default function DehapaHome() {
       </section>
 
       {/* 4. QR SMART CONNECTION (Cyber-Bridge) */}
-      <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-4 lg:py-8 mb-8 lg:mb-16 relative">
+      <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 lg:py-8 mb-4 lg:mb-16 relative">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/connected.png')] opacity-5 pointer-events-none"></div>
 
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-24 relative z-10">
           
           {/* Holographic Phone Scanner */}
           <div className="w-full lg:w-1/2 relative flex justify-center perspective-[2000px]">
