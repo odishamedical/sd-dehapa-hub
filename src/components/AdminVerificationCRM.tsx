@@ -124,9 +124,9 @@ export default function AdminVerificationCRM() {
           directoryData.registrationNumber = app.credentials?.registrationNumber || '';
         }
 
-        // Generate Custom Slug
-        directoryData.customSlug = `${directoryData.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now().toString().slice(-4)}`;
-
+        // Do NOT generate Custom Slug automatically. Vanity URLs are a premium feature.
+        // It should be assigned manually by admin via the Slug Registry if they purchase the plan.
+        
         batch.set(newListingRef, directoryData);
       } else {
         // Handle legacy listing claim
