@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -78,9 +78,40 @@ export default function UniversalProfileLayout({
     }
   }, [user, profile.id]);
 
-  const handleRequestConnection = async () => {
+  const searchParams = useSearchParams();
+  const [showInviteModal, setShowInviteModal] = useState(false);
+
+  useEffect(() => {
+    // 1. Show modal if ?action=connect is present
+    if (searchParams?.get('action') === 'connect') {
+      // Don't show if already connected, pending, or is self
+      if (connectionStatus !== 'approved' && connectionStatus !== 'pending' && user?.uid !== profile.id) {
+        setShowInviteModal(true);
+      }
+    }
+  }, [searchParams, connectionStatus, user, profile.id]);
+
+  useEffect(() => {
+    // 2. Auto-connect logic after login
+    const checkPendingConnection = async () => {
+      const pendingAction = localStorage.getItem('pendingConnectAction');
+      if (pendingAction === profile.id && user) {
+        localStorage.removeItem('pendingConnectAction');
+        if (connectionStatus !== 'approved' && connectionStatus !== 'pending' && user.uid !== profile.id) {
+           await handleRequestConnection(true); // Pass true to prevent redirect loops
+        }
+      }
+    };
+    // Give it a tiny delay to ensure connectionStatus has loaded
+    if (user && profile.id) {
+      setTimeout(() => checkPendingConnection(), 1000);
+    }
+  }, [user, profile.id, connectionStatus]);
+
+  const handleRequestConnection = async (isAutoRun = false) => {
     if (!user) {
-      router.push('/login');
+      localStorage.setItem('pendingConnectAction', profile.id);
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
     
@@ -107,6 +138,9 @@ export default function UniversalProfileLayout({
       });
       
       setConnectionStatus('pending');
+      if (isAutoRun) {
+        alert("Connection request sent automatically!");
+      }
     } catch (error) {
       console.error("Error requesting connection:", error);
       alert("Failed to send connection request. Please try again.");
@@ -1579,6 +1613,41 @@ export default function UniversalProfileLayout({
         </div>
 
       </div>
+      
+      {/* Invitation Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#060B14]/80 backdrop-blur-sm" onClick={() => setShowInviteModal(false)}></div>
+          <div className="bg-slate-900 border border-slate-700/50 rounded-[32px] p-8 max-w-sm w-full relative z-10 shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95">
+            <div className="w-20 h-20 bg-gradient-to-tr from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.4)] mb-6">
+              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+            </div>
+            
+            <h2 className="text-2xl font-black text-white font-serif mb-2 tracking-tight">You're Invited!</h2>
+            <p className="text-slate-400 text-sm mb-8 leading-relaxed">
+              <strong className="text-white">{profile.name}</strong> has invited you to connect on DehaPa Hub. Click below to securely accept this invitation and establish a verified connection.
+            </p>
+            
+            <button
+              onClick={() => {
+                handleRequestConnection();
+                setShowInviteModal(false);
+              }}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              Accept Invitation & Connect
+            </button>
+            <button
+              onClick={() => setShowInviteModal(false)}
+              className="mt-4 text-slate-500 hover:text-slate-300 text-xs font-bold uppercase tracking-widest transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
