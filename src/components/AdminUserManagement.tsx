@@ -543,7 +543,11 @@ export default function AdminUserManagement() {
                       </div>
                       <div className="md:col-span-2">
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Primary Address</p>
-                        <p className="font-medium text-slate-900 mt-1">{selectedUser.address || "No address on file."}</p>
+                        <p className="font-medium text-slate-900 mt-1">
+                          {typeof selectedUser.address === 'object' && selectedUser.address !== null 
+                            ? (selectedUser.address.localAddress || selectedUser.address.city || Object.values(selectedUser.address).filter(v => typeof v === 'string').join(', ')) 
+                            : (selectedUser.address || "No address on file.")}
+                        </p>
                       </div>
                     </div>
                   </section>
