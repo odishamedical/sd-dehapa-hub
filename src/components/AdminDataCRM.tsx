@@ -22,6 +22,7 @@ export default function AdminDataCRM() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [verifiedFilter, setVerifiedFilter] = useState("all");
+  const [sortOption, setSortOption] = useState("newest");
   
   // Location Filters
   const [countryFilter, setCountryFilter] = useState("India");
@@ -48,6 +49,7 @@ export default function AdminDataCRM() {
   // Selection and bulk operations
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isDeletingBulk, setIsDeletingBulk] = useState(false);
+  const [isBulking, setIsBulking] = useState(false);
   
   // Advanced features state
   const [activeTab, setActiveTab] = useState("basic");
@@ -94,9 +96,19 @@ export default function AdminDataCRM() {
     if (districtFilter && item.district !== districtFilter) return false;
     if (blockFilter && item.city !== blockFilter && item.block !== blockFilter) return false; // checking both city and block for backward compatibility
     return true;
+  }).sort((a: any, b: any) => {
+    if (sortOption === "newest") return (b.createdAt?.toMillis ? b.createdAt.toMillis() : 0) - (a.createdAt?.toMillis ? a.createdAt.toMillis() : 0);
+    if (sortOption === "oldest") return (a.createdAt?.toMillis ? a.createdAt.toMillis() : 0) - (b.createdAt?.toMillis ? b.createdAt.toMillis() : 0);
+    if (sortOption === "recent_update") return (b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0) - (a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0);
+    if (sortOption === "alpha") return (a.name || "").localeCompare(b.name || "");
+    return 0;
   });
 
   const uniqueCategories = Array.from(new Set(data.map(d => d.category).filter(Boolean)));
+  
+  const totalEntities = data.length;
+  const pendingVerifications = data.filter(d => !d.verified).length;
+  const hiddenRecords = data.filter(d => d.isVisible === false).length;
 
   const openDrawer = (listing: any) => {
     setActiveTab("basic");
@@ -130,6 +142,7 @@ export default function AdminDataCRM() {
       customSlug: "",
       source: "manual_entry",
       tenantId: "default",
+      isVisible: true,
       youtubeLinks: [],
       totalBeds: "",
       icuCapacity: "",
@@ -265,6 +278,7 @@ export default function AdminDataCRM() {
         city: selectedListing.city || "",
         district: selectedListing.district || "",
         verified: selectedListing.verified || false,
+        isVisible: selectedListing.isVisible !== undefined ? selectedListing.isVisible : true,
         customSlug: selectedListing.customSlug || "",
         clinicName: selectedListing.clinicName || "",
         ...selectedListing,
@@ -354,6 +368,47 @@ export default function AdminDataCRM() {
     setIsDeletingBulk(false);
   };
 
+  const handleBulkUpdate = async (updateField: string, updateValue: any) => {
+    if (selectedIds.length === 0) return;
+    const actionName = updateField === 'verified' && updateValue ? "Verify" : updateField === 'verified' && !updateValue ? "Unverify" : updateField === 'isVisible' && updateValue ? "Publish" : "Hide";
+    if (!confirm(`Are you sure you want to ${actionName} ${selectedIds.length} selected listings?`)) return;
+    setIsBulking(true);
+    try {
+      await Promise.all(selectedIds.map(id => updateDoc(doc(db, 'directory', id), { [updateField]: updateValue, updatedAt: serverTimestamp() })));
+      setData(data.map(d => selectedIds.includes(d.id) ? { ...d, [updateField]: updateValue } : d));
+      setSelectedIds([]);
+    } catch (e) {
+      console.error(e);
+      alert(`Failed to ${actionName} selected listings.`);
+    }
+    setIsBulking(false);
+  };
+
+  const handleExportCSV = () => {
+    if (filteredData.length === 0) return alert("No data to export.");
+    const headers = ["ID", "Name", "Category", "Phone", "City", "District", "Verified", "Visible"];
+    const csvRows = [headers.join(",")];
+    for (const row of filteredData) {
+      const values = [
+        row.id,
+        `"${(row.name || "").replace(/"/g, '""')}"`,
+        `"${(row.category || "").replace(/"/g, '""')}"`,
+        `"${row.phone || ""}"`,
+        `"${row.city || ""}"`,
+        `"${row.district || ""}"`,
+        row.verified ? "Yes" : "No",
+        row.isVisible !== false ? "Yes" : "No"
+      ];
+      csvRows.push(values.join(","));
+    }
+    const blob = new Blob([csvRows.join("\n")], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `directory_export_${Date.now()}.csv`);
+    a.click();
+  };
+
   return (
     <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[80vh] relative">
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
@@ -362,18 +417,13 @@ export default function AdminDataCRM() {
         <div>
           <h3 className="text-xl font-bold text-slate-900 drop-shadow-sm">Directory Data CRM</h3>
           <p className="text-sm font-semibold text-teal-600">Manage all {data.length} records in the ecosystem</p>
-          {selectedIds.length > 0 && (
-            <button 
-              onClick={handleBulkDelete}
-              disabled={isDeletingBulk}
-              className="mt-3 text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-4 py-2 rounded-lg flex items-center gap-2 font-bold transition-all shadow-sm disabled:opacity-50"
-            >
-              {isDeletingBulk ? <span className="animate-spin">...</span> : "Delete Selected Entities"}
-            </button>
-          )}
         </div>
         
         <div className="flex flex-wrap gap-3 w-full md:w-auto relative z-10">
+          <button onClick={handleExportCSV} className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-5 py-3 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 whitespace-nowrap">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            Export CSV
+          </button>
           <select 
             value={countryFilter} 
             onChange={e => { setCountryFilter(e.target.value); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); }}
@@ -430,11 +480,57 @@ export default function AdminDataCRM() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-slate-50/50 border-b border-slate-200 shrink-0 relative z-10">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center shrink-0">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          </div>
+          <div>
+            <div className="text-3xl font-black text-slate-800 leading-none">{totalEntities}</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Total Entities</div>
+          </div>
+        </div>
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          </div>
+          <div>
+            <div className="text-3xl font-black text-slate-800 leading-none">{pendingVerifications}</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Pending Verification</div>
+          </div>
+        </div>
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+          </div>
+          <div>
+            <div className="text-3xl font-black text-slate-800 leading-none">{hiddenRecords}</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Hidden Records</div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Action Bar for Bulk Selection */}
+      {selectedIds.length > 0 && (
+        <div className="px-6 py-3 bg-teal-50 border-b border-teal-100 flex flex-wrap items-center justify-between gap-4 z-10">
+          <div className="text-sm font-bold text-teal-800">{selectedIds.length} listings selected</div>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => handleBulkUpdate('verified', true)} disabled={isBulking} className="text-xs bg-white text-teal-700 border border-teal-200 hover:bg-teal-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Verify</button>
+            <button onClick={() => handleBulkUpdate('verified', false)} disabled={isBulking} className="text-xs bg-white text-amber-700 border border-amber-200 hover:bg-amber-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Unverify</button>
+            <button onClick={() => handleBulkUpdate('isVisible', true)} disabled={isBulking} className="text-xs bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Publish</button>
+            <button onClick={() => handleBulkUpdate('isVisible', false)} disabled={isBulking} className="text-xs bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Hide</button>
+            <button onClick={handleBulkDelete} disabled={isDeletingBulk} className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm ml-2">Delete</button>
+          </div>
+        </div>
+      )}
+
       {/* Dynamic Self-Learning Category Filters */}
       {uniqueCategories.length > 0 && (
-        <div className="px-6 py-3 bg-white/50 backdrop-blur-md border-b border-slate-200 flex items-center gap-2 overflow-x-auto no-scrollbar relative z-10">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest shrink-0 mr-2">Filter by Type:</span>
-          <button
+        <div className="px-6 py-3 bg-white/50 backdrop-blur-md border-b border-slate-200 flex flex-wrap items-center gap-3 relative z-10">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar flex-1">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest shrink-0 mr-2">Filter by Type:</span>
+            <button
+
             onClick={() => setCategoryFilter("")}
             className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               categoryFilter === "" 
@@ -455,8 +551,21 @@ export default function AdminDataCRM() {
               }`}
             >
               {cat as string}
-            </button>
-          ))}
+            ))}
+          </div>
+          <div className="flex gap-2 shrink-0 border-l border-slate-200 pl-4">
+            <select value={verifiedFilter} onChange={(e) => setVerifiedFilter(e.target.value)} className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white font-medium text-slate-700 outline-none focus:border-teal-400">
+              <option value="all">Verification: All</option>
+              <option value="verified">Verified Only</option>
+              <option value="unverified">Unverified Only</option>
+            </select>
+            <select value={sortOption} onChange={(e) => setSortOption(e.target.value)} className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white font-medium text-slate-700 outline-none focus:border-teal-400">
+              <option value="newest">Sort: Newest First</option>
+              <option value="oldest">Sort: Oldest First</option>
+              <option value="recent_update">Sort: Recently Updated</option>
+              <option value="alpha">Sort: Alphabetical</option>
+            </select>
+          </div>
         </div>
       )}
 
@@ -495,7 +604,10 @@ export default function AdminDataCRM() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-bold text-sm text-slate-900 drop-shadow-sm">{item.name}</div>
+                    <div className="font-bold text-sm text-slate-900 drop-shadow-sm flex items-center gap-2">
+                      {item.name}
+                      {item.isVisible === false && <span className="bg-slate-200 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Hidden</span>}
+                    </div>
                     <div className="text-xs font-semibold text-teal-600 mt-0.5 uppercase tracking-wider">{item.category}</div>
                   </td>
                   <td className="px-6 py-4">
@@ -534,8 +646,8 @@ export default function AdminDataCRM() {
       </div>
 
       {isDrawerOpen && selectedListing && (
-        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex justify-center items-center p-4">
-          <div className="bg-white w-full max-w-5xl max-h-[90vh] rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex justify-end">
+          <div className="bg-white w-full max-w-4xl h-full flex flex-col shadow-2xl animate-in slide-in-from-right rounded-l-3xl overflow-hidden">
             <div className="p-6 border-b flex justify-between items-center shrink-0 bg-gradient-to-r from-slate-900 to-teal-900 text-white shadow-md z-10">
               <h3 className="font-bold text-2xl font-serif">{isNewListing ? "New Record" : selectedListing.name}</h3>
               <button onClick={() => setIsDrawerOpen(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">
@@ -678,13 +790,25 @@ export default function AdminDataCRM() {
                   </div>
                   <div>
                     <label className="form-label">Category</label>
-                    <select value={selectedListing.category || ""} onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} className="form-select">
-                      <option value="">Select Category</option>
-                      <option value="Doctor">Doctor</option>
-                      <option value="Hospital">Hospital</option>
-                      <option value="Pharmacy">Pharmacy</option>
-                      <option value="Lab">Lab</option>
-                    </select>
+                    <input 
+                      type="text" 
+                      list="categoriesList"
+                      value={selectedListing.category || ""} 
+                      onChange={e => setSelectedListing({...selectedListing, category: e.target.value})} 
+                      className="form-input" 
+                      placeholder="Type or select a category"
+                    />
+                    <datalist id="categoriesList">
+                      {uniqueCategories.map((cat: any) => (
+                        <option key={cat} value={cat} />
+                      ))}
+                      <option value="Doctor" />
+                      <option value="Hospital" />
+                      <option value="Pharmacy" />
+                      <option value="Lab" />
+                      <option value="Ambulance" />
+                      <option value="Clinic" />
+                    </datalist>
                   </div>
                   <div>
                     <label className="form-label">Sub-Category / Specialty</label>
@@ -759,6 +883,13 @@ export default function AdminDataCRM() {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input type="checkbox" id="featuredCheck" checked={selectedListing.featured || false} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-6 h-6 text-amber-500 rounded border-slate-300" />
                       <span className="text-sm font-bold text-slate-900">Featured / Sponsored</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer ml-auto border-l border-slate-300 pl-6">
+                      <div className={`relative inline-block w-12 h-6 rounded-full transition-colors ${selectedListing.isVisible !== false ? 'bg-teal-500' : 'bg-slate-300'}`}>
+                        <input type="checkbox" className="absolute opacity-0 w-0 h-0" checked={selectedListing.isVisible !== false} onChange={e => setSelectedListing({...selectedListing, isVisible: e.target.checked})} />
+                        <span className={`absolute cursor-pointer top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${selectedListing.isVisible !== false ? 'transform translate-x-6' : ''}`}></span>
+                      </div>
+                      <span className="text-sm font-bold text-slate-900">{selectedListing.isVisible !== false ? 'Public (Visible)' : 'Hidden (Draft)'}</span>
                     </label>
                   </div>
                 </div>
