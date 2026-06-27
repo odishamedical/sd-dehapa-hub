@@ -15,8 +15,13 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import PremiumHeroSearch from '@/components/PremiumHeroSearch';
+import { QRCodeSVG } from 'qrcode.react';
+import { QrCode, X } from 'lucide-react';
 
 export function DoctorListingView({ data }: { data: any }) {
+  const [showQR, setShowQR] = useState(false);
+  const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}${generateUniversalSeoUrl(data, 'doctors')}` : '';
+
   return (
     <Link href={generateUniversalSeoUrl(data, 'doctors')} className="relative h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
       {/* Background Metal Gradient */}
@@ -80,6 +85,15 @@ export function DoctorListingView({ data }: { data: any }) {
           
           {/* Bottom Buttons */}
           <div className="flex items-center gap-1.5 sm:gap-2 mt-auto pt-2 sm:pt-3 border-t border-slate-400/30">
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                setShowQR(true);
+              }}
+              className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-2 rounded-md border border-slate-400 transition-colors shadow-sm flex items-center justify-center shrink-0"
+            >
+              <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
             <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-2 sm:px-4 rounded-md border border-slate-400 text-[9px] sm:text-[10px] transition-colors whitespace-nowrap shadow-sm text-center">
               Contact
             </div>
@@ -90,6 +104,50 @@ export function DoctorListingView({ data }: { data: any }) {
           
         </div>
       </div>
+
+      {/* QR Code Modal (Rendered conditionally but ignores Link clicks via stopPropagation) */}
+      {showQR && (
+        <div 
+          className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm rounded-[24px]"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowQR(false);
+          }}
+        >
+          <div 
+            className="bg-white p-4 rounded-2xl shadow-2xl flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center w-full mb-3">
+              <span className="text-sm font-bold text-slate-800">Scan to Connect</span>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowQR(false);
+                }}
+                className="text-slate-400 hover:text-red-500 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+              <QRCodeSVG 
+                value={profileUrl}
+                size={120}
+                bgColor={"#f8fafc"}
+                fgColor={"#0f172a"}
+                level={"H"}
+                includeMargin={false}
+              />
+            </div>
+            <p className="text-[10px] text-slate-500 mt-3 font-medium text-center">
+              Scan this code to instantly view<br/> {data.name}'s profile.
+            </p>
+          </div>
+        </div>
+      )}
     </Link>
   );
 };

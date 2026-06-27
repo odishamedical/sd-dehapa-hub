@@ -279,7 +279,8 @@ export default function AdminDataCRM() {
         district: selectedListing.district || "",
         verified: selectedListing.verified || false,
         isPublished: selectedListing.isPublished !== undefined ? selectedListing.isPublished : true,
-        customSlug: selectedListing.customSlug || "",
+        customSlug: selectedListing.customSlug?.trim() || "",
+        videoFee: selectedListing.videoFee || "",
         clinicName: selectedListing.clinicName || "",
         ...selectedListing,
         customFields: cleanDynamicFields,
@@ -766,7 +767,7 @@ export default function AdminDataCRM() {
                   <div className="relative">
                     <label className="form-label">Custom Slug</label>
                     <div className="flex gap-2">
-                      <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value})} className="form-input" />
+                      <input type="text" value={selectedListing.customSlug || ""} onChange={e => setSelectedListing({...selectedListing, customSlug: e.target.value.trim()})} className="form-input" />
                       <button onClick={checkSlugAvailability} className="bg-slate-800 text-white px-4 py-1 rounded-lg text-sm font-bold">Check</button>
                       <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold whitespace-nowrap">Super Search</button>
                     </div>
