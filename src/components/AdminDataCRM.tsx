@@ -551,7 +551,8 @@ export default function AdminDataCRM() {
               }`}
             >
               {cat as string}
-            ))}
+            </button>
+          ))}
           </div>
           <div className="flex gap-2 shrink-0 border-l border-slate-200 pl-4">
             <select value={verifiedFilter} onChange={(e) => setVerifiedFilter(e.target.value)} className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white font-medium text-slate-700 outline-none focus:border-teal-400">
