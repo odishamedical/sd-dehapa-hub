@@ -134,7 +134,8 @@ export default function DoctorsDirectory({
         const mappedData = docsData
           .filter((d: any) => {
             const isDocType = d.category?.toLowerCase() === "doctor" || d.role?.toLowerCase() === "doctor" || d.isPublic !== undefined;
-            return isDocType && d.isPublished !== false && d.isPublic !== false;
+            const isLive = d.isPublic === true || d.isPublished === true || (d.isPublished !== false && d.isPublic !== false);
+            return isDocType && isLive;
           })
           .map((d: any) => ({
           id: d.id,
