@@ -339,7 +339,7 @@ export default function DashboardLayout({
 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
               <QRCodeSVG 
-                value={(userProfile.profileUrl || `${origin}/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect'} 
+                value={(userProfile.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/profile/${roleName.split(' ')[0].toLowerCase()}/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect'} 
                 size={200} 
                 level="L"
                 fgColor="#0f172a" 
@@ -348,7 +348,7 @@ export default function DashboardLayout({
 
             <button 
               onClick={() => {
-                const link = (userProfile.profileUrl || `${origin}/id/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect';
+                const link = (userProfile.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/profile/${roleName.split(' ')[0].toLowerCase()}/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect';
                 navigator.clipboard.writeText(link);
                 alert("Invitation Link Copied to Clipboard!");
               }}

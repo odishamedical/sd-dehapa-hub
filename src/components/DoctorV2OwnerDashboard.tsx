@@ -561,7 +561,7 @@ export default function DoctorV2OwnerDashboard() {
 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
               <QRCodeSVG 
-                value={(entityData.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/id/${(entityData.slug || entityData.name || 'doctor').toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect'} 
+                value={(entityData.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/profile/doctor/${entityData.id}`) + '?action=connect'} 
                 size={200} 
                 level="L"
                 fgColor="#0f172a" 
@@ -570,7 +570,7 @@ export default function DoctorV2OwnerDashboard() {
 
             <button 
               onClick={() => {
-                const link = (entityData.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/id/${(entityData.slug || entityData.name || 'doctor').toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect';
+                const link = (entityData.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/profile/doctor/${entityData.id}`) + '?action=connect';
                 navigator.clipboard.writeText(link);
                 alert("Invitation Link Copied to Clipboard!");
               }}
