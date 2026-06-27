@@ -10,6 +10,7 @@ import MyNetworkHub from '@/components/network/MyNetworkHub';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
 import ContextHelpDrawer from '@/components/ContextHelpDrawer';
+import { QRCodeSVG } from 'qrcode.react';
 
 const WIZARD_STEPS = [
   { id: "identity", label: "Identity & Media" },
@@ -27,6 +28,7 @@ export default function DoctorV2OwnerDashboard() {
   const [userEmail, setUserEmail] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
   
   // Dashboard State
   const [activeTab, setActiveTab] = useState("home");
@@ -201,9 +203,12 @@ export default function DoctorV2OwnerDashboard() {
               <div className="w-12 h-12 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
                 {entityData.name ? entityData.name.charAt(0).toUpperCase() : "D"}
               </div>
-              <div className="overflow-hidden">
-                <h3 className="font-bold text-slate-900 truncate">{entityData.name || "Doctor"}</h3>
-                <p className="text-xs text-slate-500 truncate">{entityData.primarySpecialty || "Setup Required"}</p>
+              <div className="overflow-hidden flex-1 group cursor-pointer" onClick={() => setShowQRModal(true)}>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-slate-900 truncate group-hover:text-teal-600 transition-colors">{entityData.name || "Doctor"}</h3>
+                  <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-500 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                </div>
+                <p className="text-xs text-slate-500 truncate mt-0.5">{entityData.primarySpecialty || "Setup Required"}</p>
               </div>
             </div>
 
@@ -271,8 +276,11 @@ export default function DoctorV2OwnerDashboard() {
                   <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-lg">
                     {entityData.name ? entityData.name.charAt(0).toUpperCase() : "D"}
                   </div>
-                  <div className="overflow-hidden">
-                    <h3 className="font-bold text-slate-900 truncate text-sm">{entityData.name || "Doctor"}</h3>
+                  <div className="overflow-hidden flex-1 group" onClick={() => setShowQRModal(true)}>
+                    <div className="flex items-center justify-between cursor-pointer">
+                      <h3 className="font-bold text-slate-900 truncate text-sm group-hover:text-teal-600 transition-colors">{entityData.name || "Doctor"}</h3>
+                      <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-500 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                    </div>
                   </div>
                 </div>
                 <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg">
@@ -531,6 +539,49 @@ export default function DoctorV2OwnerDashboard() {
 
         </main>
       </div>
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer transition-opacity"
+            onClick={() => setShowQRModal(false)}
+          ></div>
+          
+          <div className="relative bg-white rounded-3xl p-10 flex flex-col items-center shadow-2xl max-w-sm w-full animate-in zoom-in-95">
+            <button 
+              onClick={() => setShowQRModal(false)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <h3 className="text-xl font-bold text-slate-900 mb-1 text-center">{entityData.name || 'Doctor'}'s Profile</h3>
+            <p className="text-sm text-teal-600 mb-8 text-center">{entityData.primarySpecialty || 'Setup Required'}</p>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
+              <QRCodeSVG 
+                value={(entityData.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/id/${(entityData.slug || entityData.name || 'doctor').toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect'} 
+                size={200} 
+                level="L"
+                fgColor="#0f172a" 
+              />
+            </div>
+
+            <button 
+              onClick={() => {
+                const link = (entityData.profileUrl || `${typeof window !== 'undefined' ? window.location.origin : ''}/id/${(entityData.slug || entityData.name || 'doctor').toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect';
+                navigator.clipboard.writeText(link);
+                alert("Invitation Link Copied to Clipboard!");
+              }}
+              className="w-full bg-slate-900 hover:bg-teal-600 text-white rounded-xl py-3 font-bold text-sm transition-colors flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+              Copy Invitation Link
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Context-Aware Help Drawer */}
       <ContextHelpDrawer 
