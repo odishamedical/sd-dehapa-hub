@@ -62,8 +62,15 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
         let docId = id;
         
         if (customSlug) {
-          const q = query(collection(db, 'directory'), where('customSlug', '==', customSlug), limit(1));
-          const querySnapshot = await getDocs(q);
+          let q = query(collection(db, 'directory'), where('customSlug', '==', customSlug), limit(1));
+          let querySnapshot = await getDocs(q);
+          
+          if (querySnapshot.empty) {
+            // Hotfix: catch older documents that accidentally saved with a trailing space
+            q = query(collection(db, 'directory'), where('customSlug', '==', customSlug + ' '), limit(1));
+            querySnapshot = await getDocs(q);
+          }
+
           if (!querySnapshot.empty) {
             docSnap = querySnapshot.docs[0];
             docId = docSnap.id;
