@@ -185,9 +185,12 @@ export default function DashboardLayout({
                     {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                 )}
-                <div className="overflow-hidden cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setShowQRModal(true)}>
-                  <h3 className="font-bold text-slate-900 truncate" title={userProfile.name}>{userProfile.name}</h3>
-                  <p className="text-xs text-slate-500 truncate" title={userProfile.subtitle}>{userProfile.subtitle}</p>
+                <div className="overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-1 group" onClick={() => setShowQRModal(true)}>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-slate-900 truncate group-hover:text-teal-600 transition-colors" title={userProfile.name}>{userProfile.name}</h3>
+                    <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-500 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                  </div>
+                  <p className="text-xs text-slate-500 truncate mt-0.5" title={userProfile.subtitle}>{userProfile.subtitle}</p>
                 </div>
               </div>
             )}
@@ -215,8 +218,11 @@ export default function DashboardLayout({
                       {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
                     </div>
                   )}
-                  <div className="overflow-hidden" onClick={() => setShowQRModal(true)}>
-                    <h3 className="font-bold text-slate-900 truncate text-sm">{userProfile?.name || roleName}</h3>
+                  <div className="overflow-hidden flex-1 group" onClick={() => setShowQRModal(true)}>
+                    <div className="flex items-center justify-between cursor-pointer">
+                      <h3 className="font-bold text-slate-900 truncate text-sm group-hover:text-teal-600 transition-colors">{userProfile?.name || roleName}</h3>
+                      <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-500 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                    </div>
                   </div>
                 </div>
                 <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg">
