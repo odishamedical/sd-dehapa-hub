@@ -104,11 +104,11 @@ export default function AdminDataCRM() {
     return 0;
   });
 
-  const uniqueCategories = Array.from(new Set(data.map(d => d.category).filter(Boolean)));
+  const uniqueCategories = Array.from(new Set(['Doctor', 'Hospital', 'Pharmacy', 'Lab', 'Ambulance', ...data.map(d => d.category).filter(Boolean)]));
   
   const totalEntities = data.length;
   const pendingVerifications = data.filter(d => !d.verified).length;
-  const hiddenRecords = data.filter(d => d.isVisible === false).length;
+  const hiddenRecords = data.filter(d => d.isPublished === false).length;
 
   const openDrawer = (listing: any) => {
     setActiveTab("basic");
@@ -142,7 +142,7 @@ export default function AdminDataCRM() {
       customSlug: "",
       source: "manual_entry",
       tenantId: "default",
-      isVisible: true,
+      isPublished: true,
       youtubeLinks: [],
       totalBeds: "",
       icuCapacity: "",
@@ -278,7 +278,7 @@ export default function AdminDataCRM() {
         city: selectedListing.city || "",
         district: selectedListing.district || "",
         verified: selectedListing.verified || false,
-        isVisible: selectedListing.isVisible !== undefined ? selectedListing.isVisible : true,
+        isPublished: selectedListing.isPublished !== undefined ? selectedListing.isPublished : true,
         customSlug: selectedListing.customSlug || "",
         clinicName: selectedListing.clinicName || "",
         ...selectedListing,
@@ -370,7 +370,7 @@ export default function AdminDataCRM() {
 
   const handleBulkUpdate = async (updateField: string, updateValue: any) => {
     if (selectedIds.length === 0) return;
-    const actionName = updateField === 'verified' && updateValue ? "Verify" : updateField === 'verified' && !updateValue ? "Unverify" : updateField === 'isVisible' && updateValue ? "Publish" : "Hide";
+    const actionName = updateField === 'verified' && updateValue ? "Verify" : updateField === 'verified' && !updateValue ? "Unverify" : updateField === 'isPublished' && updateValue ? "Publish" : "Unpublish";
     if (!confirm(`Are you sure you want to ${actionName} ${selectedIds.length} selected listings?`)) return;
     setIsBulking(true);
     try {
@@ -397,7 +397,7 @@ export default function AdminDataCRM() {
         `"${row.city || ""}"`,
         `"${row.district || ""}"`,
         row.verified ? "Yes" : "No",
-        row.isVisible !== false ? "Yes" : "No"
+        row.isPublished !== false ? "Yes" : "No"
       ];
       csvRows.push(values.join(","));
     }
@@ -517,8 +517,8 @@ export default function AdminDataCRM() {
           <div className="flex flex-wrap gap-2">
             <button onClick={() => handleBulkUpdate('verified', true)} disabled={isBulking} className="text-xs bg-white text-teal-700 border border-teal-200 hover:bg-teal-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Verify</button>
             <button onClick={() => handleBulkUpdate('verified', false)} disabled={isBulking} className="text-xs bg-white text-amber-700 border border-amber-200 hover:bg-amber-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Unverify</button>
-            <button onClick={() => handleBulkUpdate('isVisible', true)} disabled={isBulking} className="text-xs bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Publish</button>
-            <button onClick={() => handleBulkUpdate('isVisible', false)} disabled={isBulking} className="text-xs bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Hide</button>
+            <button onClick={() => handleBulkUpdate('isPublished', true)} disabled={isBulking} className="text-xs bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Publish</button>
+            <button onClick={() => handleBulkUpdate('isPublished', false)} disabled={isBulking} className="text-xs bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Unpublish</button>
             <button onClick={handleBulkDelete} disabled={isDeletingBulk} className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm ml-2">Delete</button>
           </div>
         </div>
@@ -607,7 +607,7 @@ export default function AdminDataCRM() {
                   <td className="px-6 py-4">
                     <div className="font-bold text-sm text-slate-900 drop-shadow-sm flex items-center gap-2">
                       {item.name}
-                      {item.isVisible === false && <span className="bg-slate-200 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Hidden</span>}
+                      {item.isPublished === false && <span className="bg-slate-200 text-slate-600 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Hidden</span>}
                     </div>
                     <div className="text-xs font-semibold text-teal-600 mt-0.5 uppercase tracking-wider">{item.category}</div>
                   </td>
@@ -886,11 +886,11 @@ export default function AdminDataCRM() {
                       <span className="text-sm font-bold text-slate-900">Featured / Sponsored</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer ml-auto border-l border-slate-300 pl-6">
-                      <div className={`relative inline-block w-12 h-6 rounded-full transition-colors ${selectedListing.isVisible !== false ? 'bg-teal-500' : 'bg-slate-300'}`}>
-                        <input type="checkbox" className="absolute opacity-0 w-0 h-0" checked={selectedListing.isVisible !== false} onChange={e => setSelectedListing({...selectedListing, isVisible: e.target.checked})} />
-                        <span className={`absolute cursor-pointer top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${selectedListing.isVisible !== false ? 'transform translate-x-6' : ''}`}></span>
+                      <div className={`relative inline-block w-12 h-6 rounded-full transition-colors ${selectedListing.isPublished !== false ? 'bg-teal-500' : 'bg-slate-300'}`}>
+                        <input type="checkbox" className="absolute opacity-0 w-0 h-0" checked={selectedListing.isPublished !== false} onChange={e => setSelectedListing({...selectedListing, isPublished: e.target.checked})} />
+                        <span className={`absolute cursor-pointer top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${selectedListing.isPublished !== false ? 'transform translate-x-6' : ''}`}></span>
                       </div>
-                      <span className="text-sm font-bold text-slate-900">{selectedListing.isVisible !== false ? 'Public (Visible)' : 'Hidden (Draft)'}</span>
+                      <span className="text-sm font-bold text-slate-900">{selectedListing.isPublished !== false ? 'Public (Visible)' : 'Hidden (Draft)'}</span>
                     </label>
                   </div>
                 </div>
