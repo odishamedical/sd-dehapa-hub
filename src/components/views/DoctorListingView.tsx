@@ -132,7 +132,10 @@ export default function DoctorsDirectory({
         
         // Map the backend schema to what PremiumDoctorTicket expects
         const mappedData = docsData
-          .filter((d: any) => (d.category?.toLowerCase() === "doctor" || d.role?.toLowerCase() === "doctor") && d.isPublished !== false && d.isPublic !== false)
+          .filter((d: any) => {
+            const isDocType = d.category?.toLowerCase() === "doctor" || d.role?.toLowerCase() === "doctor" || d.isPublic !== undefined;
+            return isDocType && d.isPublished !== false && d.isPublic !== false;
+          })
           .map((d: any) => ({
           id: d.id,
           name: d.name || "Unknown Doctor",
