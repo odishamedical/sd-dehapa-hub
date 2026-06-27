@@ -526,35 +526,21 @@ export default function AdminDataCRM() {
 
       {/* Dynamic Self-Learning Category Filters */}
       {uniqueCategories.length > 0 && (
-        <div className="px-6 py-3 bg-white/50 backdrop-blur-md border-b border-slate-200 flex flex-wrap items-center gap-3 relative z-10">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar flex-1">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest shrink-0 mr-2">Filter by Type:</span>
-            <button
-
-            onClick={() => setCategoryFilter("")}
-            className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-              categoryFilter === "" 
-                ? "bg-slate-800 text-white shadow-sm" 
-                : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-            }`}
-          >
-            All Entities
-          </button>
-          {uniqueCategories.map(cat => (
-            <button
-              key={cat as string}
-              onClick={() => setCategoryFilter(cat as string)}
-              className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                categoryFilter === cat 
-                  ? "bg-teal-600 text-white shadow-sm shadow-teal-600/20" 
-                  : "bg-white text-slate-600 border border-slate-200 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700"
-              }`}
+        <div className="px-6 py-3 bg-white/50 backdrop-blur-md border-b border-slate-200 flex flex-wrap items-center gap-4 relative z-10">
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest shrink-0">Filter by Type:</span>
+            <select 
+              value={categoryFilter} 
+              onChange={(e) => setCategoryFilter(e.target.value)} 
+              className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-white font-bold text-teal-700 outline-none focus:border-teal-400 shadow-sm"
             >
-              {cat as string}
-            </button>
-          ))}
+              <option value="">All Entities</option>
+              {uniqueCategories.map((cat) => (
+                <option key={cat as string} value={cat as string}>{cat as string}</option>
+              ))}
+            </select>
           </div>
-          <div className="flex gap-2 shrink-0 border-l border-slate-200 pl-4">
+          <div className="flex gap-3 shrink-0 border-l border-slate-200 pl-4 ml-auto">
             <select value={verifiedFilter} onChange={(e) => setVerifiedFilter(e.target.value)} className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white font-medium text-slate-700 outline-none focus:border-teal-400">
               <option value="all">Verification: All</option>
               <option value="verified">Verified Only</option>
