@@ -34,11 +34,17 @@ export async function POST(request: Request) {
     const room = await response.json();
 
     // If the room already exists (e.g. from a previous click), Daily returns an error.
-    // In that case, we can just fetch the existing room.
+    // In that case, we MUST fetch the existing room to get the exact correct domain.
     if (room.error) {
        if (room.error === 'invalid-request-error' && room.info === 'a room with that name already exists') {
-          // Room already exists, return its URL
-          return NextResponse.json({ url: `https://dehapa.daily.co/dehapa-${appointmentId}` });
+          const existingRes = await fetch(`https://api.daily.co/v1/rooms/dehapa-${appointmentId}`, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${DAILY_API_KEY}` }
+          });
+          const existingRoom = await existingRes.json();
+          if (existingRoom.url) {
+             return NextResponse.json({ url: existingRoom.url });
+          }
        }
        throw new Error(room.error || 'Failed to create room');
     }
