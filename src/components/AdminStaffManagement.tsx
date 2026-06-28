@@ -79,7 +79,7 @@ export default function AdminStaffManagement() {
         </div>
       </div>
 
-      <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-8 flex flex-col md:flex-row gap-4 items-end">
+      <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-8 flex flex-col lg:flex-row gap-4 lg:items-end">
         <div className="flex-1 w-full">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Staff Email Address</label>
           <input 
@@ -90,7 +90,7 @@ export default function AdminStaffManagement() {
             className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 font-medium" 
           />
         </div>
-        <div className="w-full md:w-64">
+        <div className="w-full lg:w-64">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Assign Role</label>
           <select 
             value={role}
@@ -106,7 +106,7 @@ export default function AdminStaffManagement() {
         <button 
           onClick={handleInvite}
           disabled={isInviting || !email}
-          className="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl text-sm font-bold shadow-md transition-all disabled:opacity-50"
+          className="w-full lg:w-auto bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl text-sm font-bold shadow-md transition-all disabled:opacity-50 mt-2 lg:mt-0"
         >
           {isInviting ? "Adding..." : "Grant Access"}
         </button>
@@ -122,28 +122,30 @@ export default function AdminStaffManagement() {
           <p className="text-sm text-slate-500 max-w-sm mx-auto">Only the default super admin has access right now.</p>
         </div>
       ) : (
-        <div className="border border-slate-200 rounded-xl overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-200">
+        <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
+          <table className="w-full text-left block md:table">
+            <thead className="bg-slate-50 border-b border-slate-200 hidden md:table-header-group">
               <tr>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Email</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Role</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="block md:table-row-group divide-y divide-slate-100 p-3 md:p-0">
               {staff.map(user => (
-                <tr key={user.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-bold text-slate-900">{user.email}</td>
-                  <td className="px-6 py-4">
-                    <span className="bg-teal-50 text-teal-700 border border-teal-200 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+                <tr key={user.id} className="block md:table-row hover:bg-slate-50 transition-colors p-4 md:p-0">
+                  <td className="block md:table-cell px-0 md:px-6 py-1 md:py-4">
+                    <div className="font-bold text-slate-900 break-all md:break-normal">{user.email}</div>
+                  </td>
+                  <td className="block md:table-cell px-0 md:px-6 py-2 md:py-4">
+                    <span className="bg-teal-50 text-teal-700 border border-teal-200 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest inline-block">
                       {getRoleDisplayName(user.role)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="block md:table-cell px-0 md:px-6 pt-2 md:py-4 text-right border-t border-slate-100 md:border-none mt-2 md:mt-0">
                     <button 
                       onClick={() => handleRemove(user.id)}
-                      className="text-xs font-bold text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
+                      className="text-xs font-bold text-rose-600 border border-rose-200 bg-rose-50 hover:bg-rose-100 hover:border-rose-300 md:border-transparent md:bg-transparent md:hover:bg-red-50 px-3 py-2 md:py-1.5 rounded-lg transition-colors w-full md:w-auto text-center"
                     >
                       Revoke Access
                     </button>

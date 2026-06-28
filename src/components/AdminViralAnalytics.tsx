@@ -128,9 +128,9 @@ export default function AdminViralAnalytics() {
           <p className="text-sm text-slate-500 max-w-sm mx-auto">When users invite others via their unique link, they will appear on this leaderboard.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
+        <div className="overflow-x-auto md:overflow-visible">
+          <table className="w-full text-left border-collapse block md:table">
+            <thead className="hidden md:table-header-group">
               <tr className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-widest">
                 <th className="px-6 py-4 rounded-tl-xl">Rank</th>
                 <th className="px-6 py-4">Promoter Details</th>
@@ -139,32 +139,50 @@ export default function AdminViralAnalytics() {
                 <th className="px-6 py-4 rounded-tr-xl text-right">Invite Code</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="block md:table-row-group divide-y divide-transparent md:divide-slate-100 p-3 md:p-0">
               {leaderboard.map((entry, index) => (
-                <tr key={entry.shortCode} className="hover:bg-slate-50 transition-colors group">
-                  <td className="px-6 py-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-amber-100 text-amber-700' : index === 1 ? 'bg-slate-200 text-slate-700' : index === 2 ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-500'}`}>
-                      {index + 1}
+                <tr key={entry.shortCode} className="block md:table-row bg-white md:bg-transparent mb-3 md:mb-0 border border-slate-200 md:border-none shadow-sm md:shadow-none p-4 md:p-0 rounded-xl md:rounded-none hover:bg-slate-50 transition-colors group">
+                  <td className="block md:table-cell px-0 md:px-6 py-0 md:py-4">
+                    <div className="flex justify-between items-center md:block">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-amber-100 text-amber-700' : index === 1 ? 'bg-slate-200 text-slate-700' : index === 2 ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-500'}`}>
+                          {index + 1}
+                        </div>
+                        <div className="md:hidden flex flex-col">
+                          <span className="text-sm font-bold text-slate-900">{entry.promoterName}</span>
+                          <span className="text-xs text-slate-500">{entry.promoterEmail}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="md:hidden flex flex-col items-end gap-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xl font-black text-fuchsia-600 leading-none">{entry.referralCount}</span>
+                          <span className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">users</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border ${entry.promoterRole === 'doctor' ? 'bg-blue-50 text-blue-700 border-blue-200' : entry.promoterRole === 'hospital' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                          {entry.promoterRole}
+                        </span>
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="hidden md:table-cell px-6 py-4">
                     <div className="flex flex-col">
                       <span className="text-sm font-bold text-slate-900">{entry.promoterName}</span>
                       <span className="text-xs text-slate-500">{entry.promoterEmail}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="hidden md:table-cell px-6 py-4">
                     <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border ${entry.promoterRole === 'doctor' ? 'bg-blue-50 text-blue-700 border-blue-200' : entry.promoterRole === 'hospital' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
                       {entry.promoterRole}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="hidden md:table-cell px-6 py-4">
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-black text-fuchsia-600">{entry.referralCount}</span>
                       <span className="text-xs text-slate-400 font-medium">users</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="hidden md:table-cell px-6 py-4 text-right">
                     <span className="font-mono text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200">
                       {entry.shortCode}
                     </span>
