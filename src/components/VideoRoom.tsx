@@ -128,7 +128,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   if (videoCall && callObject) {
     return (
       <DailyProvider callObject={callObject}>
-        <CustomVideoGrid isDoctor={isDoctor} onEndCall={handleEndCall} />
+        <CustomVideoGrid isDoctor={isDoctor} onEndCall={handleEndCall} dailyUrl={dailyUrl} />
       </DailyProvider>
     );
   }
@@ -193,10 +193,30 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 // Custom Daily.co UI Components (100% White Labeled)
 // ----------------------------------------------------------------------------------
 
-function CustomVideoGrid({ isDoctor, onEndCall }: { isDoctor: boolean, onEndCall: () => void }) {
+function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl }: { isDoctor: boolean, onEndCall: () => void, dailyUrl: string | null }) {
   const localSessionId = useLocalSessionId();
   const remoteParticipantIds = useParticipantIds({ filter: 'remote' });
   const localVideo = useVideoTrack(localSessionId || '');
+  
+  // Use a hack to force re-render meeting state for debugging (not usually needed)
+  const [meetingState, setMeetingState] = useState<string>('unknown');
+  const callObject = DailyIframe.getCallInstance();
+  
+  useEffect(() => {
+    if (!callObject) return;
+    const updateState = () => setMeetingState(callObject.meetingState());
+    updateState();
+    callObject.on('joining-meeting', updateState);
+    callObject.on('joined-meeting', updateState);
+    callObject.on('left-meeting', updateState);
+    callObject.on('error', updateState);
+    return () => {
+      callObject.off('joining-meeting', updateState);
+      callObject.off('joined-meeting', updateState);
+      callObject.off('left-meeting', updateState);
+      callObject.off('error', updateState);
+    };
+  }, [callObject]);
 
   // Detect if the browser blocked the camera completely
   const isCameraBlocked = localVideo?.state === 'blocked' || localVideo?.state === 'off';
@@ -229,8 +249,10 @@ function CustomVideoGrid({ isDoctor, onEndCall }: { isDoctor: boolean, onEndCall
           <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
           <span className="text-white text-xs font-bold tracking-widest uppercase">Live Session</span>
         </div>
-        <div className="text-xs text-white/50 font-mono pointer-events-auto">
-          DEBUG ID: {window.location.pathname.split('/').pop()}
+        <div className="text-xs text-white/50 font-mono pointer-events-auto text-right max-w-[50%] overflow-hidden">
+          ID: {window.location.pathname.split('/').pop()} <br/>
+          STATE: {meetingState} <br/>
+          ROOM: {dailyUrl ? dailyUrl.split('/').pop() : 'none'}
         </div>
       </div>
 
