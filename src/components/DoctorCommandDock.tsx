@@ -67,9 +67,8 @@ export default function DoctorCommandDock() {
   if (userRole !== "doctor" && userRole !== "super_admin") return null;
 
   return (
-    <div className="fixed bottom-24 md:bottom-6 left-4 md:left-6 z-[100] animate-in slide-in-from-left-4 fade-in duration-500">
-      <div className="bg-slate-900/90 backdrop-blur-3xl border border-slate-700/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] rounded-full px-2 py-2 flex items-center gap-2 md:gap-3">
-        
+    <div className="fixed bottom-24 md:bottom-10 left-4 md:left-6 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
+      <div className="bg-slate-900/90 backdrop-blur-3xl border border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.25)] hover:shadow-[0_0_35px_rgba(20,184,166,0.5)] hover:border-teal-400/60 transition-all duration-300 rounded-full px-2.5 py-4 flex flex-col items-center gap-4">
         {/* Dashboard Quick Link */}
         <button 
           onClick={() => window.location.href = "/portal/doctor"}
