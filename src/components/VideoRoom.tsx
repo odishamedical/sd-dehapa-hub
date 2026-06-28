@@ -196,10 +196,33 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 function CustomVideoGrid({ isDoctor, onEndCall }: { isDoctor: boolean, onEndCall: () => void }) {
   const localSessionId = useLocalSessionId();
   const remoteParticipantIds = useParticipantIds({ filter: 'remote' });
+  const localVideo = useVideoTrack(localSessionId || '');
+
+  // Detect if the browser blocked the camera completely
+  const isCameraBlocked = localVideo?.state === 'blocked' || localVideo?.state === 'off';
 
   return (
     <div className="fixed inset-0 w-full h-full bg-slate-950 flex flex-col overflow-hidden z-[100]">
       
+      {/* Camera Blocked User Instruction Popup */}
+      {isCameraBlocked && (
+        <div className="absolute inset-0 z-[200] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center">
+           <div className="bg-red-500/20 text-red-500 p-6 rounded-full mb-6">
+             <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+             </svg>
+           </div>
+           <h3 className="text-3xl font-black text-white mb-4">Camera Blocked</h3>
+           <p className="text-slate-300 text-lg max-w-md mb-8 leading-relaxed">
+             Your mobile browser is blocking camera access for this consultation. <br/><br/>
+             Please tap the <strong>lock icon 🔒</strong> or settings icon in your address bar (top of screen), choose <strong>Permissions</strong>, and tap <strong>Allow Camera</strong>.
+           </p>
+           <button onClick={() => window.location.reload()} className="bg-emerald-500 text-white font-bold tracking-widest uppercase px-8 py-4 rounded-full hover:bg-emerald-400 transition-colors shadow-lg">
+             I've Allowed It - Reload Page
+           </button>
+        </div>
+      )}
+
       {/* Top Bar */}
       <div className="absolute top-0 left-0 w-full p-6 z-50 flex items-center justify-between pointer-events-none">
         <div className="bg-slate-900/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 flex items-center gap-2 pointer-events-auto">
@@ -215,21 +238,23 @@ function CustomVideoGrid({ isDoctor, onEndCall }: { isDoctor: boolean, onEndCall
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 gap-4">
              <div className="w-16 h-16 border-4 border-slate-700 border-t-slate-400 rounded-full animate-spin"></div>
-             <p className="font-bold tracking-widest">WAITING FOR {isDoctor ? 'PATIENT' : 'DOCTOR'} TO JOIN...</p>
+             <p className="font-bold tracking-widest text-center px-8">WAITING FOR {isDoctor ? 'PATIENT' : 'DOCTOR'} TO JOIN...</p>
           </div>
         )}
       </div>
 
       {/* Local Video Picture-in-Picture (Bottom Right) */}
-      <div className="absolute bottom-24 right-6 w-28 h-40 md:w-48 md:h-64 bg-slate-800 rounded-2xl overflow-hidden shadow-2xl border border-white/10 z-40">
-         {localSessionId && <VideoPlayer id={localSessionId} isLocal={true} />}
-      </div>
+      {!isCameraBlocked && (
+        <div className="absolute bottom-24 right-6 w-28 h-40 md:w-48 md:h-64 bg-slate-800 rounded-2xl overflow-hidden shadow-2xl border border-white/10 z-40">
+           {localSessionId && <VideoPlayer id={localSessionId} isLocal={true} />}
+        </div>
+      )}
 
       {/* Bottom Control Bar */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-slate-900/80 backdrop-blur-xl px-2 py-2 rounded-full border border-white/10">
          <button 
            onClick={onEndCall} 
-           className="bg-red-500 hover:bg-red-600 text-white font-bold tracking-widest uppercase text-xs px-8 py-4 rounded-full transition-colors flex items-center gap-2"
+           className="bg-red-500 hover:bg-red-600 text-white font-bold tracking-widest uppercase text-xs px-8 py-4 rounded-full transition-colors flex items-center gap-2 shadow-lg"
          >
             End Call
          </button>
