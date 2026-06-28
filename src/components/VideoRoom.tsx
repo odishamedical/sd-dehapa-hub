@@ -55,12 +55,11 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   // Join the room
   useEffect(() => {
     if (callObject && dailyUrl && videoCall) {
-      callObject.join({ url: dailyUrl });
-      return () => {
-        callObject.leave();
-        callObject.destroy();
-        setCallObject(null);
-      };
+      // Only join if we are not already joined or joining
+      const state = callObject.meetingState();
+      if (state === 'left-meeting' || state === 'new' || state === 'error') {
+         callObject.join({ url: dailyUrl }).catch(err => console.error("Daily join error:", err));
+      }
     }
   }, [callObject, dailyUrl, videoCall]);
 
