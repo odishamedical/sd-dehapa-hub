@@ -8,8 +8,8 @@ export async function POST(req: NextRequest) {
 
     // Initialize Razorpay SDK
     const razorpay = new Razorpay({
-      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID as string,
-      key_secret: process.env.RAZORPAY_KEY_SECRET as string,
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_T4EAcDlWDNQfwM',
+      key_secret: process.env.RAZORPAY_KEY_SECRET || 'wk3AfTi3na7WwNd230iDny9h',
     });
 
     // Create order options

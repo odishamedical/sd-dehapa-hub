@@ -51,7 +51,7 @@ export default function RazorpayCheckout({ amount, buttonText, paymentType, onSu
 
       // Step 2: Configure Razorpay Checkout Modal
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_T4EAcDlWDNQfwM',
         amount: order.amount,
         currency: order.currency,
         name: 'Dehapa Ecosystem',

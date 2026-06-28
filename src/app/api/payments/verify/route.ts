@@ -5,9 +5,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
-
-    const secret = process.env.RAZORPAY_KEY_SECRET as string;
-
+    const secret = process.env.RAZORPAY_KEY_SECRET || 'wk3AfTi3na7WwNd230iDny9h';
     // Generate the expected signature
     const generated_signature = crypto
       .createHmac('sha256', secret)
