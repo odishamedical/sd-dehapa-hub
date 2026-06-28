@@ -27,72 +27,19 @@ export default function RazorpayCheckout({ amount, buttonText, paymentType, onSu
   const handlePayment = async () => {
     setLoading(true);
 
-    try {
-      const res = await loadRazorpayScript();
-      if (!res) {
-        alert('Razorpay SDK failed to load. Are you online?');
-        setLoading(false);
-        return;
-      }
-
-      // Step 1: Create an Order on our backend
-      const orderResponse = await fetch('/api/payments/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, type: paymentType }),
-      });
-      const order = await orderResponse.json();
-
-      if (order.error) {
-        alert('Failed to initialize checkout. Please try again.');
-        setLoading(false);
-        return;
-      }
-
-      // Step 2: Configure Razorpay Checkout Modal
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_T4EAcDlWDNQfwM',
-        amount: order.amount,
-        currency: order.currency,
-        name: 'Dehapa Ecosystem',
-        description: paymentType === 'DOCTOR_SUBSCRIPTION' ? 'Premium Profile Upgrade' : 'Platform Booking Fee',
-        image: '/logo.png', // Logo shown on the Razorpay popup
-        order_id: order.id,
-        handler: async function (response: any) {
-          // Step 3: Verify the payment signature on our backend
-          const verifyResponse = await fetch('/api/payments/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(response),
-          });
-          const verifyResult = await verifyResponse.json();
-          
-          if (verifyResult.verified) {
-            onSuccess(response);
-          } else {
-            alert('Payment verification failed!');
-          }
-        },
-        prefill: {
-          name: 'John Doe',
-          email: 'user@example.com',
-          contact: '9999999999',
-        },
-        theme: {
-          color: '#0d9488', // Dehapa Teal theme color
-        },
-      };
-
-      // @ts-ignore
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
-      
-    } catch (error) {
-      console.error('Payment Flow Error:', error);
-      alert('Something went wrong initiating the payment.');
-    } finally {
+    // BYPASS PAYMENT FOR TESTING:
+    // We immediately simulate a successful payment after a short delay
+    setTimeout(() => {
       setLoading(false);
-    }
+      onSuccess({
+        razorpay_payment_id: "mock_payment_id_12345",
+        razorpay_order_id: "mock_order_id_12345",
+        razorpay_signature: "mock_signature_12345"
+      });
+    }, 800);
+    
+    // Original Razorpay logic is completely bypassed below.
+    return;
   };
 
   return (
