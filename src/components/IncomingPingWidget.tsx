@@ -44,9 +44,16 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
 
     const unsubRequests = onSnapshot(q, (snapshot) => {
       let validRequests = [];
+      const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
       
       for (const doc of snapshot.docs) {
         const data = doc.data();
+        
+        // INSTANT GHOST CLEAR: Ignore any pings older than 30 minutes!
+        const pingTime = data.createdAt?.toMillis ? data.createdAt.toMillis() : 0;
+        if (pingTime > 0 && pingTime < thirtyMinutesAgo) {
+           continue; // Skip the ghost ping
+        }
         
         const isDirect = data.pingType === 'direct' && data.doctorId === doctorId;
         
