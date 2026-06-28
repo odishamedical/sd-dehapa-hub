@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { ConnectionService, ConnectionStatus } from '@/services/connection.service';
 import RazorpayCheckout from '@/components/payments/RazorpayCheckout';
@@ -1474,8 +1474,6 @@ export default function UniversalProfileLayout({
                         paymentType="TELEMEDICINE_CONSULT"
                         onSuccess={async (res) => {
                           try {
-                            const { db } = await import('@/lib/firebase');
-                            const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
                             
                             if (!user) {
                               alert("You must be logged in to book a consultation.");
