@@ -1,18 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import AgoraUIKit from 'agora-react-uikit';
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 
 interface VideoRoomProps {
-  roomId: string; // This is the appointmentId
+  roomId: string;
 }
 
 export default function VideoRoom({ roomId }: VideoRoomProps) {
-  const [videoCall, setVideoCall] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [appointmentStatus, setAppointmentStatus] = useState<string>('Pending');
+  const [videoCall, setVideoCall] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +19,6 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
       const role = localStorage.getItem('sd_current_user_role') || 'patient';
       setUserRole(role);
 
-      // Listen to the appointment status
       const docRef = doc(db, "appointments", roomId);
       const unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
@@ -37,30 +35,19 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   const handleDoctorAdmit = () => {
     const docRef = doc(db, "appointments", roomId);
     updateDoc(docRef, { status: 'Active' }).catch(console.error);
-    setVideoCall(true); // Mount iframe synchronously on click!
+    setVideoCall(true); // Mount iframe synchronously on click
   };
   
   const handlePatientJoin = () => {
-    setVideoCall(true); // Mount iframe synchronously on click!
+    setVideoCall(true); // Mount iframe synchronously on click
   };
 
-  const rtcProps = {
-    appId: process.env.NEXT_PUBLIC_AGORA_APP_ID || '13c9a0c20a454d6faeb06cc945cd1f44', // Dehapa Agora App ID
-    channel: roomId,
-    token: null, // Tokens are optional in test mode
-  };
-
-  const callbacks = {
-    EndCall: async () => {
-      setVideoCall(false);
-      // Mark appointment as completed
-      if (userRole === 'doctor' || userRole === 'super_admin') {
-         await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
-      } else {
-         // Patient leaves, but we don't end the appointment globally, just locally
-      }
-      setAppointmentStatus('Completed');
-    },
+  const handleEndCall = async () => {
+    setVideoCall(false);
+    if (userRole === 'doctor' || userRole === 'super_admin') {
+      await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
+    }
+    window.location.href = "/portal";
   };
 
   const isDoctor = userRole === 'doctor' || userRole === 'super_admin';
@@ -75,53 +62,48 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 
   // 1. If user is in the actual Video Call
   if (videoCall) {
+    // We append #config.prejoinPageEnabled=false to skip the jitsi pre-join screen
+    // We append #config.disableDeepLinking=true to BLOCK the "Download App" promo on mobile!
+    const jitsiUrl = `https://meet.jit.si/dehapa-${roomId}#config.prejoinPageEnabled=false&config.disableDeepLinking=true&userInfo.displayName="${isDoctor ? 'Doctor' : 'Patient'}"`;
+
     return (
-      <div style={{ display: 'flex', width: '100vw', height: '100vh', backgroundColor: '#000' }}>
-        <AgoraUIKit rtcProps={rtcProps} callbacks={callbacks} />
+      <div className="fixed inset-0 w-full h-full bg-black z-[100] flex flex-col">
+        <div className="w-full h-16 bg-slate-900 flex items-center justify-between px-6 border-b border-slate-800">
+          <div className="text-white font-bold tracking-widest flex items-center gap-2">
+            <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+            LIVE CONSULTATION
+          </div>
+          <button 
+            onClick={handleEndCall}
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-bold transition-colors"
+          >
+            End Call
+          </button>
+        </div>
+        
+        <div className="flex-1 w-full relative bg-slate-950">
+          <iframe
+            src={jitsiUrl}
+            allow="camera; microphone; fullscreen; display-capture"
+            className="absolute inset-0 w-full h-full border-none"
+          />
+        </div>
       </div>
     );
   }
 
-  // 2. If Completed State
+  // 2. Completed State
   if (appointmentStatus === 'Completed') {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-center px-4">
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 max-w-md w-full">
-          <div className="w-16 h-16 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-black text-slate-900 mb-2">Consultation Ended</h1>
-          
-          {isDoctor ? (
-            <>
-              <p className="text-slate-500 mb-8">The consultation has ended. Please proceed to write the e-Prescription for the patient.</p>
-              <button 
-                onClick={() => window.location.href = `/doctor/prescription-pad?request=${roomId}`}
-                className="w-full bg-teal-600 text-white font-bold py-4 rounded-xl hover:bg-teal-700 transition-colors shadow-sm flex items-center justify-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                Write e-Prescription
-              </button>
-              <button 
-                onClick={() => window.location.href = '/portal'}
-                className="w-full mt-4 bg-white text-slate-600 border border-slate-200 font-bold py-4 rounded-xl hover:bg-slate-50 transition-colors"
-              >
-                Return to Dashboard
-              </button>
-            </>
-          ) : (
-            <>
-              <p className="text-slate-500 mb-8">Thank you for using DehaPa On-Demand Telemedicine. Your digital prescription will be available in your dashboard shortly.</p>
-              <button 
-                onClick={() => window.location.href = '/portal'}
-                className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors"
-              >
-                Return to Dashboard
-              </button>
-            </>
-          )}
+          <h1 className="text-2xl font-black text-slate-900 mb-4">Consultation Ended</h1>
+          <button 
+            onClick={() => window.location.href = '/portal'}
+            className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors"
+          >
+            Return to Dashboard
+          </button>
         </div>
       </div>
     );
@@ -138,7 +120,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
            <h2 className="text-2xl font-bold mb-4 text-white">Start Consultation</h2>
            <p className="text-slate-400 mb-8">You are about to start the video session. The patient will be notified to join the room.</p>
            <button onClick={handleDoctorAdmit} className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-black uppercase tracking-widest py-4 rounded-xl hover:opacity-90 transition-opacity">
-             Admit Patient & Join Call
+             ADMIT PATIENT & JOIN CALL
            </button>
         </div>
       </div>
