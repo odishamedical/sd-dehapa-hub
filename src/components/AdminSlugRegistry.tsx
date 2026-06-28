@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, query, where, doc, writeBatch, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, writeBatch, serverTimestamp, updateDoc } from 'firebase/firestore';
 import PremiumSlugModal from './PremiumSlugModal';
 
 export default function AdminSlugRegistry() {
@@ -33,6 +33,17 @@ export default function AdminSlugRegistry() {
   useEffect(() => {
     fetchSlugs();
   }, []);
+
+  const handleDeleteSlug = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to completely remove the premium vanity slug for ${name}? This will instantly revert their profile to the long SEO URL.`)) return;
+    try {
+      await updateDoc(doc(db, 'directory', id), { customSlug: "" });
+      await fetchSlugs();
+      alert("Successfully deleted custom slug!");
+    } catch (err: any) {
+      alert("Failed to delete slug: " + err.message);
+    }
+  };
 
   const handleAdminBook = async (urls: any[], ownerDetails: string) => {
     if (urls.length === 0) return;
@@ -168,6 +179,9 @@ export default function AdminSlugRegistry() {
                         <a target="_blank" rel="noopener noreferrer" href={globalUrl} title="View Global Root URL" className="w-8 h-8 bg-teal-50 border border-teal-200 hover:border-teal-600 hover:bg-teal-600 hover:text-white rounded flex items-center justify-center text-teal-700 transition-colors shadow-sm">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
                         </a>
+                        <button onClick={() => handleDeleteSlug(doc.id, doc.name || "Unnamed")} title="Remove Premium Slug" className="w-8 h-8 bg-rose-50 border border-rose-200 hover:border-rose-500 hover:bg-rose-500 hover:text-white rounded flex items-center justify-center text-rose-600 transition-colors shadow-sm">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
                       </div>
                     </td>
                   </tr>
