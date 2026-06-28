@@ -229,6 +229,9 @@ function CustomVideoGrid({ isDoctor, onEndCall }: { isDoctor: boolean, onEndCall
           <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
           <span className="text-white text-xs font-bold tracking-widest uppercase">Live Session</span>
         </div>
+        <div className="text-xs text-white/50 font-mono pointer-events-auto">
+          DEBUG ID: {window.location.pathname.split('/').pop()}
+        </div>
       </div>
 
       {/* Main Remote Video (Full Screen) */}
