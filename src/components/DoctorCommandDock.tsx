@@ -62,8 +62,8 @@ export default function DoctorCommandDock() {
   if (userRole !== "doctor" && userRole !== "super_admin") return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full z-[100] md:bottom-10 md:left-6 md:right-auto md:w-auto animate-in slide-in-from-bottom-10 fade-in duration-500">
-      <div className="bg-slate-900 md:bg-slate-900/90 md:backdrop-blur-3xl border-t border-teal-500/30 md:border md:rounded-full px-4 py-3 md:px-2.5 md:py-4 flex flex-row md:flex-col items-center justify-around md:justify-start md:gap-4 shadow-[0_-5px_20px_rgba(20,184,166,0.15)] md:shadow-[0_0_20px_rgba(20,184,166,0.25)] md:hover:shadow-[0_0_35px_rgba(20,184,166,0.5)] md:hover:border-teal-400/60 transition-all duration-300">
+    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 md:top-auto md:translate-x-0 md:bottom-10 md:left-6 animate-in slide-in-from-top-4 md:slide-in-from-bottom-10 fade-in duration-500">
+      <div className="bg-slate-900/90 backdrop-blur-3xl border border-teal-500/30 shadow-[0_10px_30px_rgba(20,184,166,0.25)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.4)] hover:border-teal-400/60 transition-all duration-300 rounded-full px-6 py-3 md:px-2.5 md:py-4 flex flex-row md:flex-col items-center gap-6 md:gap-4">
         
         {/* Dashboard Quick Link */}
         <button 
