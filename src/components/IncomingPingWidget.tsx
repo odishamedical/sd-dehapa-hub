@@ -30,9 +30,9 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
     return () => unsubStatus();
   }, [doctorId]);
 
-  // 2. If online, listen for pending requests in their specialty
+  // 2. Listen for pending requests (direct pings always ring, broadcast pings only ring if online)
   useEffect(() => {
-    if (!isOnline || !doctorSpecialty) {
+    if (!doctorId) {
       setIncomingRequest(null);
       return;
     }
@@ -47,9 +47,13 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
       
       for (const doc of snapshot.docs) {
         const data = doc.data();
+        
         const isDirect = data.pingType === 'direct' && data.doctorId === doctorId;
+        
         // Support legacy requests and new broadcast requests
-        const isBroadcast = (data.pingType === 'broadcast' || !data.pingType) && 
+        const isBroadcast = isOnline && 
+                            doctorSpecialty && 
+                            (data.pingType === 'broadcast' || !data.pingType) && 
                             (data.targetCategory === doctorSpecialty || 
                              data.department === doctorSpecialty || 
                              data.specialtyTier === doctorSpecialty);
@@ -74,7 +78,7 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
     });
 
     return () => unsubRequests();
-  }, [isOnline, doctorSpecialty]);
+  }, [doctorId, isOnline, doctorSpecialty]);
 
   const handleAccept = async () => {
     if (!incomingRequest) return;
