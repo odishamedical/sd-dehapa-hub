@@ -57,7 +57,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     if (callObject && dailyUrl && videoCall) {
       // Only join if we are not already joined or joining
       const state = callObject.meetingState();
-      if (state === 'left-meeting' || state === 'new' || state === 'error') {
+      if (state !== 'joining-meeting' && state !== 'joined-meeting') {
          callObject.join({ url: dailyUrl }).catch(err => console.error("Daily join error:", err));
       }
     }
