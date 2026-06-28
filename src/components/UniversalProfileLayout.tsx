@@ -1638,40 +1638,23 @@ export default function UniversalProfileLayout({
               <strong className="text-white">{profile.name}</strong> has invited you to connect on DehaPa Hub. Click below to securely accept this invitation and establish a verified connection.
             </p>
             
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm px-4">
-          <div className="bg-slate-900 border border-slate-700/50 rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full relative">
-            <button 
-              onClick={() => setShowInviteModal(false)}
-              className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+            <button
+              onClick={() => {
+                handleRequestConnection();
+                setShowInviteModal(false);
+              }}
+              disabled={isRequestingConnection}
+              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 rounded-2xl shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              {isRequestingConnection ? 'Accepting...' : 'Accept Invitation & Connect'}
             </button>
-
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-full mx-auto mb-4 p-1">
-                <img src={profile.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || "Provider")}`} alt={profile.name} className="w-full h-full rounded-full object-cover border-4 border-slate-900" />
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-2">You are invited!</h2>
-              <p className="text-slate-400 mb-6 text-sm">
-                <span className="font-bold text-white">{profile.name}</span> has invited you to connect on DehaPa Hub. Connecting allows you to easily book appointments and share medical records securely.
-              </p>
-              
-              <div className="flex flex-col gap-3">
-                <button 
-                  onClick={handleRequestConnection}
-                  disabled={isRequestingConnection}
-                  className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50"
-                >
-                  {isRequestingConnection ? 'Accepting...' : 'Accept & Connect'}
-                </button>
-                <button 
-                  onClick={() => setShowInviteModal(false)}
-                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl transition-colors"
-                >
-                  Maybe Later
-                </button>
-              </div>
-            </div>
+            <button
+              onClick={() => setShowInviteModal(false)}
+              className="mt-4 text-slate-500 hover:text-slate-300 text-xs font-bold uppercase tracking-widest transition-colors"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}
