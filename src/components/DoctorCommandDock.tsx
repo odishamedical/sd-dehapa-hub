@@ -1,17 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getApps, initializeApp, getApp } from "firebase/app";
-import { getFirestore, doc, onSnapshot, updateDoc, collection, query, where, setDoc } from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
-  authDomain: "sd-auth-center.firebaseapp.com",
-  projectId: "sd-auth-center",
-  storageBucket: "sd-auth-center.firebasestorage.app",
-  messagingSenderId: "393346058191",
-  appId: "1:393346058191:web:a5e96e1c481a72f86db4ba"
-};
+import { doc, onSnapshot, setDoc, collection, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase"; // Use the shared instance to avoid init issues
 
 export default function DoctorCommandDock() {
   const [isOnline, setIsOnline] = useState(false);
@@ -29,37 +20,41 @@ export default function DoctorCommandDock() {
   useEffect(() => {
     if ((userRole !== "doctor" && userRole !== "super_admin") || !userUid) return;
 
-    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    const db = getFirestore(app, "default");
-
     // Listen to Online Status
     const statusRef = doc(db, "doctor_status", userUid);
     const unsubStatus = onSnapshot(statusRef, (docSnap) => {
       if (docSnap.exists()) setIsOnline(docSnap.data().isOnline === true);
-    });
+    }, (err) => console.error("Error listening to doctor status:", err));
 
     // Listen to Pending Pings
     const pingsRef = collection(db, "consultation_requests");
     const q = query(pingsRef, where("doctorId", "==", userUid), where("status", "==", "pending"));
     const unsubPings = onSnapshot(q, (snap) => {
       setPendingPings(snap.docs.length);
-    });
+    }, (err) => console.error("Error listening to pings:", err));
 
     return () => { unsubStatus(); unsubPings(); };
   }, [userRole, userUid]);
 
   const toggleStatus = async () => {
-    if (!userUid) return;
-    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    const db = getFirestore(app, "default");
+    if (!userUid) {
+      alert("Doctor identity not found. Please log in again.");
+      return;
+    }
     const statusRef = doc(db, "doctor_status", userUid);
-    
     const newStatus = !isOnline;
-    setIsOnline(newStatus); // Optimistic update
+    
+    // Optimistic update
+    setIsOnline(newStatus);
+    
     try {
-      await setDoc(statusRef, { isOnline: newStatus, updatedAt: new Date().toISOString() }, { merge: true });
+      await setDoc(statusRef, { 
+        isOnline: newStatus, 
+        updatedAt: new Date().toISOString() 
+      }, { merge: true });
     } catch (err) {
       console.error("Failed to update status", err);
+      alert("Could not update online status. Check your connection.");
       setIsOnline(!newStatus); // Revert
     }
   };
@@ -67,8 +62,9 @@ export default function DoctorCommandDock() {
   if (userRole !== "doctor" && userRole !== "super_admin") return null;
 
   return (
-    <div className="fixed bottom-24 md:bottom-10 left-4 md:left-6 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
-      <div className="bg-slate-900/90 backdrop-blur-3xl border border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.25)] hover:shadow-[0_0_35px_rgba(20,184,166,0.5)] hover:border-teal-400/60 transition-all duration-300 rounded-full px-2.5 py-4 flex flex-col items-center gap-4">
+    <div className="fixed bottom-0 left-0 right-0 w-full z-[100] md:bottom-10 md:left-6 md:right-auto md:w-auto animate-in slide-in-from-bottom-10 fade-in duration-500">
+      <div className="bg-slate-900 md:bg-slate-900/90 md:backdrop-blur-3xl border-t border-teal-500/30 md:border md:rounded-full px-4 py-3 md:px-2.5 md:py-4 flex flex-row md:flex-col items-center justify-around md:justify-start md:gap-4 shadow-[0_-5px_20px_rgba(20,184,166,0.15)] md:shadow-[0_0_20px_rgba(20,184,166,0.25)] md:hover:shadow-[0_0_35px_rgba(20,184,166,0.5)] md:hover:border-teal-400/60 transition-all duration-300">
+        
         {/* Dashboard Quick Link */}
         <button 
           onClick={() => window.location.href = "/portal/doctor"}
