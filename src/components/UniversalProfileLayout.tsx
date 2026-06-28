@@ -1477,19 +1477,38 @@ export default function UniversalProfileLayout({
                             const { db } = await import('@/lib/firebase');
                             const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
                             
-                            const roomId = `video-${profile.id}-${Date.now().toString().slice(-5)}`;
+                            if (!user) {
+                              alert("You must be logged in to book a consultation.");
+                              return;
+                            }
                             
-                            // Create the appointment document so the VideoRoom waiting room logic works
+                            const currentName = user.displayName || localStorage.getItem('sd_current_user_name') || 'DehaPa Patient';
+                            const roomId = `video-${profile.id}-${Date.now().toString().slice(-5)}`;
+                            const timestamp = serverTimestamp();
+                            
+                            // 1. Create the appointment document so the VideoRoom waiting room logic works
                             await setDoc(doc(db, "appointments", roomId), {
                               doctorId: profile.id,
                               doctorName: profile.name,
-                              patientId: 'test_patient',
-                              patientName: 'Test Patient',
+                              patientId: user.uid,
+                              patientName: currentName,
                               status: 'Pending',
                               type: 'Urgent Video',
                               amount: 500,
                               paymentId: res.razorpay_payment_id,
-                              createdAt: serverTimestamp()
+                              createdAt: timestamp
+                            });
+                            
+                            // 2. Create the consultation request ping so the doctor's dashboard rings!
+                            await setDoc(doc(db, "consultation_requests", roomId), {
+                              doctorId: profile.id,
+                              doctorName: profile.name,
+                              patientId: user.uid,
+                              patientName: currentName,
+                              targetCategory: profile.category || 'Doctor',
+                              pingType: 'direct',
+                              status: 'pending',
+                              createdAt: timestamp
                             });
                             
                             router.push(`/consultation/${roomId}`);
