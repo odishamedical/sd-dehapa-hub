@@ -43,7 +43,7 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
     );
 
     const unsubRequests = onSnapshot(q, (snapshot) => {
-      let validRequest = null;
+      let validRequests = [];
       
       for (const doc of snapshot.docs) {
         const data = doc.data();
@@ -59,13 +59,19 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
                              data.specialtyTier === doctorSpecialty);
         
         if (isDirect || isBroadcast) {
-          validRequest = { id: doc.id, ...data };
-          break; // take the first valid one
+          validRequests.push({ id: doc.id, ...data });
         }
       }
 
-      if (validRequest) {
-        setIncomingRequest(validRequest);
+      if (validRequests.length > 0) {
+        // Sort in memory by createdAt descending to always answer the newest ping
+        validRequests.sort((a, b) => {
+          const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+          const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+          return timeB - timeA;
+        });
+        
+        setIncomingRequest(validRequests[0]);
         try {
           const audio = new Audio('/ringtone.mp3'); 
           audio.play().catch(e => console.log("Audio autoplay blocked", e));

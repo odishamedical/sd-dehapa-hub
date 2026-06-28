@@ -44,13 +44,13 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     }
   }, [roomId]);
 
-  // Create Daily.co call object when joining
+  // Create Daily.co call object early so it's ready for synchronous camera start
   useEffect(() => {
-    if (videoCall && dailyUrl && !callObject) {
+    if (typeof window !== 'undefined' && !callObject) {
       const co = DailyIframe.createCallObject();
       setCallObject(co);
     }
-  }, [videoCall, dailyUrl, callObject]);
+  }, [callObject]);
 
   // Join the room
   useEffect(() => {
@@ -66,6 +66,11 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 
   const handleDoctorAdmit = async () => {
     try {
+      // Synchronously request camera access immediately on button click to bypass Safari restrictions
+      if (callObject) {
+         await callObject.startCamera();
+      }
+
       // 1. Generate Daily Room via secure Next.js API
       const res = await fetch('/api/video/create-room', {
         method: 'POST',
@@ -88,7 +93,10 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     }
   };
   
-  const handlePatientJoin = () => {
+  const handlePatientJoin = async () => {
+    if (callObject) {
+       await callObject.startCamera();
+    }
     setVideoCall(true); 
   };
 
