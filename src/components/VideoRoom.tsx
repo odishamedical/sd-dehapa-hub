@@ -1,18 +1,29 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import DailyIframe, { DailyCall } from '@daily-co/daily-js';
+import { 
+  DailyProvider, 
+  useLocalParticipant, 
+  useParticipantIds, 
+  useVideoTrack, 
+  useAudioTrack,
+  useLocalSessionId
+} from '@daily-co/daily-react';
 
 interface VideoRoomProps {
-  roomId: string;
+  roomId: string; // appointmentId
 }
 
 export default function VideoRoom({ roomId }: VideoRoomProps) {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [appointmentStatus, setAppointmentStatus] = useState<string>('Pending');
+  const [dailyUrl, setDailyUrl] = useState<string | null>(null);
   const [videoCall, setVideoCall] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [callObject, setCallObject] = useState<DailyCall | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -24,6 +35,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
         if (docSnap.exists()) {
           const data = docSnap.data();
           setAppointmentStatus(data.status);
+          if (data.dailyUrl) setDailyUrl(data.dailyUrl);
         }
         setLoading(false);
       });
@@ -32,18 +44,61 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     }
   }, [roomId]);
 
-  const handleDoctorAdmit = () => {
-    const docRef = doc(db, "appointments", roomId);
-    updateDoc(docRef, { status: 'Active' }).catch(console.error);
-    setVideoCall(true); // Mount iframe synchronously on click
+  // Create Daily.co call object when joining
+  useEffect(() => {
+    if (videoCall && dailyUrl && !callObject) {
+      const co = DailyIframe.createCallObject();
+      setCallObject(co);
+    }
+  }, [videoCall, dailyUrl, callObject]);
+
+  // Join the room
+  useEffect(() => {
+    if (callObject && dailyUrl && videoCall) {
+      callObject.join({ url: dailyUrl });
+      return () => {
+        callObject.leave();
+        callObject.destroy();
+        setCallObject(null);
+      };
+    }
+  }, [callObject, dailyUrl, videoCall]);
+
+  const handleDoctorAdmit = async () => {
+    try {
+      // 1. Generate Daily Room via secure Next.js API
+      const res = await fetch('/api/video/create-room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appointmentId: roomId })
+      });
+      const data = await res.json();
+      
+      if (data.url) {
+        // 2. Save URL to Firebase so patient can get it
+        await updateDoc(doc(db, "appointments", roomId), { 
+          status: 'Active',
+          dailyUrl: data.url
+        });
+        setDailyUrl(data.url);
+        setVideoCall(true);
+      }
+    } catch (err) {
+      console.error('Failed to start room', err);
+    }
   };
   
   const handlePatientJoin = () => {
-    setVideoCall(true); // Mount iframe synchronously on click
+    setVideoCall(true); 
   };
 
   const handleEndCall = async () => {
     setVideoCall(false);
+    if (callObject) {
+      callObject.leave();
+      callObject.destroy();
+      setCallObject(null);
+    }
     if (userRole === 'doctor' || userRole === 'super_admin') {
       await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
     }
@@ -60,39 +115,16 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
      );
   }
 
-  // 1. If user is in the actual Video Call
-  if (videoCall) {
-    // We append #config.prejoinPageEnabled=false to skip the jitsi pre-join screen
-    // We append #config.disableDeepLinking=true to BLOCK the "Download App" promo on mobile!
-    const jitsiUrl = `https://meet.jit.si/dehapa-${roomId}#config.prejoinPageEnabled=false&config.disableDeepLinking=true&userInfo.displayName="${isDoctor ? 'Doctor' : 'Patient'}"`;
-
+  // 1. LIVE VIDEO CALL (Custom Daily UI)
+  if (videoCall && callObject) {
     return (
-      <div className="fixed inset-0 w-full h-full bg-black z-[100] flex flex-col">
-        <div className="w-full h-16 bg-slate-900 flex items-center justify-between px-6 border-b border-slate-800">
-          <div className="text-white font-bold tracking-widest flex items-center gap-2">
-            <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
-            LIVE CONSULTATION
-          </div>
-          <button 
-            onClick={handleEndCall}
-            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-bold transition-colors"
-          >
-            End Call
-          </button>
-        </div>
-        
-        <div className="flex-1 w-full relative bg-slate-950">
-          <iframe
-            src={jitsiUrl}
-            allow="camera; microphone; fullscreen; display-capture"
-            className="absolute inset-0 w-full h-full border-none"
-          />
-        </div>
-      </div>
+      <DailyProvider callObject={callObject}>
+        <CustomVideoGrid isDoctor={isDoctor} onEndCall={handleEndCall} />
+      </DailyProvider>
     );
   }
 
-  // 2. Completed State
+  // 2. COMPLETED
   if (appointmentStatus === 'Completed') {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-center px-4">
@@ -109,16 +141,13 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     );
   }
 
-  // 3. If Doctor hasn't joined yet
+  // 3. DOCTOR START
   if (isDoctor) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-center px-4">
         <div className="bg-slate-800 p-8 rounded-3xl shadow-2xl border border-slate-700 max-w-md w-full">
-           <div className="w-20 h-20 bg-teal-500/20 text-teal-400 rounded-full flex items-center justify-center mx-auto mb-6">
-             <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-           </div>
            <h2 className="text-2xl font-bold mb-4 text-white">Start Consultation</h2>
-           <p className="text-slate-400 mb-8">You are about to start the video session. The patient will be notified to join the room.</p>
+           <p className="text-slate-400 mb-8">You are about to generate a secure 100% white-labeled video room.</p>
            <button onClick={handleDoctorAdmit} className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-black uppercase tracking-widest py-4 rounded-xl hover:opacity-90 transition-opacity">
              ADMIT PATIENT & JOIN CALL
            </button>
@@ -127,16 +156,13 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     );
   }
 
-  // 4. If Patient is waiting
+  // 4. PATIENT WAITING
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-center px-4">
-       {appointmentStatus === 'Active' ? (
+       {appointmentStatus === 'Active' && dailyUrl ? (
          <div className="bg-emerald-900/40 p-8 rounded-3xl shadow-2xl border border-emerald-500/50 max-w-md w-full">
-           <div className="w-24 h-24 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse shadow-[0_0_30px_rgba(16,185,129,0.5)]">
-             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-           </div>
            <h2 className="text-3xl font-bold text-white mb-4">Doctor is Ready!</h2>
-           <p className="text-emerald-200 mb-8">Your doctor has admitted you to the secure video session. Tap below to securely connect your camera and join.</p>
+           <p className="text-emerald-200 mb-8">Your secure connection is ready. Tap to connect securely.</p>
            <button onClick={handlePatientJoin} className="w-full bg-emerald-500 text-white font-black uppercase tracking-widest py-5 rounded-2xl hover:bg-emerald-400 transition-colors shadow-lg">
              JOIN SECURE CALL
            </button>
@@ -145,14 +171,94 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
          <>
            <div className="relative mb-8">
              <div className="w-24 h-24 border-4 border-slate-700 border-t-teal-500 rounded-full animate-spin"></div>
-             <div className="absolute inset-0 flex items-center justify-center">
-               <div className="w-12 h-12 bg-teal-500 rounded-full animate-ping opacity-75"></div>
-             </div>
            </div>
            <h2 className="text-3xl font-bold text-white mb-4">Waiting Room</h2>
-           <p className="text-slate-400 text-lg max-w-sm">Please wait while the doctor reviews your file. The video call will start automatically when they admit you.</p>
+           <p className="text-slate-400 text-lg max-w-sm">Please wait while the doctor reviews your file.</p>
          </>
        )}
     </div>
+  );
+}
+
+// ----------------------------------------------------------------------------------
+// Custom Daily.co UI Components (100% White Labeled)
+// ----------------------------------------------------------------------------------
+
+function CustomVideoGrid({ isDoctor, onEndCall }: { isDoctor: boolean, onEndCall: () => void }) {
+  const localSessionId = useLocalSessionId();
+  const remoteParticipantIds = useParticipantIds({ filter: 'remote' });
+
+  return (
+    <div className="fixed inset-0 w-full h-full bg-slate-950 flex flex-col overflow-hidden z-[100]">
+      
+      {/* Top Bar */}
+      <div className="absolute top-0 left-0 w-full p-6 z-50 flex items-center justify-between pointer-events-none">
+        <div className="bg-slate-900/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 flex items-center gap-2 pointer-events-auto">
+          <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+          <span className="text-white text-xs font-bold tracking-widest uppercase">Live Session</span>
+        </div>
+      </div>
+
+      {/* Main Remote Video (Full Screen) */}
+      <div className="absolute inset-0 w-full h-full bg-slate-900">
+        {remoteParticipantIds.length > 0 ? (
+          <VideoPlayer id={remoteParticipantIds[0]} isLocal={false} />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 gap-4">
+             <div className="w-16 h-16 border-4 border-slate-700 border-t-slate-400 rounded-full animate-spin"></div>
+             <p className="font-bold tracking-widest">WAITING FOR {isDoctor ? 'PATIENT' : 'DOCTOR'} TO JOIN...</p>
+          </div>
+        )}
+      </div>
+
+      {/* Local Video Picture-in-Picture (Bottom Right) */}
+      <div className="absolute bottom-24 right-6 w-28 h-40 md:w-48 md:h-64 bg-slate-800 rounded-2xl overflow-hidden shadow-2xl border border-white/10 z-40">
+         {localSessionId && <VideoPlayer id={localSessionId} isLocal={true} />}
+      </div>
+
+      {/* Bottom Control Bar */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-slate-900/80 backdrop-blur-xl px-2 py-2 rounded-full border border-white/10">
+         <button 
+           onClick={onEndCall} 
+           className="bg-red-500 hover:bg-red-600 text-white font-bold tracking-widest uppercase text-xs px-8 py-4 rounded-full transition-colors flex items-center gap-2"
+         >
+            End Call
+         </button>
+      </div>
+
+    </div>
+  );
+}
+
+function VideoPlayer({ id, isLocal }: { id: string, isLocal: boolean }) {
+  const videoState = useVideoTrack(id);
+  const audioState = useAudioTrack(id);
+  
+  const videoElement = useRef<HTMLVideoElement>(null);
+  const audioElement = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (videoElement.current && videoState?.track) {
+      videoElement.current.srcObject = new MediaStream([videoState.track]);
+    }
+  }, [videoState?.track]);
+
+  useEffect(() => {
+    if (audioElement.current && audioState?.track && !isLocal) {
+      audioElement.current.srcObject = new MediaStream([audioState.track]);
+    }
+  }, [audioState?.track, isLocal]);
+
+  return (
+    <>
+      <video 
+        autoPlay 
+        muted 
+        playsInline 
+        ref={videoElement} 
+        className={`w-full h-full object-cover ${isLocal ? 'scale-x-[-1]' : ''}`} // Mirror local video
+      />
+      {!isLocal && <audio autoPlay playsInline ref={audioElement} />}
+    </>
   );
 }
