@@ -195,9 +195,9 @@ export default function AdminUserManagement() {
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
 
       {/* Top Metrics Bar */}
-      <div className="px-6 pt-6 pb-4 flex flex-wrap gap-4 relative z-10 shrink-0">
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 flex-1 min-w-[200px] border border-slate-200/50 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center">
+      <div className="px-4 md:px-6 pt-4 md:pt-6 pb-2 flex overflow-x-auto snap-x snap-mandatory gap-3 md:gap-4 relative z-10 shrink-0 custom-scrollbar">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-slate-200/50 shadow-sm flex items-center gap-4 snap-center">
+          <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           </div>
           <div>
@@ -205,8 +205,8 @@ export default function AdminUserManagement() {
             <p className="text-2xl font-bold text-slate-900">{users.length}</p>
           </div>
         </div>
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 flex-1 min-w-[200px] border border-slate-200/50 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-slate-200/50 shadow-sm flex items-center gap-4 snap-center">
+          <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
           </div>
           <div>
@@ -214,8 +214,8 @@ export default function AdminUserManagement() {
             <p className="text-2xl font-bold text-slate-900">+{recentUsers}</p>
           </div>
         </div>
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 flex-1 min-w-[200px] border border-slate-200/50 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-slate-200/50 shadow-sm flex items-center gap-4 snap-center">
+          <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
           </div>
           <div>
@@ -226,19 +226,19 @@ export default function AdminUserManagement() {
       </div>
 
       {/* Filter Bar */}
-      <div className="px-6 py-4 border-b border-slate-300 bg-white/40 backdrop-blur-md flex flex-col md:flex-row gap-4 items-center justify-between shrink-0 relative z-10">
+      <div className="px-4 md:px-6 py-4 border-b border-slate-300 bg-white/40 backdrop-blur-md flex flex-col lg:flex-row gap-4 items-center justify-between shrink-0 relative z-10">
         
         {selectedUsers.length > 0 ? (
-          <div className="flex flex-wrap gap-3 items-center w-full md:w-auto bg-slate-800 rounded-xl px-4 py-2 text-white shadow-lg animate-in fade-in slide-in-from-top-2">
+          <div className="flex flex-wrap gap-2 items-center w-full lg:w-auto bg-slate-800 rounded-xl px-4 py-2 text-white shadow-lg animate-in fade-in slide-in-from-top-2">
             <span className="font-bold text-sm bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">{selectedUsers.length} Selected</span>
-            <div className="h-6 w-px bg-slate-700 mx-1"></div>
+            <div className="hidden sm:block h-6 w-px bg-slate-700 mx-1"></div>
             
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-400">Upgrade to:</span>
+            <div className="flex items-center gap-2 flex-1 sm:flex-none">
+              <span className="text-xs font-medium text-slate-400 hidden sm:inline">Upgrade:</span>
               <select 
                 onChange={(e) => handleBulkRoleChange(e.target.value)}
                 value=""
-                className="bg-slate-700 border-none rounded-lg px-3 py-1.5 text-xs font-bold outline-none cursor-pointer hover:bg-slate-600 transition-colors"
+                className="flex-1 sm:flex-none bg-slate-700 border-none rounded-lg px-3 py-1.5 text-xs font-bold outline-none cursor-pointer hover:bg-slate-600 transition-colors"
               >
                 <option value="" disabled>Select Role...</option>
                 {ecosystemRoles.map((role, idx) => (
@@ -247,41 +247,43 @@ export default function AdminUserManagement() {
               </select>
             </div>
 
-            <button onClick={handleBulkDelete} className="bg-rose-500/20 text-rose-300 hover:bg-rose-500 hover:text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all ml-auto md:ml-2 border border-rose-500/50">
+            <button onClick={handleBulkDelete} className="bg-rose-500/20 text-rose-300 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all sm:ml-auto border border-rose-500/50 w-full sm:w-auto mt-2 sm:mt-0">
               Bulk Delete
             </button>
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row gap-3 w-full md:flex-1">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:flex-1">
             <input 
               type="text" 
               placeholder="Search name, email, phone..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 min-w-[200px] border border-slate-300 hover:border-teal-400 rounded-xl px-5 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white/80 backdrop-blur-sm"
+              className="w-full sm:flex-1 min-w-[200px] border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-2.5 md:px-5 md:py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white/80 backdrop-blur-sm"
             />
-            <select 
-              value={roleFilter} 
-              onChange={e => setRoleFilter(e.target.value)}
-              className="w-full md:w-auto md:min-w-[150px] border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
-            >
-              <option value="all">All Roles</option>
-              {ecosystemRoles.map((role, idx) => (
-                <option key={idx} value={role.toLowerCase()}>{role}</option>
-              ))}
-            </select>
-            <select 
-              value={statusFilter} 
-              onChange={e => setStatusFilter(e.target.value)}
-              className="w-full md:w-auto md:min-w-[150px] border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
-            >
-              <option value="all">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="suspended">Suspended</option>
-            </select>
+            <div className="grid grid-cols-2 gap-3 w-full sm:w-auto">
+              <select 
+                value={roleFilter} 
+                onChange={e => setRoleFilter(e.target.value)}
+                className="w-full sm:w-[140px] border border-slate-300 rounded-xl px-3 py-2.5 md:py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
+              >
+                <option value="all">All Roles</option>
+                {ecosystemRoles.map((role, idx) => (
+                  <option key={idx} value={role.toLowerCase()}>{role}</option>
+                ))}
+              </select>
+              <select 
+                value={statusFilter} 
+                onChange={e => setStatusFilter(e.target.value)}
+                className="w-full sm:w-[140px] border border-slate-300 rounded-xl px-3 py-2.5 md:py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
+              >
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
           </div>
         )}
-        <button onClick={() => setIsAdding(!isAdding)} className="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-5 py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2 whitespace-nowrap">
+        <button onClick={() => setIsAdding(!isAdding)} className="w-full lg:w-auto bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white px-5 py-2.5 md:py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 whitespace-nowrap">
           {isAdding ? "Cancel" : "+ Add New Patient"}
         </button>
       </div>
@@ -342,7 +344,7 @@ export default function AdminUserManagement() {
       )}
 
       {/* Main Table Area */}
-      <div className="flex-1 overflow-auto bg-white/70 backdrop-blur-md relative z-10">
+      <div className="flex-1 overflow-auto bg-white/70 backdrop-blur-md relative z-10 custom-scrollbar">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
@@ -350,8 +352,8 @@ export default function AdminUserManagement() {
         ) : filteredUsers.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-slate-500 font-medium">No users found.</div>
         ) : (
-          <table className="w-full text-left">
-            <thead className="bg-slate-100/80 backdrop-blur-sm sticky top-0 z-20 shadow-sm border-b border-slate-200">
+          <table className="w-full text-left border-collapse block md:table">
+            <thead className="bg-slate-100/80 backdrop-blur-sm sticky top-0 z-20 shadow-sm border-b border-slate-200 hidden md:table-header-group">
               <tr>
                 <th className="px-6 py-4 w-10">
                   <input 
@@ -371,71 +373,109 @@ export default function AdminUserManagement() {
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Registered</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200/60">
-              {filteredUsers.map(user => (
-                <tr 
-                  key={user.id} 
-                  className={`hover:bg-teal-50/50 transition-colors group cursor-pointer ${selectedUsers.includes(user.id) ? 'bg-teal-50' : ''}`}
-                >
-                  <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
-                    <input 
-                      type="checkbox" 
-                      className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
-                      checked={selectedUsers.includes(user.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) setSelectedUsers([...selectedUsers, user.id]);
-                        else setSelectedUsers(selectedUsers.filter(id => id !== user.id));
-                      }}
-                    />
-                  </td>
-                  <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                    <div className="flex items-center gap-3">
-                      {user.avatar ? (
-                        <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover shadow-sm border border-white" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold uppercase shadow-sm border border-white">
-                          {(user.name || user.displayName) ? (user.name || user.displayName).charAt(0) : '?'}
-                        </div>
-                      )}
-                      <div>
-                        <div className="font-bold text-slate-900 drop-shadow-sm group-hover:text-teal-700 transition-colors">{user.name || user.displayName || "Unknown User"}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">{user.gender || "Not specified"}</div>
+            <tbody className="block md:table-row-group divide-y divide-transparent md:divide-slate-200/60 p-3 md:p-0">
+              {filteredUsers.map(user => {
+                const isSuspended = user.status === 'suspended';
+                let isOnline = false;
+                if (!isSuspended && user.lastActiveAt) {
+                  const time = user.lastActiveAt.toMillis ? user.lastActiveAt.toMillis() : (user.lastActiveAt.seconds * 1000 || 0);
+                  isOnline = (Date.now() - time) < 5 * 60 * 1000;
+                }
+
+                return (
+                  <tr 
+                    key={user.id} 
+                    className={`block md:table-row mb-3 md:mb-0 rounded-2xl md:rounded-none border md:border-none shadow-sm md:shadow-none p-4 md:p-0 transition-colors group cursor-pointer 
+                      ${selectedUsers.includes(user.id) ? 'bg-teal-50 border-teal-200' : 'bg-white md:bg-transparent border-slate-200 md:hover:bg-teal-50/50'}`}
+                  >
+                    <td className="hidden md:table-cell px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                        checked={selectedUsers.includes(user.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) setSelectedUsers([...selectedUsers, user.id]);
+                          else setSelectedUsers(selectedUsers.filter(id => id !== user.id));
+                        }}
+                      />
+                    </td>
+                    <td className="block md:table-cell px-0 md:px-6 py-0 md:py-4 relative" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
+                      {/* Mobile Checkbox (Absolute Top Right) */}
+                      <div className="absolute top-0 right-0 md:hidden" onClick={(e) => e.stopPropagation()}>
+                        <input 
+                          type="checkbox" 
+                          className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer shadow-sm"
+                          checked={selectedUsers.includes(user.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) setSelectedUsers([...selectedUsers, user.id]);
+                            else setSelectedUsers(selectedUsers.filter(id => id !== user.id));
+                          }}
+                        />
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                    <div className="text-sm font-medium text-slate-700 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> {user.phone || "N/A"}</div>
-                    <div className="text-xs text-slate-500 mt-1 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> {user.email || "N/A"}</div>
-                  </td>
-                  <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                    <span className={`border px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
-                      {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                    {(() => {
-                      const isSuspended = user.status === 'suspended';
-                      let isOnline = false;
-                      if (!isSuspended && user.lastActiveAt) {
-                        const time = user.lastActiveAt.toMillis ? user.lastActiveAt.toMillis() : (user.lastActiveAt.seconds * 1000 || 0);
-                        isOnline = (Date.now() - time) < 5 * 60 * 1000;
-                      }
-                      return (
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2.5 h-2.5 rounded-full ${isSuspended ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : isOnline ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-slate-300'}`}></div>
-                          <span className={`text-xs font-bold uppercase tracking-widest ${isSuspended ? 'text-red-600' : isOnline ? 'text-green-600' : 'text-slate-500'}`}>
-                            {isSuspended ? 'Suspended' : isOnline ? 'Online' : 'Offline'}
-                          </span>
+
+                      <div className="flex items-center gap-3 pr-8 md:pr-0">
+                        {user.avatar ? (
+                          <img src={user.avatar} alt="Avatar" className="w-12 h-12 md:w-10 md:h-10 rounded-full object-cover shadow-sm border border-slate-200 shrink-0" />
+                        ) : (
+                          <div className="w-12 h-12 md:w-10 md:h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold uppercase shadow-sm border border-slate-200 shrink-0">
+                            {(user.name || user.displayName) ? (user.name || user.displayName).charAt(0) : '?'}
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <div className="font-bold text-slate-900 drop-shadow-sm group-hover:text-teal-700 transition-colors truncate">{user.name || user.displayName || "Unknown User"}</div>
+                          <div className="text-xs text-slate-500 mt-0.5 truncate">{user.gender || "Not specified"}</div>
                         </div>
-                      );
-                    })()}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-500 font-medium flex items-center gap-2 justify-between" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                    <span>{user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'Recent'}</span>
-                    <svg className="w-4 h-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                  </td>
-                </tr>
-              ))}
+                      </div>
+
+                      {/* Mobile-Only Combined Data Block */}
+                      <div className="mt-4 pt-3 border-t border-slate-100 md:hidden grid grid-cols-2 gap-2">
+                        <div className="flex flex-col gap-1.5">
+                          <div className="text-xs font-medium text-slate-700 flex items-center gap-1.5 truncate"><svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> <span className="truncate">{user.phone || "N/A"}</span></div>
+                          <div className="text-[10px] text-slate-500 flex items-center gap-1.5 truncate"><svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> <span className="truncate">{user.email || "N/A"}</span></div>
+                        </div>
+                        <div className="flex flex-col items-end gap-1.5 justify-center">
+                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                            {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
+                          </span>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <div className={`w-2 h-2 rounded-full ${isSuspended ? 'bg-red-500' : isOnline ? 'bg-green-500' : 'bg-slate-300'}`}></div>
+                            <span className={`text-[9px] font-bold uppercase tracking-widest ${isSuspended ? 'text-red-600' : isOnline ? 'text-green-600' : 'text-slate-500'}`}>
+                              {isSuspended ? 'Suspended' : isOnline ? 'Online' : 'Offline'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="hidden md:table-cell px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
+                      <div className="text-sm font-medium text-slate-700 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> {user.phone || "N/A"}</div>
+                      <div className="text-xs text-slate-500 mt-1 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> {user.email || "N/A"}</div>
+                    </td>
+                    <td className="hidden md:table-cell px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
+                      <span className={`border px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                        {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
+                      </span>
+                    </td>
+                    <td className="hidden md:table-cell px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
+                      {(() => {
+                        return (
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2.5 h-2.5 rounded-full ${isSuspended ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : isOnline ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-slate-300'}`}></div>
+                            <span className={`text-xs font-bold uppercase tracking-widest ${isSuspended ? 'text-red-600' : isOnline ? 'text-green-600' : 'text-slate-500'}`}>
+                              {isSuspended ? 'Suspended' : isOnline ? 'Online' : 'Offline'}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </td>
+                    <td className="hidden md:table-cell px-6 py-4 text-sm text-slate-500 font-medium items-center gap-2 justify-between" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
+                      <div className="flex items-center justify-between">
+                        <span>{user.createdAt ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'Recent'}</span>
+                        <svg className="w-4 h-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
