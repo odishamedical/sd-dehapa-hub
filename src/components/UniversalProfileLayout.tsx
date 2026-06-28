@@ -1509,7 +1509,8 @@ export default function UniversalProfileLayout({
                               createdAt: timestamp
                             });
                             
-                            router.push(`/consultation/${roomId}`);
+                            // Force a hard navigation to clear memory and cleanly load the heavy video/firebase scripts
+                            window.location.href = `/consultation/${roomId}`;
                           } catch (err) {
                             console.error("Error creating appointment:", err);
                             alert("Payment successful but failed to connect to room. Please contact support.");
