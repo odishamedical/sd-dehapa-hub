@@ -162,7 +162,7 @@ export default function DoctorV2OwnerDashboard() {
           </button>
           
           {/* Incoming Ping Service (Emergency Video Calls) */}
-          <div className="hidden md:block">
+          <div>
             <IncomingPingWidget doctorId={entityData.id} doctorSpecialty={entityData.primarySpecialty} />
           </div>
         </div>
