@@ -1683,7 +1683,7 @@ export default function UniversalProfileLayout({
             
             <div className="bg-white p-3 rounded-2xl border-2 border-slate-100 shadow-inner">
               <QRCodeSVG 
-                value={typeof window !== 'undefined' ? window.location.href : `https://dehapa.com/${unwrappedParams.type}s/${profile.id}`}
+                value={typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}?action=connect` : `https://dehapa.com/${unwrappedParams.type}s/${profile.id}?action=connect`}
                 size={200}
                 bgColor={"#ffffff"}
                 fgColor={"#0f172a"}
