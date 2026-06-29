@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   Award, MapPin, Phone, Star, CheckCircle2, Shield, 
   Stethoscope, Clock, FileText, Activity, 
-  HeartPulse, Navigation 
+  HeartPulse, Navigation, GraduationCap, Globe, Fingerprint 
 } from 'lucide-react';
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -161,6 +161,62 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
             <p>{profile.about || profile.bio || `Detailed information about ${profile.name} is currently being updated. They specialize in providing top-tier healthcare services.`}</p>
           </div>
         </div>
+
+        {/* Vertical Flow: Education (Conditionally Rendered) */}
+        {profile.education && profile.education.length > 0 && profile.education[0].degree && profile.education[0].degree !== "Not available (Not verified)" && (
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <GraduationCap className="w-5 h-5 text-teal-500" />
+              Education & Qualifications
+            </h2>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
+              <div className="space-y-4">
+                {profile.education.map((edu: any, index: number) => (
+                  <div key={index} className={`pb-4 ${index !== profile.education.length - 1 ? 'border-b border-slate-200' : ''}`}>
+                    <h3 className="font-bold text-slate-900">{edu.degree}</h3>
+                    <p className="text-slate-600 text-sm mt-1">{edu.institution || edu.college || 'Institution not specified'}</p>
+                    {edu.year && <p className="text-slate-400 text-xs mt-1">{edu.year}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Vertical Flow: Languages (Conditionally Rendered) */}
+        {profile.languages && profile.languages.length > 0 && profile.languages[0] !== "Not available (Not verified)" && (
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <Globe className="w-5 h-5 text-teal-500" />
+              Languages Spoken
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {profile.languages.map((lang: string, index: number) => (
+                <span key={index} className="bg-teal-50 text-teal-700 border border-teal-100 px-4 py-2 rounded-xl text-sm font-bold">
+                  {lang}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Vertical Flow: Registration (Conditionally Rendered) */}
+        {profile.registrationNumber && profile.registrationNumber !== "Not available (Not verified)" && (
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <Fingerprint className="w-5 h-5 text-teal-500" />
+              Medical Registration
+            </h2>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center gap-3">
+               <Shield className="w-6 h-6 text-emerald-500" />
+               <div>
+                 <p className="font-bold text-slate-900">{profile.registrationNumber}</p>
+                 <p className="text-xs text-slate-500 uppercase tracking-widest">Verified Registration</p>
+               </div>
+            </div>
+          </div>
+        )}
+
 
         {/* Vertical Flow: Location & Contact */}
         <div className="mb-10">
