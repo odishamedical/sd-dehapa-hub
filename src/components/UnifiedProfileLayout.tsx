@@ -23,13 +23,17 @@ interface UnifiedProfileProps {
   type: 'doctor' | 'hospital' | 'lab' | 'pharmacy' | 'ambulance';
   canEdit?: boolean;
   onInlineSave?: (field: string, val: string) => void;
+  platformAds?: any;
+  similarEntities?: any[];
 }
 
 export default function UnifiedProfileLayout({ 
   profile, 
   type,
   canEdit = false,
-  onInlineSave = () => {}
+  onInlineSave = () => {},
+  platformAds = {},
+  similarEntities = []
 }: UnifiedProfileProps) {
   const verified = profile.verified || profile.isPremium;
   const isDoctor = type === 'doctor';
@@ -153,6 +157,12 @@ export default function UnifiedProfileLayout({
     if (typeof arr[0] === 'object' && Object.values(arr[0]).some(v => typeof v === 'string' && v.includes('Not available'))) return false;
     return true;
   };
+
+  const getAdSlot = (suffix: string) => {
+    return platformAds[`ad_slot_${type}_${suffix}`] || platformAds[`ad_slot_global_${suffix}`];
+  };
+
+  const heroRightAd = getAdSlot('hero_right');
 
   return (
     <div className="min-h-screen bg-[#FAFAFC] font-sans pb-[160px] selection:bg-teal-900 selection:text-white">
@@ -358,251 +368,297 @@ export default function UnifiedProfileLayout({
         </div>
       </div>
 
-      {/* The Narrative Content */}
-      <div className="max-w-[1000px] mx-auto px-6 py-16">
-        
-        {/* Claim Profile Upsell */}
-        {!verified && (
-          <div className="bg-[#0A1128] rounded-[2rem] p-8 md:p-12 mb-16 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-900/20 to-amber-900/20"></div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-colors"></div>
-            
-            <div className="relative z-10 text-center sm:text-left">
-              <h4 className="font-black text-white text-2xl md:text-3xl">Are you {profile.name}?</h4>
-              <p className="text-slate-400 mt-2 max-w-lg text-lg">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
-            </div>
-            <Link href={`/claim-profile?id=${profile.id}`} className="relative z-10 shrink-0 bg-white text-[#0A1128] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-100 transition-colors shadow-[0_10px_30px_rgba(255,255,255,0.2)]">
-              Claim Exclusivity
-            </Link>
-          </div>
-        )}
-
-        <div className="space-y-24">
+      {/* Main Content Container - Fluid Grid */}
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start">
           
-          {/* About / Bio Narrative */}
-          <section className="relative pl-0 md:pl-16">
-            <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-            <h2 className="text-3xl font-black text-[#0A1128] mb-8">The Profile</h2>
-            <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-loose font-serif">
-              {isEditMode ? (
-                <InlineEditField 
-                  value={profile.about || profile.bio || ''} 
-                  onSave={(val) => onInlineSave('about', val)}
-                  isEditMode={true}
-                  type="textarea"
-                  placeholder="Enter your professional biography here..."
-                  className="w-full bg-white border border-cyan-500/30 p-4 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                />
-              ) : (
-                <p>{profile.about || profile.bio || `Eminent detailed information about ${profile.name} is currently being curated. Recognized for their dedication to advancing healthcare and patient outcomes.`}</p>
-              )}
-            </div>
-          </section>
-
-          {/* Specializations (Elegant Pills) */}
-          {hasValidData(profile.specialties) && (
-            <section className="relative pl-0 md:pl-16">
-              <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-              <h2 className="text-3xl font-black text-[#0A1128] mb-8">Areas of Excellence</h2>
-              <div className="flex flex-wrap gap-4">
-                {profile.specialties.map((spec: string, index: number) => (
-                  <Link 
-                    key={index} 
-                    href={`/doctors?specialty=${encodeURIComponent(spec)}`}
-                    className="bg-slate-100 text-slate-800 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-slate-200 hover:shadow-md transition-all group"
-                  >
-                    <span className="border-b border-transparent group-hover:border-slate-800 pb-0.5">{spec}</span>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Education Timeline */}
-          {hasValidData(profile.education) && (
-            <section className="relative pl-0 md:pl-16">
-              <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-              <h2 className="text-3xl font-black text-[#0A1128] mb-8">Academic Pedigree</h2>
-              <div className="space-y-8">
-                {profile.education.map((edu: any, index: number) => (
-                  <div key={index} className="flex gap-6 group">
-                    <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                      <GraduationCap className="w-5 h-5" />
-                    </div>
-                    <div className="pt-2">
-                      <h3 className="font-black text-[#0A1128] text-xl">{edu.degree}</h3>
-                      <Link 
-                        href={`/directory?query=${encodeURIComponent(edu.institution || edu.college || '')}`}
-                        className="inline-block mt-2 hover:opacity-80 transition-opacity"
-                      >
-                        <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
-                          {edu.institution || edu.college || 'Institution not specified'}
-                        </p>
-                      </Link>
-                      {edu.year && <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{edu.year}</p>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Past Experience Timeline */}
-          {hasValidData(profile.experiences) && (
-            <section className="relative pl-0 md:pl-16">
-              <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-              <h2 className="text-3xl font-black text-[#0A1128] mb-8">Professional Trajectory</h2>
-              <div className="space-y-8">
-                {profile.experiences.map((exp: any, index: number) => (
-                  <div key={index} className="flex gap-6 group">
-                    <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                      <Briefcase className="w-5 h-5" />
-                    </div>
-                    <div className="pt-2">
-                      <h3 className="font-black text-[#0A1128] text-xl">{exp.role || exp.title}</h3>
-                      <Link 
-                        href={`/hospitals?query=${encodeURIComponent(exp.hospital || exp.organization || '')}`}
-                        className="inline-block mt-2 hover:opacity-80 transition-opacity"
-                      >
-                        <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
-                          {exp.hospital || exp.organization}
-                        </p>
-                      </Link>
-                      <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{exp.duration || exp.year}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Awards (Art Gallery Style) */}
-          {hasValidData(profile.awards) && (
-            <section className="relative pl-0 md:pl-16">
-              <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-              <h2 className="text-3xl font-black text-[#0A1128] mb-8">Accolades & Honors</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {profile.awards.map((award: any, index: number) => (
-                  <div key={index} className="bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-shadow">
-                    <Medal className="w-8 h-8 text-[#D4AF37] mb-6" />
-                    <div>
-                      <p className="font-black text-[#0A1128] text-lg leading-snug">{award.title || award.name}</p>
-                      <p className="text-sm text-slate-400 mt-2 font-bold tracking-widest">{award.year}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Languages */}
-          {hasValidData(profile.languages) && (
-            <section className="relative pl-0 md:pl-16">
-              <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-              <h2 className="text-3xl font-black text-[#0A1128] mb-8">Languages Spoken</h2>
-              <div className="flex flex-wrap gap-4">
-                {profile.languages.map((lang: string, index: number) => (
-                  <div key={index} className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
-                    <Globe className="w-4 h-4 text-emerald-600" />
-                    <span className="font-bold text-[#0A1128] text-sm">{lang}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Media / Gallery (Editorial Strip) */}
-          {((profile.galleryImages && profile.galleryImages.length > 0) || (profile.rawImages && profile.rawImages.length > 0) || (profile.youtubeLinks && profile.youtubeLinks.length > 0)) && (
-            <section className="relative pl-0 md:pl-16">
-              <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-              <h2 className="text-3xl font-black text-[#0A1128] mb-8">Visual Narrative</h2>
-              
-              {/* Images */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                {[...(profile.galleryImages || []), ...(profile.rawImages || [])].slice(0, 6).map((img: string, idx: number) => (
-                  <div key={idx} className="aspect-square rounded-[2rem] overflow-hidden bg-slate-100 shadow-sm">
-                    <img src={img} alt="Gallery" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0" />
-                  </div>
-                ))}
-              </div>
-              
-              {/* Videos */}
-              {profile.youtubeLinks && profile.youtubeLinks.length > 0 && (
-                <div className="flex gap-4 overflow-x-auto pb-8 hide-scrollbar snap-x">
-                  {profile.youtubeLinks.map((link: string, idx: number) => {
-                    const videoId = link.split('v=')[1]?.split('&')[0] || link.split('youtu.be/')[1];
-                    return videoId ? (
-                      <div key={idx} className="w-[320px] shrink-0 snap-center rounded-[2rem] overflow-hidden bg-slate-900 aspect-video relative group shadow-lg">
-                        <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Video thumbnail" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform">
-                            <Video className="w-6 h-6 text-white" />
-                          </div>
-                        </div>
-                        <a href={link} target="_blank" rel="noreferrer" className="absolute inset-0 z-10"></a>
-                      </div>
-                    ) : null;
-                  })}
-                </div>
-              )}
-            </section>
-          )}
-
-          {/* Location & Map (Cinematic Presentation) */}
-          <section className="relative pl-0 md:pl-16">
-            <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-            <h2 className="text-3xl font-black text-[#0A1128] mb-8">Practice Location</h2>
+          {/* Main Content (75%) */}
+          <div className="lg:col-span-3 space-y-16">
             
-            <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden">
-              <div className="flex flex-col lg:flex-row">
+            {/* Claim Profile Upsell */}
+            {!verified && (
+              <div className="bg-[#0A1128] rounded-[2rem] p-8 md:p-12 mb-16 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-900/20 to-amber-900/20"></div>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-colors"></div>
                 
-                {/* Text Details */}
-                <div className="p-8 md:p-12 lg:w-1/2 flex flex-col justify-center">
-                  <h3 className="font-black text-[#0A1128] text-2xl mb-4">{profile.clinicName || profile.name}</h3>
-                  <p className="text-slate-500 font-serif text-lg leading-relaxed mb-8">{profile.address || profile.clinic?.address || "Address not provided"}</p>
-                  
-                  <div className="flex flex-col gap-4">
-                    <button 
-                      onClick={() => setShowPhone(!showPhone)}
-                      className="w-full bg-[#0A1128] text-white px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-3"
-                    >
-                      <Phone className="w-5 h-5" />
-                      {showPhone ? (profile.phone || profile.clinic?.phone || "Not available") : "Reveal Private Number"}
-                    </button>
-                    <a 
-                      href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.clinic?.address || profile.name)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full bg-slate-50 text-slate-800 border border-slate-200 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-100 transition-colors flex items-center justify-center gap-3"
-                    >
-                      <Navigation className="w-5 h-5" />
-                      Get Directions
-                    </a>
-                  </div>
-
-                  <div className="mt-8 pt-8 border-t border-slate-100">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Clock className="w-5 h-5 text-slate-400" />
-                      <h4 className="font-black text-[#0A1128] uppercase tracking-widest text-xs">Operating Hours</h4>
-                    </div>
-                    <p className="text-slate-600 font-serif italic text-lg">{profile.timings || profile.clinic?.timings || "Mon - Sat: 10:00 AM - 08:00 PM"}</p>
-                  </div>
+                <div className="relative z-10 text-center sm:text-left">
+                  <h4 className="font-black text-white text-2xl md:text-3xl">Are you {profile.name}?</h4>
+                  <p className="text-slate-400 mt-2 max-w-lg text-lg">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
                 </div>
-
-                {/* Live Google Map */}
-                <div className="lg:w-1/2 min-h-[300px] lg:min-h-full relative bg-slate-100">
-                  <iframe 
-                    src={profile.clinic?.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-                    className="absolute inset-0 w-full h-full border-0 filter grayscale contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-1000"
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </div>
-
+                <Link href={`/claim-profile?id=${profile.id}`} className="relative z-10 shrink-0 bg-white text-[#0A1128] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-100 transition-colors shadow-[0_10px_30px_rgba(255,255,255,0.2)]">
+                  Claim Exclusivity
+                </Link>
               </div>
+            )}
+
+            <div className="space-y-24">
+              
+              {/* About / Bio Narrative */}
+              <section className="relative pl-0 md:pl-16">
+                <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                <h2 className="text-3xl font-black text-[#0A1128] mb-8">The Profile</h2>
+                <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-loose font-serif">
+                  {isEditMode ? (
+                    <InlineEditField 
+                      value={profile.about || profile.bio || ''} 
+                      onSave={(val) => onInlineSave('about', val)}
+                      isEditMode={true}
+                      type="textarea"
+                      placeholder="Enter your professional biography here..."
+                      className="w-full bg-white border border-cyan-500/30 p-4 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    />
+                  ) : (
+                    <p>{profile.about || profile.bio || `Eminent detailed information about ${profile.name} is currently being curated. Recognized for their dedication to advancing healthcare and patient outcomes.`}</p>
+                  )}
+                </div>
+              </section>
+
+              {/* Specializations (Elegant Pills) */}
+              {hasValidData(profile.specialties) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Areas of Excellence</h2>
+                  <div className="flex flex-wrap gap-4">
+                    {profile.specialties.map((spec: string, index: number) => (
+                      <Link 
+                        key={index} 
+                        href={`/doctors?specialty=${encodeURIComponent(spec)}`}
+                        className="bg-slate-100 text-slate-800 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-slate-200 hover:shadow-md transition-all group"
+                      >
+                        <span className="border-b border-transparent group-hover:border-slate-800 pb-0.5">{spec}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Education Timeline */}
+              {hasValidData(profile.education) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Academic Pedigree</h2>
+                  <div className="space-y-8">
+                    {profile.education.map((edu: any, index: number) => (
+                      <div key={index} className="flex gap-6 group">
+                        <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                          <GraduationCap className="w-5 h-5" />
+                        </div>
+                        <div className="pt-2">
+                          <h3 className="font-black text-[#0A1128] text-xl">{edu.degree}</h3>
+                          <Link 
+                            href={`/directory?query=${encodeURIComponent(edu.institution || edu.college || '')}`}
+                            className="inline-block mt-2 hover:opacity-80 transition-opacity"
+                          >
+                            <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                              {edu.institution || edu.college || 'Institution not specified'}
+                            </p>
+                          </Link>
+                          {edu.year && <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{edu.year}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Past Experience Timeline */}
+              {hasValidData(profile.experiences) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Professional Trajectory</h2>
+                  <div className="space-y-8">
+                    {profile.experiences.map((exp: any, index: number) => (
+                      <div key={index} className="flex gap-6 group">
+                        <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                          <Briefcase className="w-5 h-5" />
+                        </div>
+                        <div className="pt-2">
+                          <h3 className="font-black text-[#0A1128] text-xl">{exp.role || exp.title}</h3>
+                          <Link 
+                            href={`/hospitals?query=${encodeURIComponent(exp.hospital || exp.organization || '')}`}
+                            className="inline-block mt-2 hover:opacity-80 transition-opacity"
+                          >
+                            <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                              {exp.hospital || exp.organization}
+                            </p>
+                          </Link>
+                          <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{exp.duration || exp.year}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Awards (Art Gallery Style) */}
+              {hasValidData(profile.awards) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Accolades & Honors</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {profile.awards.map((award: any, index: number) => (
+                      <div key={index} className="bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-shadow">
+                        <Medal className="w-8 h-8 text-[#D4AF37] mb-6" />
+                        <div>
+                          <p className="font-black text-[#0A1128] text-lg leading-snug">{award.title || award.name}</p>
+                          <p className="text-sm text-slate-400 mt-2 font-bold tracking-widest">{award.year}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Languages */}
+              {hasValidData(profile.languages) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Languages Spoken</h2>
+                  <div className="flex flex-wrap gap-4">
+                    {profile.languages.map((lang: string, index: number) => (
+                      <div key={index} className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                        <Globe className="w-4 h-4 text-emerald-600" />
+                        <span className="font-bold text-[#0A1128] text-sm">{lang}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Media / Gallery (Editorial Strip) */}
+              {((profile.galleryImages && profile.galleryImages.length > 0) || (profile.rawImages && profile.rawImages.length > 0) || (profile.youtubeLinks && profile.youtubeLinks.length > 0)) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Visual Narrative</h2>
+                  
+                  {/* Images */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                    {[...(profile.galleryImages || []), ...(profile.rawImages || [])].slice(0, 6).map((img: string, idx: number) => (
+                      <div key={idx} className="aspect-square rounded-[2rem] overflow-hidden bg-slate-100 shadow-sm">
+                        <img src={img} alt="Gallery" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0" />
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Videos */}
+                  {profile.youtubeLinks && profile.youtubeLinks.length > 0 && (
+                    <div className="flex gap-4 overflow-x-auto pb-8 hide-scrollbar snap-x">
+                      {profile.youtubeLinks.map((link: string, idx: number) => {
+                        const videoId = link.split('v=')[1]?.split('&')[0] || link.split('youtu.be/')[1];
+                        return videoId ? (
+                          <div key={idx} className="w-[320px] shrink-0 snap-center rounded-[2rem] overflow-hidden bg-slate-900 aspect-video relative group shadow-lg">
+                            <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Video thumbnail" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform">
+                                <Video className="w-6 h-6 text-white" />
+                              </div>
+                            </div>
+                            <a href={link} target="_blank" rel="noreferrer" className="absolute inset-0 z-10"></a>
+                          </div>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* Location & Map (Cinematic Presentation) */}
+              <section className="relative pl-0 md:pl-16">
+                <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                <h2 className="text-3xl font-black text-[#0A1128] mb-8">Practice Location</h2>
+                
+                <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden">
+                  <div className="flex flex-col lg:flex-row">
+                    
+                    {/* Text Details */}
+                    <div className="p-8 md:p-12 lg:w-1/2 flex flex-col justify-center">
+                      <h3 className="font-black text-[#0A1128] text-2xl mb-4">{profile.clinicName || profile.name}</h3>
+                      <p className="text-slate-500 font-serif text-lg leading-relaxed mb-8">{profile.address || profile.clinic?.address || "Address not provided"}</p>
+                      
+                      <div className="flex flex-col gap-4">
+                        <button 
+                          onClick={() => setShowPhone(!showPhone)}
+                          className="w-full bg-[#0A1128] text-white px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-3"
+                        >
+                          <Phone className="w-5 h-5" />
+                          {showPhone ? (profile.phone || profile.clinic?.phone || "Not available") : "Reveal Private Number"}
+                        </button>
+                        <a 
+                          href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.clinic?.address || profile.name)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="w-full bg-slate-50 text-slate-800 border border-slate-200 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-100 transition-colors flex items-center justify-center gap-3"
+                        >
+                          <Navigation className="w-5 h-5" />
+                          Get Directions
+                        </a>
+                      </div>
+
+                      <div className="mt-8 pt-8 border-t border-slate-100">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Clock className="w-5 h-5 text-slate-400" />
+                          <h4 className="font-black text-[#0A1128] uppercase tracking-widest text-xs">Operating Hours</h4>
+                        </div>
+                        <p className="text-slate-600 font-serif italic text-lg">{profile.timings || profile.clinic?.timings || "Mon - Sat: 10:00 AM - 08:00 PM"}</p>
+                      </div>
+                    </div>
+
+                    {/* Live Google Map */}
+                    <div className="lg:w-1/2 min-h-[300px] lg:min-h-full relative bg-slate-100">
+                      <iframe 
+                        src={profile.clinic?.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                        className="absolute inset-0 w-full h-full border-0 filter grayscale contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-1000"
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      ></iframe>
+                    </div>
+
+                  </div>
+                </div>
+              </section>
             </div>
-          </section>
+          </div>
+
+          {/* Right Sidebar (25%) */}
+          <div className="lg:col-span-1 space-y-8 sticky top-[250px]">
+            
+            {/* Ad Space */}
+            {heroRightAd && (
+              <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white aspect-square md:aspect-[4/3] lg:aspect-[3/4]">
+                {heroRightAd.imageUrl ? (
+                  <a href={heroRightAd.linkUrl} target="_blank" rel="noreferrer">
+                    <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
+                  </a>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode }} />
+                )}
+              </div>
+            )}
+
+            {/* Similar Entities */}
+            {similarEntities && similarEntities.length > 0 && (
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl">
+                <h3 className="font-black text-lg text-[#0A1128] mb-6">Similar Providers</h3>
+                <div className="flex flex-col gap-4">
+                  {similarEntities.map((sim, idx) => (
+                    <Link key={idx} href={`/profile/${type}/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md">
+                      <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Provider")}&background=0f766e&color=fff`} alt={sim.name} className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
+                        <div className="flex items-center gap-1 mt-1">
+                          <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                          <span className="text-[10px] font-bold text-slate-700">{sim.stats?.rating || 4.5}</span>
+                          <span className="text-[10px] text-slate-500 truncate ml-1 px-2 border-l border-slate-300">{sim.subtitle || sim.category}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
 
         </div>
       </div>

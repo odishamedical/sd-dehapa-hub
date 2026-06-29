@@ -209,6 +209,8 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
       type="doctor" 
       canEdit={canEdit} 
       onInlineSave={handleInlineSave}
+      similarEntities={similarDoctors}
+      platformAds={platformAds}
     />
   );
 }
