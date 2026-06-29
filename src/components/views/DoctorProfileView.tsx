@@ -16,7 +16,7 @@ import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
 import { updateDoc } from 'firebase/firestore';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
-import UniversalProfileLayout from '@/components/UniversalProfileLayout';
+import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 
 export default function DoctorProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [doctor, setDoctor] = useState<any>(null);
@@ -203,5 +203,5 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
     return <div className="min-h-screen flex items-center justify-center bg-[#0B1121]"><div className="text-center"><h2 className="text-2xl font-bold text-white mb-2">Doctor Not Found</h2><Link href="/doctors" className="text-cyan-400 hover:underline">Return to Directory</Link></div></div>;
   }
 
-  return <UniversalProfileLayout profile={doctor} unwrappedParams={{ type: 'doctor', id: doctor.id }} similarEntities={similarDoctors} platformAds={platformAds} canEdit={canEdit} onInlineSave={handleInlineSave} />;
+  return <UnifiedProfileLayout profile={doctor} type="doctor" />;
 }
