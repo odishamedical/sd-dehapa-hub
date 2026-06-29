@@ -696,7 +696,7 @@ export default function UnifiedProfileLayout({
                   className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
                 >
                   <Video className="w-4 h-4 md:w-5 md:h-5" />
-                  Urgent Ping
+                  Urgent Video Call
                 </button>
                 <button 
                   onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
