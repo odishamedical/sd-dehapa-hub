@@ -8,6 +8,8 @@ import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 
 export default function HospitalProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [profile, setProfile] = useState<any>(null);
+  const [similarHospitals, setSimilarHospitals] = useState<any[]>([]);
+  const [platformAds, setPlatformAds] = useState<any>({});
   const [loading, setLoading] = useState(true);
 
   // Edit Mode State
@@ -85,6 +87,53 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
             phone: rawData.locationData?.receptionPhone || rawData.phone || "Not available"
           };
           setProfile(docData);
+
+          try {
+            const broadQuery = query(collection(db, 'directory'), limit(50));
+            const broadSnap = await getDocs(broadQuery);
+            const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId && !!d.image);
+            let similarDocs = allDocs.filter(d => 
+              d.category === "Hospital" || 
+              d.category === "Diagnostic Center" ||
+              d.category === "Pharmacy"
+            );
+            
+            if (similarDocs.length < 5) {
+              similarDocs = allDocs;
+            }
+            
+            similarDocs.sort(() => 0.5 - Math.random());
+            setSimilarHospitals(similarDocs.slice(0, 15)); // Increased to 15 to make sidebar longer
+          } catch(e) {
+            console.error("Failed to fetch similar hospitals", e);
+          }
+
+          try {
+            const adsQuery = query(collection(db, 'platform_ads'), where('active', '==', true));
+            const adsSnap = await getDocs(adsQuery);
+            const adsData: any = {};
+            
+            adsSnap.forEach(d => {
+              const ad = d.data();
+              const slot = ad.slot || ad.slotId;
+              if (slot && (ad.targetType === 'global' || !ad.targetType)) {
+                adsData[slot] = ad;
+              }
+            });
+
+            adsSnap.forEach(d => {
+              const ad = d.data();
+              const slot = ad.slot || ad.slotId;
+              if (slot && ad.targetType === 'specific_profile' && ad.targetId === docId) {
+                adsData[slot] = ad; 
+              }
+            });
+            
+            setPlatformAds(adsData);
+          } catch(e) {
+            console.error("Ads fetch failed", e);
+          }
+
           return;
         }
       } catch (err) {
@@ -139,5 +188,5 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
     );
   }
 
-  return <UnifiedProfileLayout profile={profile} type="hospital" canEdit={canEdit} onInlineSave={handleInlineSave} />;
+  return <UnifiedProfileLayout profile={profile} type="hospital" canEdit={canEdit} onInlineSave={handleInlineSave} similarEntities={similarHospitals} platformAds={platformAds} />;
 }

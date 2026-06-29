@@ -163,7 +163,7 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
             
             // Shuffle the array to show a random mix
             similarDocs.sort(() => 0.5 - Math.random());
-            setSimilarDoctors(similarDocs.slice(0, 12));
+            setSimilarDoctors(similarDocs.slice(0, 15));
           } catch(e) {
             console.error("Failed to fetch similar doctors", e);
           }

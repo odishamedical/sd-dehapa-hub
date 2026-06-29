@@ -691,7 +691,7 @@ export default function UnifiedProfileLayout({
           </div>
 
           {/* Right Sidebar (25%) */}
-          <div className="lg:col-span-1 space-y-8 sticky top-[250px]">
+          <div className="lg:col-span-1 space-y-8">
             
             {/* Ad Space */}
             {heroRightAd && (
@@ -709,9 +709,9 @@ export default function UnifiedProfileLayout({
 
             {/* Similar Entities */}
             {similarEntities && similarEntities.length > 0 && (
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col max-h-[600px]">
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col">
                 <h3 className="font-black text-lg text-[#0A1128] mb-4 shrink-0">Explore Network</h3>
-                <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="flex flex-col gap-4 pr-2">
                   {similarEntities.map((sim, idx) => {
                     const isHospitalOrLab = sim.category === "Hospital" || sim.category === "Diagnostic Center" || sim.category === "Pharmacy";
                     const routePath = isHospitalOrLab ? `/hospitals` : `/profile/doctor`; // Assuming hospitals go to a list or their own profile type in the future
