@@ -85,7 +85,11 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     try {
       // Synchronously request camera access immediately on button click to bypass Safari restrictions
       if (callObject) {
-         await callObject.startCamera();
+         try {
+           await callObject.startCamera();
+         } catch (camErr) {
+           console.warn("Doctor camera block during startCamera:", camErr);
+         }
       }
 
       // 1. Generate Daily Room via secure Next.js API
@@ -112,7 +116,11 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   
   const handlePatientJoin = async () => {
     if (callObject) {
-       await callObject.startCamera();
+       try {
+         await callObject.startCamera();
+       } catch (camErr) {
+         console.warn("Patient camera block during startCamera:", camErr);
+       }
     }
     setVideoCall(true); 
   };
@@ -221,21 +229,27 @@ function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl, patientHasVideo }: { i
   const [camActive, setCamActive] = useState(patientHasVideo || isDoctor);
 
   const [meetingState, setMeetingState] = useState<string>('unknown');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const callObject = DailyIframe.getCallInstance();
   
   useEffect(() => {
     if (!callObject) return;
     const updateState = () => setMeetingState(callObject.meetingState());
+    const handleError = (e: any) => {
+      console.error("Daily error event:", e);
+      setErrorMessage(e?.errorMsg || JSON.stringify(e));
+    };
+    
     updateState();
     callObject.on('joining-meeting', updateState);
     callObject.on('joined-meeting', updateState);
     callObject.on('left-meeting', updateState);
-    callObject.on('error', updateState);
+    callObject.on('error', handleError);
     return () => {
       callObject.off('joining-meeting', updateState);
       callObject.off('joined-meeting', updateState);
       callObject.off('left-meeting', updateState);
-      callObject.off('error', updateState);
+      callObject.off('error', handleError);
     };
   }, [callObject]);
 
@@ -277,9 +291,10 @@ function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl, patientHasVideo }: { i
           <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
           <span className="text-white text-xs font-bold tracking-widest uppercase">Live Session</span>
         </div>
-        <div className="text-[10px] text-white/40 font-mono pointer-events-auto text-right max-w-[50%] overflow-hidden">
+        <div className="text-[10px] text-white/45 font-mono pointer-events-auto text-right max-w-[65%] overflow-hidden">
           ID: {window.location.pathname.split('/').pop()} <br/>
-          STATE: {meetingState}
+          STATE: {meetingState} <br/>
+          {errorMessage && <span className="text-red-400 font-bold">ERROR: {errorMessage}</span>}
         </div>
       </div>
 
