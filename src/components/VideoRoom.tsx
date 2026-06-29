@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from "@/lib/firebase";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc, setDoc, getDoc } from "firebase/firestore";
 import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import { 
   DailyProvider, 
@@ -24,6 +24,24 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   const [videoCall, setVideoCall] = useState(false);
   const [loading, setLoading] = useState(true);
   const [callObject, setCallObject] = useState<DailyCall | null>(null);
+  const [patientHasVideo, setPatientHasVideo] = useState(true);
+
+  // Fetch consultation request details to see if patient camera is blocked
+  useEffect(() => {
+    if (typeof window !== 'undefined' && roomId) {
+      const getReqDetails = async () => {
+        try {
+          const snap = await getDoc(doc(db, 'consultation_requests', roomId));
+          if (snap.exists()) {
+            setPatientHasVideo(snap.data().hasVideo !== false);
+          }
+        } catch (e) {
+          console.warn("Failed to fetch consultation request info:", e);
+        }
+      };
+      getReqDetails();
+    }
+  }, [roomId]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -80,10 +98,10 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
       
       if (data.url) {
         // 2. Save URL to Firebase so patient can get it
-        await updateDoc(doc(db, "appointments", roomId), { 
+        await setDoc(doc(db, "appointments", roomId), { 
           status: 'Active',
           dailyUrl: data.url
-        });
+        }, { merge: true });
         setDailyUrl(data.url);
         setVideoCall(true);
       }
@@ -128,7 +146,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   if (videoCall && callObject) {
     return (
       <DailyProvider callObject={callObject}>
-        <CustomVideoGrid isDoctor={isDoctor} onEndCall={handleEndCall} dailyUrl={dailyUrl} />
+        <CustomVideoGrid isDoctor={isDoctor} onEndCall={handleEndCall} dailyUrl={dailyUrl} patientHasVideo={patientHasVideo} />
       </DailyProvider>
     );
   }
@@ -193,12 +211,15 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 // Custom Daily.co UI Components (100% White Labeled)
 // ----------------------------------------------------------------------------------
 
-function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl }: { isDoctor: boolean, onEndCall: () => void, dailyUrl: string | null }) {
+function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl, patientHasVideo }: { isDoctor: boolean, onEndCall: () => void, dailyUrl: string | null, patientHasVideo: boolean }) {
   const localSessionId = useLocalSessionId();
   const remoteParticipantIds = useParticipantIds({ filter: 'remote' });
   const localVideo = useVideoTrack(localSessionId || '');
   
-  // Use a hack to force re-render meeting state for debugging (not usually needed)
+  // Audio/Video control states
+  const [micActive, setMicActive] = useState(true);
+  const [camActive, setCamActive] = useState(patientHasVideo || isDoctor);
+
   const [meetingState, setMeetingState] = useState<string>('unknown');
   const callObject = DailyIframe.getCallInstance();
   
@@ -218,28 +239,35 @@ function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl }: { isDoctor: boolean,
     };
   }, [callObject]);
 
-  // Detect if the browser blocked the camera completely
-  const isCameraBlocked = localVideo?.state === 'blocked' || localVideo?.state === 'off';
+  const toggleMic = () => {
+    if (callObject) {
+      const next = !micActive;
+      callObject.setLocalAudio(next);
+      setMicActive(next);
+    }
+  };
+
+  const toggleCam = () => {
+    if (callObject) {
+      const next = !camActive;
+      callObject.setLocalVideo(next);
+      setCamActive(next);
+    }
+  };
 
   return (
     <div className="fixed inset-0 w-full h-full bg-slate-950 flex flex-col overflow-hidden z-[100]">
       
-      {/* Camera Blocked User Instruction Popup */}
-      {isCameraBlocked && (
-        <div className="absolute inset-0 z-[200] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center">
-           <div className="bg-red-500/20 text-red-500 p-6 rounded-full mb-6">
-             <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-             </svg>
-           </div>
-           <h3 className="text-3xl font-black text-white mb-4">Camera Blocked</h3>
-           <p className="text-slate-300 text-lg max-w-md mb-8 leading-relaxed">
-             Your mobile browser is blocking camera access for this consultation. <br/><br/>
-             Please tap the <strong>lock icon 🔒</strong> or settings icon in your address bar (top of screen), choose <strong>Permissions</strong>, and tap <strong>Allow Camera</strong>.
-           </p>
-           <button onClick={() => window.location.reload()} className="bg-emerald-500 text-white font-bold tracking-widest uppercase px-8 py-4 rounded-full hover:bg-emerald-400 transition-colors shadow-lg">
-             I've Allowed It - Reload Page
-           </button>
+      {/* Doctor Warning Banner: Patient Camera Blocked */}
+      {isDoctor && !patientHasVideo && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-[210] w-[90%] max-w-sm bg-rose-600 border border-rose-500 text-white rounded-2xl p-4 shadow-xl flex items-start gap-3 animate-in slide-in-from-top duration-300">
+          <span className="text-xl">⚠️</span>
+          <div>
+            <h5 className="font-bold text-sm uppercase tracking-wider">Patient Camera Blocked</h5>
+            <p className="text-xs text-rose-100 mt-0.5 leading-relaxed">
+              They can see you and hear you, but their phone is blocking their own camera.
+            </p>
+          </div>
         </div>
       )}
 
@@ -249,10 +277,9 @@ function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl }: { isDoctor: boolean,
           <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
           <span className="text-white text-xs font-bold tracking-widest uppercase">Live Session</span>
         </div>
-        <div className="text-xs text-white/50 font-mono pointer-events-auto text-right max-w-[50%] overflow-hidden">
+        <div className="text-[10px] text-white/40 font-mono pointer-events-auto text-right max-w-[50%] overflow-hidden">
           ID: {window.location.pathname.split('/').pop()} <br/>
-          STATE: {meetingState} <br/>
-          ROOM: {dailyUrl ? dailyUrl.split('/').pop() : 'none'}
+          STATE: {meetingState}
         </div>
       </div>
 
@@ -263,26 +290,72 @@ function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl }: { isDoctor: boolean,
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 gap-4">
              <div className="w-16 h-16 border-4 border-slate-700 border-t-slate-400 rounded-full animate-spin"></div>
-             <p className="font-bold tracking-widest text-center px-8">WAITING FOR {isDoctor ? 'PATIENT' : 'DOCTOR'} TO JOIN...</p>
+             <p className="font-black text-xs md:text-sm tracking-widest text-center px-8 uppercase text-slate-400 animate-pulse">
+               Connecting... Please Wait / कृपया प्रतीक्षा करें
+             </p>
           </div>
         )}
       </div>
 
       {/* Local Video Picture-in-Picture (Bottom Right) */}
-      {!isCameraBlocked && (
-        <div className="absolute bottom-24 right-6 w-28 h-40 md:w-48 md:h-64 bg-slate-800 rounded-2xl overflow-hidden shadow-2xl border border-white/10 z-40">
+      {camActive && (
+        <div className="absolute bottom-28 right-6 w-28 h-40 md:w-48 md:h-64 bg-slate-800 rounded-2xl overflow-hidden shadow-2xl border border-white/10 z-40">
            {localSessionId && <VideoPlayer id={localSessionId} isLocal={true} />}
         </div>
       )}
 
-      {/* Bottom Control Bar */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-slate-900/80 backdrop-blur-xl px-2 py-2 rounded-full border border-white/10">
-         <button 
-           onClick={onEndCall} 
-           className="bg-red-500 hover:bg-red-600 text-white font-bold tracking-widest uppercase text-xs px-8 py-4 rounded-full transition-colors flex items-center gap-2 shadow-lg"
-         >
-            End Call
-         </button>
+      {/* Bottom Control Bar (Village-Friendly, Massive Buttons) */}
+      <div className="absolute bottom-6 left-0 right-0 z-50 flex justify-center items-center gap-6 px-4">
+        <div className="bg-slate-900/90 backdrop-blur-2xl px-6 py-4 rounded-3xl border border-white/10 flex items-center gap-6 shadow-2xl">
+          {/* Mute Button */}
+          <button 
+            onClick={toggleMic}
+            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
+              micActive ? 'bg-slate-800 text-white hover:bg-slate-700' : 'bg-red-500 text-white animate-pulse'
+            }`}
+          >
+            {micActive ? (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+              </svg>
+            )}
+          </button>
+
+          {/* End Call Button (Big Red Centerpiece) */}
+          <button 
+            onClick={onEndCall} 
+            className="w-16 h-16 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95 shadow-lg shadow-red-900/35"
+          >
+            <svg className="w-8 h-8 rotate-[135deg]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 15.46l-5.27-.61-2.52 2.52c-2.83-1.44-5.15-3.75-6.59-6.59l2.53-2.53L8.54 3H3.03C2.45 3 2 3.45 2 4.03 2 13.4 9.6 21 18.97 21c.58 0 1.03-.45 1.03-1.03v-4.51z" />
+            </svg>
+          </button>
+
+          {/* Camera Button */}
+          <button 
+            onClick={toggleCam}
+            disabled={!patientHasVideo && !isDoctor}
+            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
+              !patientHasVideo && !isDoctor ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed' :
+              camActive ? 'bg-slate-800 text-white hover:bg-slate-700' : 'bg-red-500 text-white animate-pulse'
+            }`}
+          >
+            {camActive ? (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
 
     </div>

@@ -305,6 +305,31 @@ export default function AdminDataCRM() {
         };
         await setDoc(newRef, fullData);
         setData([{ id: newRef.id, ...fullData }, ...data]);
+        
+        // --- WhatsApp Automation ---
+        if (updatedData.phone) {
+          try {
+            const origin = typeof window !== 'undefined' ? window.location.origin : 'https://dehapa.com';
+            // We route to /profile/slug or /profile/id depending on setup. Assuming /directory/slug is the public URL, but I will use the domain we know.
+            const profileSlug = updatedData.customSlug || newRef.id;
+            const profileUrl = `${origin}/directory/${profileSlug}`;
+            const displayName = updatedData.category === 'Doctor' ? `Dr. ${updatedData.name}` : updatedData.name;
+            
+            fetch('/api/whatsapp/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                to: updatedData.phone, 
+                messageType: 'template',
+                templateName: 'dehapa_listing_notice',
+                parameters: [displayName, profileUrl]
+              })
+            }).catch(err => console.error('WhatsApp auto-invite error:', err));
+          } catch (e) {
+            console.error('WhatsApp invite block error:', e);
+          }
+        }
+        // ---------------------------
       } else {
         const ref = doc(db, 'directory', selectedListing.id);
         await updateDoc(ref, { ...updatedData, updatedAt: new Date() });

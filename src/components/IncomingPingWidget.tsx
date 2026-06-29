@@ -79,10 +79,6 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
         });
         
         setIncomingRequest(validRequests[0]);
-        try {
-          const audio = new Audio('/ringtone.mp3'); 
-          audio.play().catch(e => console.log("Audio autoplay blocked", e));
-        } catch (e) {}
       } else {
         setIncomingRequest(null);
       }
@@ -92,6 +88,72 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
 
     return () => unsubRequests();
   }, [doctorId, isOnline, doctorSpecialty]);
+
+  // 3. Play audible ringtone loop during active incoming request
+  useEffect(() => {
+    let isPlaying = true;
+    let audioCtx: AudioContext | null = null;
+    let osc1: OscillatorNode | null = null;
+    let osc2: OscillatorNode | null = null;
+    let gain: GainNode | null = null;
+    
+    if (incomingRequest) {
+      const playRing = async () => {
+        // Create context on demand
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextClass) return;
+        audioCtx = new AudioContextClass();
+        
+        while (isPlaying) {
+          try {
+            if (audioCtx.state === 'suspended') {
+              await audioCtx.resume();
+            }
+            
+            // Generate telephone double ring (440Hz + 480Hz)
+            osc1 = audioCtx.createOscillator();
+            osc2 = audioCtx.createOscillator();
+            gain = audioCtx.createGain();
+            
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc2.frequency.setValueAtTime(480, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc1.start();
+            osc2.start();
+            
+            // Ring duration: 1.5 seconds
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            if (osc1) { osc1.stop(); osc1.disconnect(); }
+            if (osc2) { osc2.stop(); osc2.disconnect(); }
+            
+            // Pause duration: 2 seconds
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          } catch (e) {
+            console.error("Ringtone synth error:", e);
+            break;
+          }
+        }
+      };
+      
+      playRing();
+    }
+    
+    return () => {
+      isPlaying = false;
+      if (osc1) { try { osc1.stop(); } catch(e){} }
+      if (osc2) { try { osc2.stop(); } catch(e){} }
+      if (audioCtx) { audioCtx.close().catch(() => {}); }
+    };
+  }, [incomingRequest]);
 
   const handleAccept = async () => {
     if (!incomingRequest) return;

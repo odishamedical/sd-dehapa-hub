@@ -51,6 +51,14 @@ export default function DoctorStatusToggle() {
   const toggleStatus = async () => {
     if (!userUid) return;
     
+    // Unlock browser audio autoplay by playing a silent base64 click sound
+    try {
+      const unlockAudio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+      unlockAudio.play().catch(e => console.log("Audio unlock prevented:", e));
+    } catch (e) {
+      console.warn("Audio context unlock error:", e);
+    }
+
     const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
     const db = getFirestore(app, "default");
     const statusRef = doc(db, "doctor_status", userUid);

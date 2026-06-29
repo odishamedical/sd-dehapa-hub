@@ -11,6 +11,8 @@ export interface AddressData {
   city: string; // Town/City/Village
   pincode: string;
   localAddress: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 interface AddressBlockProps {
@@ -22,7 +24,9 @@ interface AddressBlockProps {
 const defaultCountries = ["India", "USA", "UK", "Australia", "Canada", "Other"];
 
 export default function AddressBlock({ data, onChange, darkTheme = false }: AddressBlockProps) {
-  const updateField = (field: keyof AddressData, value: string) => {
+  const [gpsLoading, setGpsLoading] = useState(false);
+
+  const updateField = (field: keyof AddressData, value: any) => {
     const newData = { ...data, [field]: value };
     
     // Auto-cascading logic
@@ -44,6 +48,34 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
     onChange(newData);
   };
 
+  const handleGetGPSLocation = () => {
+    if (typeof window === 'undefined') return;
+    setGpsLoading(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const newData = {
+            ...data,
+            latitude: lat,
+            longitude: lng
+          };
+          onChange(newData);
+          setGpsLoading(false);
+        },
+        (error) => {
+          console.error("GPS error", error);
+          alert("Could not retrieve GPS coordinates. Please make sure location access is allowed in your browser settings.");
+          setGpsLoading(false);
+        }
+      );
+    } else {
+      alert("Location services are not supported by your browser.");
+      setGpsLoading(false);
+    }
+  };
+
   const isOdisha = data.state === "Odisha";
   const hasOdishaDistricts = isOdisha && districtsByState["Odisha"];
   const hasBlocks = isOdisha && data.district && blocksByDistrict[data.district];
@@ -58,6 +90,50 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
 
   return (
     <div className="space-y-6">
+      
+      {/* Map and GPS Pinner (Village Friendly) */}
+      <div className="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6 mb-6">
+        <h4 className="font-bold text-white text-base mb-1">Set Home Location on Map</h4>
+        <p className="text-xs text-slate-400 mb-4">
+          This maps your residence so ambulances and doctors can find your home instantly in an emergency.
+        </p>
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <button 
+            type="button"
+            onClick={handleGetGPSLocation}
+            className="w-full md:w-auto bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs uppercase tracking-widest px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg"
+          >
+            {gpsLoading ? (
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              <svg className="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            )}
+            {data.latitude ? "Update Pinned GPS Location" : "Pin My Current GPS Location"}
+          </button>
+          {data.latitude && (
+            <span className="text-xs text-emerald-400 font-mono">
+              📍 GPS Coordinates Pinned: {data.latitude.toFixed(5)}, {data.longitude?.toFixed(5)}
+            </span>
+          )}
+        </div>
+        {data.latitude && data.longitude && (
+          <div className="mt-4 w-full h-48 rounded-xl overflow-hidden border border-slate-700/50 shadow-inner">
+            <iframe 
+              width="100%" 
+              height="100%" 
+              frameBorder="0" 
+              scrolling="no" 
+              marginHeight={0} 
+              marginWidth={0} 
+              src={`https://maps.google.com/maps?q=${data.latitude},${data.longitude}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+            />
+          </div>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Country */}
         <div>
@@ -106,7 +182,7 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
               type="text" 
               value={data.state}
               onChange={(e) => updateField('state', e.target.value)}
-              placeholder="e.g. California, London"
+              placeholder="Type State/Province"
               className={inputClass}
             />
           )}
@@ -116,10 +192,10 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* District */}
         <div>
-          <label className={labelClass}>District / County</label>
-          {data.state && districtsByState[data.state] ? (
+          <label className={labelClass}>District</label>
+          {isOdisha && hasOdishaDistricts ? (
             <select 
-              value={districtsByState[data.state].includes(data.district) ? data.district : (data.district ? "Other" : "")}
+              value={districtsByState["Odisha"].includes(data.district) ? data.district : (data.district ? "Other" : "")}
               onChange={(e) => {
                 if (e.target.value === "Other") {
                   updateField('district', "Other");
@@ -130,7 +206,7 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
               className={inputClass}
             >
               <option value="">Select District</option>
-              {districtsByState[data.state].map((d: string) => <option key={d} value={d} className={darkTheme ? "bg-slate-900" : ""}>{d}</option>)}
+              {districtsByState["Odisha"].map((d: string) => <option key={d} value={d} className={darkTheme ? "bg-slate-900" : ""}>{d}</option>)}
               <option value="Other" className={darkTheme ? "bg-slate-900" : ""}>Other</option>
             </select>
           ) : (
@@ -138,11 +214,11 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
               type="text" 
               value={data.district}
               onChange={(e) => updateField('district', e.target.value)}
-              placeholder="Type District..."
+              placeholder="Type District (Optional)"
               className={inputClass}
             />
           )}
-          {data.state && districtsByState[data.state] && !districtsByState[data.state].includes(data.district) && data.district !== "" && data.district !== undefined && (
+          {isOdisha && hasOdishaDistricts && !districtsByState["Odisha"].includes(data.district) && data.district !== "" && data.district !== undefined && (
             <input 
               type="text" 
               value={data.district === "Other" ? "" : data.district}

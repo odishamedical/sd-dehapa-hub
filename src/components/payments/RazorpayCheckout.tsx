@@ -24,7 +24,12 @@ export default function RazorpayCheckout({ amount, buttonText, paymentType, onSu
     });
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     setLoading(true);
 
     // BYPASS PAYMENT FOR TESTING:

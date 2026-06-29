@@ -71,12 +71,23 @@ function DispatchEngineForm() {
     return () => unsub();
   }, [pingId]);
 
+  // Auto-request location on mount
+  useEffect(() => {
+    if (typeof window !== "undefined" && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCoordinates(`${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`);
+      }, (error) => {
+        console.warn("Location permission denied on load:", error);
+      });
+    }
+  }, []);
+
   const handleGetLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         setCoordinates(`${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`);
       }, (error) => {
-        alert("Location access denied. Please enter address manually.");
+        alert("Location access denied. Please enable Location/GPS settings on your device to dispatch an ambulance.");
       });
     } else {
       alert("Geolocation is not supported by your browser.");
@@ -86,6 +97,12 @@ function DispatchEngineForm() {
   const handleDispatch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ambulance || !userEmail) return;
+
+    if (!coordinates) {
+      alert("Error: Real-time GPS Location is strictly required to dispatch an ambulance. Please click 'Get My Location' and allow GPS tracking.");
+      handleGetLocation();
+      return;
+    }
     
     setIsSubmitting(true);
     try {
@@ -197,7 +214,7 @@ function DispatchEngineForm() {
               </div>
 
               <div className="space-y-3">
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">GPS Coordinates (Optional)</label>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">GPS Coordinates (Mandatory)</label>
                 <div className="flex gap-3">
                   <input 
                     type="text" 
@@ -211,9 +228,20 @@ function DispatchEngineForm() {
                     onClick={handleGetLocation}
                     className="px-6 py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm whitespace-nowrap hover:bg-black transition-colors"
                   >
-                    Use My Location
+                    Get My Location
                   </button>
                 </div>
+                {coordinates && (
+                  <div className="w-full h-40 rounded-xl overflow-hidden border border-slate-200 shadow-sm mt-3 animate-in fade-in">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      frameBorder="0" 
+                      scrolling="no" 
+                      src={`https://maps.google.com/maps?q=${coordinates}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="pt-6 border-t border-slate-100">
