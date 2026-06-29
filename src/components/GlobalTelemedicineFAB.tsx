@@ -287,7 +287,7 @@ export default function GlobalTelemedicineFAB() {
       setUserUid(user.uid);
       setUserName(user.displayName);
       
-      createConsultationRequest(user.uid, user.displayName || "Patient");
+      createConsultationRequest(user.uid, user.displayName || "Patient", true);
     } catch (err) {
       console.error("Auth failed", err);
       alert("Authentication failed.");
@@ -296,10 +296,10 @@ export default function GlobalTelemedicineFAB() {
   };
 
   // 7. Final Connecting State
-  const createConsultationRequest = async (patientId: string, pName: string) => {
+  const createConsultationRequest = async (patientId: string, pName: string, forceDirectTest = false) => {
     setStep("connecting");
-    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    const db = getFirestore(app, "default");
+    // Use imported db instead of re-initializing to avoid named DB errors
+    const { db } = await import('@/lib/firebase');
     
     try {
       if (urgencyMode === "schedule") {
@@ -349,6 +349,12 @@ export default function GlobalTelemedicineFAB() {
 
       const docRef = await addDoc(collection(db, "consultation_requests"), payload);
       
+      if (forceDirectTest) {
+        setIsOpen(false);
+        router.push(`/consultation/${docRef.id}`);
+        return;
+      }
+
       const unsubscribe = onSnapshot(doc(db, "consultation_requests", docRef.id), (snapshot) => {
         const data = snapshot.data();
         if (data && data.status === "accepted") {
@@ -358,9 +364,9 @@ export default function GlobalTelemedicineFAB() {
         }
       });
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to create request", err);
-      alert("Failed to connect. Please try again.");
+      alert(`Failed to connect: ${err.message || String(err)}. Please try again.`);
       setStep("doctor_list");
     }
   };
@@ -724,7 +730,7 @@ export default function GlobalTelemedicineFAB() {
                     <button 
                       onClick={() => {
                         if (userUid) {
-                          createConsultationRequest(userUid, userName || "Patient");
+                          createConsultationRequest(userUid, userName || "Patient", true);
                         } else {
                           setStep("auth_gate");
                         }
