@@ -10,6 +10,7 @@ import MyNetworkHub from '@/components/network/MyNetworkHub';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
 import ContextHelpDrawer from '@/components/ContextHelpDrawer';
+import DoctorRxHistoryWidget from '@/components/DoctorRxHistoryWidget';
 import { QRCodeSVG } from 'qrcode.react';
 
 const WIZARD_STEPS = [
@@ -29,6 +30,7 @@ export default function DoctorV2OwnerDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [vaultLookupEmail, setVaultLookupEmail] = useState("");
   
   // Dashboard State
   const [activeTab, setActiveTab] = useState("home");
@@ -219,7 +221,7 @@ export default function DoctorV2OwnerDashboard() {
               </div>
             </div>
 
-            <nav className="space-y-1">
+            <nav className="space-y-1 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar pr-2 pb-10">
               <button 
                 onClick={() => setActiveTab('home')} 
                 className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'home' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
@@ -251,6 +253,12 @@ export default function DoctorV2OwnerDashboard() {
                 className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'rxpad' ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
               >
                 📝 Digital Rx Pad
+              </button>
+              <button 
+                onClick={() => setActiveTab('rx_history')} 
+                className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'rx_history' ? 'bg-teal-50 text-teal-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+              >
+                📜 Sent Rx History
               </button>
               <button 
                 onClick={() => setActiveTab('network')} 
@@ -327,6 +335,12 @@ export default function DoctorV2OwnerDashboard() {
                     className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'rxpad' ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
                   >
                     📝 Digital Rx Pad
+                  </button>
+                  <button 
+                    onClick={() => { setActiveTab('rx_history'); setIsMobileMenuOpen(false); }} 
+                    className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'rx_history' ? 'bg-teal-50 text-teal-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                  >
+                    📜 Sent Rx History
                   </button>
                   <button 
                     onClick={() => { setActiveTab('network'); setIsMobileMenuOpen(false); }} 
@@ -537,11 +551,24 @@ export default function DoctorV2OwnerDashboard() {
                  <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">Sovereign Vault Access</h2>
                  <p className="text-slate-600 text-lg max-w-lg mx-auto mb-10 font-medium">Enter a Patient's Vault ID to securely access their medical history or upload prescriptions.</p>
                  <div className="flex flex-col md:flex-row max-w-lg mx-auto gap-4">
-                   <input type="text" placeholder="patient@example.com" className="sd-input-v3 text-center md:text-left" />
-                   <button className="sd-btn-v3 bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 whitespace-nowrap">Lookup</button>
+                   <input type="text" placeholder="patient@example.com" className="sd-input-v3 text-center md:text-left" value={vaultLookupEmail} onChange={(e) => setVaultLookupEmail(e.target.value)} />
+                   <button onClick={() => { if (vaultLookupEmail) router.push(`/portal/vault/${encodeURIComponent(vaultLookupEmail.trim().toLowerCase())}`); }} className="sd-btn-v3 bg-amber-500 text-white hover:bg-amber-600 shadow-amber-500/30 whitespace-nowrap">Lookup</button>
                  </div>
                </div>
              </div>
+          )}
+
+          {activeTab === "rx_history" && (
+            <div className="animate-in fade-in slide-in-from-bottom-8">
+              <div className="flex items-center gap-3 mb-8 text-sm font-bold text-slate-500">
+                <button onClick={() => setActiveTab("home")} className="hover:text-slate-900 transition-colors">Dashboard Home</button>
+                <span>/</span>
+                <span className="text-teal-600">Sent Rx History</span>
+              </div>
+              <div className="sd-glass-panel p-6 md:p-8">
+                <DoctorRxHistoryWidget docId={entityData.id} docName={entityData.name} />
+              </div>
+            </div>
           )}
 
         </main>

@@ -136,29 +136,49 @@ export default function RxPadWidget({ doctorData }: RxPadProps) {
     if (!patientInfo.name) return alert("Patient name is required");
     setGenerating(true);
 
-    const rxDoc = {
-      doctorId: doctorData.id,
-      doctorName: doctorData.name,
-      registrationNo: doctorData.registrationNo,
-      patientMode,
-      patientInfo,
-      clinical,
+    const rxDocPayload = {
+      patientEmail: patientMode === 'registered' ? patientInfo.id : "",
+      patientName: patientInfo.name,
+      patientAge: patientInfo.age,
+      patientGender: patientInfo.gender,
+      patientPhone: patientInfo.phone,
+      providerId: doctorData.id,
+      providerName: doctorData.name,
+      doctorSpeciality: doctorData.speciality,
+      doctorDegrees: doctorData.degrees,
+      doctorRegNo: doctorData.registrationNo,
+      doctorPhone: doctorData.phone,
+      facilityName: doctorData.address || "DehaPa Clinic",
+      diagnosis: clinical.diagnosis,
       medicines: medicines.filter(m => m.name.trim() !== ''),
       tests: tests.filter(t => t.name.trim() !== ''),
-      advice,
-      createdAt: serverTimestamp(),
-      dateString: new Date().toLocaleDateString('en-IN')
+      notes: advice,
+      date: new Date().toLocaleDateString(),
+      timestamp: serverTimestamp(),
+      patientMode,
+      clinical,
+      history: clinical.history
     };
 
     try {
-      const docRef = await addDoc(collection(db, "prescriptions"), rxDoc);
-      setGeneratedRx({ ...rxDoc, id: docRef.id });
+      // 1. Save to root prescriptions collection (used by Doctor Rx History & Patient Dashboard Widget)
+      const docRef = await addDoc(collection(db, "prescriptions"), rxDocPayload);
+      setGeneratedRx({ ...rxDocPayload, id: docRef.id, patientInfo, advice });
+
+      // 2. Save to Patient's Vault subcollection if registered
+      if (patientMode === 'registered' && patientInfo.id) {
+        await addDoc(collection(db, `patients/${patientInfo.id}/records`), {
+          type: "prescription",
+          patientId: patientInfo.id,
+          ...rxDocPayload
+        });
+      }
 
       // Silent Learner Data Capture
-      const uniqueMeds = Array.from(new Set(rxDoc.medicines.map(m => m.name)));
-      const uniqueTests = Array.from(new Set(rxDoc.tests.map(t => t.name)));
-      const diagnoses = rxDoc.clinical.diagnosis ? [rxDoc.clinical.diagnosis] : [];
-      const icds = rxDoc.clinical.icdCode ? [rxDoc.clinical.icdCode] : [];
+      const uniqueMeds = Array.from(new Set(rxDocPayload.medicines.map(m => m.name)));
+      const uniqueTests = Array.from(new Set(rxDocPayload.tests.map(t => t.name)));
+      const diagnoses = rxDocPayload.clinical.diagnosis ? [rxDocPayload.clinical.diagnosis] : [];
+      const icds = rxDocPayload.clinical.icdCode ? [rxDocPayload.clinical.icdCode] : [];
 
       if (uniqueMeds.length > 0 || uniqueTests.length > 0 || diagnoses.length > 0 || icds.length > 0) {
         const dictRef = doc(db, "doctor_dictionaries", doctorData.id);

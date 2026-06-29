@@ -23,6 +23,24 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
   // Printing state
   const [printRxData, setPrintRxData] = useState<any>(null);
 
+  const handleDeleteRecord = async (recId: string) => {
+    if (!window.confirm("Are you sure you want to completely delete this record? This action cannot be undone.")) return;
+    try {
+      const db = (await import('@/lib/firebase')).db;
+      const { doc, deleteDoc } = await import('firebase/firestore');
+      const targetEmail = decodeURIComponent(params.vaultId);
+
+      // Attempt deleting from both potential locations to guarantee deletion
+      try { await deleteDoc(doc(db, "prescriptions", recId)); } catch(e){}
+      try { await deleteDoc(doc(db, "patients", targetEmail, "records", recId)); } catch(e){}
+      
+      setRecords(prev => prev.filter(r => r.id !== recId));
+    } catch (err) {
+      console.error("Failed to delete record:", err);
+      alert("Failed to delete record.");
+    }
+  };
+
   useEffect(() => {
     if (printRxData) {
       const timer = setTimeout(() => {
@@ -107,21 +125,22 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
         if (!accessGranted) return;
         
         const db = (await import('@/lib/firebase')).db;
-        const { collectionGroup, query, where, getDocs, orderBy } = await import('firebase/firestore');
+        const { collectionGroup, collection, query, where, getDocs } = await import('firebase/firestore');
+        const targetEmail = decodeURIComponent(params.vaultId);
         
-        const q = query(
+        // Fetch from collectionGroup('records')
+        const qRecords = query(
           collectionGroup(db, 'records'),
-          where('patientId', '==', decodeURIComponent(params.vaultId))
+          where('patientId', '==', targetEmail)
         );
-        
-        const snap = await getDocs(q);
-        const fetchedRecords = snap.docs.map(doc => {
+        const snapRecords = await getDocs(qRecords);
+        const recordsList = snapRecords.docs.map(doc => {
           const data = doc.data();
-          // Normalize the data between PrescriptionPad and SecureMedicalVault
           return {
             id: doc.id,
             type: data.type || data.recordType || 'document',
             date: data.date || (data.uploadDate?.toDate ? data.uploadDate.toDate().toLocaleDateString() : new Date().toLocaleDateString()),
+            timestamp: data.timestamp || data.uploadDate || null,
             authorName: data.authorName || 'Medical Provider',
             facilityName: data.facilityName || 'Clinic/Hospital',
             diagnosis: data.diagnosis || data.fileName || 'Uploaded Document',
@@ -140,11 +159,54 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
             doctorPhone: data.doctorPhone || ''
           };
         });
+
+        // Fetch from root 'prescriptions' collection
+        const qRx = query(
+          collection(db, 'prescriptions'),
+          where('patientEmail', '==', targetEmail)
+        );
+        const snapRx = await getDocs(qRx);
+        const rxList = snapRx.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            type: 'prescription',
+            date: data.date || (data.timestamp?.toDate ? data.timestamp.toDate().toLocaleDateString() : new Date().toLocaleDateString()),
+            timestamp: data.timestamp || null,
+            authorName: data.providerName || 'Doctor',
+            facilityName: data.facilityName || 'DehaPa Network',
+            diagnosis: data.diagnosis || 'General Consult',
+            medicines: data.medicines || [],
+            tests: data.tests || [],
+            notes: data.notes || '',
+            routedToPharmacy: data.routedToPharmacy,
+            routedToLab: data.routedToLab,
+            fileUrl: data.fileUrl,
+            patientName: data.patientName || '',
+            patientAge: data.patientAge || '',
+            patientGender: data.patientGender || '',
+            doctorSpeciality: data.doctorSpeciality || data.providerType || '',
+            doctorDegrees: data.doctorDegrees || '',
+            doctorRegNo: data.doctorRegNo || '',
+            doctorPhone: data.doctorPhone || ''
+          };
+        });
         
-        // Sort newest first by parsing date strings (mock/simple logic)
-        fetchedRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        // Merge & Deduplicate
+        const mergedMap = new Map();
+        [...recordsList, ...rxList].forEach(item => {
+          mergedMap.set(item.id, item);
+        });
+        const mergedRecords = Array.from(mergedMap.values());
         
-        setRecords(fetchedRecords);
+        // Sort newest first
+        mergedRecords.sort((a: any, b: any) => {
+          const timeA = a.timestamp?.toMillis ? a.timestamp.toMillis() : new Date(a.date || 0).getTime();
+          const timeB = b.timestamp?.toMillis ? b.timestamp.toMillis() : new Date(b.date || 0).getTime();
+          return timeB - timeA;
+        });
+        
+        setRecords(mergedRecords);
       } catch (err) {
         console.error("Vault fetch error:", err);
       } finally {
@@ -365,6 +427,13 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                             Print Original PDF
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteRecord(rec.id)}
+                            className="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-400 flex items-center gap-1.5 transition-colors ml-4"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            Delete
                           </button>
                         </div>
                       )}

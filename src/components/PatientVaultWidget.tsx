@@ -1,14 +1,30 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, deleteDoc, doc } from 'firebase/firestore';
 
 export default function PatientVaultWidget() {
+  const router = useRouter();
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
   const [labReports, setLabReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSubTab, setActiveSubTab] = useState<'prescriptions' | 'labReports'>('prescriptions');
+
+  const handleDelete = async (rxId: string) => {
+    if (!window.confirm("Are you sure you want to completely delete this prescription? This action cannot be undone.")) return;
+    try {
+      const userEmail = localStorage.getItem("sd_current_user_email");
+      if (!userEmail) return;
+      try { await deleteDoc(doc(db, "prescriptions", rxId)); } catch(e){}
+      try { await deleteDoc(doc(db, "patients", userEmail, "records", rxId)); } catch(e){}
+      setPrescriptions(prev => prev.filter(rx => rx.id !== rxId));
+    } catch (err) {
+      console.error("Failed to delete", err);
+      alert("Failed to delete the prescription.");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,14 +142,36 @@ export default function PatientVaultWidget() {
                         <div className="bg-teal-50 text-teal-700 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-teal-100">
                           {rx.timestamp ? new Date(rx.timestamp.toMillis()).toLocaleDateString() : 'Recent'}
                         </div>
-                        <button className="text-slate-400 hover:text-teal-600 transition-colors">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => handleDelete(rx.id)}
+                            className="text-slate-400 hover:text-red-500 transition-colors"
+                            title="Delete Prescription"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                          </button>
+                          <button 
+                            onClick={() => {
+                              const email = localStorage.getItem("sd_current_user_email");
+                              if (email) router.push(`/portal/vault/${email}`);
+                            }}
+                            className="text-slate-400 hover:text-teal-600 transition-colors"
+                            title="View & Download"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                          </button>
+                        </div>
                       </div>
                       <h4 className="font-bold text-slate-900 mb-1 text-lg">{rx.providerName || "General Prescription"}</h4>
                       <p className="text-xs text-slate-500 font-medium mb-4">{rx.providerType || "Doctor"}</p>
                       
-                      <button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition-colors shadow-md">
+                      <button 
+                        onClick={() => {
+                          const email = localStorage.getItem("sd_current_user_email");
+                          if (email) router.push(`/portal/vault/${email}`);
+                        }}
+                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition-colors shadow-md"
+                      >
                         View Rx Details
                       </button>
                     </div>
