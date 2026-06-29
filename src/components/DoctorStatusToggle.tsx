@@ -51,10 +51,26 @@ export default function DoctorStatusToggle() {
   const toggleStatus = async () => {
     if (!userUid) return;
     
-    // Unlock browser audio autoplay by playing a silent base64 click sound
+    // Unlock and share a resumed AudioContext for incoming ringtones
     try {
-      const unlockAudio = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
-      unlockAudio.play().catch(e => console.log("Audio unlock prevented:", e));
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        const audioCtx = new AudioContextClass();
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
+        (window as any).sd_shared_audio_ctx = audioCtx;
+        
+        // Play a short pleasant confirmation beep
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+      }
     } catch (e) {
       console.warn("Audio context unlock error:", e);
     }

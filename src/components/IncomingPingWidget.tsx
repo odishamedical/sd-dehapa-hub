@@ -99,10 +99,15 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
     
     if (incomingRequest) {
       const playRing = async () => {
-        // Create context on demand
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        if (!AudioContextClass) return;
-        audioCtx = new AudioContextClass();
+        // Read the globally shared and already unlocked context, or fall back to creating one
+        const sharedCtx = (window as any).sd_shared_audio_ctx;
+        if (sharedCtx) {
+          audioCtx = sharedCtx;
+        } else {
+          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+          if (!AudioContextClass) return;
+          audioCtx = new AudioContextClass();
+        }
         
         while (isPlaying) {
           try {
@@ -151,7 +156,10 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
       isPlaying = false;
       if (osc1) { try { osc1.stop(); } catch(e){} }
       if (osc2) { try { osc2.stop(); } catch(e){} }
-      if (audioCtx) { audioCtx.close().catch(() => {}); }
+      // Only close if it's not the globally shared context
+      if (audioCtx && audioCtx !== (window as any).sd_shared_audio_ctx) { 
+        audioCtx.close().catch(() => {}); 
+      }
     };
   }, [incomingRequest]);
 
