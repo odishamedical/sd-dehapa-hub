@@ -28,7 +28,7 @@ export default function GlobalDoctorAlerts() {
     }
   }, []);
 
-  if (role !== "doctor" || !doctorId) return null;
+  if (role !== "doctor" && role !== "super_admin" || !doctorId) return null;
 
   return <IncomingPingWidget doctorId={doctorId} doctorSpecialty="Consultant Doctor" />;
 }
