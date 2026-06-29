@@ -103,6 +103,8 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
     // Normalize role for robust checking
     const normalizedRole = currentRole.toLowerCase();
 
+    let isGranted = false;
+
     if (normalizedRole === "patient") {
       // Decode the URL parameter safely in case Next.js passed it encoded or decoded
       const requestedEmail = decodeURIComponent(params.vaultId).trim().toLowerCase();
@@ -114,18 +116,20 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
         setLoading(false);
         return;
       } else {
-        setAccessGranted(true);
+        isGranted = true;
       }
     } else if (normalizedRole === "doctor" || normalizedRole === "super_admin") {
       // Doctors/Admins need an active access_grant check in a real scenario
       // For now, we trust the role token
-      setAccessGranted(true);
+      isGranted = true;
     }
+
+    setAccessGranted(isGranted);
 
     // 3. Fetch Records from Firestore (Zero Mock Data)
     const fetchVaultRecords = async () => {
       try {
-        if (!accessGranted) return;
+        if (!isGranted) return;
         
         const db = (await import('@/lib/firebase')).db;
         const { collectionGroup, collection, query, where, getDocs } = await import('firebase/firestore');
@@ -217,7 +221,7 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
       }
     };
 
-    if (accessGranted) {
+    if (isGranted) {
       fetchVaultRecords();
     } else {
       setLoading(false); // Finished loading but access denied
@@ -234,13 +238,25 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
   }
 
   if (!accessGranted) {
+    const requestedEmail = decodeURIComponent(params.vaultId);
+    const currentUserEmail = typeof window !== 'undefined' ? localStorage.getItem("sd_current_user_email") : 'none';
+    const currentRole = typeof window !== 'undefined' ? localStorage.getItem("sd_current_user_role") : 'none';
+
     return (
-      <div className="min-h-screen bg-[#020610] text-[#f8fafc] flex flex-col items-center justify-center font-sans">
+      <div className="min-h-screen bg-[#020610] text-[#f8fafc] flex flex-col items-center justify-center font-sans p-6">
         <div className="w-20 h-20 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center mb-6">
           <svg className="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
         </div>
-        <h1 className="text-3xl font-serif font-bold mb-2">Access Denied</h1>
-        <p className="text-[#64748b] mb-8 max-w-md text-center">You do not have permission to view this Sovereign Health Vault. Access must be explicitly granted by the patient.</p>
+        <h1 className="text-3xl font-serif font-bold mb-2 text-center">Access Denied</h1>
+        <p className="text-[#64748b] mb-4 max-w-md text-center">You do not have permission to view this Sovereign Health Vault.</p>
+        
+        {/* DEBUG INFO FOR USER */}
+        <div className="bg-red-950/30 border border-red-900/50 rounded-xl p-4 mb-8 w-full max-w-md break-all text-xs font-mono text-red-300">
+          <p className="mb-2"><strong className="text-red-400">Requested Vault:</strong> {requestedEmail}</p>
+          <p className="mb-2"><strong className="text-red-400">Your Session Email:</strong> {currentUserEmail}</p>
+          <p><strong className="text-red-400">Your Session Role:</strong> {currentRole}</p>
+        </div>
+
         <Link href="/portal" className="bg-[#1e293b] hover:bg-[#334155] px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest transition-colors">Return to Dashboard</Link>
       </div>
     );
