@@ -50,26 +50,26 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
         {/* Editorial Background Motif */}
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-slate-100 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-70 pointer-events-none"></div>
         
-        <div className="max-w-[1200px] mx-auto px-6 pt-16 pb-16 relative z-20">
-          <div className="flex flex-col md:flex-row gap-12 items-center md:items-start">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 pb-16 relative z-20">
+          <div className="flex flex-col gap-8 items-center md:items-start">
             
-            {/* The Prestige Portrait */}
-            <div className="relative shrink-0 group">
-              <div className="absolute inset-0 bg-slate-900 rounded-[2rem] rotate-2 opacity-5 group-hover:rotate-4 transition-transform duration-700"></div>
+            {/* The Prestige Portrait (Cinematic 16:9 Banner) */}
+            <div className="relative w-full group">
+              <div className="absolute inset-0 bg-slate-900 rounded-[2rem] rotate-1 opacity-5 group-hover:rotate-2 transition-transform duration-700"></div>
               <img 
-                src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=400"} 
+                src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
                 alt={profile.name}
-                className="relative w-48 h-48 md:w-64 md:h-64 rounded-[2rem] object-cover shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 bg-white z-10 transition-transform duration-700 group-hover:-translate-y-2"
+                className="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9] rounded-[2rem] object-cover object-top shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border-4 border-white bg-white z-10 transition-transform duration-700 group-hover:-translate-y-1"
               />
               
               {/* Platinum / Gold Seal */}
               {verified && (
-                <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-[#D4AF37] via-[#F3E5AB] to-[#AA7C11] text-[#4A3B00] rounded-full p-1 shadow-[0_10px_30px_rgba(212,175,55,0.4)] border-4 border-white z-20 hover:scale-105 transition-transform cursor-default group/badge">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-full w-12 h-12 flex items-center justify-center border border-white/40">
-                    <CheckCircle2 className="w-6 h-6 drop-shadow-sm" />
+                <div className="absolute -bottom-5 right-6 md:right-10 bg-gradient-to-br from-[#D4AF37] via-[#F3E5AB] to-[#AA7C11] text-[#4A3B00] rounded-full p-1.5 shadow-[0_10px_30px_rgba(212,175,55,0.4)] border-4 border-white z-20 hover:scale-105 transition-transform cursor-default group/badge">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border border-white/40">
+                    <CheckCircle2 className="w-5 h-5 md:w-7 md:h-7 drop-shadow-sm" />
                   </div>
                   {/* Tooltip */}
-                  <div className="absolute top-14 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg whitespace-nowrap font-bold pointer-events-none">
+                  <div className="absolute top-16 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg whitespace-nowrap font-bold pointer-events-none">
                     Dehapa Verified
                   </div>
                 </div>
@@ -77,7 +77,7 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
             </div>
 
             {/* The Headline (Editorial Typography) */}
-            <div className="flex-1 w-full text-center md:text-left mt-2 md:mt-4">
+            <div className="flex-1 w-full text-center md:text-left mt-2 px-2">
               <h1 className="text-4xl md:text-6xl font-black text-[#0A1128] tracking-tight leading-[1.1]">
                 {profile.name}
               </h1>
@@ -394,23 +394,23 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
 
       {/* Floating Glassmorphic VIP Pill */}
       <div className="fixed bottom-[100px] md:bottom-10 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[600px] z-40 pointer-events-none">
-        <div className="bg-white/70 backdrop-blur-3xl border border-white/60 p-2 md:p-3 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] rounded-full pointer-events-auto flex items-center justify-between gap-4">
-          <div className="hidden sm:block pl-6">
-            <p className="font-black text-slate-900 text-base">{profile.name}</p>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Priority Access</p>
+        <div className="bg-white/80 backdrop-blur-3xl border border-white/80 p-1.5 md:p-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] rounded-full pointer-events-auto flex items-center justify-between gap-3">
+          <div className="hidden sm:block pl-5">
+            <p className="font-black text-slate-900 text-sm md:text-base">{profile.name}</p>
+            <p className="text-[9px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest">Priority Access</p>
           </div>
           <div className="flex-1 sm:flex-none">
             {verified ? (
-              <button className="w-full sm:w-auto bg-[#0A1128] hover:bg-slate-800 text-white px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-3">
-                <HeartPulse className="w-5 h-5" />
+              <button className="w-full sm:w-auto bg-[#0A1128] hover:bg-slate-800 text-white px-6 py-3.5 md:px-8 md:py-4 rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2 md:gap-3">
+                <HeartPulse className="w-4 h-4 md:w-5 md:h-5" />
                 Book VIP Consult
               </button>
             ) : (
               <button 
                 onClick={() => setShowPhone(true)}
-                className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-900 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-3"
+                className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-900 px-6 py-3.5 md:px-8 md:py-4 rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2 md:gap-3"
               >
-                <Phone className="w-5 h-5" />
+                <Phone className="w-4 h-4 md:w-5 md:h-5" />
                 Contact Directly
               </button>
             )}
