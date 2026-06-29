@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import UniversalShareModal from '@/components/UniversalShareModal';
+import PrescriptionTemplate from '@/components/PrescriptionTemplate';
 
 // NOTE: In production, import firebase db and perform real checks
 // import { db, collection, getDocs, query, where } from '@/utils/firebase';
@@ -18,6 +19,53 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
   // Share Modal State
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [documentToShare, setDocumentToShare] = useState<any>(null);
+
+  // Printing state
+  const [printRxData, setPrintRxData] = useState<any>(null);
+
+  useEffect(() => {
+    if (printRxData) {
+      const timer = setTimeout(() => {
+        window.print();
+        setPrintRxData(null);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [printRxData]);
+
+  const handlePrintPrescription = (rec: any) => {
+    const formattedDoctor = {
+      name: rec.authorName || "Dr. Medical Provider",
+      speciality: rec.doctorSpeciality || "General Physician",
+      degrees: rec.doctorDegrees || "MBBS",
+      registrationNo: rec.doctorRegNo || "Pending",
+      phone: rec.doctorPhone || "+91 9876543210",
+      address: rec.facilityName || "DehaPa Clinic"
+    };
+
+    const formattedRx = {
+      patientInfo: {
+        name: rec.patientName || decodeURIComponent(params.vaultId).split("@")[0],
+        age: rec.patientAge || "",
+        gender: rec.patientGender || ""
+      },
+      history: rec.history || "",
+      diagnosis: rec.diagnosis || "",
+      medicines: rec.medicines || [],
+      tests: rec.tests || [],
+      advice: rec.notes || "",
+      routing: {
+        pharmacyId: rec.routedToPharmacy || "",
+        labId: rec.routedToLab || ""
+      }
+    };
+
+    setPrintRxData({
+      doctorData: formattedDoctor,
+      rxData: formattedRx,
+      date: rec.date || new Date().toLocaleDateString()
+    });
+  };
 
   useEffect(() => {
     // 1. Authentication & Role Check
@@ -78,10 +126,18 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
             facilityName: data.facilityName || 'Clinic/Hospital',
             diagnosis: data.diagnosis || data.fileName || 'Uploaded Document',
             medicines: data.medicines || [],
+            tests: data.tests || [],
             notes: data.notes || '',
             routedToPharmacy: data.routedToPharmacy,
             routedToLab: data.routedToLab,
-            fileUrl: data.fileUrl
+            fileUrl: data.fileUrl,
+            patientName: data.patientName || '',
+            patientAge: data.patientAge || '',
+            patientGender: data.patientGender || '',
+            doctorSpeciality: data.doctorSpeciality || '',
+            doctorDegrees: data.doctorDegrees || '',
+            doctorRegNo: data.doctorRegNo || '',
+            doctorPhone: data.doctorPhone || ''
           };
         });
         
@@ -303,7 +359,10 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
                             Share to Network Vault
                           </button>
-                          <button className="text-xs font-bold uppercase tracking-widest text-[#64748b] hover:text-[#f8fafc] flex items-center gap-1.5 transition-colors">
+                          <button 
+                            onClick={() => handlePrintPrescription(rec)}
+                            className="text-xs font-bold uppercase tracking-widest text-[#06b6d4] hover:text-[#f8fafc] flex items-center gap-1.5 transition-colors"
+                          >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                             Print Original PDF
                           </button>
@@ -349,6 +408,15 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
           role: role || 'patient'
         }}
       />
+
+      {/* PRINT LAYOUT (Hidden on screen, visible only when printing) */}
+      {printRxData && (
+        <PrescriptionTemplate 
+          doctorData={printRxData.doctorData} 
+          rxData={printRxData.rxData} 
+          date={printRxData.date} 
+        />
+      )}
 
     </div>
   );

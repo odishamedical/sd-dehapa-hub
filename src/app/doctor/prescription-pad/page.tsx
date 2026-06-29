@@ -241,7 +241,7 @@ function PrescriptionPadContent() {
       setAllMedicinesList([...FAVORITE_MEDICINES, ...customMedsArray]);
     }
 
-    // Save to Firestore (Real Data) - Multi-Channel Routing Engine
+    // Save to Firestore (Real Data) - Multi-Channel Routing Engine with Metadata
     try {
       const db = (await import('@/lib/firebase')).db;
       const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
@@ -250,8 +250,15 @@ function PrescriptionPadContent() {
       await addDoc(collection(db, `patients/${patientVaultId}/records`), {
         type: "prescription",
         patientId: patientVaultId,
+        patientName: rxData.patientInfo.name,
+        patientAge: rxData.patientInfo.age,
+        patientGender: rxData.patientInfo.gender,
         authorId: localStorage.getItem("sd_current_user_uid") || "unknown",
         authorName: doctorName,
+        doctorSpeciality: doctorData.speciality,
+        doctorDegrees: doctorData.degrees,
+        doctorRegNo: doctorData.registrationNo,
+        doctorPhone: doctorData.phone,
         facilityName: doctorData.address || "DehaPa Clinic",
         diagnosis: rxData.diagnosis,
         medicines: rxData.medicines,
@@ -271,6 +278,10 @@ function PrescriptionPadContent() {
         patientGender: rxData.patientInfo.gender,
         providerId: localStorage.getItem("sd_current_user_uid") || "unknown",
         providerName: doctorName,
+        doctorSpeciality: doctorData.speciality,
+        doctorDegrees: doctorData.degrees,
+        doctorRegNo: doctorData.registrationNo,
+        doctorPhone: doctorData.phone,
         facilityName: doctorData.address || "DehaPa Clinic",
         diagnosis: rxData.diagnosis,
         medicines: rxData.medicines,
@@ -280,9 +291,7 @@ function PrescriptionPadContent() {
         routedToLab: rxData.routing.labId,
         date: new Date().toLocaleDateString(),
         timestamp: serverTimestamp()
-      });
-
-      // 3. Route to Pharmacy Orders if requested
+      });      // 3. Route to Pharmacy Orders if requested
       if (rxData.routing.pharmacyId) {
         await addDoc(collection(db, "pharmacy_orders"), {
           pharmacyId: rxData.routing.pharmacyId,
