@@ -41,8 +41,35 @@ export default function DoctorCommandDock() {
       alert("Doctor identity not found. Please log in again.");
       return;
     }
-    const statusRef = doc(db, "doctor_status", userUid);
+
+    // Unlock and share resumed AudioContext for incoming pings globally
     const newStatus = !isOnline;
+    if (newStatus) {
+      try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContextClass) {
+          const audioCtx = new AudioContextClass();
+          if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+          }
+          (window as any).sd_shared_audio_ctx = audioCtx;
+          
+          // Play confirmation beep
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.15);
+        }
+      } catch (e) {
+        console.warn("Audio Context unlock error:", e);
+      }
+    }
+
+    const statusRef = doc(db, "doctor_status", userUid);
     
     // Optimistic update
     setIsOnline(newStatus);
