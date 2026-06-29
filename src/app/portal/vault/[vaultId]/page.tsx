@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import UniversalShareModal from '@/components/UniversalShareModal';
 import PrescriptionTemplate from '@/components/PrescriptionTemplate';
@@ -9,8 +9,11 @@ import PrescriptionTemplate from '@/components/PrescriptionTemplate';
 // NOTE: In production, import firebase db and perform real checks
 // import { db, collection, getDocs, query, where } from '@/utils/firebase';
 
-export default function VaultPage({ params }: { params: { vaultId: string } }) {
+export default function VaultPage() {
   const router = useRouter();
+  const params = useParams();
+  const vaultId = (params?.vaultId as string) || '';
+  
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [role, setRole] = useState<string | null>(null);
@@ -27,8 +30,9 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
     if (!window.confirm("Are you sure you want to completely delete this record? This action cannot be undone.")) return;
     try {
       const db = (await import('@/lib/firebase')).db;
+      const db = (await import('@/lib/firebase')).db;
       const { doc, deleteDoc } = await import('firebase/firestore');
-      const targetEmail = decodeURIComponent(params.vaultId);
+      const targetEmail = decodeURIComponent(vaultId);
 
       // Attempt deleting from both potential locations to guarantee deletion
       try { await deleteDoc(doc(db, "prescriptions", recId)); } catch(e){}
@@ -63,7 +67,8 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
 
     const formattedRx = {
       patientInfo: {
-        name: rec.patientName || decodeURIComponent(params.vaultId).split("@")[0],
+      patientInfo: {
+        name: rec.patientName || decodeURIComponent(vaultId).split("@")[0],
         age: rec.patientAge || "",
         gender: rec.patientGender || ""
       },
@@ -107,7 +112,7 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
 
     if (normalizedRole === "patient") {
       // Decode the URL parameter safely in case Next.js passed it encoded or decoded
-      const requestedEmail = decodeURIComponent(params.vaultId).trim().toLowerCase();
+      const requestedEmail = decodeURIComponent(vaultId).trim().toLowerCase();
       const currentEmail = currentUserEmail.trim().toLowerCase();
       
       if (requestedEmail !== currentEmail) {
@@ -132,8 +137,9 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
         if (!isGranted) return;
         
         const db = (await import('@/lib/firebase')).db;
+        const db = (await import('@/lib/firebase')).db;
         const { collectionGroup, collection, query, where, getDocs } = await import('firebase/firestore');
-        const targetEmail = decodeURIComponent(params.vaultId);
+        const targetEmail = decodeURIComponent(vaultId);
         
         // Fetch from collectionGroup('records')
         const qRecords = query(
@@ -227,7 +233,7 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
       setLoading(false); // Finished loading but access denied
     }
 
-  }, [params.vaultId, router]);
+  }, [vaultId, router]);
 
   if (loading) {
     return (
@@ -238,7 +244,7 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
   }
 
   if (!accessGranted) {
-    const requestedEmail = decodeURIComponent(params.vaultId);
+    const requestedEmail = decodeURIComponent(vaultId);
     const currentUserEmail = typeof window !== 'undefined' ? localStorage.getItem("sd_current_user_email") : 'none';
     const currentRole = typeof window !== 'undefined' ? localStorage.getItem("sd_current_user_role") : 'none';
 
