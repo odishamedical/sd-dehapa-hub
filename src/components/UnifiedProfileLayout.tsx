@@ -641,22 +641,27 @@ export default function UnifiedProfileLayout({
 
             {/* Similar Entities */}
             {similarEntities && similarEntities.length > 0 && (
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl">
-                <h3 className="font-black text-lg text-[#0A1128] mb-6">Similar Providers</h3>
-                <div className="flex flex-col gap-4">
-                  {similarEntities.map((sim, idx) => (
-                    <Link key={idx} href={`/profile/${type}/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md">
-                      <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Provider")}&background=0f766e&color=fff`} alt={sim.name} className="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0" />
-                      <div className="min-w-0 flex-1">
-                        <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                          <span className="text-[10px] font-bold text-slate-700">{sim.stats?.rating || 4.5}</span>
-                          <span className="text-[10px] text-slate-500 truncate ml-1 px-2 border-l border-slate-300">{sim.subtitle || sim.category}</span>
+              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col max-h-[600px]">
+                <h3 className="font-black text-lg text-[#0A1128] mb-4 shrink-0">Explore Network</h3>
+                <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
+                  {similarEntities.map((sim, idx) => {
+                    const isHospitalOrLab = sim.category === "Hospital" || sim.category === "Diagnostic Center" || sim.category === "Pharmacy";
+                    const routePath = isHospitalOrLab ? `/hospitals` : `/profile/doctor`; // Assuming hospitals go to a list or their own profile type in the future
+                    
+                    return (
+                      <Link key={idx} href={`${routePath}/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md shrink-0">
+                        <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Provider")}&background=0f766e&color=fff`} alt={sim.name} className={`w-14 h-14 object-cover border border-slate-200 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'}`} />
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
+                          <div className="flex items-center gap-1 mt-1">
+                            <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                            <span className="text-[10px] font-bold text-slate-700">{sim.stats?.rating || 4.5}</span>
+                            <span className="text-[10px] text-slate-500 truncate ml-1 px-2 border-l border-slate-300">{sim.subtitle || sim.category}</span>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  ))}
+                      </Link>
+                    )
+                  })}
                 </div>
               </div>
             )}

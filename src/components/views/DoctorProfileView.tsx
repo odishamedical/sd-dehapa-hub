@@ -146,14 +146,24 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
           }
           
           try {
-            const broadQuery = query(collection(db, 'directory'), limit(20));
+            const broadQuery = query(collection(db, 'directory'), limit(50));
             const broadSnap = await getDocs(broadQuery);
             const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId && !!d.image);
-            let similarDocs = allDocs.filter(d => d.category === "Doctor" && d.subCategory === rawData.subCategory);
-            if (similarDocs.length === 0) {
-              similarDocs = allDocs.filter(d => d.category === "Doctor");
+            let similarDocs = allDocs.filter(d => 
+              (d.category === "Doctor" && d.subCategory === rawData.subCategory) ||
+              d.category === "Hospital" || 
+              d.category === "Diagnostic Center" ||
+              d.category === "Pharmacy"
+            );
+            
+            // If we don't have enough mixed types, fallback to any verified directory entity
+            if (similarDocs.length < 5) {
+              similarDocs = allDocs;
             }
-            setSimilarDoctors(similarDocs.slice(0, 3));
+            
+            // Shuffle the array to show a random mix
+            similarDocs.sort(() => 0.5 - Math.random());
+            setSimilarDoctors(similarDocs.slice(0, 12));
           } catch(e) {
             console.error("Failed to fetch similar doctors", e);
           }
