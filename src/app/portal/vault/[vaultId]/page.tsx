@@ -138,12 +138,17 @@ export default function VaultPage() {
         const { collectionGroup, collection, query, where, getDocs } = await import('firebase/firestore');
         const targetEmail = decodeURIComponent(vaultId);
         
-        // Fetch from collectionGroup('records')
-        const qRecords = query(
-          collectionGroup(db, 'records'),
-          where('patientId', '==', targetEmail)
-        );
-        const snapRecords = await getDocs(qRecords);
+        let snapRecords = { docs: [] as any[] };
+        try {
+          // Fetch from collectionGroup('records')
+          const qRecords = query(
+            collectionGroup(db, 'records'),
+            where('patientId', '==', targetEmail)
+          );
+          snapRecords = await getDocs(qRecords);
+        } catch (err) {
+          console.warn("Skipping collectionGroup records due to missing index or error:", err);
+        }
         const recordsList = snapRecords.docs.map(doc => {
           const data = doc.data();
           return {
@@ -176,7 +181,7 @@ export default function VaultPage() {
           where('patientEmail', '==', targetEmail)
         );
         const snapRx = await getDocs(qRx);
-        const rxList = snapRx.docs.map(doc => {
+        let rxList = snapRx.docs.map(doc => {
           const data = doc.data();
           return {
             id: doc.id,
@@ -201,6 +206,42 @@ export default function VaultPage() {
             doctorPhone: data.doctorPhone || ''
           };
         });
+
+        // Fallback: Fetch directly from patient's records subcollection
+        try {
+          const qPatientRecords = query(
+            collection(db, 'patients', targetEmail, 'records')
+          );
+          const snapPatientRecords = await getDocs(qPatientRecords);
+          const patientRecordsList = snapPatientRecords.docs.map(doc => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              type: data.type || data.recordType || 'document',
+              date: data.date || (data.timestamp?.toDate ? data.timestamp.toDate().toLocaleDateString() : new Date().toLocaleDateString()),
+              timestamp: data.timestamp || null,
+              authorName: data.authorName || data.providerName || 'Medical Provider',
+              facilityName: data.facilityName || 'Clinic/Hospital',
+              diagnosis: data.diagnosis || data.fileName || 'Uploaded Document',
+              medicines: data.medicines || [],
+              tests: data.tests || [],
+              notes: data.notes || '',
+              routedToPharmacy: data.routedToPharmacy,
+              routedToLab: data.routedToLab,
+              fileUrl: data.fileUrl,
+              patientName: data.patientName || '',
+              patientAge: data.patientAge || '',
+              patientGender: data.patientGender || '',
+              doctorSpeciality: data.doctorSpeciality || data.providerType || '',
+              doctorDegrees: data.doctorDegrees || '',
+              doctorRegNo: data.doctorRegNo || '',
+              doctorPhone: data.doctorPhone || ''
+            };
+          });
+          rxList = [...rxList, ...patientRecordsList];
+        } catch(e) {
+          console.warn("Skipping patient records subcollection:", e);
+        }
         
         // Merge & Deduplicate
         const mergedMap = new Map();
