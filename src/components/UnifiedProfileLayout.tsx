@@ -45,6 +45,7 @@ export default function UnifiedProfileLayout({
   const [showQRModal, setShowQRModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showUnverifiedModal, setShowUnverifiedModal] = useState(false);
   
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -262,7 +263,7 @@ export default function UnifiedProfileLayout({
                 {/* Info Pills */}
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-8">
                   {/* Rating */}
-                  <div className="bg-amber-50 border border-amber-100 text-amber-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
+                  <div className="bg-amber-50 border border-amber-200 text-amber-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
                     <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
                     <div className="flex flex-col text-left">
                       <span className="text-xs font-black leading-none">{profile.rating || profile.stats?.rating || "4.8"}</span>
@@ -271,8 +272,8 @@ export default function UnifiedProfileLayout({
                   </div>
 
                   {/* Experience */}
-                  <div className="bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
-                    <Briefcase className="w-4 h-4 text-slate-400" />
+                  <div className="bg-cyan-50 border border-cyan-200 text-cyan-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
+                    <Briefcase className="w-4 h-4 text-cyan-500" />
                     <div className="flex flex-col text-left">
                       <span className="text-xs font-black leading-none">{profile.experience?.replace(/\D/g,'') || "10+"} Years</span>
                       <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Experience</span>
@@ -280,8 +281,8 @@ export default function UnifiedProfileLayout({
                   </div>
 
                   {/* Location */}
-                  <div className="bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
-                    <MapPin className="w-4 h-4 text-slate-400" />
+                  <div className="bg-rose-50 border border-rose-200 text-rose-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
+                    <MapPin className="w-4 h-4 text-rose-500" />
                     <div className="flex flex-col text-left">
                       <span className="text-xs font-black leading-none">{profile.city || profile.location || "Bhubaneswar"}</span>
                       <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Location</span>
@@ -291,14 +292,23 @@ export default function UnifiedProfileLayout({
 
                 {/* Quick Actions */}
                 <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                  <button className="bg-[#0A1128] hover:bg-slate-800 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(10,17,40,0.2)] hover:-translate-y-0.5 flex items-center gap-2">
+                  <button 
+                    onClick={() => {
+                      if (verified) {
+                        window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
+                      } else {
+                        setShowUnverifiedModal(true);
+                      }
+                    }}
+                    className="bg-[#0A1128] hover:bg-slate-800 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(10,17,40,0.2)] hover:-translate-y-0.5 flex items-center gap-2"
+                  >
                     <Video className="w-4 h-4" />
                     Consult Now
                   </button>
                   
                   <button 
                     onClick={() => setShowShareModal(true)}
-                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-6 py-3 rounded-full font-bold text-sm transition-all hover:border-slate-300 flex items-center gap-2"
+                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 hover:text-cyan-600 hover:border-cyan-400 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-[0_4px_15px_rgba(6,182,212,0.15)] hover:shadow-[0_4px_20px_rgba(6,182,212,0.3)] flex items-center gap-2"
                   >
                     <Share2 className="w-4 h-4" />
                     Share
@@ -306,7 +316,7 @@ export default function UnifiedProfileLayout({
                   
                   <button 
                     onClick={() => setShowQRModal(true)}
-                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-3 rounded-full transition-all hover:border-slate-300 flex items-center justify-center"
+                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 hover:text-cyan-600 hover:border-cyan-400 px-4 py-3 rounded-full transition-all shadow-[0_4px_15px_rgba(6,182,212,0.15)] hover:shadow-[0_4px_20px_rgba(6,182,212,0.3)] flex items-center justify-center"
                     title="QR Code"
                   >
                     <QrCode className="w-4 h-4" />
@@ -801,6 +811,32 @@ export default function UnifiedProfileLayout({
             </button>
             <button onClick={() => setShowInviteModal(false)} className="mt-4 text-sm text-slate-500 font-bold hover:text-slate-800">
               Maybe Later
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Unverified Modal */}
+      {showUnverifiedModal && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95 border border-amber-500/20">
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-400 to-orange-500 rounded-t-3xl"></div>
+            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+              <X className="w-6 h-6" />
+            </button>
+            
+            <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 mt-2">
+              <Shield className="w-8 h-8 text-amber-500" />
+            </div>
+            
+            <h3 className="font-black text-2xl text-[#0A1128] mb-2">Profile Not Verified</h3>
+            <p className="text-sm text-slate-500 mb-8 leading-relaxed">Online consultation is currently inactive for this profile because the provider has not yet completed the Dehapa verification process.</p>
+            
+            <button 
+              onClick={() => setShowUnverifiedModal(false)}
+              className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2"
+            >
+              Understood
             </button>
           </div>
         </div>
