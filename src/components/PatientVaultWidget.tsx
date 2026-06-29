@@ -153,7 +153,7 @@ export default function PatientVaultWidget() {
                           <button 
                             onClick={() => {
                               const email = localStorage.getItem("sd_current_user_email");
-                              if (email) router.push(`/portal/vault/${email}`);
+                              if (email) router.push(`/portal/vault/${encodeURIComponent(email)}`);
                             }}
                             className="text-slate-400 hover:text-teal-600 transition-colors"
                             title="View & Download"
@@ -168,7 +168,7 @@ export default function PatientVaultWidget() {
                       <button 
                         onClick={() => {
                           const email = localStorage.getItem("sd_current_user_email");
-                          if (email) router.push(`/portal/vault/${email}`);
+                          if (email) router.push(`/portal/vault/${encodeURIComponent(email)}`);
                         }}
                         className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition-colors shadow-md"
                       >

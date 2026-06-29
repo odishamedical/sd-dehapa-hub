@@ -105,8 +105,11 @@ export default function VaultPage({ params }: { params: { vaultId: string } }) {
 
     if (normalizedRole === "patient") {
       // Decode the URL parameter safely in case Next.js passed it encoded or decoded
-      const requestedEmail = decodeURIComponent(params.vaultId);
-      if (requestedEmail !== currentUserEmail) {
+      const requestedEmail = decodeURIComponent(params.vaultId).trim().toLowerCase();
+      const currentEmail = currentUserEmail.trim().toLowerCase();
+      
+      if (requestedEmail !== currentEmail) {
+        console.error("Vault Access Denied: Mismatch between requested email and session email", { requestedEmail, currentEmail });
         setAccessGranted(false);
         setLoading(false);
         return;
