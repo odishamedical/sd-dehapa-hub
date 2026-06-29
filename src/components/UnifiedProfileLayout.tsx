@@ -708,11 +708,11 @@ export default function UnifiedProfileLayout({
               </div>
             ) : (
               <button 
-                onClick={() => setShowPhone(true)}
+                onClick={() => setShowInviteModal(true)}
                 className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-900 px-6 py-3.5 md:px-8 md:py-4 rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2 md:gap-3"
               >
-                <Phone className="w-4 h-4 md:w-5 md:h-5" />
-                Contact Directly
+                <UserPlus className="w-4 h-4 md:w-5 md:h-5" />
+                Request Connection
               </button>
             )}
           </div>
