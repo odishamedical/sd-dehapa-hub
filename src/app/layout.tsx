@@ -36,6 +36,13 @@ export default function RootLayout({
       lang="en"
       className="h-full antialiased"
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost') {
+            window.location.href = window.location.href.replace('http:', 'https:');
+          }
+        `}} />
+      </head>
       <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
         <TenantProvider>
           <UserPresenceProvider />
