@@ -125,7 +125,7 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
             osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
             osc2.frequency.setValueAtTime(480, audioCtx.currentTime);
             
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
             
             osc1.connect(gain);
             osc2.connect(gain);

@@ -61,15 +61,15 @@ export default function DoctorStatusToggle() {
         }
         (window as any).sd_shared_audio_ctx = audioCtx;
         
-        // Play a short pleasant confirmation beep
+        // Play a short pleasant confirmation beep (increased volume for mobile speakers)
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.1);
+        osc.stop(audioCtx.currentTime + 0.15);
       }
     } catch (e) {
       console.warn("Audio context unlock error:", e);
