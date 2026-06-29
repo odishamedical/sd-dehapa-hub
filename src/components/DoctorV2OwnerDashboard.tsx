@@ -69,6 +69,13 @@ export default function DoctorV2OwnerDashboard() {
         const docSnap = snap.docs[0];
         setEntityDocId(docSnap.id);
         setEntityData({ id: docSnap.id, ...docSnap.data() });
+        
+        // Cache in localStorage to support synchronous global alerts
+        localStorage.setItem("sd_current_doctor_id", docSnap.id);
+        const data = docSnap.data();
+        if (data && data.primarySpecialty) {
+          localStorage.setItem("sd_current_doctor_specialty", data.primarySpecialty);
+        }
       }
     } catch (err) {
       console.error("Error fetching entity:", err);

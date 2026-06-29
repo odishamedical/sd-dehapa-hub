@@ -15,10 +15,14 @@ export default function GlobalDoctorAlerts() {
     if (typeof window !== "undefined") {
       setUserUid(localStorage.getItem("sd_current_user_uid"));
       setRole(localStorage.getItem("sd_current_user_role"));
+      setRealDoctorId(localStorage.getItem("sd_current_doctor_id"));
+      setSpecialty(localStorage.getItem("sd_current_doctor_specialty"));
       
       const handleStorageChange = () => {
         setUserUid(localStorage.getItem("sd_current_user_uid"));
         setRole(localStorage.getItem("sd_current_user_role"));
+        setRealDoctorId(localStorage.getItem("sd_current_doctor_id"));
+        setSpecialty(localStorage.getItem("sd_current_doctor_specialty"));
       };
       window.addEventListener("storage", handleStorageChange);
       window.addEventListener("sd_role_upgraded", handleStorageChange);
@@ -31,11 +35,16 @@ export default function GlobalDoctorAlerts() {
     }
   }, []);
 
-  // Fetch the doctor's directory profile to get their real directory ID and specialty
+  // Fetch the doctor's directory profile if not already cached in localStorage
   useEffect(() => {
     if (!userUid || (role !== "doctor" && role !== "super_admin")) {
       setRealDoctorId(null);
       setSpecialty(null);
+      return;
+    }
+
+    // Skip DB fetch if already loaded from localStorage cache
+    if (realDoctorId && specialty) {
       return;
     }
 
@@ -48,10 +57,12 @@ export default function GlobalDoctorAlerts() {
         );
         const snap = await getDocs(q);
         if (!snap.empty) {
-          const docId = snap.docs[0].id; // This is the directory document ID (e.g. 68bKd57p...)
+          const docId = snap.docs[0].id;
           const docData = snap.docs[0].data();
           setRealDoctorId(docId);
           setSpecialty(docData.primarySpecialty || "general");
+          localStorage.setItem("sd_current_doctor_id", docId);
+          localStorage.setItem("sd_current_doctor_specialty", docData.primarySpecialty || "general");
         } else {
           // Fallback if directory document hasn't been created yet
           setRealDoctorId(userUid);
@@ -65,7 +76,7 @@ export default function GlobalDoctorAlerts() {
     };
 
     fetchProfile();
-  }, [userUid, role]);
+  }, [userUid, role, realDoctorId, specialty]);
 
   if ((role !== "doctor" && role !== "super_admin") || !realDoctorId || !specialty) {
     return null;
