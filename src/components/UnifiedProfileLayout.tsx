@@ -280,6 +280,22 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
             </section>
           )}
 
+          {/* Languages */}
+          {hasValidData(profile.languages) && (
+            <section className="relative pl-0 md:pl-16">
+              <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+              <h2 className="text-3xl font-black text-[#0A1128] mb-8">Languages Spoken</h2>
+              <div className="flex flex-wrap gap-4">
+                {profile.languages.map((lang: string, index: number) => (
+                  <div key={index} className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <Globe className="w-4 h-4 text-emerald-600" />
+                    <span className="font-bold text-[#0A1128] text-sm">{lang}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Media / Gallery (Editorial Strip) */}
           {((profile.galleryImages && profile.galleryImages.length > 0) || (profile.rawImages && profile.rawImages.length > 0) || (profile.youtubeLinks && profile.youtubeLinks.length > 0)) && (
             <section className="relative pl-0 md:pl-16">
@@ -347,6 +363,14 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
                       <Navigation className="w-5 h-5" />
                       Get Directions
                     </a>
+                  </div>
+
+                  <div className="mt-8 pt-8 border-t border-slate-100">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Clock className="w-5 h-5 text-slate-400" />
+                      <h4 className="font-black text-[#0A1128] uppercase tracking-widest text-xs">Operating Hours</h4>
+                    </div>
+                    <p className="text-slate-600 font-serif italic text-lg">{profile.timings || profile.clinic?.timings || "Mon - Sat: 10:00 AM - 08:00 PM"}</p>
                   </div>
                 </div>
 
