@@ -30,7 +30,6 @@ export default function VaultPage() {
     if (!window.confirm("Are you sure you want to completely delete this record? This action cannot be undone.")) return;
     try {
       const db = (await import('@/lib/firebase')).db;
-      const db = (await import('@/lib/firebase')).db;
       const { doc, deleteDoc } = await import('firebase/firestore');
       const targetEmail = decodeURIComponent(vaultId);
 
@@ -66,7 +65,6 @@ export default function VaultPage() {
     };
 
     const formattedRx = {
-      patientInfo: {
       patientInfo: {
         name: rec.patientName || decodeURIComponent(vaultId).split("@")[0],
         age: rec.patientAge || "",
@@ -136,7 +134,6 @@ export default function VaultPage() {
       try {
         if (!isGranted) return;
         
-        const db = (await import('@/lib/firebase')).db;
         const db = (await import('@/lib/firebase')).db;
         const { collectionGroup, collection, query, where, getDocs } = await import('firebase/firestore');
         const targetEmail = decodeURIComponent(vaultId);
