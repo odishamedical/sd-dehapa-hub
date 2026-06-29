@@ -1,12 +1,19 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { auth, db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { ConnectionService, ConnectionStatus } from '@/services/connection.service';
+import { QRCodeSVG } from 'qrcode.react';
 import { 
   Award, MapPin, Phone, Star, CheckCircle2, Shield, 
   Stethoscope, Clock, FileText, Activity, 
   HeartPulse, Navigation, GraduationCap, Globe, Fingerprint,
-  Briefcase, Medal, Video, Image as ImageIcon, Banknote
+  Briefcase, Medal, Video, Image as ImageIcon, Banknote,
+  Share2, QrCode, UserPlus, X
 } from 'lucide-react';
 import CategoryNav from '@/components/CategoryNav';
 
@@ -22,6 +29,108 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
   const isLab = type === 'lab';
 
   const [showPhone, setShowPhone] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [user, setUser] = useState<User | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus | null>(null);
+  const [isRequestingConnection, setIsRequestingConnection] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (user && profile.id) {
+      ConnectionService.checkConnectionStatus(user.uid, profile.id).then(status => {
+        setConnectionStatus(status);
+      });
+    }
+  }, [user, profile.id]);
+
+  useEffect(() => {
+    if (searchParams?.get('action') === 'connect') {
+      if (connectionStatus !== 'approved' && connectionStatus !== 'pending' && user?.uid !== profile.id) {
+        setShowInviteModal(true);
+      }
+    }
+  }, [searchParams, connectionStatus, user, profile.id]);
+
+  useEffect(() => {
+    const checkPendingConnection = async () => {
+      const pendingAction = localStorage.getItem('pendingConnectAction');
+      if (pendingAction === profile.id && user) {
+        localStorage.removeItem('pendingConnectAction');
+        if (connectionStatus !== 'approved' && connectionStatus !== 'pending' && user.uid !== profile.id) {
+           await handleRequestConnection(true);
+        }
+      }
+    };
+    if (user && profile.id) {
+      setTimeout(() => checkPendingConnection(), 1000);
+    }
+  }, [user, profile.id, connectionStatus]);
+
+  const handleRequestConnection = async (isAutoRun = false) => {
+    if (!user) {
+      localStorage.setItem('pendingConnectAction', profile.id);
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    setIsRequestingConnection(true);
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      let currentRole = 'patient';
+      let currentName = user.displayName || 'Dehapa Patient';
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        currentRole = userData.role || 'patient';
+        currentName = userData.fullName || userData.name || currentName;
+      }
+      await ConnectionService.requestConnection({
+        initiatorId: user.uid,
+        initiatorRole: currentRole,
+        initiatorName: currentName,
+        receiverId: profile.id,
+        receiverRole: type,
+        receiverName: profile.name,
+      });
+      setConnectionStatus('pending');
+      if (isAutoRun) {
+        alert("Connection request sent automatically!");
+      } else {
+        setShowInviteModal(false);
+      }
+    } catch (error) {
+      console.error("Error requesting connection:", error);
+      alert("Failed to send connection request.");
+    } finally {
+      setIsRequestingConnection(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const shareUrl = window.location.href.split('?')[0]; // Clean URL
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: profile.name,
+          text: `Check out ${profile.name}'s profile on Dehapa`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      alert("Profile link copied to clipboard!");
+    }
+  };
 
   const hasValidData = (arr: any[]) => {
     if (!arr || !Array.isArray(arr) || arr.length === 0) return false;
@@ -91,21 +200,33 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
               <h1 className="text-4xl md:text-6xl font-black text-[#0A1128] tracking-tight leading-[1.1]">
                 {profile.name}
               </h1>
-              <p className="text-xl md:text-2xl text-slate-500 font-serif italic mt-3">
-                {profile.subtitle || profile.category || profile.specialty || "Eminent Healthcare Specialist"}
-              </p>
               
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 mt-8">
-                <div className="flex items-center gap-2 group cursor-pointer">
+              {/* LinkedIn Style Link for Specialty */}
+              <Link 
+                href={`/doctors?specialty=${encodeURIComponent(profile.specialty || profile.category || "General")}`}
+                className="inline-block mt-3 hover:opacity-80 transition-opacity"
+              >
+                <p className="text-xl md:text-2xl text-slate-500 font-serif italic border-b border-transparent hover:border-slate-400 pb-1">
+                  {profile.subtitle || profile.category || profile.specialty || "Eminent Healthcare Specialist"}
+                </p>
+              </Link>
+              
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 mt-6">
+                {/* LinkedIn Style Link for Location */}
+                <Link 
+                  href={`/doctors?location=${encodeURIComponent(profile.city || profile.address?.split(',')[0] || "")}`}
+                  className="flex items-center gap-2 group cursor-pointer"
+                >
                   <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
                     <MapPin className="w-4 h-4 text-slate-600" />
                   </div>
-                  <p className="text-sm text-slate-600 font-semibold uppercase tracking-wider">
+                  <p className="text-sm text-slate-600 font-semibold uppercase tracking-wider group-hover:text-slate-900 group-hover:underline underline-offset-4">
                     {profile.city || profile.address?.split(',')[0] || "Location unavailable"}
                   </p>
-                </div>
+                </Link>
+
                 {profile.fee && profile.fee !== "Contact Clinic" && (
-                  <div className="flex items-center gap-2 group">
+                  <div className="flex items-center gap-2 group cursor-default">
                     <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
                       <Banknote className="w-4 h-4 text-emerald-600" />
                     </div>
@@ -115,6 +236,25 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
                   </div>
                 )}
               </div>
+
+              {/* The Network Action Grid (Share, QR, Connect) */}
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-8">
+                <button onClick={handleShare} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-slate-700 text-sm font-bold shadow-sm transition-all hover:shadow-md">
+                  <Share2 className="w-4 h-4" /> Share
+                </button>
+                <button onClick={() => setShowQRModal(true)} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-slate-700 text-sm font-bold shadow-sm transition-all hover:shadow-md">
+                  <QrCode className="w-4 h-4" /> QR Code
+                </button>
+                <button 
+                  onClick={() => setShowInviteModal(true)} 
+                  disabled={connectionStatus === 'pending' || connectionStatus === 'approved'}
+                  className="flex items-center gap-2 bg-[#0A1128] hover:bg-slate-800 border border-slate-800 px-5 py-2.5 rounded-xl text-white text-sm font-bold shadow-sm transition-all hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <UserPlus className="w-4 h-4" /> 
+                  {connectionStatus === 'approved' ? 'Connected' : connectionStatus === 'pending' ? 'Pending' : 'Connect'}
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
@@ -219,9 +359,13 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
               <h2 className="text-3xl font-black text-[#0A1128] mb-8">Areas of Excellence</h2>
               <div className="flex flex-wrap gap-4">
                 {profile.specialties.map((spec: string, index: number) => (
-                  <span key={index} className="bg-slate-100 text-slate-800 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-slate-200 transition-colors cursor-default">
-                    {spec}
-                  </span>
+                  <Link 
+                    key={index} 
+                    href={`/doctors?specialty=${encodeURIComponent(spec)}`}
+                    className="bg-slate-100 text-slate-800 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-slate-200 hover:shadow-md transition-all group"
+                  >
+                    <span className="border-b border-transparent group-hover:border-slate-800 pb-0.5">{spec}</span>
+                  </Link>
                 ))}
               </div>
             </section>
@@ -240,7 +384,14 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
                     </div>
                     <div className="pt-2">
                       <h3 className="font-black text-[#0A1128] text-xl">{edu.degree}</h3>
-                      <p className="text-slate-500 mt-2 text-lg font-serif italic">{edu.institution || edu.college || 'Institution not specified'}</p>
+                      <Link 
+                        href={`/directory?query=${encodeURIComponent(edu.institution || edu.college || '')}`}
+                        className="inline-block mt-2 hover:opacity-80 transition-opacity"
+                      >
+                        <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                          {edu.institution || edu.college || 'Institution not specified'}
+                        </p>
+                      </Link>
                       {edu.year && <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{edu.year}</p>}
                     </div>
                   </div>
@@ -262,7 +413,14 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
                     </div>
                     <div className="pt-2">
                       <h3 className="font-black text-[#0A1128] text-xl">{exp.role || exp.title}</h3>
-                      <p className="text-slate-500 mt-2 text-lg font-serif italic">{exp.hospital || exp.organization}</p>
+                      <Link 
+                        href={`/hospitals?query=${encodeURIComponent(exp.hospital || exp.organization || '')}`}
+                        className="inline-block mt-2 hover:opacity-80 transition-opacity"
+                      >
+                        <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                          {exp.hospital || exp.organization}
+                        </p>
+                      </Link>
                       <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{exp.duration || exp.year}</p>
                     </div>
                   </div>
@@ -411,10 +569,22 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
           </div>
           <div className="flex-1 sm:flex-none">
             {verified ? (
-              <button className="w-full sm:w-auto bg-[#0A1128] hover:bg-slate-800 text-white px-6 py-3.5 md:px-8 md:py-4 rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2 md:gap-3">
-                <HeartPulse className="w-4 h-4 md:w-5 md:h-5" />
-                Book VIP Consult
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button 
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }))}
+                  className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                >
+                  <Video className="w-4 h-4 md:w-5 md:h-5" />
+                  Urgent Ping
+                </button>
+                <button 
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
+                  className="flex-1 sm:flex-none bg-[#0A1128] hover:bg-slate-800 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                >
+                  <HeartPulse className="w-4 h-4 md:w-5 md:h-5" />
+                  Schedule Video
+                </button>
+              </div>
             ) : (
               <button 
                 onClick={() => setShowPhone(true)}
@@ -432,6 +602,61 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95">
+            <button onClick={() => setShowQRModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+              <X className="w-6 h-6" />
+            </button>
+            <h3 className="font-black text-2xl text-[#0A1128] mb-2">Scan to Connect</h3>
+            <p className="text-sm text-slate-500 mb-6">Patients can scan this QR code to instantly view your profile and send a secure connection request.</p>
+            <div className="bg-slate-50 p-4 rounded-2xl flex justify-center border border-slate-100">
+              <QRCodeSVG 
+                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/profile/${type}/${profile.id}?action=connect`}
+                size={200}
+                bgColor={"#f8fafc"}
+                fgColor={"#0f172a"}
+                level={"Q"}
+              />
+            </div>
+            <button onClick={handleShare} className="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+              <Share2 className="w-4 h-4" /> Share Link Instead
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Invite Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95 border border-cyan-500/20">
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-3xl"></div>
+            <button onClick={() => setShowInviteModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+              <X className="w-6 h-6" />
+            </button>
+            
+            <div className="w-16 h-16 bg-cyan-50 rounded-full flex items-center justify-center mx-auto mb-4 mt-2">
+              <UserPlus className="w-8 h-8 text-cyan-600" />
+            </div>
+            
+            <h3 className="font-black text-2xl text-[#0A1128] mb-2">Connect with {profile.name}</h3>
+            <p className="text-sm text-slate-500 mb-8 leading-relaxed">By connecting, you allow this provider to access your medical records securely through the Dehapa Network.</p>
+            
+            <button 
+              onClick={() => handleRequestConnection(false)}
+              disabled={isRequestingConnection}
+              className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isRequestingConnection ? "Sending Request..." : "Send Connection Request"}
+            </button>
+            <button onClick={() => setShowInviteModal(false)} className="mt-4 text-sm text-slate-500 font-bold hover:text-slate-800">
+              Maybe Later
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
