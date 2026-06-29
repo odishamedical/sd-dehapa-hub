@@ -6,20 +6,20 @@ import { db } from '@/lib/firebase';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
 
 export default function GlobalDoctorAlerts() {
-  const [userUid, setUserUid] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [realDoctorId, setRealDoctorId] = useState<string | null>(null);
   const [specialty, setSpecialty] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setUserUid(localStorage.getItem("sd_current_user_uid"));
+      setUserEmail(localStorage.getItem("sd_current_user_email"));
       setRole(localStorage.getItem("sd_current_user_role"));
       setRealDoctorId(localStorage.getItem("sd_current_doctor_id"));
       setSpecialty(localStorage.getItem("sd_current_doctor_specialty"));
       
       const handleStorageChange = () => {
-        setUserUid(localStorage.getItem("sd_current_user_uid"));
+        setUserEmail(localStorage.getItem("sd_current_user_email"));
         setRole(localStorage.getItem("sd_current_user_role"));
         setRealDoctorId(localStorage.getItem("sd_current_doctor_id"));
         setSpecialty(localStorage.getItem("sd_current_doctor_specialty"));
@@ -37,7 +37,7 @@ export default function GlobalDoctorAlerts() {
 
   // Fetch the doctor's directory profile if not already cached in localStorage
   useEffect(() => {
-    if (!userUid || (role !== "doctor" && role !== "super_admin")) {
+    if (!userEmail || (role !== "doctor" && role !== "super_admin")) {
       setRealDoctorId(null);
       setSpecialty(null);
       return;
@@ -50,9 +50,10 @@ export default function GlobalDoctorAlerts() {
 
     const fetchProfile = async () => {
       try {
+        // Query by ownerEmail (matches DoctorV2OwnerDashboard query)
         const q = query(
           collection(db, "directory"),
-          where("ownerUid", "==", userUid),
+          where("ownerEmail", "==", userEmail),
           where("type", "==", "doctor")
         );
         const snap = await getDocs(q);
@@ -63,20 +64,14 @@ export default function GlobalDoctorAlerts() {
           setSpecialty(docData.primarySpecialty || "general");
           localStorage.setItem("sd_current_doctor_id", docId);
           localStorage.setItem("sd_current_doctor_specialty", docData.primarySpecialty || "general");
-        } else {
-          // Fallback if directory document hasn't been created yet
-          setRealDoctorId(userUid);
-          setSpecialty("general");
         }
       } catch (err) {
         console.error("Failed to fetch doctor profile in GlobalDoctorAlerts:", err);
-        setRealDoctorId(userUid);
-        setSpecialty("general");
       }
     };
 
     fetchProfile();
-  }, [userUid, role, realDoctorId, specialty]);
+  }, [userEmail, role, realDoctorId, specialty]);
 
   if ((role !== "doctor" && role !== "super_admin") || !realDoctorId || !specialty) {
     return null;
