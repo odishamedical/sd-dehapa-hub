@@ -25,6 +25,7 @@ import GlobalFooter from "@/components/GlobalFooter";
 import GlobalTelemedicineFAB from "@/components/GlobalTelemedicineFAB";
 import DoctorCommandDock from "@/components/DoctorCommandDock";
 import UserPresenceProvider from "@/components/UserPresenceProvider";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function RootLayout({
   children,
@@ -43,7 +44,7 @@ export default function RootLayout({
           }
         `}} />
       </head>
-      <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
+      <body className="min-h-full flex flex-col font-sans overflow-x-hidden md:pb-0 pb-[80px]">
         <TenantProvider>
           <UserPresenceProvider />
           <GlobalHeader activeProject="Telemedicine" />
@@ -54,6 +55,7 @@ export default function RootLayout({
           <GlobalScannerController />
           <GlobalTelemedicineFAB />
           <DoctorCommandDock />
+          <MobileBottomNav />
         </TenantProvider>
       </body>
     </html>

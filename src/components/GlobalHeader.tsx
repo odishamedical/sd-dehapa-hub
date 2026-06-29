@@ -374,17 +374,6 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       {/* 3. User Menu / Auth */}
       <div className="flex items-center gap-1 md:gap-4 relative shrink-0" ref={dropdownRef}>
         
-        {/* Hamburger Button (Mobile Only) */}
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
-        >
-          {mobileMenuOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          )}
-        </button>
 
         {/* DoctorStatusToggle */}
         <DoctorStatusToggle />
@@ -500,36 +489,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
         )}
       </div>
 
-      {/* Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
-        <div className="absolute top-20 left-0 w-full bg-slate-900 border-b border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.8)] md:hidden flex flex-col z-[90]">
-          <a href="/join" className="px-6 py-4 border-b border-slate-800 text-amber-400 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-orange-400">
-            <span className="text-xl">🤝</span> Join as Provider
-          </a>
-          <a href="/doctors" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
-            <span className="text-xl">🩺</span> Find Specialists
-          </a>
-          <a href="/hospitals" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
-            <span className="text-xl">🏥</span> Hospitals
-          </a>
-          <a href="/labs" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
-            <span className="text-xl">🔬</span> Labs
-          </a>
-          <a href="/pharmacies" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
-            <span className="text-xl">💊</span> Pharmacies
-          </a>
-          <a href="/ambulances" className="px-6 py-4 border-b border-slate-800 text-slate-300 font-bold flex items-center gap-3 hover:bg-slate-800 hover:text-cyan-400">
-            <span className="text-xl">🚑</span> Ambulances
-          </a>
-          {!userEmail && (
-            <div className="p-6 bg-slate-950 border-t border-slate-800">
-               <a href={getAuthCenterUrl()} className="block w-full text-center font-bold bg-teal-600 hover:bg-teal-500 text-white px-5 py-3 rounded-xl shadow-[0_0_15px_rgba(20,184,166,0.3)]">
-                 Initialize Access
-               </a>
-            </div>
-          )}
-        </div>
-      )}
+
     </header>
   );
 }
