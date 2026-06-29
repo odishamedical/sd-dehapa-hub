@@ -1483,12 +1483,11 @@ export default function UniversalProfileLayout({
                             const currentName = user.displayName || localStorage.getItem('sd_current_user_name') || 'DehaPa Patient';
                             const roomId = `video-${profile.id}-${Date.now().toString().slice(-5)}`;
                             const timestamp = serverTimestamp();
-                            
-                            // 1. Create the appointment document so the VideoRoom waiting room logic works
+                                                 // 1. Create the appointment document so the VideoRoom waiting room logic works
                             await setDoc(doc(db, "appointments", roomId), {
                               doctorId: profile.id,
                               doctorName: profile.name,
-                              patientId: user.uid,
+                              patientId: user.email || user.uid,
                               patientName: currentName,
                               status: 'Pending',
                               type: 'Urgent Video',
@@ -1501,7 +1500,7 @@ export default function UniversalProfileLayout({
                             await setDoc(doc(db, "consultation_requests", roomId), {
                               doctorId: profile.id,
                               doctorName: profile.name,
-                              patientId: user.uid,
+                              patientId: user.email || user.uid,
                               patientName: currentName,
                               targetCategory: profile.category || 'Doctor',
                               pingType: 'direct',

@@ -138,7 +138,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     if (userRole === 'doctor' || userRole === 'super_admin') {
       await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
       if (patientId) {
-        window.location.href = `/doctor/prescription-pad?patient=${patientId}`;
+        window.location.href = `/doctor/prescription-pad?patient=${patientId}&request=${roomId}`;
       } else {
         window.location.href = "/portal/doctor";
       }
