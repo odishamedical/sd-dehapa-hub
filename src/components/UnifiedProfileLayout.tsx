@@ -200,174 +200,6 @@ export default function UnifiedProfileLayout({
         </div>
       </div>
 
-      {/* The Cinematic Hero */}
-      <div className="relative w-full bg-white border-b border-slate-200/50 overflow-hidden">
-        {/* Editorial Background Motif */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-slate-100 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-70 pointer-events-none"></div>
-        
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 pb-16 relative z-20">
-          <div className="flex flex-col gap-8 items-center md:items-start">
-            
-            {/* The Prestige Portrait (Cinematic 16:9 Banner with Blur Fill) */}
-            <div className="relative w-full group">
-              <div className="absolute inset-0 bg-slate-900 rounded-[2rem] rotate-1 opacity-5 group-hover:rotate-2 transition-transform duration-700"></div>
-              
-              <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] rounded-[2rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border-4 border-white bg-slate-100 z-10 transition-transform duration-700 group-hover:-translate-y-1">
-                {/* Blurred Background Layer (prevents empty white bars for portrait photos) */}
-                <img 
-                  src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
-                  alt=""
-                  className="absolute inset-0 w-full h-full object-cover blur-xl opacity-60 scale-110"
-                />
-                {/* Foreground Image (Always fully visible) */}
-                <img 
-                  src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
-                  alt={profile.name}
-                  className="relative w-full h-full object-contain"
-                />
-              </div>
-              
-              {/* Platinum / Gold Seal */}
-              {verified && (
-                <div className="absolute -bottom-5 right-6 md:right-10 bg-gradient-to-br from-[#D4AF37] via-[#F3E5AB] to-[#AA7C11] text-[#4A3B00] rounded-full p-1.5 shadow-[0_10px_30px_rgba(212,175,55,0.4)] border-4 border-white z-20 hover:scale-105 transition-transform cursor-default group/badge">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border border-white/40">
-                    <CheckCircle2 className="w-5 h-5 md:w-7 md:h-7 drop-shadow-sm" />
-                  </div>
-                  {/* Tooltip */}
-                  <div className="absolute top-16 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg whitespace-nowrap font-bold pointer-events-none">
-                    Dehapa Verified
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* The Headline (Editorial Typography) */}
-            <div className="flex-1 w-full text-center md:text-left mt-2 px-2">
-              <h1 className="text-4xl md:text-6xl font-black text-[#0A1128] tracking-tight leading-[1.1]">
-                {profile.name}
-              </h1>
-              
-              {/* LinkedIn Style Link for Specialty */}
-              <Link 
-                href={`/doctors?specialty=${encodeURIComponent(profile.specialty || profile.category || "General")}`}
-                className="inline-block mt-3 hover:opacity-80 transition-opacity"
-              >
-                <p className="text-xl md:text-2xl text-slate-500 font-serif italic border-b border-transparent hover:border-slate-400 pb-1">
-                  {profile.subtitle || profile.category || profile.specialty || "Eminent Healthcare Specialist"}
-                </p>
-              </Link>
-              
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 mt-6">
-                {/* LinkedIn Style Link for Location */}
-                <Link 
-                  href={`/doctors?location=${encodeURIComponent(profile.city || profile.address?.split(',')[0] || "")}`}
-                  className="flex items-center gap-2 group cursor-pointer"
-                >
-                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
-                    <MapPin className="w-4 h-4 text-slate-600" />
-                  </div>
-                  <p className="text-sm text-slate-600 font-semibold uppercase tracking-wider group-hover:text-slate-900 group-hover:underline underline-offset-4">
-                    {profile.city || profile.address?.split(',')[0] || "Location unavailable"}
-                  </p>
-                </Link>
-
-                {profile.fee && profile.fee !== "Contact Clinic" && (
-                  <div className="flex items-center gap-2 group cursor-default">
-                    <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
-                      <Banknote className="w-4 h-4 text-emerald-600" />
-                    </div>
-                    <p className="text-sm text-emerald-700 font-bold uppercase tracking-wider">
-                      Consultation: ₹{profile.fee}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* The Network Action Grid (Share, QR, Connect) */}
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-8">
-                <button onClick={handleShare} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-slate-700 text-sm font-bold shadow-sm transition-all hover:shadow-md">
-                  <Share2 className="w-4 h-4" /> Share
-                </button>
-                <button onClick={() => setShowQRModal(true)} className="flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-slate-700 text-sm font-bold shadow-sm transition-all hover:shadow-md">
-                  <QrCode className="w-4 h-4" /> QR Code
-                </button>
-                <button 
-                  onClick={() => setShowInviteModal(true)} 
-                  disabled={connectionStatus === 'pending' || connectionStatus === 'approved'}
-                  className="flex items-center gap-2 bg-[#0A1128] hover:bg-slate-800 border border-slate-800 px-5 py-2.5 rounded-xl text-white text-sm font-bold shadow-sm transition-all hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <UserPlus className="w-4 h-4" /> 
-                  {connectionStatus === 'approved' ? 'Connected' : connectionStatus === 'pending' ? 'Pending' : 'Connect'}
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* The Prestige Trust Bar (Data as Art) */}
-      <div className="max-w-[1200px] mx-auto px-6 -mt-8 relative z-30">
-        <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] border border-slate-100 p-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-slate-100">
-            
-            {/* Metric 1 */}
-            <div className="flex flex-col items-center justify-center text-center px-4">
-              <p className="text-4xl font-black text-[#0A1128] tracking-tighter">
-                {isDoctor ? profile.experience?.replace(/\D/g,'') || '10' : profile.totalBeds?.replace(/\D/g,'') || '24'}
-                <span className="text-2xl text-teal-600 font-serif italic">+</span>
-              </p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
-                {isDoctor ? 'Years Experience' : (isHospital ? 'Total Beds' : 'Service')}
-              </p>
-            </div>
-
-            {/* Metric 2 */}
-            <div className="flex flex-col items-center justify-center text-center px-4">
-              <div className="flex items-center justify-center gap-1">
-                <p className="text-4xl font-black text-[#0A1128] tracking-tighter">{profile.rating || '4.8'}</p>
-                <Star className="w-6 h-6 text-amber-400 fill-current -mt-3" />
-              </div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
-                {profile.reviews ? `${profile.reviews} Patient Reviews` : 'Patient Rating'}
-              </p>
-            </div>
-
-            {/* Metric 3 */}
-            <div className="flex flex-col items-center justify-center text-center px-4">
-              <p className="text-2xl md:text-3xl font-black text-[#0A1128] tracking-tight line-clamp-1">
-                {profile.qualification || profile.category || 'Specialist'}
-              </p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
-                {isDoctor ? 'Primary Credential' : 'Category'}
-              </p>
-            </div>
-
-            {/* Metric 4 */}
-            <div className="flex flex-col items-center justify-center text-center px-4">
-              {profile.registrationNumber && profile.registrationNumber !== "Not available (Not verified)" ? (
-                <>
-                  <p className="text-xl md:text-2xl font-black text-[#0A1128] tracking-tight line-clamp-1 font-mono">
-                    {profile.registrationNumber}
-                  </p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
-                    Medical Council Reg.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <Shield className="w-8 h-8 text-slate-300 mb-2" />
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                    Basic Profile
-                  </p>
-                </>
-              )}
-            </div>
-
-          </div>
-        </div>
-      </div>
-
       {/* Main Content Container - Fluid Grid */}
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start">
@@ -375,6 +207,176 @@ export default function UnifiedProfileLayout({
           {/* Main Content (75%) */}
           <div className="lg:col-span-3 space-y-16">
             
+            {/* The Classic Hero (Left Image, Right Details) */}
+            <div className="bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
+              {/* Editorial Background Motif */}
+              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-cyan-50 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-70 pointer-events-none"></div>
+
+              {/* Left: The Prestige Portrait */}
+              <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 group/portrait z-10">
+                <div className="absolute inset-0 bg-slate-900 rounded-3xl rotate-2 opacity-5 group-hover/portrait:rotate-3 transition-transform duration-700"></div>
+                
+                <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-slate-100 transition-transform duration-700 group-hover/portrait:-translate-y-1">
+                  <img 
+                    src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
+                {/* Platinum / Gold Seal */}
+                {verified && (
+                  <div className="absolute -bottom-3 -right-3 bg-gradient-to-br from-[#D4AF37] via-[#F3E5AB] to-[#AA7C11] text-[#4A3B00] rounded-full p-1 shadow-lg border-2 border-white hover:scale-105 transition-transform cursor-default group/badge">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center border border-white/40">
+                      <CheckCircle2 className="w-5 h-5 drop-shadow-sm" />
+                    </div>
+                    {/* Tooltip */}
+                    <div className="absolute top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg whitespace-nowrap font-bold pointer-events-none z-50">
+                      Dehapa Verified
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right: The Details & Actions */}
+              <div className="flex-1 text-center md:text-left z-10 w-full">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#0A1128] tracking-tight leading-tight mb-2">
+                  {profile.name}
+                </h1>
+                
+                <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-4 text-slate-500 mb-6">
+                  {profile.specialties && profile.specialties.length > 0 ? (
+                    <span className="font-bold text-cyan-700 text-lg">{profile.specialties[0]}</span>
+                  ) : profile.category ? (
+                    <span className="font-bold text-cyan-700 text-lg">{profile.category}</span>
+                  ) : null}
+                  
+                  {profile.education && profile.education.length > 0 && (
+                    <>
+                      <span className="hidden md:inline text-slate-300">•</span>
+                      <span className="text-sm font-semibold uppercase tracking-widest">{profile.education[0]?.degree || "M.B.B.S"}</span>
+                    </>
+                  )}
+                </div>
+
+                {/* Info Pills */}
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-8">
+                  {/* Rating */}
+                  <div className="bg-amber-50 border border-amber-100 text-amber-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
+                    <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs font-black leading-none">{profile.rating || profile.stats?.rating || "4.8"}</span>
+                      <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Rating</span>
+                    </div>
+                  </div>
+
+                  {/* Experience */}
+                  <div className="bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
+                    <Briefcase className="w-4 h-4 text-slate-400" />
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs font-black leading-none">{profile.experience?.replace(/\D/g,'') || "10+"} Years</span>
+                      <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Experience</span>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
+                    <MapPin className="w-4 h-4 text-slate-400" />
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs font-black leading-none">{profile.city || profile.location || "Bhubaneswar"}</span>
+                      <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Location</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                  <button className="bg-[#0A1128] hover:bg-slate-800 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(10,17,40,0.2)] hover:-translate-y-0.5 flex items-center gap-2">
+                    <Video className="w-4 h-4" />
+                    Consult Now
+                  </button>
+                  
+                  <button 
+                    onClick={() => setShowShareModal(true)}
+                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-6 py-3 rounded-full font-bold text-sm transition-all hover:border-slate-300 flex items-center gap-2"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Share
+                  </button>
+                  
+                  <button 
+                    onClick={() => setShowQRModal(true)}
+                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-3 rounded-full transition-all hover:border-slate-300 flex items-center justify-center"
+                    title="QR Code"
+                  >
+                    <QrCode className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* The Prestige Trust Bar (Data as Art) */}
+            <div className="w-full relative z-30">
+              <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] border border-slate-100 p-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-slate-100">
+                  
+                  {/* Metric 1 */}
+                  <div className="flex flex-col items-center justify-center text-center px-4">
+                    <p className="text-4xl font-black text-[#0A1128] tracking-tighter">
+                      {isDoctor ? profile.experience?.replace(/\D/g,'') || '10' : profile.totalBeds?.replace(/\D/g,'') || '24'}
+                      <span className="text-2xl text-teal-600 font-serif italic">+</span>
+                    </p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
+                      {isDoctor ? 'Years Experience' : (isHospital ? 'Total Beds' : 'Service')}
+                    </p>
+                  </div>
+
+                  {/* Metric 2 */}
+                  <div className="flex flex-col items-center justify-center text-center px-4">
+                    <div className="flex items-center justify-center gap-1">
+                      <p className="text-4xl font-black text-[#0A1128] tracking-tighter">{profile.rating || '4.8'}</p>
+                      <Star className="w-6 h-6 text-amber-400 fill-current -mt-3" />
+                    </div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
+                      {profile.reviews ? `${profile.reviews} Patient Reviews` : 'Patient Rating'}
+                    </p>
+                  </div>
+
+                  {/* Metric 3 */}
+                  <div className="flex flex-col items-center justify-center text-center px-4">
+                    <p className="text-2xl md:text-3xl font-black text-[#0A1128] tracking-tight line-clamp-1">
+                      {profile.qualification || profile.category || 'Specialist'}
+                    </p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
+                      {isDoctor ? 'Primary Credential' : 'Category'}
+                    </p>
+                  </div>
+
+                  {/* Metric 4 */}
+                  <div className="flex flex-col items-center justify-center text-center px-4">
+                    {profile.registrationNumber && profile.registrationNumber !== "Not available (Not verified)" ? (
+                      <>
+                        <p className="text-xl md:text-2xl font-black text-[#0A1128] tracking-tight line-clamp-1 font-mono">
+                          {profile.registrationNumber}
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
+                          Medical Council Reg.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <Shield className="w-8 h-8 text-slate-300 mb-2" />
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                          Basic Profile
+                        </p>
+                      </>
+                    )}
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
             {/* Claim Profile Upsell */}
             {!verified && (
               <div className="bg-[#0A1128] rounded-[2rem] p-8 md:p-12 mb-16 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
@@ -635,6 +637,7 @@ export default function UnifiedProfileLayout({
                 )}
               </div>
             )}
+
 
             {/* Similar Entities */}
             {similarEntities && similarEntities.length > 0 && (
