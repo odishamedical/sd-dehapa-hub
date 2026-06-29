@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import CategoryNav from '@/components/CategoryNav';
 import InlineEditField from '@/components/InlineEditField';
+import EmergencyIntakeModal from '@/components/EmergencyIntakeModal';
+import ClaimProfileModal from '@/components/ClaimProfileModal';
 
 interface UnifiedProfileProps {
   profile: any;
@@ -46,6 +48,8 @@ export default function UnifiedProfileLayout({
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showUnverifiedModal, setShowUnverifiedModal] = useState(false);
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
   
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -426,7 +430,7 @@ export default function UnifiedProfileLayout({
               </section>
 
               {/* Specializations (Elegant Pills) */}
-              {hasValidData(profile.specialties) && (
+              {isDoctor && hasValidData(profile.specialties) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Areas of Excellence</h2>
@@ -445,7 +449,7 @@ export default function UnifiedProfileLayout({
               )}
 
               {/* Education Timeline */}
-              {hasValidData(profile.education) && (
+              {isDoctor && hasValidData(profile.education) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Academic Pedigree</h2>
@@ -474,7 +478,7 @@ export default function UnifiedProfileLayout({
               )}
 
               {/* Past Experience Timeline */}
-              {hasValidData(profile.experiences) && (
+              {isDoctor && hasValidData(profile.experiences) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Professional Trajectory</h2>
@@ -503,7 +507,7 @@ export default function UnifiedProfileLayout({
               )}
 
               {/* Awards (Art Gallery Style) */}
-              {hasValidData(profile.awards) && (
+              {isDoctor && hasValidData(profile.awards) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Accolades & Honors</h2>
@@ -522,7 +526,7 @@ export default function UnifiedProfileLayout({
               )}
 
               {/* Languages */}
-              {hasValidData(profile.languages) && (
+              {isDoctor && hasValidData(profile.languages) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Languages Spoken</h2>
@@ -536,6 +540,60 @@ export default function UnifiedProfileLayout({
                   </div>
                 </section>
               )}
+
+              {/* Departments - Hospital Only */}
+              {isHospital && hasValidData(profile.roster) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Centers of Excellence</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {profile.roster.map((dept: string, i: number) => (
+                      <div key={i} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer">
+                        <div className="w-12 h-12 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center mb-4 text-cyan-600 group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-colors">
+                          <Activity className="w-6 h-6" />
+                        </div>
+                        <h4 className="font-bold text-[#0A1128] text-lg group-hover:text-cyan-600 transition-colors">{dept}</h4>
+                        <p className="text-xs text-slate-400 mt-3 font-bold uppercase tracking-widest group-hover:text-cyan-500">View Specialists &rarr;</p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Health Packages - Hospital Only */}
+              {isHospital && hasValidData(profile.healthPackages) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Preventive Health Packages</h2>
+                  <div className="grid grid-cols-1 gap-6">
+                    {profile.healthPackages.map((pkg: any, i: number) => (
+                      <div key={i} className="bg-white rounded-[2rem] p-6 md:p-8 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
+                        <div className="flex-1 w-full">
+                          <h4 className="text-xl font-bold text-[#0A1128] mb-2">{pkg.name}</h4>
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Includes</p>
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                            {pkg.included?.split(',').map((test: string, j: number) => (
+                              <li key={j} className="flex items-start gap-2 text-slate-600 text-sm font-medium">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                                <span>{test.trim()}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="w-full md:w-64 bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center shrink-0 flex flex-col justify-center">
+                           <p className="text-3xl font-black text-cyan-600 mb-4">{pkg.price}</p>
+                           {verified && (
+                            <button className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-black tracking-widest uppercase text-xs py-3 rounded-full transition-all shadow-md">
+                              Book Package
+                            </button>
+                           )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
 
               {/* Media / Gallery (Editorial Strip) */}
               {((profile.galleryImages && profile.galleryImages.length > 0) || (profile.rawImages && profile.rawImages.length > 0) || (profile.youtubeLinks && profile.youtubeLinks.length > 0)) && (
@@ -691,29 +749,58 @@ export default function UnifiedProfileLayout({
           <div className="flex-1 sm:flex-none">
             {verified ? (
               <div className="flex gap-2 w-full sm:w-auto">
-                <button 
-                  onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }))}
-                  className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
-                >
-                  <Video className="w-4 h-4 md:w-5 md:h-5" />
-                  Urgent Video Call
-                </button>
-                <button 
-                  onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
-                  className="flex-1 sm:flex-none bg-[#0A1128] hover:bg-slate-800 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
-                >
-                  <HeartPulse className="w-4 h-4 md:w-5 md:h-5" />
-                  Schedule Video
-                </button>
+                {type === 'hospital' ? (
+                  <>
+                    <button 
+                      onClick={() => setShowEmergencyModal(true)}
+                      className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <Activity className="w-4 h-4 md:w-5 md:h-5" />
+                      Emergency Booking
+                    </button>
+                    <button 
+                      onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
+                      className="flex-1 sm:flex-none bg-[#0A1128] hover:bg-slate-800 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5" />
+                      Book Appointment
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button 
+                      onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }))}
+                      className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <Video className="w-4 h-4 md:w-5 md:h-5" />
+                      Urgent Video Call
+                    </button>
+                    <button 
+                      onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
+                      className="flex-1 sm:flex-none bg-[#0A1128] hover:bg-slate-800 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <HeartPulse className="w-4 h-4 md:w-5 md:h-5" />
+                      Schedule Video
+                    </button>
+                  </>
+                )}
               </div>
             ) : (
-              <button 
-                onClick={() => setShowInviteModal(true)}
-                className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-900 px-6 py-3.5 md:px-8 md:py-4 rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2 md:gap-3"
-              >
-                <UserPlus className="w-4 h-4 md:w-5 md:h-5" />
-                Request Connection
-              </button>
+              <div className="flex flex-col items-center justify-center gap-1 w-full sm:w-auto">
+                <button 
+                  onClick={() => setShowUnverifiedModal(true)}
+                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-500 px-6 py-3 md:px-8 md:py-3.5 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2 md:gap-3"
+                >
+                  <Shield className="w-4 h-4 md:w-5 md:h-5 text-slate-400" />
+                  Services Unavailable
+                </button>
+                <button 
+                  onClick={() => setShowClaimModal(true)} 
+                  className="text-[9px] md:text-[10px] font-bold text-slate-400 hover:text-cyan-600 transition-colors uppercase tracking-widest"
+                >
+                  Are you the owner? Claim Profile
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -830,7 +917,7 @@ export default function UnifiedProfileLayout({
             </div>
             
             <h3 className="font-black text-2xl text-[#0A1128] mb-2">Profile Not Verified</h3>
-            <p className="text-sm text-slate-500 mb-8 leading-relaxed">Online consultation is currently inactive for this profile because the provider has not yet completed the Dehapa verification process.</p>
+            <p className="text-sm text-slate-500 mb-8 leading-relaxed">This profile is currently unverified. We are unable to facilitate bookings or connections until the provider completes the Dehapa verification process.</p>
             
             <button 
               onClick={() => setShowUnverifiedModal(false)}
@@ -840,6 +927,23 @@ export default function UnifiedProfileLayout({
             </button>
           </div>
         </div>
+      )}
+
+      {/* Modals */}
+      {showEmergencyModal && (
+        <EmergencyIntakeModal 
+          hospitalId={profile.id} 
+          hospitalName={profile.name} 
+          onClose={() => setShowEmergencyModal(false)} 
+        />
+      )}
+
+      {showClaimModal && (
+        <ClaimProfileModal 
+          entityId={profile.id} 
+          entityName={profile.name} 
+          onClose={() => setShowClaimModal(false)} 
+        />
       )}
 
     </div>
