@@ -25,15 +25,18 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   const [loading, setLoading] = useState(true);
   const [callObject, setCallObject] = useState<DailyCall | null>(null);
   const [patientHasVideo, setPatientHasVideo] = useState(true);
+  const [patientId, setPatientId] = useState<string | null>(null);
 
-  // Fetch consultation request details to see if patient camera is blocked
+  // Fetch consultation request details to see if patient camera is blocked and get patientId
   useEffect(() => {
     if (typeof window !== 'undefined' && roomId) {
       const getReqDetails = async () => {
         try {
           const snap = await getDoc(doc(db, 'consultation_requests', roomId));
           if (snap.exists()) {
-            setPatientHasVideo(snap.data().hasVideo !== false);
+            const data = snap.data();
+            setPatientHasVideo(data.hasVideo !== false);
+            if (data.patientId) setPatientId(data.patientId);
           }
         } catch (e) {
           console.warn("Failed to fetch consultation request info:", e);
@@ -134,7 +137,11 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     }
     if (userRole === 'doctor' || userRole === 'super_admin') {
       await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
-      window.location.href = "/portal/doctor";
+      if (patientId) {
+        window.location.href = `/doctor/prescription-pad?patient=${patientId}`;
+      } else {
+        window.location.href = "/portal/doctor";
+      }
     } else {
       window.location.href = "/portal";
     }

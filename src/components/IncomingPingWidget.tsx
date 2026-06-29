@@ -215,34 +215,35 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
   if (!incomingRequest) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl transform transition-all animate-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
+      <div className="bg-slate-900 border border-slate-800/80 rounded-[32px] p-8 max-w-md w-full shadow-[0_0_50px_rgba(244,63,94,0.2)] transform transition-all animate-in zoom-in-95 duration-300">
         <div className="flex flex-col items-center text-center">
-          {/* Pulsing Icon */}
+          
+          {/* Pulsing Emergency Icon */}
           <div className="relative mb-6">
-            <div className="absolute inset-0 bg-rose-500 rounded-full animate-ping opacity-75"></div>
-            <div className="relative bg-rose-600 text-white p-4 rounded-full">
-              <svg className="w-8 h-8 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="absolute inset-0 bg-rose-500/30 rounded-full animate-ping opacity-75"></div>
+            <div className="relative bg-gradient-to-tr from-rose-600 to-red-500 text-white p-5 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.4)]">
+              <svg className="w-9 h-9 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
             </div>
           </div>
 
-          <h2 className="text-2xl font-black text-slate-900 mb-2">Incoming Patient Ping!</h2>
-          <p className="text-slate-500 mb-8">
-            A patient is waiting for a <strong>{doctorSpecialty}</strong> right now. First to accept claims the consultation fee.
+          <h2 className="text-2xl font-black text-white mb-2 tracking-tight">Incoming Patient Call!</h2>
+          <p className="text-slate-400 text-sm mb-8 max-w-xs leading-relaxed">
+            A patient is waiting for a <strong className="text-rose-400">{doctorSpecialty}</strong>. Tap accept to start the secure consultation.
           </p>
 
           <div className="flex gap-4 w-full">
             <button
               onClick={handleDecline}
-              className="flex-1 py-4 px-6 rounded-2xl font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors"
+              className="flex-1 py-4 px-6 rounded-2xl font-bold text-slate-400 bg-slate-800 hover:bg-slate-700/80 hover:text-white transition-all cursor-pointer"
             >
               Ignore
             </button>
             <button
               onClick={handleAccept}
-              className="flex-1 py-4 px-6 rounded-2xl font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-600/30 transition-all hover:scale-105 active:scale-95"
+              className="flex-1 py-4 px-6 rounded-2xl font-extrabold text-white bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 shadow-lg shadow-rose-950/40 transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
               ACCEPT
             </button>
