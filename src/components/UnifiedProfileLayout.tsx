@@ -53,14 +53,24 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-8 pb-16 relative z-20">
           <div className="flex flex-col gap-8 items-center md:items-start">
             
-            {/* The Prestige Portrait (Cinematic 16:9 Banner) */}
+            {/* The Prestige Portrait (Cinematic 16:9 Banner with Blur Fill) */}
             <div className="relative w-full group">
               <div className="absolute inset-0 bg-slate-900 rounded-[2rem] rotate-1 opacity-5 group-hover:rotate-2 transition-transform duration-700"></div>
-              <img 
-                src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
-                alt={profile.name}
-                className="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9] rounded-[2rem] object-cover object-top shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border-4 border-white bg-white z-10 transition-transform duration-700 group-hover:-translate-y-1"
-              />
+              
+              <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] rounded-[2rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border-4 border-white bg-slate-100 z-10 transition-transform duration-700 group-hover:-translate-y-1">
+                {/* Blurred Background Layer (prevents empty white bars for portrait photos) */}
+                <img 
+                  src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover blur-xl opacity-60 scale-110"
+                />
+                {/* Foreground Image (Always fully visible) */}
+                <img 
+                  src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
+                  alt={profile.name}
+                  className="relative w-full h-full object-contain"
+                />
+              </div>
               
               {/* Platinum / Gold Seal */}
               {verified && (
