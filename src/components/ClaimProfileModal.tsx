@@ -14,6 +14,7 @@ export default function ClaimProfileModal({ entityId, entityName, onClose }: Cla
   const [role, setRole] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -29,6 +30,7 @@ export default function ClaimProfileModal({ entityId, entityName, onClose }: Cla
         claimantRole: role,
         email,
         phone,
+        fileName: file ? file.name : null,
         status: 'pending_review',
         timestamp: serverTimestamp()
       });
@@ -144,10 +146,18 @@ export default function ClaimProfileModal({ entityId, entityName, onClose }: Cla
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-4 flex items-center justify-center gap-3 mt-2 cursor-pointer hover:bg-slate-100 transition-colors">
-            <UploadCloud className="w-5 h-5 text-slate-400" />
-            <span className="text-sm font-bold text-slate-500">Upload ID / License (Optional)</span>
-          </div>
+          <label className="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-4 flex items-center justify-center gap-3 mt-2 cursor-pointer hover:bg-slate-100 transition-colors">
+            <input 
+              type="file" 
+              className="hidden" 
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              accept=".pdf,.jpg,.jpeg,.png"
+            />
+            <UploadCloud className="w-5 h-5 text-slate-400 shrink-0" />
+            <span className="text-sm font-bold text-slate-500 truncate">
+              {file ? file.name : 'Upload ID / License (Optional)'}
+            </span>
+          </label>
 
           <button 
             type="submit" 

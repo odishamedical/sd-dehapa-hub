@@ -583,7 +583,10 @@ export default function UnifiedProfileLayout({
                         <div className="w-full md:w-64 bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center shrink-0 flex flex-col justify-center">
                            <p className="text-3xl font-black text-cyan-600 mb-4">{pkg.price}</p>
                            {verified && (
-                            <button className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-black tracking-widest uppercase text-xs py-3 rounded-full transition-all shadow-md">
+                            <button 
+                              onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name, package: pkg.name } }))}
+                              className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-black tracking-widest uppercase text-xs py-3 rounded-full transition-all shadow-md"
+                            >
                               Book Package
                             </button>
                            )}
