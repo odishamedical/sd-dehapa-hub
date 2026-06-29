@@ -393,7 +393,7 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
       </div>
 
       {/* Floating Glassmorphic VIP Pill */}
-      <div className="fixed bottom-6 md:bottom-10 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[600px] z-50 pointer-events-none">
+      <div className="fixed bottom-[100px] md:bottom-10 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[600px] z-40 pointer-events-none">
         <div className="bg-white/70 backdrop-blur-3xl border border-white/60 p-2 md:p-3 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] rounded-full pointer-events-auto flex items-center justify-between gap-4">
           <div className="hidden sm:block pl-6">
             <p className="font-black text-slate-900 text-base">{profile.name}</p>
