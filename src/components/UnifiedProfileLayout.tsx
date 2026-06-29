@@ -13,7 +13,7 @@ import {
   Stethoscope, Clock, FileText, Activity, 
   HeartPulse, Navigation, GraduationCap, Globe, Fingerprint,
   Briefcase, Medal, Video, Image as ImageIcon, Banknote,
-  Share2, QrCode, UserPlus, X
+  Share2, QrCode, UserPlus, X, Facebook, MessageCircle
 } from 'lucide-react';
 import CategoryNav from '@/components/CategoryNav';
 
@@ -31,6 +31,7 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
   const [showPhone, setShowPhone] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -116,7 +117,7 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
 
   const handleShare = async () => {
     const shareUrl = window.location.href.split('?')[0]; // Clean URL
-    if (navigator.share) {
+    if (navigator.share && window.innerWidth < 768) {
       try {
         await navigator.share({
           title: profile.name,
@@ -127,9 +128,14 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
         console.error('Error sharing:', err);
       }
     } else {
-      navigator.clipboard.writeText(shareUrl);
-      alert("Profile link copied to clipboard!");
+      setShowShareModal(true);
     }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href.split('?')[0]);
+    alert("Profile link copied to clipboard!");
+    setShowShareModal(false);
   };
 
   const hasValidData = (arr: any[]) => {
@@ -614,16 +620,53 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
             <p className="text-sm text-slate-500 mb-6">Patients can scan this QR code to instantly view your profile and send a secure connection request.</p>
             <div className="bg-slate-50 p-4 rounded-2xl flex justify-center border border-slate-100">
               <QRCodeSVG 
-                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/profile/${type}/${profile.id}?action=connect`}
+                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invite/${profile.id}`}
                 size={200}
                 bgColor={"#f8fafc"}
                 fgColor={"#0f172a"}
                 level={"Q"}
               />
             </div>
-            <button onClick={handleShare} className="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+            <button onClick={() => { setShowQRModal(false); setShowShareModal(true); }} className="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
               <Share2 className="w-4 h-4" /> Share Link Instead
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95">
+            <button onClick={() => setShowShareModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+              <X className="w-6 h-6" />
+            </button>
+            <h3 className="font-black text-2xl text-[#0A1128] mb-6">Share Profile</h3>
+            
+            <div className="flex flex-col gap-3">
+              <a 
+                href={`https://wa.me/?text=Check out ${encodeURIComponent(profile.name)} on Dehapa: ${typeof window !== 'undefined' ? encodeURIComponent(window.location.href.split('?')[0]) : ''}`}
+                target="_blank" 
+                rel="noreferrer"
+                className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-3 shadow-md"
+              >
+                <MessageCircle className="w-5 h-5" /> Share on WhatsApp
+              </a>
+              <a 
+                href={`https://www.facebook.com/sharer/sharer.php?u=${typeof window !== 'undefined' ? encodeURIComponent(window.location.href.split('?')[0]) : ''}`}
+                target="_blank" 
+                rel="noreferrer"
+                className="w-full bg-[#1877F2] hover:bg-[#0C5FCD] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-3 shadow-md"
+              >
+                <Facebook className="w-5 h-5" /> Share on Facebook
+              </a>
+              <button 
+                onClick={copyToClipboard}
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-3"
+              >
+                <Share2 className="w-5 h-5" /> Copy Link
+              </button>
+            </div>
           </div>
         </div>
       )}
