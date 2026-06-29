@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { GlobalLabel, GlobalInput, GlobalSelect, GlobalTextarea, GlobalFormCard } from '@/components/ui/FormElements';
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import PrescriptionTemplate from '@/components/PrescriptionTemplate';
 
 // Predefined favorite medicines (In reality, fetched from Doctor's personal settings)
@@ -23,8 +23,10 @@ export const dynamic = 'force-dynamic';
 function PrescriptionPadContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const patientVaultId = searchParams?.get("patient") || "";
+  const [patientVaultId, setPatientVaultId] = useState(searchParams?.get("patient") || "");
   const requestId = searchParams?.get("request") || "";
+  const [lookupEmail, setLookupEmail] = useState("");
+  const [lookupLoading, setLookupLoading] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
@@ -66,6 +68,50 @@ function PrescriptionPadContent() {
     { id: "lab_1", name: "Apollo Diagnostics" },
     { id: "lab_2", name: "Dr. Lal PathLabs (Partner)" }
   ];
+
+  useEffect(() => {
+    const p = searchParams?.get("patient") || "";
+    if (p) {
+      setPatientVaultId(p);
+      setRxData(prev => ({
+        ...prev,
+        patientInfo: {
+          ...prev.patientInfo,
+          name: decodeURIComponent(p).split("@")[0]
+        }
+      }));
+    }
+  }, [searchParams]);
+
+  const handleLookupPatient = async () => {
+    if (!lookupEmail) return;
+    setLookupLoading(true);
+    try {
+      const q = query(collection(db, "users"), where("email", "==", lookupEmail.trim().toLowerCase()));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const patientData = snap.docs[0].data();
+        setRxData(prev => ({
+          ...prev,
+          patientInfo: {
+            name: patientData.name || patientData.fullName || prev.patientInfo.name,
+            age: patientData.age || prev.patientInfo.age || "",
+            gender: patientData.gender || prev.patientInfo.gender || ""
+          }
+        }));
+        setPatientVaultId(lookupEmail.trim().toLowerCase());
+        alert("Patient profile found & loaded!");
+      } else {
+        alert("Patient profile not found in directory. You can still type details manually.");
+        setPatientVaultId(lookupEmail.trim().toLowerCase());
+      }
+    } catch (e) {
+      console.error("Error looking up patient:", e);
+      setPatientVaultId(lookupEmail.trim().toLowerCase());
+    } finally {
+      setLookupLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Authentication & Role Check
@@ -195,11 +241,12 @@ function PrescriptionPadContent() {
       setAllMedicinesList([...FAVORITE_MEDICINES, ...customMedsArray]);
     }
 
-    // Save to Firestore (Real Data)
+    // Save to Firestore (Real Data) - Multi-Channel Routing Engine
     try {
       const db = (await import('@/lib/firebase')).db;
       const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
       
+      // 1. Save to Patient's Sovereign Vault subcollection
       await addDoc(collection(db, `patients/${patientVaultId}/records`), {
         type: "prescription",
         patientId: patientVaultId,
@@ -208,13 +255,60 @@ function PrescriptionPadContent() {
         facilityName: doctorData.address || "DehaPa Clinic",
         diagnosis: rxData.diagnosis,
         medicines: rxData.medicines,
+        tests: rxData.tests,
         notes: rxData.advice,
         routedToPharmacy: rxData.routing.pharmacyId,
         routedToLab: rxData.routing.labId,
         date: new Date().toLocaleDateString(),
         timestamp: serverTimestamp()
       });
-      alert("Prescription securely saved to Patient Vault.");
+
+      // 2. Save to root-level prescriptions collection for patient dashboard widget
+      await addDoc(collection(db, "prescriptions"), {
+        patientEmail: patientVaultId,
+        patientName: rxData.patientInfo.name,
+        patientAge: rxData.patientInfo.age,
+        patientGender: rxData.patientInfo.gender,
+        providerId: localStorage.getItem("sd_current_user_uid") || "unknown",
+        providerName: doctorName,
+        facilityName: doctorData.address || "DehaPa Clinic",
+        diagnosis: rxData.diagnosis,
+        medicines: rxData.medicines,
+        tests: rxData.tests,
+        notes: rxData.advice,
+        routedToPharmacy: rxData.routing.pharmacyId,
+        routedToLab: rxData.routing.labId,
+        date: new Date().toLocaleDateString(),
+        timestamp: serverTimestamp()
+      });
+
+      // 3. Route to Pharmacy Orders if requested
+      if (rxData.routing.pharmacyId) {
+        await addDoc(collection(db, "pharmacy_orders"), {
+          pharmacyId: rxData.routing.pharmacyId,
+          patientEmail: patientVaultId,
+          patientName: rxData.patientInfo.name,
+          doctorName: doctorName,
+          medicines: rxData.medicines,
+          status: "pending",
+          createdAt: serverTimestamp()
+        });
+      }
+
+      // 4. Route to Lab Orders if requested
+      if (rxData.routing.labId) {
+        await addDoc(collection(db, "lab_orders"), {
+          labId: rxData.routing.labId,
+          patientEmail: patientVaultId,
+          patientName: rxData.patientInfo.name,
+          doctorName: doctorName,
+          tests: rxData.tests,
+          status: "pending",
+          createdAt: serverTimestamp()
+        });
+      }
+
+      alert("Prescription securely saved and routed across all channels!");
       router.push(`/portal/vault/${patientVaultId}`);
     } catch (error) {
       console.error("Error saving prescription:", error);
@@ -280,6 +374,33 @@ function PrescriptionPadContent() {
 
           <form id="rx-form" onSubmit={handleSaveAndSend} className="p-8 space-y-8">
             
+            {/* Lookup Patient (For Offline/Walk-In Visits) */}
+            {!searchParams?.get("patient") && (
+              <GlobalFormCard className="space-y-4 border border-teal-500/20 bg-teal-50/10">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-slate-700 flex items-center gap-2">
+                  🔍 Patient Directory Lookup (Offline/Walk-In Visit)
+                </h3>
+                <div className="flex gap-4 items-center">
+                  <div className="flex-1">
+                    <GlobalInput 
+                      type="email" 
+                      placeholder="Enter Patient Email / Vault ID..." 
+                      value={lookupEmail}
+                      onChange={e => setLookupEmail(e.target.value)}
+                    />
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={handleLookupPatient}
+                    disabled={lookupLoading}
+                    className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50"
+                  >
+                    {lookupLoading ? "Searching..." : "Lookup"}
+                  </button>
+                </div>
+              </GlobalFormCard>
+            )}
+
             {/* Demographics */}
             <GlobalFormCard className="space-y-4">
               <h3 className="text-sm font-bold uppercase tracking-widest text-tenant-accent flex items-center gap-2 border-b border-slate-200 pb-3 mb-4">

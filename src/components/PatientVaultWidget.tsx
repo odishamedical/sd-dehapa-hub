@@ -16,10 +16,45 @@ export default function PatientVaultWidget() {
         const userEmail = localStorage.getItem("sd_current_user_email");
         if (!userEmail) return;
 
-        // Fetch Prescriptions
-        const rxQuery = query(collection(db, "prescriptions"), where("patientEmail", "==", userEmail), orderBy("timestamp", "desc"));
+        // Fetch from root prescriptions collection
+        const rxQuery = query(collection(db, "prescriptions"), where("patientEmail", "==", userEmail));
         const rxSnap = await getDocs(rxQuery);
-        setPrescriptions(rxSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        const rootPrescriptions = rxSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        // Fetch from patient vault records subcollection directly (No index required)
+        const vaultRecordsQuery = query(collection(db, "patients", userEmail, "records"), where("type", "==", "prescription"));
+        const vaultRecordsSnap = await getDocs(vaultRecordsQuery);
+        const vaultPrescriptions = vaultRecordsSnap.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            providerName: data.authorName || "General Prescription",
+            facilityName: data.facilityName || "Clinic/Hospital",
+            diagnosis: data.diagnosis || "Medical Document",
+            medicines: data.medicines || [],
+            notes: data.notes || "",
+            routedToPharmacy: data.routedToPharmacy,
+            routedToLab: data.routedToLab,
+            timestamp: data.timestamp,
+            date: data.date
+          };
+        });
+
+        // Merge & Deduplicate
+        const mergedMap = new Map();
+        [...rootPrescriptions, ...vaultPrescriptions].forEach(item => {
+          mergedMap.set(item.id, item);
+        });
+        const mergedList = Array.from(mergedMap.values());
+
+        // Sort by timestamp descending
+        mergedList.sort((a, b) => {
+          const timeA = a.timestamp?.toMillis ? a.timestamp.toMillis() : new Date(a.date || 0).getTime();
+          const timeB = b.timestamp?.toMillis ? b.timestamp.toMillis() : new Date(b.date || 0).getTime();
+          return timeB - timeA;
+        });
+
+        setPrescriptions(mergedList);
 
         // Fetch Lab Reports
         const labQuery = query(collection(db, "lab_reports"), where("patientEmail", "==", userEmail), orderBy("timestamp", "desc"));
