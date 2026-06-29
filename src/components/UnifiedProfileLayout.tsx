@@ -13,21 +13,30 @@ import {
   Stethoscope, Clock, FileText, Activity, 
   HeartPulse, Navigation, GraduationCap, Globe, Fingerprint,
   Briefcase, Medal, Video, Image as ImageIcon, Banknote,
-  Share2, QrCode, UserPlus, X, Facebook, MessageCircle
+  Share2, QrCode, UserPlus, X, Facebook, MessageCircle, Settings
 } from 'lucide-react';
 import CategoryNav from '@/components/CategoryNav';
+import InlineEditField from '@/components/InlineEditField';
 
 interface UnifiedProfileProps {
   profile: any;
   type: 'doctor' | 'hospital' | 'lab' | 'pharmacy' | 'ambulance';
+  canEdit?: boolean;
+  onInlineSave?: (field: string, val: string) => void;
 }
 
-export default function UnifiedProfileLayout({ profile, type }: UnifiedProfileProps) {
+export default function UnifiedProfileLayout({ 
+  profile, 
+  type,
+  canEdit = false,
+  onInlineSave = () => {}
+}: UnifiedProfileProps) {
   const verified = profile.verified || profile.isPremium;
   const isDoctor = type === 'doctor';
   const isHospital = type === 'hospital';
   const isLab = type === 'lab';
 
+  const [isEditMode, setIsEditMode] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -148,6 +157,27 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
   return (
     <div className="min-h-screen bg-[#FAFAFC] font-sans pb-[160px] selection:bg-teal-900 selection:text-white">
       
+      {/* Owner Edit Banner */}
+      {canEdit && (
+        <div className="bg-[#0A1128] text-white py-3 px-6 flex items-center justify-between z-[60] relative border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
+              <Settings className="w-4 h-4 text-cyan-400" />
+            </div>
+            <div>
+              <p className="text-sm font-bold">You are editing your profile</p>
+              <p className="text-xs text-slate-400">Click highlighted text to edit directly</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-colors border ${isEditMode ? 'bg-cyan-500 text-white border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'bg-transparent text-slate-300 border-slate-600 hover:border-slate-400'}`}
+          >
+            {isEditMode ? 'Exit Edit Mode' : 'Enable Edit Mode'}
+          </button>
+        </div>
+      )}
+
       {/* Editorial Navigation */}
       <div className="bg-white/80 backdrop-blur-2xl border-b border-slate-200/50 sticky top-0 z-50 transition-all">
         <CategoryNav />
@@ -354,7 +384,18 @@ export default function UnifiedProfileLayout({ profile, type }: UnifiedProfilePr
             <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
             <h2 className="text-3xl font-black text-[#0A1128] mb-8">The Profile</h2>
             <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-loose font-serif">
-              <p>{profile.about || profile.bio || `Eminent detailed information about ${profile.name} is currently being curated. Recognized for their dedication to advancing healthcare and patient outcomes.`}</p>
+              {isEditMode ? (
+                <InlineEditField 
+                  value={profile.about || profile.bio || ''} 
+                  onSave={(val) => onInlineSave('about', val)}
+                  isEditMode={true}
+                  type="textarea"
+                  placeholder="Enter your professional biography here..."
+                  className="w-full bg-white border border-cyan-500/30 p-4 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              ) : (
+                <p>{profile.about || profile.bio || `Eminent detailed information about ${profile.name} is currently being curated. Recognized for their dedication to advancing healthcare and patient outcomes.`}</p>
+              )}
             </div>
           </section>
 

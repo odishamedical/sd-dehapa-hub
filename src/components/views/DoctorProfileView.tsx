@@ -203,5 +203,12 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
     return <div className="min-h-screen flex items-center justify-center bg-[#0B1121]"><div className="text-center"><h2 className="text-2xl font-bold text-white mb-2">Doctor Not Found</h2><Link href="/doctors" className="text-cyan-400 hover:underline">Return to Directory</Link></div></div>;
   }
 
-  return <UnifiedProfileLayout profile={doctor} type="doctor" />;
+  return (
+    <UnifiedProfileLayout 
+      profile={doctor} 
+      type="doctor" 
+      canEdit={canEdit} 
+      onInlineSave={handleInlineSave}
+    />
+  );
 }
