@@ -8,6 +8,7 @@ import AddressBlock from '@/components/AddressBlock';
 import RxPadWidget from '@/components/RxPadWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
+import IncomingPingWidget from '@/components/IncomingPingWidget';
 import ContextHelpDrawer from '@/components/ContextHelpDrawer';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -167,7 +168,10 @@ export default function DoctorV2OwnerDashboard() {
             DehaPa Portal
           </button>
           
-          {/* Incoming Ping Service is now loaded globally via GlobalDoctorAlerts in RootLayout */}
+          {/* Incoming Ping Service (Emergency Video Calls) */}
+          <div>
+            <IncomingPingWidget doctorId={entityData.id} doctorSpecialty={entityData.primarySpecialty} />
+          </div>
         </div>
 
         <div className="flex items-center gap-4 md:gap-6">

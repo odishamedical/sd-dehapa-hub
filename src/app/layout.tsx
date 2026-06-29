@@ -25,7 +25,6 @@ import GlobalFooter from "@/components/GlobalFooter";
 import GlobalTelemedicineFAB from "@/components/GlobalTelemedicineFAB";
 import DoctorCommandDock from "@/components/DoctorCommandDock";
 import UserPresenceProvider from "@/components/UserPresenceProvider";
-import GlobalDoctorAlerts from "@/components/GlobalDoctorAlerts";
 
 export default function RootLayout({
   children,
@@ -55,7 +54,6 @@ export default function RootLayout({
           <GlobalScannerController />
           <GlobalTelemedicineFAB />
           <DoctorCommandDock />
-          <GlobalDoctorAlerts />
         </TenantProvider>
       </body>
     </html>
