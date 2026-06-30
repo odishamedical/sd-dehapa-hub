@@ -333,7 +333,7 @@ export default function UnifiedProfileLayout({
             </div>
 
             {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) - Flush with Hero Banner */}
-            <div className="sticky top-[73px] z-40 bg-white/95 backdrop-blur-md mb-12 shadow-[0_4px_10px_rgba(0,0,0,0.02)] border-b border-slate-200 px-4 rounded-b-3xl">
+            <div className="sticky top-[73px] z-40 bg-white/95 backdrop-blur-md shadow-[0_4px_10px_rgba(0,0,0,0.02)] border-b border-slate-200 px-4 rounded-b-3xl">
               <div className="flex overflow-x-auto hide-scrollbar gap-1 items-end pt-3 max-w-[1000px] mx-auto">
                 {[
                   { id: 'overview', label: 'Profile' },
@@ -363,7 +363,7 @@ export default function UnifiedProfileLayout({
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start">
           
           {/* Main Content (75%) */}
-          <div className="lg:col-span-3 space-y-16">
+          <div className="lg:col-span-3 space-y-6 mt-6">
 
             {/* The Prestige Trust Bar (Data as Art) */}
             <div className="w-full relative z-30 group">
@@ -431,7 +431,7 @@ export default function UnifiedProfileLayout({
             <div className="space-y-24">
               
               {/* Location & Map (Horizontal Banner Mockup Style) */}
-              <section id="location" className="relative w-full pt-8">
+              <section id="location" className="relative w-full pt-2">
                 {/* Wide Map Banner */}
                 <div className="w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-sm border border-slate-200 relative mb-6">
                   <iframe 
