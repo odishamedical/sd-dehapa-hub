@@ -74,14 +74,15 @@ export default function DehapaHome() {
       
       {/* 1. MICRO-HERO & SEARCH (Compact & Dense) */}
       <section className="relative pt-6 pb-6 bg-white border-b border-slate-200">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-[400px] h-[300px] bg-teal-100/30 rounded-full blur-[80px] pointer-events-none" />
-        <div className="absolute top-0 left-0 w-[400px] h-[300px] bg-blue-100/30 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.05)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-teal-400/20 rounded-full blur-[100px] pointer-events-none animate-float-slow" />
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-400/20 rounded-full blur-[120px] pointer-events-none animate-float-slow-reverse" />
+        <div className="absolute bottom-[-20%] left-[20%] w-[400px] h-[400px] bg-fuchsia-400/20 rounded-full blur-[100px] pointer-events-none animate-float-slow" />
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 text-center">
           
           <h1 className="text-2xl sm:text-3xl font-black font-serif text-slate-900 mb-2 tracking-tight">
-            Find and book the <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">best doctors</span>
+            Find and book the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">best doctors</span>
           </h1>
           <p className="text-sm text-slate-500 font-medium mb-6">
             Access world-class specialists and instantly book appointments.
@@ -194,23 +195,23 @@ export default function DehapaHome() {
         <section>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
             {[
-              { title: "Doctors", icon: <Stethoscope className="w-6 h-6" />, href: "/doctors", color: "text-blue-600", bg: "bg-blue-50" },
-              { title: "Hospitals", icon: <Building2 className="w-6 h-6" />, href: "/hospitals", color: "text-teal-600", bg: "bg-teal-50" },
-              { title: "Lab Tests", icon: <TestTube2 className="w-6 h-6" />, href: "/labs", color: "text-purple-600", bg: "bg-purple-50" },
-              { title: "Medicines", icon: <Pill className="w-6 h-6" />, href: "/pharmacies", color: "text-orange-600", bg: "bg-orange-50" },
-              { title: "Ambulance", icon: <Ambulance className="w-6 h-6" />, href: "#ambulance-ping", color: "text-red-600", bg: "bg-red-50" },
-              { title: "My QR", icon: <QrCode className="w-6 h-6" />, href: "#qr-code", action: () => setIsQrModalOpen(true), color: "text-fuchsia-600", bg: "bg-fuchsia-50" },
+              { title: "Doctors", icon: <Stethoscope className="w-6 h-6" />, href: "/doctors", color: "text-white", bg: "bg-cyan-500", glow: "hover:shadow-[0_10px_25px_rgba(6,184,212,0.4)]" },
+              { title: "Hospitals", icon: <Building2 className="w-6 h-6" />, href: "/hospitals", color: "text-white", bg: "bg-emerald-500", glow: "hover:shadow-[0_10px_25px_rgba(16,185,129,0.4)]" },
+              { title: "Lab Tests", icon: <TestTube2 className="w-6 h-6" />, href: "/labs", color: "text-white", bg: "bg-purple-500", glow: "hover:shadow-[0_10px_25px_rgba(168,85,247,0.4)]" },
+              { title: "Medicines", icon: <Pill className="w-6 h-6" />, href: "/pharmacies", color: "text-white", bg: "bg-amber-500", glow: "hover:shadow-[0_10px_25px_rgba(245,158,11,0.4)]" },
+              { title: "Ambulance", icon: <Ambulance className="w-6 h-6" />, href: "#ambulance-ping", color: "text-white", bg: "bg-rose-500", glow: "hover:shadow-[0_10px_25px_rgba(244,63,94,0.4)]" },
+              { title: "My QR", icon: <QrCode className="w-6 h-6" />, href: "#qr-code", action: () => setIsQrModalOpen(true), color: "text-white", bg: "bg-indigo-500", glow: "hover:shadow-[0_10px_25px_rgba(99,102,241,0.4)]" },
             ].map((item, i) => (
               <Link 
                 key={i} 
                 href={item.href}
-                className="flex flex-col items-center justify-center p-3 sm:p-4 bg-white border border-slate-200 rounded-2xl hover:border-teal-300 hover:shadow-[0_8px_20px_rgba(20,184,166,0.15)] transition-all transform hover:-translate-y-1 active:translate-y-0 active:scale-95 group"
+                className={`flex flex-col items-center justify-center p-3 sm:p-4 bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl ${item.glow} hover:border-transparent transition-all transform hover:-translate-y-1 active:translate-y-0 active:scale-95 group`}
                 onClick={(e) => { if (item.action) { e.preventDefault(); item.action(); } }}
               >
                 <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform`}>
                   {React.cloneElement(item.icon as React.ReactElement, { className: `w-6 h-6 ${item.color}` })}
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-slate-700 text-center">{item.title}</span>
+                <span className="text-xs sm:text-sm font-bold text-slate-700 text-center group-hover:text-slate-900">{item.title}</span>
               </Link>
             ))}
           </div>
