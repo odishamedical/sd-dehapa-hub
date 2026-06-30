@@ -89,22 +89,22 @@ export default function DoctorCommandDock() {
   if (userRole !== "doctor" && userRole !== "super_admin") return null;
 
   return (
-    <div className="fixed bottom-24 right-4 z-[100] md:bottom-10 md:left-6 md:right-auto animate-in slide-in-from-bottom-10 fade-in duration-500">
-      <div className="bg-slate-900/90 backdrop-blur-3xl border border-teal-500/30 shadow-[0_10px_30px_rgba(20,184,166,0.25)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.4)] hover:border-teal-400/60 transition-all duration-300 rounded-full px-2.5 py-4 flex flex-col items-center gap-4">
+    <div className="fixed bottom-24 left-4 z-[100] md:bottom-10 md:left-6 md:right-auto animate-in slide-in-from-bottom-10 fade-in duration-500">
+      <div className="bg-slate-900/90 backdrop-blur-3xl border border-teal-500/30 shadow-[0_10px_30px_rgba(20,184,166,0.25)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.4)] hover:border-teal-400/60 transition-all duration-300 rounded-full px-2 py-3 md:px-2.5 md:py-4 flex flex-col items-center gap-3 md:gap-4">
         
         {/* Dashboard Quick Link */}
         <button 
           onClick={() => window.location.href = "/portal/doctor"}
-          className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+          className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
           title="Go to Dashboard"
         >
-          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
         </button>
 
         {/* Round Online Toggle */}
         <button 
           onClick={toggleStatus}
-          className={`relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all border ${
+          className={`relative w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all border ${
             isOnline 
               ? "bg-green-500 border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.6)] animate-[pulse_2s_ease-in-out_infinite]" 
               : "bg-slate-500 border-slate-400 hover:bg-slate-400 opacity-70"
@@ -114,21 +114,21 @@ export default function DoctorCommandDock() {
           {isOnline && (
             <div className="absolute inset-0 rounded-full border-2 border-green-300 animate-ping opacity-40"></div>
           )}
-          <div className="w-3 h-3 md:w-4 md:h-4 bg-white rounded-full"></div>
+          <div className="w-2.5 h-2.5 md:w-4 md:h-4 bg-white rounded-full"></div>
         </button>
 
         {/* Notifications */}
         <button 
           onClick={() => window.location.href = "/portal/doctor"}
-          className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all border relative ${
+          className={`w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all border relative ${
             pendingPings > 0 
               ? "bg-red-500 border-red-400 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse" 
               : "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white"
           }`}
         >
-          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+          <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
           {pendingPings > 0 && (
-            <span className="absolute -top-1 -right-1 bg-white text-red-600 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-red-500 shadow-sm">
+            <span className="absolute -top-1 -right-1 bg-white text-red-600 text-[9px] md:text-[10px] font-black w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center border border-red-500 shadow-sm">
               {pendingPings}
             </span>
           )}
