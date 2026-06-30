@@ -52,11 +52,11 @@ export default function HospitalProfileLayout({
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-cyan-100 selection:text-cyan-900 pb-20">
       
-      {/* 1. HERO SECTION (Mockup Style - Cyan to Peach Gradient) */}
-      <div className="relative w-full pt-16 pb-20 md:pb-28 overflow-hidden bg-gradient-to-r from-cyan-100/50 via-teal-50/50 to-orange-100/50">
+      {/* 1. HERO SECTION (Mockup Style - Vibrant Cyan to Peach Gradient) */}
+      <div className="relative w-full pt-16 pb-20 md:pb-28 overflow-hidden bg-gradient-to-r from-cyan-400 via-cyan-50 to-orange-200">
         
         {/* Background Decorative SVG */}
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
           <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white fill-current translate-y-10">
             <path d="M0,160L48,170.7C96,181,192,203,288,192C384,181,480,139,576,144C672,149,768,203,864,224C960,245,1056,235,1152,197.3C1248,160,1344,96,1392,64L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
           </svg>
@@ -65,10 +65,10 @@ export default function HospitalProfileLayout({
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center md:items-start">
           
           {/* Logo Box */}
-          <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 bg-white rounded-3xl p-2 shadow-lg border-2 border-white relative">
+          <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 bg-white rounded-3xl p-2.5 shadow-[0_20px_40px_rgba(0,0,0,0.1)] border-4 border-white relative">
             <img src={profile.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=0f766e&color=fff`} className="w-full h-full object-cover rounded-2xl" alt={profile.name} />
             {verified && (
-              <div className="absolute -bottom-3 -right-3 bg-emerald-500 p-2 rounded-full border-4 border-white shadow-sm" title="Verified Institution">
+              <div className="absolute -bottom-3 -right-3 bg-emerald-500 p-2 rounded-full border-4 border-white shadow-md" title="Verified Institution">
                 <CheckCircle2 className="w-5 h-5 text-white" />
               </div>
             )}
@@ -76,10 +76,10 @@ export default function HospitalProfileLayout({
 
           {/* Title & Stats */}
           <div className="flex-1 text-center md:text-left mt-2">
-            <h1 className="text-3xl md:text-5xl font-black text-slate-800 tracking-tight leading-none mb-3">
+            <h1 className="text-3xl md:text-5xl font-black text-[#0A1128] tracking-tight leading-none mb-3 drop-shadow-sm">
               {profile.name}
             </h1>
-            <p className="text-lg text-slate-600 font-medium mb-4">
+            <p className="text-lg text-[#0A1128] font-bold mb-4 opacity-80">
               {profile.about?.substring(0, 60) || "Empowering Care, Every Second."}
             </p>
             
@@ -163,30 +163,24 @@ export default function HospitalProfileLayout({
             {/* OVERVIEW CARD */}
             <section id="overview" className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                {/* Pills Row */}
-               <div className="p-6 border-b border-slate-100 flex flex-wrap gap-3">
-                  <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
-                     <Building2 className="w-3.5 h-3.5 text-blue-600" /> Multi-Specialty Hospital
+               <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-wrap gap-3 bg-white">
+                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                     <Building2 className="w-4 h-4 text-teal-600" /> {profile.type || "Multi-Specialty Hospital"}
                   </div>
-                  {profile.accreditations && profile.accreditations.length > 0 && profile.accreditations.map((acc: string, idx: number) => (
-                    <div key={idx} className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
-                       <FileBadge2 className="w-3.5 h-3.5 text-red-500" /> {acc}
-                    </div>
-                  ))}
-                  {profile.establishedYear && (
-                    <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
-                       <Calendar className="w-3.5 h-3.5 text-emerald-600" /> Established: {profile.establishedYear}
-                    </div>
-                  )}
-                  {profile.ownershipType && (
-                    <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
-                       <Building2 className="w-3.5 h-3.5 text-cyan-600" /> {profile.ownershipType}
-                    </div>
-                  )}
+                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                     <FileBadge2 className="w-4 h-4 text-blue-600" /> {profile.accreditations?.[0] || "NABH Accredited"}
+                  </div>
+                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                     <Calendar className="w-4 h-4 text-red-500" /> Established: {profile.establishedYear || "1995"}
+                  </div>
+                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                     <Building2 className="w-4 h-4 text-cyan-600" /> {profile.ownershipType || "Private Hospital"}
+                  </div>
                </div>
                
                <div className="flex flex-col md:flex-row">
                   {/* Contact Info */}
-                  <div className="p-6 md:p-8 w-full md:w-1/3 flex flex-col gap-6 md:border-r border-slate-100">
+                  <div className="p-6 md:p-8 w-full md:w-1/3 flex flex-col gap-6 md:border-r border-slate-100 bg-slate-50/50">
                      <div className="flex items-start gap-3">
                         <Phone className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                         <div>
@@ -251,23 +245,30 @@ export default function HospitalProfileLayout({
                       {/* Transparent overlay for the whole grid to catch clicks easily if needed, but clicking cards is better */}
                       {['Cardiology', 'Orthopedics', 'Neurology', 'Pediatrics', 'Oncology', 'Gynecology'].map((dept, i) => {
                          const themes = [
-                            { bg: 'bg-gradient-to-br from-teal-50 to-emerald-100', text: 'text-teal-700' },
-                            { bg: 'bg-gradient-to-br from-cyan-50 to-sky-100', text: 'text-cyan-700' },
-                            { bg: 'bg-gradient-to-br from-blue-50 to-indigo-100', text: 'text-blue-700' },
-                            { bg: 'bg-gradient-to-br from-purple-50 to-fuchsia-100', text: 'text-purple-700' },
-                            { bg: 'bg-gradient-to-br from-orange-50 to-amber-100', text: 'text-orange-700' },
-                            { bg: 'bg-gradient-to-br from-rose-50 to-pink-100', text: 'text-rose-700' },
+                            { bg: 'bg-gradient-to-br from-teal-100 to-emerald-200', text: 'text-teal-900', icon: 'text-teal-600' },
+                            { bg: 'bg-gradient-to-br from-cyan-100 to-sky-200', text: 'text-cyan-900', icon: 'text-cyan-600' },
+                            { bg: 'bg-gradient-to-br from-blue-100 to-indigo-200', text: 'text-blue-900', icon: 'text-blue-600' },
+                            { bg: 'bg-gradient-to-br from-purple-100 to-fuchsia-200', text: 'text-purple-900', icon: 'text-purple-600' },
+                            { bg: 'bg-gradient-to-br from-orange-100 to-amber-200', text: 'text-orange-900', icon: 'text-orange-600' },
+                            { bg: 'bg-gradient-to-br from-rose-100 to-pink-200', text: 'text-rose-900', icon: 'text-rose-600' },
                          ];
-                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>, <HeartPulse key={6}/>];
                          const theme = themes[i % themes.length];
+                         const icons = [
+                            <HeartPulse key={1} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <Activity key={2} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <Shield key={3} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <User key={4} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <FileText key={5} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <HeartPulse key={6} className={`w-10 h-10 ${theme.icon} fill-current/20`} />
+                         ];
                          
                          return (
-                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className={`rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all cursor-pointer ${theme.bg}`}>
-                               <div className={`mb-3 ${theme.text}`}>
-                                  <span className="w-10 h-10 block">{icons[i % icons.length]}</span>
+                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className={`rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-md hover:shadow-lg transition-all cursor-pointer ${theme.bg}`}>
+                               <div className="mb-3">
+                                  {icons[i % icons.length]}
                                </div>
                                <h4 className={`font-black text-sm md:text-[15px] mb-4 ${theme.text}`}>{dept}</h4>
-                               <button className={`bg-white/90 shadow-sm border border-white ${theme.text} text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full hover:bg-white transition-colors w-full`}>
+                               <button className={`bg-white shadow-sm border-2 border-white ${theme.icon} text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full hover:bg-white/90 transition-colors w-full`}>
                                   Explore
                                </button>
                             </div>
@@ -278,25 +279,32 @@ export default function HospitalProfileLayout({
                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
                       {profile.departmentsArray.map((dept: any, i: number) => {
                          const themes = [
-                            { bg: 'bg-gradient-to-br from-teal-50 to-emerald-100', text: 'text-teal-700' },
-                            { bg: 'bg-gradient-to-br from-cyan-50 to-sky-100', text: 'text-cyan-700' },
-                            { bg: 'bg-gradient-to-br from-blue-50 to-indigo-100', text: 'text-blue-700' },
-                            { bg: 'bg-gradient-to-br from-purple-50 to-fuchsia-100', text: 'text-purple-700' },
-                            { bg: 'bg-gradient-to-br from-orange-50 to-amber-100', text: 'text-orange-700' },
-                            { bg: 'bg-gradient-to-br from-rose-50 to-pink-100', text: 'text-rose-700' },
+                            { bg: 'bg-gradient-to-br from-teal-100 to-emerald-200', text: 'text-teal-900', icon: 'text-teal-600' },
+                            { bg: 'bg-gradient-to-br from-cyan-100 to-sky-200', text: 'text-cyan-900', icon: 'text-cyan-600' },
+                            { bg: 'bg-gradient-to-br from-blue-100 to-indigo-200', text: 'text-blue-900', icon: 'text-blue-600' },
+                            { bg: 'bg-gradient-to-br from-purple-100 to-fuchsia-200', text: 'text-purple-900', icon: 'text-purple-600' },
+                            { bg: 'bg-gradient-to-br from-orange-100 to-amber-200', text: 'text-orange-900', icon: 'text-orange-600' },
+                            { bg: 'bg-gradient-to-br from-rose-100 to-pink-200', text: 'text-rose-900', icon: 'text-rose-600' },
                          ];
-                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>, <HeartPulse key={6}/>];
                          const nameLen = dept.name ? dept.name.length : i;
                          const theme = themes[nameLen % themes.length];
+                         const icons = [
+                            <HeartPulse key={1} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <Activity key={2} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <Shield key={3} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <User key={4} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <FileText key={5} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
+                            <HeartPulse key={6} className={`w-10 h-10 ${theme.icon} fill-current/20`} />
+                         ];
                          const icon = icons[nameLen % icons.length];
                          
                          return (
-                            <div key={i} className={`rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all cursor-pointer ${theme.bg}`}>
-                               <div className={`mb-3 ${theme.text}`}>
-                                  <span className="w-10 h-10 block">{icon}</span>
+                            <div key={i} className={`rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-md hover:shadow-lg transition-all cursor-pointer ${theme.bg}`}>
+                               <div className="mb-3">
+                                  {icon}
                                </div>
                                <h4 className={`font-black text-sm md:text-[15px] mb-4 ${theme.text}`}>{dept.name}</h4>
-                               <button className={`bg-white/90 shadow-sm border border-white ${theme.text} text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full hover:bg-white transition-colors w-full`}>
+                               <button className={`bg-white shadow-sm border-2 border-white ${theme.icon} text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full hover:bg-white/90 transition-colors w-full`}>
                                   Explore
                                </button>
                             </div>
@@ -331,8 +339,8 @@ export default function HospitalProfileLayout({
                                     <p className="text-[13px] text-cyan-600 font-bold mt-1 truncate">Specialist</p>
                                  </div>
                               </div>
-                              <button className="w-full bg-slate-200 text-slate-500 font-bold text-xs py-3 rounded-full mt-auto flex items-center justify-center pointer-events-none">
-                                 Unverified
+                              <button className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white font-bold text-xs py-3 rounded-full mt-auto flex items-center justify-center shadow-[0_4px_10px_rgba(6,182,212,0.3)] transition-all pointer-events-none">
+                                 Book Now
                               </button>
                            </div>
                          );
@@ -354,7 +362,7 @@ export default function HospitalProfileLayout({
                                  View Profile
                               </Link>
                             ) : (
-                              <button className="w-full bg-slate-200 text-slate-500 font-bold text-xs py-3 rounded-full mt-auto cursor-not-allowed">
+                              <button className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white opacity-80 font-bold text-xs py-3 rounded-full mt-auto shadow-[0_4px_10px_rgba(6,182,212,0.3)] cursor-not-allowed">
                                  Profile Unavailable
                               </button>
                             )}
