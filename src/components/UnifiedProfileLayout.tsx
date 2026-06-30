@@ -384,10 +384,16 @@ export default function UnifiedProfileLayout({
                   
                   {/* Metric 1 */}
                   <div className="flex flex-col items-center justify-center text-center px-4">
-                    <p className="text-4xl font-black text-[#0A1128] tracking-tighter">
-                      {isDoctor ? profile.experience?.replace(/\D/g,'') || '10' : profile.totalBeds?.replace(/\D/g,'') || '24'}
-                      <span className="text-2xl text-teal-600 font-serif italic">+</span>
-                    </p>
+                    {verified ? (
+                      <p className="text-4xl font-black text-[#0A1128] tracking-tighter">
+                        {isDoctor ? profile.experience?.replace(/\D/g,'') : profile.totalBeds?.replace(/\D/g,'')}
+                        <span className="text-2xl text-teal-600 font-serif italic">+</span>
+                      </p>
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-2 border border-slate-200">
+                         <Lock className="w-5 h-5 text-slate-300" />
+                      </div>
+                    )}
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
                       {isDoctor ? 'Years Experience' : (isHospital ? 'Total Beds' : 'Service')}
                     </p>
@@ -395,10 +401,16 @@ export default function UnifiedProfileLayout({
 
                   {/* Metric 2 */}
                   <div className="flex flex-col items-center justify-center text-center px-4">
-                    <div className="flex items-center justify-center gap-1">
-                      <p className="text-4xl font-black text-[#0A1128] tracking-tighter">{profile.rating || '4.8'}</p>
-                      <Star className="w-6 h-6 text-amber-400 fill-current -mt-3" />
-                    </div>
+                    {verified ? (
+                      <div className="flex items-center justify-center gap-1">
+                        <p className="text-4xl font-black text-[#0A1128] tracking-tighter">{profile.rating || '4.0'}</p>
+                        <Star className="w-6 h-6 text-amber-400 fill-current -mt-3" />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-2 border border-slate-200">
+                         <Lock className="w-5 h-5 text-slate-300" />
+                      </div>
+                    )}
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
                       {profile.reviews ? `${profile.reviews} Patient Reviews` : 'Patient Rating'}
                     </p>
@@ -503,109 +515,159 @@ export default function UnifiedProfileLayout({
               </section>
 
               {/* Specializations (Elegant Pills) */}
-              {isDoctor && hasValidData(profile.specialties) && (
+              {isDoctor && (!verified || hasValidData(profile.specialties)) && (
                 <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Areas of Excellence</h2>
-                  <div className="flex flex-wrap gap-4">
-                    {profile.specialties.map((spec: string, index: number) => (
-                      <Link 
-                        key={index} 
-                        href={`/doctors?specialty=${encodeURIComponent(spec)}`}
-                        className="bg-slate-50 border border-slate-200 text-slate-700 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 hover:shadow-[0_10px_20px_rgba(20,184,166,0.15)] hover:-translate-y-0.5 transition-all group"
-                      >
-                        <span className="border-b border-transparent group-hover:border-teal-700 pb-0.5">{spec}</span>
-                      </Link>
-                    ))}
-                  </div>
+                  
+                  {!hasValidData(profile.specialties) ? (
+                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
+                       <Lock className="w-8 h-8 text-slate-300 mb-3" />
+                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Specialties</h3>
+                       <p className="text-slate-500 text-xs max-w-sm mb-4">Areas of excellence are currently unavailable as this profile is unverified.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-4">
+                      {profile.specialties.map((spec: string, index: number) => (
+                        <Link 
+                          key={index} 
+                          href={`/doctors?specialty=${encodeURIComponent(spec)}`}
+                          className="bg-slate-50 border border-slate-200 text-slate-700 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 hover:shadow-[0_10px_20px_rgba(20,184,166,0.15)] hover:-translate-y-0.5 transition-all group"
+                        >
+                          <span className="border-b border-transparent group-hover:border-teal-700 pb-0.5">{spec}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </section>
               )}
 
               {/* Education Timeline */}
-              {isDoctor && hasValidData(profile.education) && (
+              {isDoctor && (!verified || hasValidData(profile.education)) && (
                 <section id="education" className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Academic Pedigree</h2>
-                  <div className="space-y-8">
-                    {profile.education.map((edu: any, index: number) => (
-                      <div key={index} className="flex gap-6 group">
-                        <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                          <GraduationCap className="w-5 h-5" />
+                  
+                  {!hasValidData(profile.education) ? (
+                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
+                       <GraduationCap className="w-8 h-8 text-slate-300 mb-3" />
+                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Education</h3>
+                       <p className="text-slate-500 text-xs max-w-sm mb-4">Educational history is currently unavailable as this profile is unverified.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    </div>
+                  ) : (
+                    <div className="space-y-8">
+                      {profile.education.map((edu: any, index: number) => (
+                        <div key={index} className="flex gap-6 group">
+                          <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                            <GraduationCap className="w-5 h-5" />
+                          </div>
+                          <div className="pt-2">
+                            <h3 className="font-black text-[#0A1128] text-xl">{edu.degree}</h3>
+                            <Link 
+                              href={`/directory?query=${encodeURIComponent(edu.institution || edu.college || '')}`}
+                              className="inline-block mt-2 hover:opacity-80 transition-opacity"
+                            >
+                              <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                                {edu.institution || edu.college || 'Institution not specified'}
+                              </p>
+                            </Link>
+                            {edu.year && <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{edu.year}</p>}
+                          </div>
                         </div>
-                        <div className="pt-2">
-                          <h3 className="font-black text-[#0A1128] text-xl">{edu.degree}</h3>
-                          <Link 
-                            href={`/directory?query=${encodeURIComponent(edu.institution || edu.college || '')}`}
-                            className="inline-block mt-2 hover:opacity-80 transition-opacity"
-                          >
-                            <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
-                              {edu.institution || edu.college || 'Institution not specified'}
-                            </p>
-                          </Link>
-                          {edu.year && <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{edu.year}</p>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </section>
               )}
 
               {/* Past Experience Timeline */}
-              {isDoctor && hasValidData(profile.experiences) && (
+              {isDoctor && (!verified || hasValidData(profile.experiences)) && (
                 <section id="experience" className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Professional Trajectory</h2>
-                  <div className="space-y-8">
-                    {profile.experiences.map((exp: any, index: number) => (
-                      <div key={index} className="flex gap-6 group">
-                        <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                          <Briefcase className="w-5 h-5" />
+                  
+                  {!hasValidData(profile.experiences) ? (
+                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
+                       <Briefcase className="w-8 h-8 text-slate-300 mb-3" />
+                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Experience</h3>
+                       <p className="text-slate-500 text-xs max-w-sm mb-4">Professional experience is currently unavailable as this profile is unverified.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    </div>
+                  ) : (
+                    <div className="space-y-8">
+                      {profile.experiences.map((exp: any, index: number) => (
+                        <div key={index} className="flex gap-6 group">
+                          <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                            <Briefcase className="w-5 h-5" />
+                          </div>
+                          <div className="pt-2">
+                            <h3 className="font-black text-[#0A1128] text-xl">{exp.role || exp.title}</h3>
+                            <Link 
+                              href={`/hospitals?query=${encodeURIComponent(exp.hospital || exp.organization || '')}`}
+                              className="inline-block mt-2 hover:opacity-80 transition-opacity"
+                            >
+                              <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                                {exp.hospital || exp.organization}
+                              </p>
+                            </Link>
+                            <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{exp.duration || exp.year}</p>
+                          </div>
                         </div>
-                        <div className="pt-2">
-                          <h3 className="font-black text-[#0A1128] text-xl">{exp.role || exp.title}</h3>
-                          <Link 
-                            href={`/hospitals?query=${encodeURIComponent(exp.hospital || exp.organization || '')}`}
-                            className="inline-block mt-2 hover:opacity-80 transition-opacity"
-                          >
-                            <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
-                              {exp.hospital || exp.organization}
-                            </p>
-                          </Link>
-                          <p className="text-slate-400 text-sm mt-1 font-bold tracking-widest">{exp.duration || exp.year}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </section>
               )}
 
               {/* Awards (Art Gallery Style) */}
-              {isDoctor && hasValidData(profile.awards) && (
+              {isDoctor && (!verified || hasValidData(profile.awards)) && (
                 <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Accolades & Honors</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {profile.awards.map((award: any, index: number) => (
-                      <div key={index} className="bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-shadow">
-                        <Medal className="w-8 h-8 text-[#D4AF37] mb-6" />
-                        <div>
-                          <p className="font-black text-[#0A1128] text-lg leading-snug">{award.title || award.name}</p>
-                          <p className="text-sm text-slate-400 mt-2 font-bold tracking-widest">{award.year}</p>
+                  
+                  {!hasValidData(profile.awards) ? (
+                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
+                       <Medal className="w-8 h-8 text-slate-300 mb-3" />
+                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Awards</h3>
+                       <p className="text-slate-500 text-xs max-w-sm mb-4">Accolades and honors are currently unavailable as this profile is unverified.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {profile.awards.map((award: any, index: number) => (
+                        <div key={index} className="bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-shadow">
+                          <Medal className="w-8 h-8 text-[#D4AF37] mb-6" />
+                          <div>
+                            <p className="font-black text-[#0A1128] text-lg leading-snug">{award.title || award.name}</p>
+                            <p className="text-sm text-slate-400 mt-2 font-bold tracking-widest">{award.year}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </section>
               )}
 
               {/* Languages */}
-              {isDoctor && hasValidData(profile.languages) && (
+              {isDoctor && (!verified || hasValidData(profile.languages)) && (
                 <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Languages Spoken</h2>
-                  <div className="flex flex-wrap gap-4">
-                    {profile.languages.map((lang: string, index: number) => (
-                      <div key={index} className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
-                        <Globe className="w-4 h-4 text-emerald-600" />
-                        <span className="font-bold text-[#0A1128] text-sm">{lang}</span>
-                      </div>
-                    ))}
-                  </div>
+                  
+                  {!hasValidData(profile.languages) ? (
+                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
+                       <Globe className="w-8 h-8 text-slate-300 mb-3" />
+                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Languages</h3>
+                       <p className="text-slate-500 text-xs max-w-sm mb-4">Language data is currently unavailable as this profile is unverified.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-4">
+                      {profile.languages.map((lang: string, index: number) => (
+                        <div key={index} className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                          <Globe className="w-4 h-4 text-emerald-600" />
+                          <span className="font-bold text-[#0A1128] text-sm">{lang}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </section>
               )}
 

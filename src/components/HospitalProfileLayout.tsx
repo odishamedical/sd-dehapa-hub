@@ -301,39 +301,15 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {(!profile.departmentsArray || profile.departmentsArray.length === 0) ? (
-                   <div className="grid grid-cols-2 md:grid-cols-6 gap-4 relative">
-                      {/* Transparent overlay for the whole grid to catch clicks easily if needed, but clicking cards is better */}
-                      {['Cardiology', 'Orthopedics', 'Neurology', 'Pediatrics', 'Oncology', 'Gynecology'].map((dept, i) => {
-                         const themes = [
-                            { bg: 'bg-gradient-to-br from-teal-100 to-emerald-200', text: 'text-teal-900', icon: 'text-teal-600' },
-                            { bg: 'bg-gradient-to-br from-cyan-100 to-sky-200', text: 'text-cyan-900', icon: 'text-cyan-600' },
-                            { bg: 'bg-gradient-to-br from-blue-100 to-indigo-200', text: 'text-blue-900', icon: 'text-blue-600' },
-                            { bg: 'bg-gradient-to-br from-purple-100 to-fuchsia-200', text: 'text-purple-900', icon: 'text-purple-600' },
-                            { bg: 'bg-gradient-to-br from-orange-100 to-amber-200', text: 'text-orange-900', icon: 'text-orange-600' },
-                            { bg: 'bg-gradient-to-br from-rose-100 to-pink-200', text: 'text-rose-900', icon: 'text-rose-600' },
-                         ];
-                         const theme = themes[i % themes.length];
-                         const icons = [
-                            <HeartPulse key={1} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
-                            <Activity key={2} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
-                            <Shield key={3} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
-                            <User key={4} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
-                            <FileText key={5} className={`w-10 h-10 ${theme.icon} fill-current/20`} />, 
-                            <HeartPulse key={6} className={`w-10 h-10 ${theme.icon} fill-current/20`} />
-                         ];
-                         
-                         return (
-                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className={`rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-md hover:shadow-lg transition-all cursor-pointer ${theme.bg}`}>
-                               <div className="mb-3">
-                                  {icons[i % icons.length]}
-                               </div>
-                               <h4 className={`font-black text-sm md:text-[15px] mb-4 ${theme.text}`}>{dept}</h4>
-                               <button className={`bg-white shadow-sm border-2 border-white ${theme.icon} text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full hover:bg-white/90 transition-colors w-full`}>
-                                  Explore
-                               </button>
-                            </div>
-                         );
-                      })}
+                   <div className="bg-slate-50 border border-slate-200 rounded-3xl p-10 flex flex-col items-center justify-center text-center">
+                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+                       <Shield className="w-8 h-8 text-slate-300" />
+                     </div>
+                     <h3 className="text-lg font-black text-slate-700 mb-2">Unverified Departments</h3>
+                     <p className="text-slate-500 text-sm max-w-md mb-6">Department data is currently unavailable as this facility is unverified. If you are the owner, please verify your listing to manage your departments.</p>
+                     <button onClick={() => setShowClaimModal(true)} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full font-bold text-sm shadow-md transition-colors">
+                       Verify to Unlock
+                     </button>
                    </div>
                  ) : (
                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
@@ -384,27 +360,15 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {(!profile.rosterDoctors || profile.rosterDoctors.length === 0) ? (
-                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 pb-2">
-                      {[1, 2, 3, 4, 5].map((_, i) => {
-                         const bgColors = ['bg-blue-400', 'bg-orange-400', 'bg-emerald-400', 'bg-purple-400', 'bg-pink-400'];
-                         return (
-                           <div key={i} onClick={() => setShowUnverifiedModal(true)} className="bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all cursor-pointer">
-                              <div className="flex gap-4 items-center mb-5">
-                                 {/* Faceless Silhouette with colorful background */}
-                                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-sm ${bgColors[i % 5]}`}>
-                                    <User className="w-8 h-8 opacity-90" />
-                                 </div>
-                                 <div className="overflow-hidden">
-                                    <h4 className="font-bold text-slate-800 text-[15px] leading-tight truncate">Doctor {i + 1}</h4>
-                                    <p className="text-[13px] text-cyan-600 font-bold mt-1 truncate">Specialist</p>
-                                 </div>
-                              </div>
-                              <button className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white font-bold text-xs py-3 rounded-full mt-auto flex items-center justify-center shadow-[0_4px_10px_rgba(6,182,212,0.3)] transition-all pointer-events-none">
-                                 Book Now
-                              </button>
-                           </div>
-                         );
-                      })}
+                   <div className="bg-slate-50 border border-slate-200 rounded-3xl p-10 flex flex-col items-center justify-center text-center">
+                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
+                       <User className="w-8 h-8 text-slate-300" />
+                     </div>
+                     <h3 className="text-lg font-black text-slate-700 mb-2">Unverified Doctor Roster</h3>
+                     <p className="text-slate-500 text-sm max-w-md mb-6">The list of doctors practicing at this facility is currently unavailable as the listing is unverified. If you are the owner, please verify your listing to add your doctors.</p>
+                     <button onClick={() => setShowClaimModal(true)} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full font-bold text-sm shadow-md transition-colors">
+                       Verify to Unlock
+                     </button>
                    </div>
                  ) : (
                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 pb-2">
@@ -439,15 +403,10 @@ export default function HospitalProfileLayout({
                  <section id="facilities" className="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 rounded-3xl border border-blue-100 shadow-sm p-6 md:p-8 flex flex-col">
                     <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><Shield className="w-5 h-5 text-cyan-600"/> Facilities & Services</h2>
                     {(!profile.facilities || profile.facilities.length === 0) ? (
-                      <div className="grid grid-cols-2 gap-4">
-                         {['ICU & Trauma Care', 'MRI & CT Scan', '24/7 Pharmacy', 'Deluxe Rooms', 'Blood Bank', 'Ambulance'].map((fac, i) => (
-                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className="flex items-center gap-2 cursor-pointer group p-2 hover:bg-slate-50 rounded-lg transition-colors">
-                               <div className="w-5 h-5 rounded flex items-center justify-center bg-slate-200 group-hover:bg-cyan-500 transition-colors shadow-inner">
-                                  <CheckCircle2 className="w-3 h-3 text-white" />
-                               </div>
-                               <span className="text-sm font-bold text-slate-400 group-hover:text-cyan-700">{fac}</span>
-                            </div>
-                         ))}
+                      <div className="bg-white/50 border border-slate-200/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+                         <Shield className="w-6 h-6 text-slate-400 mb-3" />
+                         <p className="text-slate-500 text-xs font-bold mb-3">Facility data is unverified.</p>
+                         <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors">Verify Now</button>
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 gap-4">
