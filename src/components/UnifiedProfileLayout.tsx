@@ -301,7 +301,13 @@ export default function UnifiedProfileLayout({
               {/* Right: Action Stack (Mockup Style) */}
               <div className="flex flex-col gap-3 w-full lg:w-[280px] shrink-0 justify-center">
                 <button 
-                  onClick={() => {}} 
+                  onClick={() => {
+                    if (!verified) {
+                      setShowUnverifiedModal(true);
+                    } else {
+                      window.location.href = `tel:${profile.phone || '9999999999'}`;
+                    }
+                  }} 
                   className="bg-[#0F9D58] hover:bg-emerald-600 text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
@@ -323,7 +329,13 @@ export default function UnifiedProfileLayout({
                 </button>
                 
                 <button 
-                  onClick={() => {}} 
+                  onClick={() => {
+                    if (!verified) {
+                      setShowUnverifiedModal(true);
+                    } else {
+                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
+                    }
+                  }} 
                   className="bg-white border-[1.5px] border-slate-200 text-[#5856D6] hover:bg-slate-50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
@@ -701,9 +713,9 @@ export default function UnifiedProfileLayout({
                     <h4 className="font-black text-white text-2xl md:text-3xl">Are you {profile.name}?</h4>
                     <p className="text-teal-50 mt-2 max-w-lg text-lg">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
                   </div>
-                  <Link href={`/claim-profile?id=${profile.id}`} className="relative z-10 shrink-0 bg-white text-[#00897B] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+                  <button onClick={() => setShowClaimModal(true)} className="relative z-10 shrink-0 bg-white text-[#00897B] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
                     Claim Exclusivity
-                  </Link>
+                  </button>
                 </div>
               )}
 
@@ -871,29 +883,73 @@ export default function UnifiedProfileLayout({
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      {/* QR Code Modal */}
+      {/* QR Code */}
       {showQRModal && (
-        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95">
-            <button onClick={() => setShowQRModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
-              <X className="w-6 h-6" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onClick={() => setShowQRModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+              <X className="w-5 h-5" />
             </button>
-            <h3 className="font-black text-2xl text-[#0A1128] mb-2">Scan to Connect</h3>
-            <p className="text-sm text-slate-500 mb-6">Patients can scan this QR code to instantly view your profile and send a secure connection request.</p>
-            <div className="bg-slate-50 p-4 rounded-2xl flex justify-center border border-slate-100">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <QrCode className="w-8 h-8 text-teal-600" />
+              </div>
+              <h3 className="text-xl font-black text-slate-800">Clinic QR Code</h3>
+              <p className="text-slate-500 text-sm mt-1">Patients can scan this to book appointments instantly.</p>
+            </div>
+            
+            <div className="bg-white p-4 rounded-2xl border-2 border-slate-100 flex justify-center shadow-inner">
               <QRCodeSVG 
-                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/invite/${profile.id}`}
-                size={200}
-                bgColor={"#f8fafc"}
-                fgColor={"#0f172a"}
+                value={`https://dehapa.com/${type}s/${profile.id}`}
+                size={220}
+                bgColor={"#ffffff"}
+                fgColor={"#0f766e"}
                 level={"Q"}
+                includeMargin={false}
+                imageSettings={{
+                  src: "https://www.shyamdash.com/wp-content/uploads/2023/12/logo.png",
+                  x: undefined,
+                  y: undefined,
+                  height: 40,
+                  width: 40,
+                  excavate: true,
+                }}
               />
             </div>
-            <button onClick={() => { setShowQRModal(false); setShowShareModal(true); }} className="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-              <Share2 className="w-4 h-4" /> Share Link Instead
+            
+            <button className="w-full mt-6 bg-slate-900 hover:bg-black text-white font-bold text-sm py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2">
+              <Share2 className="w-4 h-4" /> Share QR Code
             </button>
           </div>
         </div>
+      )}
+
+      {/* Unverified Modal */}
+      {showUnverifiedModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6 border border-orange-200 shadow-sm mx-auto">
+              <Shield className="w-8 h-8 text-orange-500" />
+            </div>
+            <h3 className="text-2xl font-black text-slate-800 text-center mb-2">Unverified Profile</h3>
+            <p className="text-slate-500 text-center mb-8 font-medium">This profile is unverified, so the booking system is disabled. Are you the authorized representative for this institution?</p>
+            <button onClick={() => { setShowUnverifiedModal(false); setShowClaimModal(true); }} className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-sm py-4 rounded-xl transition-all shadow-lg shadow-orange-500/30 flex justify-center items-center gap-2">
+              Claim Profile to Unlock Features
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Claim Modal */}
+      {showClaimModal && (
+        <ClaimProfileModal 
+          entityId={profile.id} 
+          entityName={profile.name} 
+          onClose={() => setShowClaimModal(false)} 
+        />
       )}
 
       {/* Share Modal */}
