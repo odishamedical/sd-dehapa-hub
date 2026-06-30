@@ -200,9 +200,9 @@ export default function HospitalProfileLayout({
                  {/* Map Banner */}
                  <div className="w-full h-64 md:h-80 relative overflow-hidden border-b border-slate-200">
                     {typeof profile.mapUrl === 'string' && profile.mapUrl.includes('http') ? (
-                      <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0 grayscale-[10%] contrast-110 opacity-95 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
+                      <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0" loading="lazy" allowFullScreen />
                     ) : (
-                      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119743.53374959132!2d85.7380517!3d20.2960587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1909d2d5170aa5%3A0xfc580e2b68b33fa8!2sBhubaneswar%2C%20Odisha!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" className="absolute inset-0 w-full h-full border-0 grayscale-[10%] contrast-110 opacity-95 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
+                      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119743.53374959132!2d85.7380517!3d20.2960587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1909d2d5170aa5%3A0xfc580e2b68b33fa8!2sBhubaneswar%2C%20Odisha!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" className="absolute inset-0 w-full h-full border-0" loading="lazy" allowFullScreen />
                     )}
                  </div>
                  
@@ -492,10 +492,10 @@ export default function HospitalProfileLayout({
                </div>
              )}
 
-             {/* Explore Network */}
+             {/* Similar Hospitals / Explore Network */}
              {similarEntities && similarEntities.length > 0 && (
                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col">
-                 <h3 className="font-black text-lg text-[#0A1128] mb-4 shrink-0">Explore Network</h3>
+                 <h3 className="font-black text-lg text-[#0A1128] mb-4 shrink-0">Similar Hospitals</h3>
                  <div className="flex flex-col gap-4 pr-2">
                    {similarEntities.map((sim, idx) => {
                      const isHospitalOrLab = sim.category === "Hospital" || sim.category === "Diagnostic Center" || sim.category === "Pharmacy";
