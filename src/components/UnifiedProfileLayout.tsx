@@ -228,9 +228,9 @@ export default function UnifiedProfileLayout({
       </div>
 
       {/* FULL WIDTH HERO BANNER (Mockup Style) */}
-      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-r from-teal-50 to-cyan-100 overflow-hidden z-0 border-t-[6px] border-t-rose-600 shadow-inner">
-         <div className="absolute inset-0 opacity-[0.5]">
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-200 fill-current">
+      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9] overflow-hidden z-0 border-t-[6px] border-t-[#D32F2F]">
+         <div className="absolute inset-0 opacity-[0.15]">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-300 fill-current">
              <path d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,197.3C672,224,768,224,864,202.7C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
            </svg>
          </div>
@@ -291,7 +291,7 @@ export default function UnifiedProfileLayout({
               <div className="flex flex-col gap-3 w-full lg:w-[280px] shrink-0 justify-center">
                 <button 
                   onClick={() => {}} 
-                  className="bg-[#0F9D58] hover:bg-emerald-600 text-white w-full py-3.5 rounded-xl font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                  className="bg-[#0F9D58] hover:bg-emerald-600 text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
                   <span className="opacity-50 text-[10px]">▼</span>
@@ -305,7 +305,7 @@ export default function UnifiedProfileLayout({
                       setShowUnverifiedModal(true);
                     }
                   }}
-                  className="bg-[#FF3B30] hover:bg-red-600 text-white w-full py-3.5 rounded-xl font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                  className="bg-[#FF3B30] hover:bg-red-600 text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Urgent Video Call</span>
                   <span className="opacity-50 text-[10px]">▼</span>
@@ -313,7 +313,7 @@ export default function UnifiedProfileLayout({
                 
                 <button 
                   onClick={() => {}} 
-                  className="bg-white border-[1.5px] border-slate-200 text-[#5856D6] hover:bg-slate-50 w-full py-3.5 rounded-xl font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                  className="bg-white border-[1.5px] border-slate-200 text-[#5856D6] hover:bg-slate-50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
                   <span className="opacity-50 text-[10px]">▼</span>
@@ -322,8 +322,8 @@ export default function UnifiedProfileLayout({
             </div>
 
             {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) - Full Width under Hero */}
-            <div className="sticky top-[73px] z-40 bg-[#FAFAFC]/90 backdrop-blur-md mb-12 shadow-sm rounded-b-2xl -mt-6 mx-2 px-2 border border-slate-200 border-t-0">
-              <div className="flex overflow-x-auto hide-scrollbar gap-1 items-end pt-2">
+            <div className="sticky top-[73px] z-40 bg-white/95 backdrop-blur-md mb-12 shadow-sm border-b border-slate-200 px-4 -mt-6">
+              <div className="flex overflow-x-auto hide-scrollbar gap-1 items-end pt-3 max-w-[1000px] mx-auto">
                 {[
                   { id: 'overview', label: 'Profile' },
                   { id: 'education', label: 'Education' },
@@ -341,7 +341,7 @@ export default function UnifiedProfileLayout({
                         window.scrollTo({ top: y, behavior: 'smooth' });
                       }
                     }}
-                    className={`px-6 py-3.5 text-[15px] font-black tracking-wide transition-all shrink-0 border-b-[4px] ${activeSection === tab.id ? 'text-teal-600 border-teal-600 bg-white rounded-t-xl' : 'text-slate-600 border-transparent hover:text-teal-600 hover:bg-white/50 rounded-t-xl'}`}
+                    className={`px-8 py-3 text-[14px] font-bold tracking-wide transition-all shrink-0 rounded-t-lg ${activeSection === tab.id ? 'bg-[#00897B] text-white' : 'bg-transparent text-[#2c3e50] hover:bg-slate-50'}`}
                   >
                     {tab.label}
                   </button>
