@@ -133,41 +133,47 @@ export default function DehapaHome() {
             {/* Location Row (High Density) */}
             <div className="flex flex-col sm:flex-row gap-2 relative z-10 w-full">
               
-              <div className="grid grid-cols-3 gap-2 flex-1 h-12">
-                <GlassSelect 
-                  value={searchCountry}
-                  onChange={handleCountryChange}
-                  icon={<MapPin className="w-4 h-4" />}
-                  options={[{ value: 'India', label: 'India' }, { value: 'Other', label: 'Other' }]}
-                />
+              <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2 flex-1">
+                <div className="h-12">
+                  <GlassSelect 
+                    value={searchCountry}
+                    onChange={handleCountryChange}
+                    icon={<MapPin className="w-4 h-4" />}
+                    options={[{ value: 'India', label: 'India' }, { value: 'Other', label: 'Other' }]}
+                  />
+                </div>
 
                 {searchCountry === 'India' ? (
-                  <GlassSelect 
-                    value={searchState}
-                    onChange={handleStateChange}
-                    placeholder="State"
-                    options={[
-                      { value: '', label: 'State' },
-                      { value: 'Odisha', label: 'Odisha' },
-                      { value: 'Maharashtra', label: 'Maharashtra' }
-                    ]}
-                  />
+                  <div className="h-12">
+                    <GlassSelect 
+                      value={searchState}
+                      onChange={handleStateChange}
+                      placeholder="State"
+                      options={[
+                        { value: '', label: 'State' },
+                        { value: 'Odisha', label: 'Odisha' },
+                        { value: 'Maharashtra', label: 'Maharashtra' }
+                      ]}
+                    />
+                  </div>
                 ) : (
                   <div className="w-full flex items-center px-3 h-12 bg-slate-50 rounded-xl border border-slate-200"><input type="text" value={searchState} onChange={(e) => setSearchState(e.target.value)} placeholder="State" className="w-full bg-transparent border-none outline-none text-sm focus:ring-0" /></div>
                 )}
 
                 {searchCountry === 'India' && searchState === 'Odisha' ? (
-                  <GlassSelect 
-                    value={searchDistrict}
-                    onChange={setSearchDistrict}
-                    placeholder="District"
-                    options={[
-                      { value: '', label: 'District' },
-                      { value: 'Cuttack', label: 'Cuttack' },
-                      { value: 'Khordha', label: 'Bhubaneswar' },
-                      { value: 'Sambalpur', label: 'Sambalpur' }
-                    ]}
-                  />
+                  <div className="h-12">
+                    <GlassSelect 
+                      value={searchDistrict}
+                      onChange={setSearchDistrict}
+                      placeholder="District"
+                      options={[
+                        { value: '', label: 'District' },
+                        { value: 'Cuttack', label: 'Cuttack' },
+                        { value: 'Khordha', label: 'Bhubaneswar' },
+                        { value: 'Sambalpur', label: 'Sambalpur' }
+                      ]}
+                    />
+                  </div>
                 ) : (
                   <div className="w-full flex items-center px-3 h-12 bg-slate-50 rounded-xl border border-slate-200"><input type="text" value={searchDistrict} onChange={(e) => setSearchDistrict(e.target.value)} placeholder="District" className="w-full bg-transparent border-none outline-none text-sm focus:ring-0" /></div>
                 )}
@@ -198,7 +204,7 @@ export default function DehapaHome() {
               <Link 
                 key={i} 
                 href={item.href}
-                className="flex flex-col items-center justify-center p-3 sm:p-4 bg-white border border-slate-200 rounded-2xl hover:border-teal-300 hover:shadow-md transition-all group"
+                className="flex flex-col items-center justify-center p-3 sm:p-4 bg-white border border-slate-200 rounded-2xl hover:border-teal-300 hover:shadow-[0_8px_20px_rgba(20,184,166,0.15)] transition-all transform hover:-translate-y-1 active:translate-y-0 active:scale-95 group"
                 onClick={(e) => { if (item.action) { e.preventDefault(); item.action(); } }}
               >
                 <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform`}>
@@ -207,6 +213,59 @@ export default function DehapaHome() {
                 <span className="text-xs sm:text-sm font-bold text-slate-700 text-center">{item.title}</span>
               </Link>
             ))}
+          </div>
+        </section>
+
+        {/* 2.5 VISUAL EXPLANATORY GUIDE */}
+        <section className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          <div className="text-center mb-6">
+            <h2 className="text-xl sm:text-2xl font-black font-serif text-slate-900">How to use Dehapa</h2>
+            <p className="text-sm text-slate-500 font-medium">Your healthcare journey in 3 simple steps.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative">
+            <div className="hidden sm:block absolute top-1/2 left-1/6 right-1/6 h-0.5 bg-slate-100 -z-10 transform -translate-y-1/2"></div>
+            
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4 border-2 border-blue-100 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                <Search className="w-8 h-8" />
+              </div>
+              <h4 className="font-bold text-slate-900 mb-1">1. Find Service</h4>
+              <p className="text-xs text-slate-500 max-w-[200px]">Search for doctors, hospitals, or symptoms in your area.</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-16 h-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-4 border-2 border-teal-100 group-hover:scale-110 group-hover:bg-teal-600 group-hover:text-white transition-all shadow-sm">
+                <UserCircle className="w-8 h-8" />
+              </div>
+              <h4 className="font-bold text-slate-900 mb-1">2. Select & Book</h4>
+              <p className="text-xs text-slate-500 max-w-[200px]">Compare options and instantly book an appointment.</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-16 h-16 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 border-2 border-purple-100 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all shadow-sm">
+                <HeartPulse className="w-8 h-8" />
+              </div>
+              <h4 className="font-bold text-slate-900 mb-1">3. Get Care</h4>
+              <p className="text-xs text-slate-500 max-w-[200px]">Visit the clinic or consult online seamlessly.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* 2.6 PREMIUM ADVERTISEMENT BANNER */}
+        <section className="w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 transform hover:-translate-y-1 transition-transform">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none"></div>
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-teal-500/20 rounded-full blur-[60px] pointer-events-none"></div>
+          
+          <div className="relative z-10 text-white max-w-lg text-center sm:text-left">
+            <span className="inline-block px-3 py-1 bg-white/10 text-teal-300 text-[10px] font-bold uppercase tracking-widest rounded-full mb-3 backdrop-blur-md border border-white/10">Sponsored</span>
+            <h3 className="text-xl sm:text-2xl font-black mb-2">Ira Jewels Mega Health Checkup Camp</h3>
+            <p className="text-slate-300 text-sm">Free full-body checkups for all Sovereign network patients this weekend in Sambalpur.</p>
+          </div>
+          
+          <div className="relative z-10 w-full sm:w-auto">
+            <Link href="/search?q=Ira+Jewels" className="block w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white px-8 py-3.5 rounded-xl font-bold text-sm text-center transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)]">
+              Register Now
+            </Link>
           </div>
         </section>
 
