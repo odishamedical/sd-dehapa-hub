@@ -768,7 +768,11 @@ export default function UnifiedProfileLayout({
                 <div className="flex flex-col gap-4 pr-2">
                   {similarEntities.map((sim, idx) => {
                     const isHospitalOrLab = sim.category === "Hospital" || sim.category === "Diagnostic Center" || sim.category === "Pharmacy";
-                    const routePath = isHospitalOrLab ? `/hospitals` : `/profile/doctor`; // Assuming hospitals go to a list or their own profile type in the future
+                    let routePath = `/doctors`;
+                    if (sim.category === "Hospital") routePath = `/hospitals`;
+                    else if (sim.category === "Diagnostic Center" || sim.category === "Lab") routePath = `/labs`;
+                    else if (sim.category === "Pharmacy") routePath = `/pharmacies`;
+                    else if (sim.category === "Ambulance") routePath = `/ambulances`;
                     
                     return (
                       <Link key={idx} href={`${routePath}/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md shrink-0">
