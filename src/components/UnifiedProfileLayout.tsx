@@ -227,23 +227,32 @@ export default function UnifiedProfileLayout({
         </div>
       </div>
 
+      {/* FULL WIDTH HERO BANNER (Mockup Style) */}
+      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-br from-teal-50 via-cyan-50 to-emerald-50 overflow-hidden z-0 border-t-[6px] border-t-rose-500 shadow-inner">
+         <div className="absolute inset-0 opacity-[0.15]">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-600 fill-current">
+             <path d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,197.3C672,224,768,224,864,202.7C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+           </svg>
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-cyan-600 fill-current opacity-50 translate-y-8">
+             <path d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,128C672,107,768,85,864,106.7C960,128,1056,192,1152,213.3C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+           </svg>
+         </div>
+      </div>
+
       {/* Main Content Container - Fluid Grid */}
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-16 mb-20">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start">
           
           {/* Main Content (75%) */}
           <div className="lg:col-span-3 space-y-16">
             
             {/* The Classic Hero (Left Image, Right Details) */}
-            <div id="overview" className="bg-white/90 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group hover:border-teal-400/50 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
-              {/* Editorial Background Motif */}
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-teal-400/20 via-cyan-400/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-70 pointer-events-none transition-all duration-700 group-hover:from-teal-400/30"></div>
-
+            <div id="overview" className="bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
+              
               {/* Left: The Prestige Portrait */}
               <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 group/portrait z-10 md:-mb-12">
-                <div className="absolute inset-0 bg-slate-900 rounded-3xl rotate-2 opacity-5 group-hover/portrait:rotate-3 transition-transform duration-700"></div>
                 
-                <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-slate-100 transition-transform duration-700 group-hover/portrait:-translate-y-1">
+                <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-slate-100 transition-transform duration-700 group-hover/portrait:-translate-y-1">
                   <img 
                     src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
                     alt={profile.name}
@@ -325,7 +334,7 @@ export default function UnifiedProfileLayout({
                 <div className="flex flex-col gap-3 w-full lg:w-64 shrink-0">
                   <button 
                     onClick={() => {}} 
-                    className="bg-emerald-500 hover:bg-emerald-400 text-white w-full py-3 rounded-xl font-black text-sm transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_25px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 flex items-center justify-between px-5"
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white w-full py-3 rounded-xl font-black text-sm transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_25px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 flex items-center justify-between px-5"
                   >
                     <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
                     <span className="opacity-50 text-xs">▼</span>
@@ -339,7 +348,7 @@ export default function UnifiedProfileLayout({
                         setShowUnverifiedModal(true);
                       }
                     }}
-                    className="bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 hover:border-rose-300 w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
+                    className="bg-rose-500 hover:bg-rose-600 text-white w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
                   >
                     <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Urgent Video Call</span>
                     <span className="opacity-50 text-xs">▼</span>
@@ -347,7 +356,7 @@ export default function UnifiedProfileLayout({
                   
                   <button 
                     onClick={() => {}} 
-                    className="bg-indigo-50 border border-indigo-200 text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300 w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
+                    className="bg-white border-2 border-indigo-100 text-indigo-700 hover:bg-indigo-50 w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
                   >
                     <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
                     <span className="opacity-50 text-xs">▼</span>
@@ -447,9 +456,9 @@ export default function UnifiedProfileLayout({
 
             <div className="space-y-24">
               
-              {/* Scroll-Spy Sticky Navigation */}
-              <div className="sticky top-[73px] z-40 -mt-8 pt-4 pb-4 bg-[#FAFAFC]/90 backdrop-blur-md border-b border-slate-200/50">
-                <div className="flex overflow-x-auto hide-scrollbar gap-2 md:gap-4 items-center px-1">
+              {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) */}
+              <div className="sticky top-[73px] z-40 -mt-8 pt-4 bg-[#FAFAFC]/90 backdrop-blur-md border-b border-slate-200">
+                <div className="flex overflow-x-auto hide-scrollbar gap-1 md:gap-2 items-end px-1">
                   {[
                     { id: 'overview', label: 'Profile' },
                     { id: 'location', label: 'Locations' },
@@ -466,13 +475,56 @@ export default function UnifiedProfileLayout({
                           window.scrollTo({ top: y, behavior: 'smooth' });
                         }
                       }}
-                      className={`px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all shrink-0 ${activeSection === tab.id ? 'bg-teal-600 text-white shadow-md' : 'text-slate-500 hover:bg-white hover:text-teal-600'}`}
+                      className={`px-6 py-4 text-sm font-black tracking-wide transition-all shrink-0 border-b-[3px] ${activeSection === tab.id ? 'text-teal-600 border-teal-600 bg-white shadow-[0_-4px_6px_-2px_rgba(0,0,0,0.05)] rounded-t-xl' : 'text-slate-500 border-transparent hover:text-teal-600 hover:bg-white/50 rounded-t-xl'}`}
                     >
                       {tab.label}
                     </button>
                   ))}
                 </div>
               </div>
+
+              {/* Location & Map (Horizontal Banner Mockup Style) */}
+              <section id="location" className="relative pl-0 md:pl-16 pt-8">
+                <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                
+                {/* Wide Map Banner */}
+                <div className="w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-sm border border-slate-200 relative mb-6">
+                  <iframe 
+                    src={profile.clinic?.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    className="absolute inset-0 w-full h-full border-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+                
+                {/* Clinic Cards */}
+                <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden mb-12">
+                   <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                      <div className="flex items-start gap-4 w-full">
+                         <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center shrink-0">
+                           <MapPin className="w-5 h-5 text-teal-600" />
+                         </div>
+                         <div>
+                            <h3 className="font-black text-[#0A1128] text-xl mb-1">{profile.clinicName || profile.name}</h3>
+                            <p className="text-slate-500 font-medium mb-3">{profile.address || profile.clinic?.address || "Address not provided"}</p>
+                            <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                               <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> {profile.timings || "Mon-Sat: 10AM-8PM"}</span>
+                               <span className="flex items-center gap-1"><Phone className="w-3 h-3"/> {profile.phone || "+91 98765 *****"}</span>
+                            </div>
+                         </div>
+                      </div>
+                      <div className="flex flex-col gap-3 shrink-0 w-full md:w-auto">
+                        <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.clinic?.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-black text-sm text-center shadow-md transition-colors">
+                           Get Directions
+                        </a>
+                        <button onClick={() => setShowPhone(!showPhone)} className="bg-white border-2 border-slate-200 text-slate-700 px-8 py-3 rounded-xl font-bold text-sm text-center hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                           {showPhone ? (profile.phone || "Not available") : "Call Clinic"}
+                        </button>
+                      </div>
+                   </div>
+                </div>
+              </section>
 
               {/* About / Bio Narrative */}
               <section className="relative pl-0 md:pl-16 pt-8">
@@ -700,61 +752,7 @@ export default function UnifiedProfileLayout({
                 </section>
               )}
 
-              {/* Location & Map (Cinematic Presentation) */}
-              <section id="location" className="relative pl-0 md:pl-16">
-                <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                <h2 className="text-3xl font-black text-[#0A1128] mb-8">Practice Location</h2>
-                
-                <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden">
-                  <div className="flex flex-col lg:flex-row">
-                    
-                    {/* Text Details */}
-                    <div className="p-8 md:p-12 lg:w-1/2 flex flex-col justify-center">
-                      <h3 className="font-black text-[#0A1128] text-2xl mb-4">{profile.clinicName || profile.name}</h3>
-                      <p className="text-slate-500 font-serif text-lg leading-relaxed mb-8">{profile.address || profile.clinic?.address || "Address not provided"}</p>
-                      
-                      <div className="flex flex-col gap-4">
-                        <button 
-                          onClick={() => setShowPhone(!showPhone)}
-                          className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-lg shadow-cyan-500/25 border border-cyan-400/20 flex items-center justify-center gap-3"
-                        >
-                          <Phone className="w-5 h-5" />
-                          {showPhone ? (profile.phone || profile.clinic?.phone || "Not available") : "Reveal Private Number"}
-                        </button>
-                        <a 
-                          href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.clinic?.address || profile.name)}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="w-full bg-slate-50 text-slate-800 border border-slate-200 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-100 transition-colors flex items-center justify-center gap-3"
-                        >
-                          <Navigation className="w-5 h-5" />
-                          Get Directions
-                        </a>
-                      </div>
-
-                      <div className="mt-8 pt-8 border-t border-slate-100">
-                        <div className="flex items-center gap-3 mb-3">
-                          <Clock className="w-5 h-5 text-slate-400" />
-                          <h4 className="font-black text-[#0A1128] uppercase tracking-widest text-xs">Operating Hours</h4>
-                        </div>
-                        <p className="text-slate-600 font-serif italic text-lg">{profile.timings || profile.clinic?.timings || "Mon - Sat: 10:00 AM - 08:00 PM"}</p>
-                      </div>
-                    </div>
-
-                    {/* Live Google Map */}
-                    <div className="lg:w-1/2 min-h-[300px] lg:min-h-full relative bg-slate-100">
-                      <iframe 
-                        src={profile.clinic?.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-                        className="absolute inset-0 w-full h-full border-0 filter grayscale contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-1000"
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      ></iframe>
-                    </div>
-
-                  </div>
-                </div>
-              </section>
+              {/* Location & Map section moved to top */}
             </div>
           </div>
 
