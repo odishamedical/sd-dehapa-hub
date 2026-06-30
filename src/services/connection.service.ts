@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export type ConnectionStatus = 'pending' | 'approved' | 'rejected';
 
@@ -51,6 +51,25 @@ export const ConnectionService = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
+
+      // Fetch the receiver's ownerEmail from the directory to send a notification
+      try {
+        const dirDoc = await getDoc(doc(db, 'directory', payload.receiverId));
+        if (dirDoc.exists() && dirDoc.data().ownerEmail) {
+          await addDoc(collection(db, 'notifications'), {
+            recipientEmail: dirDoc.data().ownerEmail,
+            title: `New Connection Request`,
+            message: `${payload.initiatorName} has requested to connect with you.`,
+            type: 'info',
+            read: false,
+            link: '/portal#requests',
+            createdAt: serverTimestamp()
+          });
+        }
+      } catch (notifErr) {
+        console.error("Failed to send notification:", notifErr);
+      }
+
       return docRef.id;
     } catch (err) {
       console.error('Failed to request connection:', err);
@@ -108,10 +127,46 @@ export const ConnectionService = {
   async updateConnectionStatus(connectionId: string, status: ConnectionStatus) {
     try {
       const docRef = doc(db, 'connections', connectionId);
+      const connDoc = await getDoc(docRef);
+      
       await updateDoc(docRef, {
         status,
         updatedAt: new Date().toISOString()
       });
+
+      // Notify the initiator that their request was accepted/rejected
+      if (connDoc.exists()) {
+        const connData = connDoc.data();
+        let recipientEmail = null;
+        
+        // If initiator is a patient, we assume their ID is their email in the users collection. 
+        // Or we just lookup their user doc
+        if (connData.initiatorRole === 'patient' || connData.initiatorRole === 'user') {
+          // Typically patient ID is their UID, we need to find their email
+          const userQuery = query(collection(db, 'users'), where('uid', '==', connData.initiatorId));
+          const userSnap = await getDocs(userQuery);
+          if (!userSnap.empty) {
+            recipientEmail = userSnap.docs[0].data().email;
+          }
+        } else {
+          // If initiator is a provider, look up directory
+          const dirDoc = await getDoc(doc(db, 'directory', connData.initiatorId));
+          if (dirDoc.exists()) recipientEmail = dirDoc.data().ownerEmail;
+        }
+
+        if (recipientEmail) {
+           await addDoc(collection(db, 'notifications'), {
+             recipientEmail: recipientEmail,
+             title: status === 'approved' ? 'Connection Approved' : 'Connection Declined',
+             message: `${connData.receiverName} has ${status} your connection request.`,
+             type: status === 'approved' ? 'success' : 'warning',
+             read: false,
+             link: '/portal#network',
+             createdAt: serverTimestamp()
+           });
+        }
+      }
+
     } catch (err) {
       console.error('Failed to update connection status:', err);
       throw err;
