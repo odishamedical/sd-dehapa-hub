@@ -180,7 +180,7 @@ export default function HospitalProfileLayout({
                
                <div className="flex flex-col md:flex-row">
                   {/* Contact Info */}
-                  <div className="p-6 md:p-8 w-full md:w-1/3 flex flex-col gap-6 md:border-r border-slate-100 bg-slate-50/50">
+                  <div className="p-6 md:p-8 w-full md:w-1/3 flex flex-col gap-6 md:border-r border-slate-100 bg-gradient-to-br from-cyan-50 via-teal-50/50 to-emerald-50 shadow-inner">
                      <div className="flex items-start gap-3">
                         <Phone className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                         <div>
@@ -215,18 +215,24 @@ export default function HospitalProfileLayout({
                      </div>
                   </div>
 
-                  {/* Wide Map/Banner Image */}
-                  <div className="flex-1 relative bg-slate-200 min-h-[250px] overflow-hidden">
-                     {profile.mapUrl && profile.mapUrl.includes('http') ? (
-                       <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0" loading="lazy" allowFullScreen />
-                     ) : (
-                       <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80" className="absolute inset-0 w-full h-full object-cover opacity-90" alt="Hospital Building" />
-                     )}
-                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-                     <div className="absolute bottom-6 right-6 z-10">
-                        <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg flex items-center gap-2 transition-transform hover:-translate-y-0.5">
-                           <MapPin className="w-4 h-4" /> Get Directions
-                        </a>
+                  {/* Map Container */}
+                  <div className="flex-1 p-6 md:p-8 bg-white flex flex-col">
+                     <div className="relative w-full h-full min-h-[300px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                        {profile.mapUrl && profile.mapUrl.includes('http') ? (
+                          <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0 grayscale-[20%] contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
+                        ) : (
+                          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119743.53374959132!2d85.7380517!3d20.2960587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1909d2d5170aa5%3A0xfc580e2b68b33fa8!2sBhubaneswar%2C%20Odisha!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" className="absolute inset-0 w-full h-full border-0 grayscale-[20%] contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
+                        )}
+                        <div className="absolute top-4 left-4 z-10">
+                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-white hover:bg-slate-50 text-blue-600 px-4 py-2 rounded border border-slate-200 font-bold text-sm shadow-sm flex items-center gap-1.5 transition-colors">
+                              Open in Maps <ExternalLink className="w-3.5 h-3.5" />
+                           </a>
+                        </div>
+                        <div className="absolute bottom-4 right-4 z-10">
+                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg flex items-center gap-2 transition-transform hover:-translate-y-0.5">
+                              <MapPin className="w-4 h-4" /> Get Directions
+                           </a>
+                        </div>
                      </div>
                   </div>
                </div>
