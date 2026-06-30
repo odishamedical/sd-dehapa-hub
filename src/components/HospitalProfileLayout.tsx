@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { 
   Star, MapPin, Clock, Phone, Globe, Shield, 
   Activity, Video, HeartPulse, CheckCircle2, 
@@ -28,6 +31,16 @@ export default function HospitalProfileLayout({
 }: HospitalProfileLayoutProps) {
   const [activeSection, setActiveSection] = useState('overview');
   const [showUnverifiedModal, setShowUnverifiedModal] = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,6 +61,11 @@ export default function HospitalProfileLayout({
   }, []);
 
   const verified = profile.verified;
+
+  const getAdSlot = (suffix: string) => {
+    return platformAds?.[`ad_slot_${type}_${suffix}`] || platformAds?.[`ad_slot_global_${suffix}`] || null;
+  };
+  const heroRightAd = getAdSlot('hero_right') || platformAds?.heroRight; // Fallback to old property if new ones don't exist yet
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-cyan-100 selection:text-cyan-900 pb-20">
@@ -177,64 +195,47 @@ export default function HospitalProfileLayout({
                      <Building2 className="w-4 h-4 text-cyan-600" /> {profile.ownershipType || "Private Hospital"}
                   </div>
                </div>
-               
-               <div className="flex flex-col md:flex-row">
-                  {/* Contact Info */}
-                  <div className="p-6 md:p-8 w-full md:w-1/3 flex flex-col gap-6 md:border-r border-slate-100 bg-gradient-to-br from-cyan-50 via-teal-50/50 to-emerald-50 shadow-inner">
-                     <div className="flex items-start gap-3">
-                        <Phone className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                        <div>
-                           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Contact Us</p>
-                           <p className="font-bold text-slate-800">{profile.phone || "+91 98765 43210"}</p>
-                        </div>
-                     </div>
-                     <div className="flex items-start gap-3">
-                        <Globe className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                        <div className="overflow-hidden">
-                           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Website</p>
-                           <a href={profile.website !== "Not available (Not verified)" ? profile.website : "#"} target="_blank" rel="noreferrer" className="font-bold text-blue-600 truncate block hover:underline">
-                              {profile.website !== "Not available (Not verified)" ? profile.website : "www.hospital.com"}
-                           </a>
-                        </div>
-                     </div>
-                     <div className="flex items-start gap-3">
-                        <svg className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        <div className="overflow-hidden">
-                           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Email Address</p>
-                           <a href={`mailto:${profile.email || "info@hospital.com"}`} className="font-bold text-slate-800 truncate block hover:underline">
-                              {profile.email || "info@hospital.com"}
-                           </a>
-                        </div>
-                     </div>
-                     <div className="flex items-start gap-3">
-                        <Activity className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                        <div>
-                           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Emergency</p>
-                           <p className="font-bold text-red-600">24/7 Service Available</p>
-                        </div>
-                     </div>
-                  </div>
-
-                  {/* Map Container */}
-                  <div className="flex-1 p-6 md:p-8 bg-white flex flex-col">
-                     <div className="relative w-full h-full min-h-[300px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                        {typeof profile.mapUrl === 'string' && profile.mapUrl.includes('http') ? (
-                          <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0 grayscale-[20%] contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
-                        ) : (
-                          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119743.53374959132!2d85.7380517!3d20.2960587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1909d2d5170aa5%3A0xfc580e2b68b33fa8!2sBhubaneswar%2C%20Odisha!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" className="absolute inset-0 w-full h-full border-0 grayscale-[20%] contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
-                        )}
-                        <div className="absolute top-4 left-4 z-10">
-                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name || 'Hospital')}`} target="_blank" rel="noreferrer" className="bg-white hover:bg-slate-50 text-blue-600 px-4 py-2 rounded border border-slate-200 font-bold text-sm shadow-sm flex items-center gap-1.5 transition-colors">
-                              Open in Maps <ExternalLink className="w-3.5 h-3.5" />
-                           </a>
-                        </div>
-                        <div className="absolute bottom-4 right-4 z-10">
-                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name || 'Hospital')}`} target="_blank" rel="noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg flex items-center gap-2 transition-transform hover:-translate-y-0.5">
-                              <MapPin className="w-4 h-4" /> Get Directions
-                           </a>
-                        </div>
-                     </div>
-                  </div>
+               {/* Map & Contact Layout (Premium Stacked) */}
+               <div className="w-full">
+                 {/* Map Banner */}
+                 <div className="w-full h-64 md:h-80 relative overflow-hidden border-b border-slate-200">
+                    {typeof profile.mapUrl === 'string' && profile.mapUrl.includes('http') ? (
+                      <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0 grayscale-[10%] contrast-110 opacity-95 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
+                    ) : (
+                      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119743.53374959132!2d85.7380517!3d20.2960587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1909d2d5170aa5%3A0xfc580e2b68b33fa8!2sBhubaneswar%2C%20Odisha!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" className="absolute inset-0 w-full h-full border-0 grayscale-[10%] contrast-110 opacity-95 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
+                    )}
+                 </div>
+                 
+                 {/* Contact Card */}
+                 <div className="bg-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-start gap-4 w-full">
+                       <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center shrink-0 border border-teal-100">
+                         <Building2 className="w-6 h-6 text-teal-600" />
+                       </div>
+                       <div>
+                          <h3 className="font-black text-[#0A1128] text-xl md:text-2xl mb-1">{profile.name}</h3>
+                          <p className="text-slate-500 font-medium mb-3 max-w-lg">{profile.address || "Address not provided"}</p>
+                          <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-500">
+                             {profile.timings && <span className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200"><Clock className="w-3.5 h-3.5 text-blue-500"/> {profile.timings}</span>}
+                             <a href={`mailto:${profile.email || "info@hospital.com"}`} className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
+                                <Activity className="w-3.5 h-3.5 text-red-500"/> {profile.email || "Contact via Email"}
+                             </a>
+                             <a href={profile.website !== "Not available (Not verified)" ? profile.website : "#"} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
+                                <Globe className="w-3.5 h-3.5 text-emerald-500"/> {profile.website !== "Not available (Not verified)" ? "Visit Website" : "Website N/A"}
+                             </a>
+                          </div>
+                       </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0 w-full md:w-auto">
+                      <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name || 'Hospital')}`} target="_blank" rel="noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-xl font-black text-sm text-center shadow-lg hover:shadow-emerald-600/30 transition-all flex justify-center items-center gap-2">
+                         <MapPin className="w-4 h-4" /> Get Directions
+                      </a>
+                      <button onClick={() => setShowPhone(!showPhone)} className="bg-white border-2 border-slate-200 text-slate-700 px-8 py-3.5 rounded-xl font-bold text-sm text-center hover:bg-slate-50 hover:border-slate-300 transition-colors flex justify-center items-center gap-2">
+                         <Phone className="w-4 h-4" /> {showPhone ? (profile.phone || "Not available") : "Call Hospital"}
+                      </button>
+                    </div>
+                 </div>
                </div>
             </section>
 
@@ -464,18 +465,29 @@ export default function HospitalProfileLayout({
                  </div>
                </div>
 
-               <button className="w-full bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5">
-                 Request Callback
-               </button>
+               {!user ? (
+                 <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 text-center">
+                   <p className="text-xs text-rose-700 font-bold mb-3">To protect our hospitals from spam, please log in to view contact details.</p>
+                   <Link href={`/login?redirect=${encodeURIComponent(pathname || '')}`} className="w-full inline-block bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl text-sm font-black transition-colors">
+                     Login / Register
+                   </Link>
+                 </div>
+               ) : (
+                 <button onClick={() => alert("Care Connect modal will open here.")} className="w-full bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5">
+                   Request Callback
+                 </button>
+               )}
              </div>
 
              {/* Ad Space */}
-             {platformAds?.heroRight && (
-               <div className="w-full rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-white aspect-[3/4]">
-                 {platformAds.heroRight.imageUrl ? (
-                   <img src={platformAds.heroRight.imageUrl} alt="Ad" className="w-full h-full object-cover" />
+             {heroRightAd && (
+               <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white aspect-square md:aspect-[4/3] lg:aspect-[3/4]">
+                 {heroRightAd.imageUrl ? (
+                   <a href={heroRightAd.linkUrl || '#'} target="_blank" rel="noreferrer">
+                     <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
+                   </a>
                  ) : (
-                   <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: platformAds.heroRight.htmlCode || '' }} />
+                   <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode || '' }} />
                  )}
                </div>
              )}
@@ -483,20 +495,26 @@ export default function HospitalProfileLayout({
              {/* Explore Network */}
              {similarEntities && similarEntities.length > 0 && (
                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col">
-                 <h3 className="font-black text-lg text-[#0A1128] mb-4">Explore Network</h3>
-                 <div className="flex flex-col gap-4">
-                   {similarEntities.slice(0,4).map((sim, idx) => (
-                     <Link key={idx} href={`/hospitals/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md">
-                       <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || 'Hospital')}`} alt={sim.name || 'Hospital'} className="w-12 h-12 object-cover border border-slate-200 rounded-lg shrink-0" />
-                       <div className="min-w-0 flex-1">
-                         <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600">{sim.name}</h4>
-                         <div className="flex items-center gap-1 mt-0.5">
-                           <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                           <span className="text-[10px] font-bold text-slate-700">{sim.rating || 4.5}</span>
+                 <h3 className="font-black text-lg text-[#0A1128] mb-4 shrink-0">Explore Network</h3>
+                 <div className="flex flex-col gap-4 pr-2">
+                   {similarEntities.map((sim, idx) => {
+                     const isHospitalOrLab = sim.category === "Hospital" || sim.category === "Diagnostic Center" || sim.category === "Pharmacy";
+                     const routePath = isHospitalOrLab ? `/hospitals` : `/profile/doctor`;
+                     
+                     return (
+                       <Link key={idx} href={`${routePath}/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md shrink-0">
+                         <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || 'Entity')}&background=0f766e&color=fff`} alt={sim.name || 'Entity'} className={`w-14 h-14 object-cover border border-slate-200 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'}`} />
+                         <div className="min-w-0 flex-1">
+                           <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
+                           <div className="flex items-center gap-1 mt-1">
+                             <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                             <span className="text-[10px] font-bold text-slate-700">{sim.rating || sim.stats?.rating || 4.5}</span>
+                             <span className="text-[10px] text-slate-500 truncate ml-1 px-2 border-l border-slate-300">{sim.subtitle || sim.category || sim.subCategory}</span>
+                           </div>
                          </div>
-                       </div>
-                     </Link>
-                   ))}
+                       </Link>
+                     )
+                   })}
                  </div>
                </div>
              )}
