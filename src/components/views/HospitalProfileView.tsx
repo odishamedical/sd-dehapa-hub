@@ -57,9 +57,44 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
           if (rawData.infrastructureData?.bedCapacity) detailsArray.push({ label: "Beds", value: rawData.infrastructureData.bedCapacity });
           if (rawData.infrastructureData?.hasEmergency) detailsArray.push({ label: "Emergency", value: "24/7 Available" });
 
-          const rosterArray = (rawData.rosterDoctors || []).map((docObj: any) => `${docObj.name} (${docObj.department})`);
-          if (rosterArray.length === 0 && rawData.departments?.length > 0) {
-             rawData.departments.forEach((dept: any) => rosterArray.push(dept.name));
+          const doctorNamesToFetch = new Set<string>();
+          
+          if (rawData.departments && Array.isArray(rawData.departments)) {
+            rawData.departments.forEach((dept: any) => {
+              if (dept.roster && Array.isArray(dept.roster)) {
+                dept.roster.forEach((docName: string) => doctorNamesToFetch.add(docName));
+              }
+            });
+          }
+          
+          if (rawData.rosterDoctors && Array.isArray(rawData.rosterDoctors)) {
+             rawData.rosterDoctors.forEach((doc: any) => doctorNamesToFetch.add(doc.name));
+          }
+
+          let enrichedDoctors: any[] = [];
+          
+          if (doctorNamesToFetch.size > 0) {
+            try {
+              const docsQuery = query(collection(db, 'directory'), where('category', '==', 'Doctor'), limit(100));
+              const docsSnap = await getDocs(docsQuery);
+              const allDocs = docsSnap.docs.map(d => ({ id: d.id, ...d.data() as any }));
+              
+              doctorNamesToFetch.forEach(name => {
+                const found = allDocs.find(d => d.name === name || `Dr. ${d.name}` === name || (d.name && d.name.includes(name)));
+                if (found) {
+                  enrichedDoctors.push({
+                    name: found.name,
+                    specialty: found.subCategory || found.primarySpecialty || "Specialist",
+                    image: found.image || null,
+                    slug: found.customSlug || found.id
+                  });
+                } else {
+                  enrichedDoctors.push({ name, specialty: "Specialist", image: null, slug: null });
+                }
+              });
+            } catch(e) {
+              console.error("Error fetching doctors", e);
+            }
           }
 
           const docData = {
@@ -72,10 +107,15 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
             stats: { 
               rating: rawData.rating || "4.5", 
               reviews: rawData.reviews || "0",
-              beds: rawData.infrastructureData?.bedCapacity || "N/A"
+              beds: rawData.infrastructureData?.bedCapacity || rawData.totalBeds || "N/A"
             },
             details: detailsArray,
-            roster: rosterArray,
+            rosterDoctors: enrichedDoctors,
+            departmentsArray: rawData.departments || [],
+            establishedYear: rawData.establishedYear || null,
+            ownershipType: rawData.ownershipType || null,
+            accreditations: rawData.accreditations || [],
+            facilities: rawData.additionalServices || rawData.facilities || [],
             galleryImages: rawData.galleryImages || [],
             rawImages: rawData.rawImages || [],
             healthPackages: (rawData.healthPackages || []).map((pkg: any) => ({

@@ -135,6 +135,8 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         id: "basic",
         label: "Basic Info",
         fields: [
+          { key: "establishedYear", label: "Established Year", type: "text", placeholder: "e.g. 1995" },
+          { key: "ownershipType", label: "Ownership Type", type: "select", options: ["Private Hospital", "Government Hospital", "Trust / NGO", "Corporate"] },
           { key: "facilityType", label: "Primary Facility Identity", type: "select", mandatory: true, options: ["Clinic", "Poly-Clinic", "Nursing Home", "Corporate Hospital", "Maternity Home", "Surgical Center"] },
           { key: "facadeImage", label: "Main Building / Facade Photo", type: "image_upload" },
           { key: "totalBeds", label: "Total Beds", type: "text", mandatory: true, placeholder: "e.g. 500", showIf: { field: "facilityType", contains: ["Nursing Home", "Corporate Hospital", "Maternity Home", "Surgical Center"] } },

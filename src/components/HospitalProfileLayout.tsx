@@ -48,6 +48,27 @@ export default function HospitalProfileLayout({
 
   const verified = profile.verified;
 
+  const renderEmptyState = (title: string) => (
+    <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center p-12">
+       {/* Faded Background Pattern to simulate content */}
+       <div className="absolute inset-0 opacity-10 blur-sm pointer-events-none flex flex-wrap gap-4 p-8 items-center justify-center">
+          {[1,2,3,4,5,6].map(i => <div key={i} className="w-24 h-24 bg-slate-400 rounded-xl"></div>)}
+       </div>
+       
+       {/* Glassmorphism Lock Box */}
+       <div className="relative z-10 bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white max-w-sm text-center">
+          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-sm">
+             <Shield className="w-8 h-8 text-slate-400" />
+          </div>
+          <h3 className="text-lg font-black text-slate-800 mb-2">Data Unavailable</h3>
+          <p className="text-sm font-medium text-slate-500 mb-6">This institution has not yet verified their {title} roster.</p>
+          <button className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm py-3 rounded-xl transition-colors shadow-sm">
+             Claim Profile to Update
+          </button>
+       </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-cyan-100 selection:text-cyan-900 pb-20">
       
@@ -105,13 +126,18 @@ export default function HospitalProfileLayout({
                   <Calendar className="w-4 h-4" /> Book Appointment
                </button>
                <button className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-md shadow-red-600/20 flex items-center justify-center gap-2 whitespace-nowrap">
-                  <HeartPulse className="w-4 h-4" /> Emergency Call
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Call SOS
                </button>
             </div>
-            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-md shadow-indigo-600/20 flex items-center justify-between gap-2">
-               <span className="flex items-center gap-2"><Video className="w-4 h-4" /> Video Consultation</span>
-               <ChevronRight className="w-4 h-4 opacity-70" />
-            </button>
+            <div className="flex w-full rounded-xl shadow-md overflow-hidden bg-[#5856D6] text-white">
+              <button className="flex-1 px-6 py-3 font-bold text-sm flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
+                 <Video className="w-4 h-4" /> Telemedicine
+              </button>
+              <div className="w-[1px] bg-white/20"></div>
+              <button className="px-4 py-3 hover:bg-white/10 transition-colors flex items-center justify-center">
+                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -138,7 +164,7 @@ export default function HospitalProfileLayout({
                     window.scrollTo({ top: y, behavior: 'smooth' });
                   }
                 }}
-                className={`whitespace-nowrap px-4 py-2 sm:py-5 text-sm sm:text-[15px] font-bold tracking-wide transition-all border-b-[3px] shrink-0 ${activeSection === tab.id ? 'border-cyan-600 text-cyan-700 bg-cyan-50/50 sm:bg-transparent rounded-lg sm:rounded-none' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+                className={`whitespace-nowrap px-5 py-2 text-sm sm:text-[15px] font-bold tracking-wide transition-all shrink-0 ${activeSection === tab.id ? 'bg-emerald-500 text-white rounded-full shadow-sm' : 'text-cyan-700 hover:text-cyan-900 bg-transparent'}`}
               >
                 {tab.label}
               </button>
@@ -158,18 +184,24 @@ export default function HospitalProfileLayout({
             <section id="overview" className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                {/* Pills Row */}
                <div className="p-6 border-b border-slate-100 flex flex-wrap gap-3">
-                  <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
-                     <Building2 className="w-3.5 h-3.5 text-cyan-600" /> Multi-Specialty Hospital
+                  <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
+                     <Building2 className="w-3.5 h-3.5 text-blue-600" /> Multi-Specialty Hospital
                   </div>
-                  <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
-                     <FileBadge2 className="w-3.5 h-3.5 text-cyan-600" /> NABH Accredited
-                  </div>
-                  <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
-                     <Calendar className="w-3.5 h-3.5 text-cyan-600" /> Established: 1995
-                  </div>
-                  <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
-                     <Building2 className="w-3.5 h-3.5 text-cyan-600" /> Private Hospital
-                  </div>
+                  {profile.accreditations && profile.accreditations.length > 0 && profile.accreditations.map((acc: string, idx: number) => (
+                    <div key={idx} className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
+                       <FileBadge2 className="w-3.5 h-3.5 text-red-500" /> {acc}
+                    </div>
+                  ))}
+                  {profile.establishedYear && (
+                    <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
+                       <Calendar className="w-3.5 h-3.5 text-emerald-600" /> Established: {profile.establishedYear}
+                    </div>
+                  )}
+                  {profile.ownershipType && (
+                    <div className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-slate-200">
+                       <Building2 className="w-3.5 h-3.5 text-cyan-600" /> {profile.ownershipType}
+                    </div>
+                  )}
                </div>
                
                <div className="flex flex-col md:flex-row">
@@ -192,6 +224,15 @@ export default function HospitalProfileLayout({
                         </div>
                      </div>
                      <div className="flex items-start gap-3">
+                        <svg className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <div className="overflow-hidden">
+                           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Email Address</p>
+                           <a href={`mailto:${profile.email || "info@hospital.com"}`} className="font-bold text-slate-800 truncate block hover:underline">
+                              {profile.email || "info@hospital.com"}
+                           </a>
+                        </div>
+                     </div>
+                     <div className="flex items-start gap-3">
                         <Activity className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                         <div>
                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Emergency</p>
@@ -201,11 +242,14 @@ export default function HospitalProfileLayout({
                   </div>
 
                   {/* Wide Map/Banner Image */}
-                  <div className="flex-1 relative bg-slate-200 min-h-[250px]">
-                     {/* Placeholder logic for map/image blend from mockup */}
-                     <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80" className="absolute inset-0 w-full h-full object-cover opacity-90" alt="Hospital Building" />
-                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                     <div className="absolute bottom-6 right-6">
+                  <div className="flex-1 relative bg-slate-200 min-h-[250px] overflow-hidden">
+                     {profile.mapUrl && profile.mapUrl.includes('http') ? (
+                       <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0" loading="lazy" allowFullScreen />
+                     ) : (
+                       <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80" className="absolute inset-0 w-full h-full object-cover opacity-90" alt="Hospital Building" />
+                     )}
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+                     <div className="absolute bottom-6 right-6 z-10">
                         <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg flex items-center gap-2 transition-transform hover:-translate-y-0.5">
                            <MapPin className="w-4 h-4" /> Get Directions
                         </a>
@@ -218,73 +262,102 @@ export default function HospitalProfileLayout({
             <section id="departments" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                <div className="flex items-center justify-between mb-8">
                   <h2 className="text-2xl font-black text-slate-800">Our Departments</h2>
-                  <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">Explore All</Link>
+                  {profile.departmentsArray && profile.departmentsArray.length > 0 && <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">Explore All</Link>}
                </div>
                
-               {/* Pastel Grid */}
-               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  {['Cardiology', 'Orthopedics', 'Neurology', 'Pediatrics', 'Oncology'].map((dept, i) => {
-                     const colors = [
-                        'bg-gradient-to-b from-teal-50 to-white border-teal-100 text-teal-700',
-                        'bg-gradient-to-b from-cyan-50 to-white border-cyan-100 text-cyan-700',
-                        'bg-gradient-to-b from-blue-50 to-white border-blue-100 text-blue-700',
-                        'bg-gradient-to-b from-purple-50 to-white border-purple-100 text-purple-700',
-                        'bg-gradient-to-b from-orange-50 to-white border-orange-100 text-orange-700',
-                     ];
-                     const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>];
-                     
-                     return (
-                        <div key={i} className={`rounded-2xl border p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer ${colors[i % colors.length]}`}>
-                           <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
-                              <span className="w-6 h-6">{icons[i % icons.length]}</span>
-                           </div>
-                           <h4 className="font-black text-sm mb-3">{dept}</h4>
-                           <button className="bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors">
-                              Explore
-                           </button>
-                        </div>
-                     );
-                  })}
-               </div>
+               {(!profile.departmentsArray || profile.departmentsArray.length === 0) ? (
+                 renderEmptyState("Departments")
+               ) : (
+                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    {profile.departmentsArray.map((dept: any, i: number) => {
+                       const colors = [
+                          'bg-gradient-to-b from-teal-50 to-white border-teal-100 text-teal-700',
+                          'bg-gradient-to-b from-cyan-50 to-white border-cyan-100 text-cyan-700',
+                          'bg-gradient-to-b from-blue-50 to-white border-blue-100 text-blue-700',
+                          'bg-gradient-to-b from-purple-50 to-white border-purple-100 text-purple-700',
+                          'bg-gradient-to-b from-orange-50 to-white border-orange-100 text-orange-700',
+                       ];
+                       const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>];
+                       // Simple pseudo-random mapping based on name length
+                       const nameLen = dept.name ? dept.name.length : i;
+                       const colorCls = colors[nameLen % colors.length];
+                       const icon = icons[nameLen % icons.length];
+                       
+                       return (
+                          <div key={i} className={`rounded-2xl border p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer ${colorCls}`}>
+                             <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
+                                <span className="w-6 h-6">{icon}</span>
+                             </div>
+                             <h4 className="font-black text-sm mb-3">{dept.name}</h4>
+                             <button className="bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors">
+                                Explore
+                             </button>
+                          </div>
+                       );
+                    })}
+                 </div>
+               )}
             </section>
 
             {/* DOCTORS SCROLL */}
             <section id="doctors" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                <div className="flex items-center justify-between mb-8">
                   <h2 className="text-2xl font-black text-slate-800">Meet Our Doctors</h2>
-                  <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">View All</Link>
+                  {profile.rosterDoctors && profile.rosterDoctors.length > 0 && <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">View All</Link>}
                </div>
                
-               <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
-                  {[1, 2, 3, 4].map((i) => (
-                     <div key={i} className="w-64 shrink-0 snap-center bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
-                        <div className="flex gap-4 items-center mb-4">
-                           <img src={`https://ui-avatars.com/api/?name=Dr+${i}&background=e2e8f0`} className="w-14 h-14 rounded-xl object-cover shadow-sm" alt="Doctor" />
-                           <div>
-                              <h4 className="font-bold text-slate-800 leading-tight">Dr. Anjali Patel</h4>
-                              <p className="text-xs text-slate-500 font-medium mt-1">Cardiologist</p>
-                           </div>
-                        </div>
-                        <button className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs py-2.5 rounded-lg transition-colors mt-auto shadow-sm">
-                           View Profile
-                        </button>
-                     </div>
-                  ))}
-               </div>
+               {(!profile.rosterDoctors || profile.rosterDoctors.length === 0) ? (
+                 renderEmptyState("Doctors")
+               ) : (
+                 <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
+                    {profile.rosterDoctors.map((doc: any, i: number) => (
+                       <div key={i} className="w-64 shrink-0 snap-center bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
+                          <div className="flex gap-4 items-center mb-4">
+                             <img src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} className="w-14 h-14 rounded-xl object-cover shadow-sm" alt={doc.name} />
+                             <div className="overflow-hidden">
+                                <h4 className="font-bold text-slate-800 leading-tight truncate" title={doc.name}>{doc.name}</h4>
+                                <p className="text-xs text-slate-500 font-medium mt-1 truncate" title={doc.specialty}>{doc.specialty}</p>
+                             </div>
+                          </div>
+                          {doc.slug ? (
+                            <Link href={`/profile/${doc.slug}`} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs py-2.5 rounded-lg transition-colors mt-auto shadow-sm flex items-center justify-center">
+                               View Profile
+                            </Link>
+                          ) : (
+                            <button className="w-full bg-slate-300 text-slate-500 font-bold text-xs py-2.5 rounded-lg mt-auto shadow-sm cursor-not-allowed">
+                               Profile Unavailable
+                            </button>
+                          )}
+                       </div>
+                    ))}
+                 </div>
+               )}
             </section>
 
             {/* FACILITIES & TESTIMONIALS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               <section id="facilities" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
+               <section id="facilities" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col">
                   <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><Shield className="w-5 h-5 text-cyan-600"/> Facilities & Services</h2>
-                  <div className="grid grid-cols-2 gap-4">
-                     {['ICU & Trauma Care', 'MRI & CT Scan', '24/7 Pharmacy', 'Deluxe Rooms', 'Blood Bank', 'Ambulance'].map((fac, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                           <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                           <span className="text-sm font-bold text-slate-700">{fac}</span>
-                        </div>
-                     ))}
-                  </div>
+                  {(!profile.facilities || profile.facilities.length === 0) ? (
+                    <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
+                       <Shield className="w-12 h-12 text-slate-200 mb-3" />
+                       <p className="text-sm font-bold text-slate-400">Facilities not verified.</p>
+                       <button className="mt-3 text-xs font-bold text-cyan-600 hover:underline">Update Now</button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                       {profile.facilities.map((fac: string, i: number) => {
+                          const iconColors = ['text-orange-500', 'text-blue-500', 'text-emerald-500', 'text-purple-500'];
+                          const color = iconColors[i % iconColors.length];
+                          return (
+                            <div key={i} className="flex items-center gap-2">
+                               <svg className={`w-4 h-4 shrink-0 ${color}`} fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                               <span className="text-sm font-bold text-slate-700">{fac}</span>
+                            </div>
+                          )
+                       })}
+                    </div>
+                  )}
                </section>
 
                <section id="reviews" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col justify-between">
