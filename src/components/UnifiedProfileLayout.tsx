@@ -10,7 +10,7 @@ import { ConnectionService, ConnectionStatus } from '@/services/connection.servi
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   Award, MapPin, Phone, Star, CheckCircle2, Shield, 
-  Stethoscope, Clock, FileText, Activity, 
+  Stethoscope, Clock, FileText, Activity, Lock,
   HeartPulse, Navigation, GraduationCap, Globe, Fingerprint,
   Briefcase, Medal, Video, Image as ImageIcon, Banknote,
   Share2, QrCode, UserPlus, X, Facebook, MessageCircle, Settings
