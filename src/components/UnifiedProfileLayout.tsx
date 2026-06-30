@@ -341,6 +341,13 @@ export default function UnifiedProfileLayout({
                   <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
                   <span className="opacity-50 text-[10px]">▼</span>
                 </button>
+                
+                <button 
+                  onClick={handleShare} 
+                  className="bg-slate-900 hover:bg-black text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-center gap-2"
+                >
+                  <Share2 className="w-4 h-4"/> Share & Connect
+                </button>
               </div>
             </div>
 
