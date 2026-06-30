@@ -339,7 +339,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-[#020810]/80 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-3 md:px-6 lg:px-12 h-20 md:h-24 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 w-full z-[100] bg-[#020810]/80 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-between px-3 md:px-6 lg:px-12 h-20 md:h-24 transition-all duration-300">
       {/* 1. Web Name / Logo */}
       <div className="flex items-center gap-2 md:gap-4 shrink-0">
         <a href="/" className="flex items-center gap-2 md:gap-4 group">

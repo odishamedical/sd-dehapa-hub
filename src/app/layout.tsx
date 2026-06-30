@@ -47,7 +47,7 @@ export default function RootLayout({
         <TenantProvider>
           <UserPresenceProvider />
           <GlobalHeader activeProject="Telemedicine" />
-          <div className="flex-1">
+          <div className="flex-1 pt-20 md:pt-24">
             {children}
           </div>
           <GlobalFooter />
