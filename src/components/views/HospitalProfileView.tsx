@@ -205,6 +205,11 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
         mapUrl: "https://maps.google.com/maps?q=Odisha&t=&z=15&ie=UTF8&iwloc=&output=embed",
         phone: "+91 98765 43210"
       });
+      setSimilarHospitals([
+        { id: 'mock-1', name: 'Apollo Hospitals', category: 'Hospital', rating: 4.8, subtitle: 'Multi-Specialty', image: 'https://ui-avatars.com/api/?name=Apollo&background=0f766e&color=fff' },
+        { id: 'mock-2', name: 'Kalinga Hospital', category: 'Hospital', rating: 4.5, subtitle: 'Corporate Hospital', image: 'https://ui-avatars.com/api/?name=Kalinga&background=0f766e&color=fff' },
+        { id: 'mock-3', name: 'Care Hospitals', category: 'Hospital', rating: 4.6, subtitle: 'Multi-Specialty', image: 'https://ui-avatars.com/api/?name=Care&background=0f766e&color=fff' }
+      ]);
       setLoading(false);
     };
     fetchHospital();
