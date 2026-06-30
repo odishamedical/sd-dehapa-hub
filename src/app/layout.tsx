@@ -43,7 +43,7 @@ export default function RootLayout({
           }
         `}} />
       </head>
-      <body className="min-h-full flex flex-col font-sans overflow-x-hidden md:pb-0 pb-[80px]">
+      <body className="min-h-full flex flex-col font-sans overflow-x-clip md:pb-0 pb-[80px]">
         <TenantProvider>
           <UserPresenceProvider />
           <GlobalHeader activeProject="Telemedicine" />
