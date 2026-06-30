@@ -251,23 +251,6 @@ export default function DehapaHome() {
           </div>
         </section>
 
-        {/* 2.6 PREMIUM ADVERTISEMENT BANNER */}
-        <section className="w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 transform hover:-translate-y-1 transition-transform">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none"></div>
-          <div className="absolute -right-20 -top-20 w-64 h-64 bg-teal-500/20 rounded-full blur-[60px] pointer-events-none"></div>
-          
-          <div className="relative z-10 text-white max-w-lg text-center sm:text-left">
-            <span className="inline-block px-3 py-1 bg-white/10 text-teal-300 text-[10px] font-bold uppercase tracking-widest rounded-full mb-3 backdrop-blur-md border border-white/10">Sponsored</span>
-            <h3 className="text-xl sm:text-2xl font-black mb-2">Ira Jewels Mega Health Checkup Camp</h3>
-            <p className="text-slate-300 text-sm">Free full-body checkups for all Sovereign network patients this weekend in Sambalpur.</p>
-          </div>
-          
-          <div className="relative z-10 w-full sm:w-auto">
-            <Link href="/search?q=Ira+Jewels" className="block w-full sm:w-auto bg-teal-500 hover:bg-teal-400 text-white px-8 py-3.5 rounded-xl font-bold text-sm text-center transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)]">
-              Register Now
-            </Link>
-          </div>
-        </section>
 
         {/* 3. HIGH-DENSITY ACTION GRIDS */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
