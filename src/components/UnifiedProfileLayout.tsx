@@ -196,12 +196,13 @@ export default function UnifiedProfileLayout({
       )}
 
       {/* Editorial Navigation */}
-      <div className="bg-white/80 backdrop-blur-2xl border-b border-slate-200/50 sticky top-0 z-50 transition-all">
+      <div className="bg-white/90 backdrop-blur-2xl border-b border-slate-200/50 sticky top-0 z-50 transition-all shadow-sm">
+        <div className="h-1 w-full bg-gradient-to-r from-teal-500 to-cyan-500" />
         <CategoryNav />
-        <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center gap-2 text-xs font-semibold tracking-widest text-slate-400 uppercase">
-          <Link href="/" className="hover:text-slate-900 transition-colors">Home</Link>
+        <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center gap-2 text-xs font-semibold tracking-widest text-slate-500 uppercase">
+          <Link href="/" className="hover:text-teal-600 transition-colors">Home</Link>
           <span>/</span>
-          <Link href={`/${type}s`} className="hover:text-slate-900 transition-colors">{type}s</Link>
+          <Link href={`/${type}s`} className="hover:text-teal-600 transition-colors">{type}s</Link>
           <span>/</span>
           <span className="text-slate-900 truncate max-w-[200px]">{profile.name}</span>
         </div>
@@ -215,9 +216,9 @@ export default function UnifiedProfileLayout({
           <div className="lg:col-span-3 space-y-16">
             
             {/* The Classic Hero (Left Image, Right Details) */}
-            <div className="bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
+            <div className="bg-white/90 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group hover:border-teal-400/50 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
               {/* Editorial Background Motif */}
-              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-cyan-50 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-70 pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-teal-400/20 via-cyan-400/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-70 pointer-events-none transition-all duration-700 group-hover:from-teal-400/30"></div>
 
               {/* Left: The Prestige Portrait */}
               <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 group/portrait z-10">
@@ -306,7 +307,7 @@ export default function UnifiedProfileLayout({
                         setShowUnverifiedModal(true);
                       }
                     }}
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(6,182,212,0.3)] border border-cyan-400/20 hover:-translate-y-0.5 flex items-center gap-2"
+                    className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_25px_rgba(20,184,166,0.3)] hover:shadow-[0_15px_35px_rgba(20,184,166,0.4)] border border-teal-400/30 hover:-translate-y-1 flex items-center gap-2"
                   >
                     <Video className="w-4 h-4" />
                     Consult Now
@@ -314,7 +315,7 @@ export default function UnifiedProfileLayout({
                   
                   <button 
                     onClick={() => setShowShareModal(true)}
-                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 hover:text-cyan-600 hover:border-cyan-400 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-[0_4px_15px_rgba(6,182,212,0.15)] hover:shadow-[0_4px_20px_rgba(6,182,212,0.3)] flex items-center gap-2"
+                    className="bg-white hover:bg-teal-50 border border-slate-200 text-slate-700 hover:text-teal-600 hover:border-teal-400 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-sm hover:shadow-[0_10px_25px_rgba(20,184,166,0.2)] hover:-translate-y-0.5 flex items-center gap-2"
                   >
                     <Share2 className="w-4 h-4" />
                     Share
@@ -322,7 +323,7 @@ export default function UnifiedProfileLayout({
                   
                   <button 
                     onClick={() => setShowQRModal(true)}
-                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 hover:text-cyan-600 hover:border-cyan-400 px-4 py-3 rounded-full transition-all shadow-[0_4px_15px_rgba(6,182,212,0.15)] hover:shadow-[0_4px_20px_rgba(6,182,212,0.3)] flex items-center justify-center"
+                    className="bg-white hover:bg-teal-50 border border-slate-200 text-slate-700 hover:text-teal-600 hover:border-teal-400 px-4 py-3 rounded-full transition-all shadow-sm hover:shadow-[0_10px_25px_rgba(20,184,166,0.2)] hover:-translate-y-0.5 flex items-center justify-center"
                     title="QR Code"
                   >
                     <QrCode className="w-4 h-4" />
@@ -332,8 +333,8 @@ export default function UnifiedProfileLayout({
             </div>
 
             {/* The Prestige Trust Bar (Data as Art) */}
-            <div className="w-full relative z-30">
-              <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] border border-slate-100 p-8">
+            <div className="w-full relative z-30 group">
+              <div className="bg-white/90 backdrop-blur-md rounded-[2rem] shadow-sm border border-slate-200 hover:border-teal-300/50 p-8 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-slate-100">
                   
                   {/* Metric 1 */}
@@ -441,9 +442,9 @@ export default function UnifiedProfileLayout({
                       <Link 
                         key={index} 
                         href={`/doctors?specialty=${encodeURIComponent(spec)}`}
-                        className="bg-slate-100 text-slate-800 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-slate-200 hover:shadow-md transition-all group"
+                        className="bg-slate-50 border border-slate-200 text-slate-700 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 hover:shadow-[0_10px_20px_rgba(20,184,166,0.15)] hover:-translate-y-0.5 transition-all group"
                       >
-                        <span className="border-b border-transparent group-hover:border-slate-800 pb-0.5">{spec}</span>
+                        <span className="border-b border-transparent group-hover:border-teal-700 pb-0.5">{spec}</span>
                       </Link>
                     ))}
                   </div>
