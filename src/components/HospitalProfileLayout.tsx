@@ -225,18 +225,26 @@ export default function HospitalProfileLayout({
             <section id="overview" className="relative w-full pt-2">
                {/* Pills Row */}
                <div className="p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap gap-3 bg-white mb-6">
-                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                     <Building2 className="w-4 h-4 text-teal-600" /> {profile.type || "Multi-Specialty Hospital"}
-                  </div>
-                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                     <FileBadge2 className="w-4 h-4 text-blue-600" /> {profile.accreditations?.[0] || "NABH Accredited"}
-                  </div>
-                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                     <Calendar className="w-4 h-4 text-red-500" /> Established: {profile.establishedYear || "1995"}
-                  </div>
-                  <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                     <Building2 className="w-4 h-4 text-cyan-600" /> {profile.ownershipType || "Private Hospital"}
-                  </div>
+                  {(!verified || profile.type) && (
+                    <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                       <Building2 className="w-4 h-4 text-teal-600" /> {profile.type || "Multi-Specialty Hospital"}
+                    </div>
+                  )}
+                  {(!verified || (profile.accreditations && profile.accreditations[0])) && (
+                    <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                       <FileBadge2 className="w-4 h-4 text-blue-600" /> {profile.accreditations?.[0] || "NABH Accredited"}
+                    </div>
+                  )}
+                  {(!verified || profile.establishedYear) && (
+                    <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                       <Calendar className="w-4 h-4 text-red-500" /> Established: {profile.establishedYear || "1995"}
+                    </div>
+                  )}
+                  {(!verified || profile.ownershipType) && (
+                    <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                       <Building2 className="w-4 h-4 text-cyan-600" /> {profile.ownershipType || "Private Hospital"}
+                    </div>
+                  )}
                </div>
                {/* Map & Contact Layout */}
                <div className="w-full">
