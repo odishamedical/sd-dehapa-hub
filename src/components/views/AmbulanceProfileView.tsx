@@ -17,7 +17,7 @@ import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
 import { updateDoc } from 'firebase/firestore';
-import UniversalProfileLayout from '@/components/UniversalProfileLayout';
+import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 
 export default function AmbulanceProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [ambulance, setAmbulance] = useState<any>(null);
@@ -152,5 +152,5 @@ export default function AmbulanceProfileView({ id, customSlug }: { id?: string, 
     );
   }
 
-  return <UniversalProfileLayout profile={ambulance} unwrappedParams={{ type: 'ambulance', id: ambulance.id }} similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
+  return <UnifiedProfileLayout profile={ambulance} type="ambulance" similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }

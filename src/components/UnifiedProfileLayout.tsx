@@ -41,6 +41,8 @@ export default function UnifiedProfileLayout({
   const isDoctor = type === 'doctor';
   const isHospital = type === 'hospital';
   const isLab = type === 'lab';
+  const isPharmacy = type === 'pharmacy';
+  const isAmbulance = type === 'ambulance';
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
@@ -541,11 +543,11 @@ export default function UnifiedProfileLayout({
                 </section>
               )}
 
-              {/* Departments - Hospital Only */}
-              {isHospital && hasValidData(profile.roster) && (
+              {/* Departments / Fleet - Hospital / Lab / Ambulance Only */}
+              {(isHospital || isLab || isAmbulance) && hasValidData(profile.roster) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Centers of Excellence</h2>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">{isAmbulance ? "Fleet & Vehicles" : isLab ? "Specialized Departments" : "Centers of Excellence"}</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {profile.roster.map((dept: string, i: number) => (
                       <div key={i} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer">
@@ -560,11 +562,11 @@ export default function UnifiedProfileLayout({
                 </section>
               )}
 
-              {/* Health Packages - Hospital Only */}
-              {isHospital && hasValidData(profile.healthPackages) && (
+              {/* Health Packages / Top Products / Tests */}
+              {(isHospital || isPharmacy || isLab) && hasValidData(profile.healthPackages) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Preventive Health Packages</h2>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">{isPharmacy ? "Top Products & Medicines" : isLab ? "Popular Diagnostic Tests" : "Preventive Health Packages"}</h2>
                   <div className="grid grid-cols-1 gap-6">
                     {profile.healthPackages.map((pkg: any, i: number) => (
                       <div key={i} className="bg-white rounded-[2rem] p-6 md:p-8 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
@@ -587,7 +589,7 @@ export default function UnifiedProfileLayout({
                               onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name, package: pkg.name } }))}
                               className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-black tracking-widest uppercase text-xs py-3 rounded-full transition-all shadow-md"
                             >
-                              Book Package
+                              {isPharmacy ? "Order Product" : isLab ? "Book Test" : "Book Package"}
                             </button>
                            )}
                         </div>
@@ -752,21 +754,23 @@ export default function UnifiedProfileLayout({
           <div className="flex-1 sm:flex-none">
             {verified ? (
               <div className="flex gap-2 w-full sm:w-auto">
-                {type === 'hospital' ? (
+                {(type === 'hospital' || type === 'lab' || type === 'pharmacy' || type === 'ambulance') ? (
                   <>
-                    <button 
-                      onClick={() => setShowEmergencyModal(true)}
-                      className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
-                    >
-                      <Activity className="w-4 h-4 md:w-5 md:h-5" />
-                      Emergency Booking
-                    </button>
+                    {(type === 'hospital' || type === 'ambulance') && (
+                      <button 
+                        onClick={() => setShowEmergencyModal(true)}
+                        className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                      >
+                        <Activity className="w-4 h-4 md:w-5 md:h-5" />
+                        {type === 'ambulance' ? 'Dispatch Ambulance' : 'Emergency Booking'}
+                      </button>
+                    )}
                     <button 
                       onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
                       className="flex-1 sm:flex-none bg-[#0A1128] hover:bg-slate-800 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
                     >
                       <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5" />
-                      Book Appointment
+                      {type === 'lab' ? 'Book Test' : type === 'pharmacy' ? 'Order Medicines' : 'Book Appointment'}
                     </button>
                   </>
                 ) : (

@@ -17,7 +17,7 @@ import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
 import { updateDoc } from 'firebase/firestore';
-import UniversalProfileLayout from '@/components/UniversalProfileLayout';
+import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 
 export default function LabProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [lab, setLab] = useState<any>(null);
@@ -152,5 +152,5 @@ export default function LabProfileView({ id, customSlug }: { id?: string, custom
     );
   }
 
-  return <UniversalProfileLayout profile={lab} unwrappedParams={{ type: 'lab', id: lab.id }} similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
+  return <UnifiedProfileLayout profile={lab} type="lab" similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }

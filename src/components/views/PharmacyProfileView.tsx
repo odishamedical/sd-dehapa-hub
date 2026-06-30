@@ -17,7 +17,7 @@ import PhoneRevealButton from '@/components/PhoneRevealButton';
 import InlineEditField from '@/components/InlineEditField';
 import InlineEditArray from '@/components/InlineEditArray';
 import { updateDoc } from 'firebase/firestore';
-import UniversalProfileLayout from '@/components/UniversalProfileLayout';
+import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 
 export default function PharmacyProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [pharmacy, setPharmacy] = useState<any>(null);
@@ -201,5 +201,5 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
     );
   }
 
-  return <UniversalProfileLayout profile={pharmacy} unwrappedParams={{ type: 'pharmacy', id: pharmacy.id }} similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
+  return <UnifiedProfileLayout profile={pharmacy} type="pharmacy" similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }
