@@ -472,9 +472,8 @@ export default function UnifiedProfileLayout({
               </section>
 
               {/* About / Bio Narrative */}
-              <section className="relative pl-0 md:pl-16 pt-8">
-                <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                <h2 className="text-3xl font-black text-[#0A1128] mb-8">The Profile</h2>
+              <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+                <h2 className="text-2xl font-black text-[#0A1128] mb-6">The Profile</h2>
                 <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-loose font-serif">
                   {isEditMode ? (
                     <InlineEditField 
@@ -493,9 +492,8 @@ export default function UnifiedProfileLayout({
 
               {/* Specializations (Elegant Pills) */}
               {isDoctor && hasValidData(profile.specialties) && (
-                <section className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Areas of Excellence</h2>
+                <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Areas of Excellence</h2>
                   <div className="flex flex-wrap gap-4">
                     {profile.specialties.map((spec: string, index: number) => (
                       <Link 
@@ -512,9 +510,8 @@ export default function UnifiedProfileLayout({
 
               {/* Education Timeline */}
               {isDoctor && hasValidData(profile.education) && (
-                <section id="education" className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Academic Pedigree</h2>
+                <section id="education" className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Academic Pedigree</h2>
                   <div className="space-y-8">
                     {profile.education.map((edu: any, index: number) => (
                       <div key={index} className="flex gap-6 group">
@@ -541,9 +538,8 @@ export default function UnifiedProfileLayout({
 
               {/* Past Experience Timeline */}
               {isDoctor && hasValidData(profile.experiences) && (
-                <section id="experience" className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Professional Trajectory</h2>
+                <section id="experience" className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Professional Trajectory</h2>
                   <div className="space-y-8">
                     {profile.experiences.map((exp: any, index: number) => (
                       <div key={index} className="flex gap-6 group">
@@ -570,9 +566,8 @@ export default function UnifiedProfileLayout({
 
               {/* Awards (Art Gallery Style) */}
               {isDoctor && hasValidData(profile.awards) && (
-                <section className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Accolades & Honors</h2>
+                <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Accolades & Honors</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {profile.awards.map((award: any, index: number) => (
                       <div key={index} className="bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-shadow">
@@ -589,9 +584,8 @@ export default function UnifiedProfileLayout({
 
               {/* Languages */}
               {isDoctor && hasValidData(profile.languages) && (
-                <section className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Languages Spoken</h2>
+                <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Languages Spoken</h2>
                   <div className="flex flex-wrap gap-4">
                     {profile.languages.map((lang: string, index: number) => (
                       <div key={index} className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
