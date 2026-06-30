@@ -73,15 +73,16 @@ export default function DehapaHome() {
     <main className="min-h-screen bg-slate-50 font-sans selection:bg-teal-500/30 overflow-x-hidden text-slate-800">
       
       {/* 1. HERO SECTION (The Premium Medical Gateway) */}
-      <section className="relative pt-8 pb-12 lg:pt-24 lg:pb-32 overflow-hidden">
-        {/* Soft Medical Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-teal-50/50 z-0">
+      <section className="relative pt-6 pb-10 lg:pt-12 lg:pb-16 overflow-hidden">
+        {/* Vibrant Premium Gradient Background */}
+        <div className="absolute inset-0 bg-white z-0">
           {/* Subtle Clean Grid */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_20%,transparent_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.04)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_30%,transparent_100%)]" />
           
-          {/* Soft Glow Orbs */}
-          <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-teal-100/40 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-[80px] pointer-events-none" />
+          {/* Vibrant Glow Orbs (Stripe/Apple Style) */}
+          <div className="absolute top-[-10%] right-[0%] w-[700px] h-[700px] bg-teal-300/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-blue-400/15 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-[-20%] left-[20%] w-[800px] h-[500px] bg-fuchsia-400/10 rounded-full blur-[120px] pointer-events-none" />
         </div>
 
         <div className="relative z-10 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 text-center">
@@ -313,11 +314,11 @@ export default function DehapaHome() {
           </div>
 
           {/* Giant Living Consult Button */}
-          <div className="mt-8 md:mt-16 flex flex-col items-center justify-center relative z-20 animate-in zoom-in duration-1000 delay-300">
+          <div className="mt-8 md:mt-12 flex flex-col items-center justify-center relative z-20 animate-in zoom-in duration-1000 delay-300">
             <div className="relative group">
               {/* Massive radar ping effect */}
-              <div className="absolute -inset-10 bg-red-500/20 rounded-full blur-2xl animate-pulse group-hover:bg-red-500/30 transition-all duration-500"></div>
-              <div className="absolute -inset-4 border-2 border-red-500/50 rounded-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+              <div className="absolute -inset-8 bg-red-500/20 rounded-full blur-xl animate-pulse group-hover:bg-red-500/30 transition-all duration-500"></div>
+              <div className="absolute -inset-2 border-2 border-red-500/50 rounded-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
               <div className="absolute -inset-8 border border-red-500/30 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
               
               <button 
@@ -349,16 +350,16 @@ export default function DehapaHome() {
       </section>
 
       {/* 2. HOW DEHAPA WORKS (Mobile-First Visual Explainer) */}
-      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-4 lg:-mt-12 mb-16 lg:mb-24">
+      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 mt-4 mb-10 lg:mb-16">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
+          <div className="text-center mb-8">
             <h2 className="text-3xl lg:text-4xl font-black font-serif text-slate-900 mb-4">How It Works</h2>
             <p className="text-slate-600 font-medium">Your entire healthcare journey in 3 simple steps.</p>
           </div>
 
           <div className="relative border-l-2 border-teal-100 ml-4 md:ml-0 md:border-l-0">
             {/* Step 1 */}
-            <div className="mb-12 relative flex flex-col md:flex-row md:items-center gap-6 pl-8 md:pl-0">
+            <div className="mb-8 relative flex flex-col md:flex-row md:items-center gap-6 pl-8 md:pl-0">
               <div className="absolute left-[-9px] md:static md:w-1/2 flex justify-start md:justify-end md:pr-10">
                 <div className="hidden md:flex w-16 h-16 rounded-2xl bg-teal-50 border border-teal-200 items-center justify-center shadow-sm relative z-10">
                   <Search className="w-8 h-8 text-teal-600" />
@@ -380,7 +381,7 @@ export default function DehapaHome() {
             </div>
 
             {/* Step 2 */}
-            <div className="mb-12 relative flex flex-col md:flex-row-reverse md:items-center gap-6 pl-8 md:pl-0">
+            <div className="mb-8 relative flex flex-col md:flex-row-reverse md:items-center gap-6 pl-8 md:pl-0">
               <div className="absolute left-[-9px] md:static md:w-1/2 flex justify-start md:justify-start md:pl-10">
                 <div className="hidden md:flex w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 items-center justify-center shadow-sm relative z-10">
                   <UserCircle className="w-8 h-8 text-blue-600" />
@@ -433,8 +434,8 @@ export default function DehapaHome() {
       </section>
 
       {/* 3. CORE SERVICE TICKETS (Premium Medical Aesthetic) */}
-      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 mb-8 lg:mb-16">
-        <div className="flex items-center justify-between mb-8">
+      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 mb-8 lg:mb-12">
+        <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl sm:text-3xl font-black font-serif text-slate-900">Explore Services</h2>
           <div className="h-px flex-1 bg-slate-200 ml-6 hidden sm:block"></div>
         </div>
@@ -484,7 +485,7 @@ export default function DehapaHome() {
       </section>
 
       {/* 4. UBER-LIKE AMBULANCE PING (Emergency Module) */}
-      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 lg:py-8 mb-2 lg:mb-16 scroll-mt-24 relative">
+      <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 lg:py-6 mb-2 lg:mb-10 scroll-mt-24 relative">
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[500px] bg-red-100 blur-[150px] pointer-events-none rounded-full"></div>
 
         <div className="bg-white rounded-[3rem] overflow-hidden shadow-[0_20px_50px_-15px_rgba(239,68,68,0.15)] border border-red-100 flex flex-col lg:flex-row relative z-10">
