@@ -893,26 +893,24 @@ export default function UnifiedProfileLayout({
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      {/* QR Code */}
-      {showQRModal && (
+      {/* QR Code & Share Unified Modal */}
+      {(showQRModal || showShareModal) && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
-            <button onClick={() => setShowQRModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onClick={() => { setShowQRModal(false); setShowShareModal(false); }} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
               <X className="w-5 h-5" />
             </button>
+            
             <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <QrCode className="w-8 h-8 text-teal-600" />
-              </div>
-              <h3 className="text-xl font-black text-slate-800">Clinic QR Code</h3>
-              <p className="text-slate-500 text-sm mt-1">Patients can scan this to book appointments instantly.</p>
+              <h3 className="text-2xl font-black text-[#0A1128]">Share & Connect</h3>
+              <p className="text-slate-500 text-sm mt-1">Share this profile or scan to connect instantly.</p>
             </div>
             
-            <div className="bg-white p-4 rounded-2xl border-2 border-slate-100 flex justify-center shadow-inner">
+            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center shadow-inner mb-6">
               <QRCodeSVG 
-                value={`https://dehapa.com/${type}s/${profile.id}`}
-                size={220}
-                bgColor={"#ffffff"}
+                value={typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}?action=connect` : `https://dehapa.com/${type}s/${profile.id}?action=connect`}
+                size={180}
+                bgColor={"transparent"}
                 fgColor={"#0f766e"}
                 level={"Q"}
                 includeMargin={false}
@@ -920,16 +918,40 @@ export default function UnifiedProfileLayout({
                   src: "https://www.shyamdash.com/wp-content/uploads/2023/12/logo.png",
                   x: undefined,
                   y: undefined,
-                  height: 40,
-                  width: 40,
+                  height: 30,
+                  width: 30,
                   excavate: true,
                 }}
               />
+              <div className="mt-4 text-xs font-bold text-teal-700 bg-teal-100 px-3 py-1 rounded-full flex items-center gap-1">
+                <QrCode className="w-3 h-3" /> Scan to Connect
+              </div>
             </div>
             
-            <button className="w-full mt-6 bg-slate-900 hover:bg-black text-white font-bold text-sm py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2">
-              <Share2 className="w-4 h-4" /> Share QR Code
-            </button>
+            <div className="grid grid-cols-2 gap-3">
+              <a 
+                href={`https://wa.me/?text=Connect with ${encodeURIComponent(profile.name)} on Dehapa: ${typeof window !== 'undefined' ? encodeURIComponent(`${window.location.origin}${window.location.pathname}?action=connect`) : ''}`}
+                target="_blank" 
+                rel="noreferrer"
+                className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm text-sm"
+              >
+                <MessageCircle className="w-4 h-4" /> WhatsApp
+              </a>
+              <a 
+                href={`https://www.facebook.com/sharer/sharer.php?u=${typeof window !== 'undefined' ? encodeURIComponent(`${window.location.origin}${window.location.pathname}?action=connect`) : ''}`}
+                target="_blank" 
+                rel="noreferrer"
+                className="w-full bg-[#1877F2] hover:bg-[#0C5FCD] text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm text-sm"
+              >
+                <Facebook className="w-4 h-4" /> Facebook
+              </a>
+              <button 
+                onClick={copyToClipboard}
+                className="w-full col-span-2 bg-slate-900 hover:bg-black text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm mt-1"
+              >
+                <Share2 className="w-4 h-4" /> Copy Direct Link
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -960,43 +982,6 @@ export default function UnifiedProfileLayout({
           entityName={profile.name} 
           onClose={() => setShowClaimModal(false)} 
         />
-      )}
-
-      {/* Share Modal */}
-      {showShareModal && (
-        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95">
-            <button onClick={() => setShowShareModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
-              <X className="w-6 h-6" />
-            </button>
-            <h3 className="font-black text-2xl text-[#0A1128] mb-6">Share Profile</h3>
-            
-            <div className="flex flex-col gap-3">
-              <a 
-                href={`https://wa.me/?text=Check out ${encodeURIComponent(profile.name)} on Dehapa: ${typeof window !== 'undefined' ? encodeURIComponent(window.location.href.split('?')[0]) : ''}`}
-                target="_blank" 
-                rel="noreferrer"
-                className="w-full bg-[#25D366] hover:bg-[#1DA851] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-3 shadow-md"
-              >
-                <MessageCircle className="w-5 h-5" /> Share on WhatsApp
-              </a>
-              <a 
-                href={`https://www.facebook.com/sharer/sharer.php?u=${typeof window !== 'undefined' ? encodeURIComponent(window.location.href.split('?')[0]) : ''}`}
-                target="_blank" 
-                rel="noreferrer"
-                className="w-full bg-[#1877F2] hover:bg-[#0C5FCD] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-3 shadow-md"
-              >
-                <Facebook className="w-5 h-5" /> Share on Facebook
-              </a>
-              <button 
-                onClick={copyToClipboard}
-                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-3"
-              >
-                <Share2 className="w-5 h-5" /> Copy Link
-              </button>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Invite Modal */}
