@@ -280,52 +280,52 @@ export default function DehapaHome() {
           </div>
         </section>
 
-        {/* 3. PLATFORM CAPABILITIES (Abstract Network Scale - Bright Edition) */}
-        <section className="bg-gradient-to-br from-white to-slate-50 border border-slate-200 rounded-[3rem] p-8 sm:p-12 relative overflow-hidden shadow-sm">
+        {/* 3. PLATFORM CAPABILITIES (Abstract Network Scale - Futuristic Blue Edition) */}
+        <section className="bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 rounded-[3rem] p-8 sm:p-12 relative overflow-hidden shadow-[0_20px_50px_rgba(30,58,138,0.5)] border border-blue-900/50">
           {/* Grid Background */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(56,189,248,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
           
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-200 text-teal-700 font-bold text-xs uppercase tracking-widest mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-800/50 text-cyan-400 font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-md shadow-[0_0_15px_rgba(34,211,238,0.2)]">
                 <Activity className="w-4 h-4" /> Sovereign Trust
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6 leading-tight">
+              <h2 className="text-3xl sm:text-4xl font-black text-white mb-6 leading-tight drop-shadow-md">
                 A highly secure, verifiable healthcare ecosystem.
               </h2>
-              <p className="text-slate-500 text-lg mb-8 max-w-lg">
+              <p className="text-blue-200/80 text-lg mb-8 max-w-lg">
                 We are mapping the future of medical identity. Every entity on Dehapa undergoes strict verification to ensure you receive authentic and trusted care.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6">
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <Shield className="w-8 h-8 text-teal-500 mb-4" />
-                  <h4 className="text-slate-800 font-bold text-lg">Anti-Fraud</h4>
-                  <p className="text-slate-500 text-sm mt-2">Zero tolerance for fake degrees or unverified clinics.</p>
+                <div className="bg-blue-900/20 border border-blue-700/30 rounded-2xl p-6 backdrop-blur-xl shadow-lg hover:shadow-[0_0_25px_rgba(56,189,248,0.15)] hover:border-cyan-500/50 transition-all group">
+                  <Shield className="w-8 h-8 text-cyan-400 mb-4 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                  <h4 className="text-white font-bold text-lg">Anti-Fraud</h4>
+                  <p className="text-blue-200/70 text-sm mt-2">Zero tolerance for fake degrees or unverified clinics.</p>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                  <UserCircle className="w-8 h-8 text-blue-500 mb-4" />
-                  <h4 className="text-slate-800 font-bold text-lg">Your Identity</h4>
-                  <p className="text-slate-500 text-sm mt-2">Own your health records with your Dehapa UID.</p>
+                <div className="bg-blue-900/20 border border-blue-700/30 rounded-2xl p-6 backdrop-blur-xl shadow-lg hover:shadow-[0_0_25px_rgba(56,189,248,0.15)] hover:border-cyan-500/50 transition-all group">
+                  <UserCircle className="w-8 h-8 text-blue-400 mb-4 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+                  <h4 className="text-white font-bold text-lg">Your Identity</h4>
+                  <p className="text-blue-200/70 text-sm mt-2">Own your health records with your Dehapa UID.</p>
                 </div>
               </div>
             </div>
             
             {/* Visual Network Map */}
             <div className="relative aspect-video lg:aspect-square flex justify-center items-center">
-               <div className="w-full max-w-md h-full max-h-md rounded-full border border-teal-100 relative animate-[spin_60s_linear_infinite]">
+               <div className="w-full max-w-md h-full max-h-md rounded-full border border-cyan-800/40 relative animate-[spin_60s_linear_infinite] shadow-[inset_0_0_50px_rgba(34,211,238,0.05)]">
                  {/* Inner orbits */}
-                 <div className="absolute inset-4 rounded-full border border-blue-100 animate-[spin_40s_linear_infinite_reverse]"></div>
-                 <div className="absolute inset-12 rounded-full border border-purple-100 animate-[spin_20s_linear_infinite]"></div>
+                 <div className="absolute inset-4 rounded-full border border-blue-700/40 animate-[spin_40s_linear_infinite_reverse]"></div>
+                 <div className="absolute inset-12 rounded-full border border-indigo-700/40 animate-[spin_20s_linear_infinite]"></div>
                  
                  {/* Glowing Nodes */}
-                 <div className="absolute top-0 left-1/2 w-4 h-4 bg-teal-400 rounded-full blur-[1px] shadow-[0_0_15px_rgba(45,212,191,0.5)] -translate-x-1/2 -translate-y-1/2"></div>
-                 <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-blue-400 rounded-full blur-[1px] shadow-[0_0_10px_rgba(96,165,250,0.5)] -translate-x-1/2 translate-y-1/2"></div>
-                 <div className="absolute top-1/2 left-4 w-2 h-2 bg-purple-400 rounded-full blur-[1px] shadow-[0_0_10px_rgba(192,132,252,0.5)] -translate-y-1/2"></div>
-                 <div className="absolute top-1/4 right-8 w-5 h-5 bg-teal-300 rounded-full blur-[2px] shadow-[0_0_20px_rgba(94,234,212,0.5)]"></div>
+                 <div className="absolute top-0 left-1/2 w-4 h-4 bg-cyan-400 rounded-full blur-[1px] shadow-[0_0_20px_rgba(34,211,238,1)] -translate-x-1/2 -translate-y-1/2"></div>
+                 <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-blue-400 rounded-full blur-[1px] shadow-[0_0_15px_rgba(96,165,250,1)] -translate-x-1/2 translate-y-1/2"></div>
+                 <div className="absolute top-1/2 left-4 w-2 h-2 bg-indigo-400 rounded-full blur-[1px] shadow-[0_0_15px_rgba(129,140,248,1)] -translate-y-1/2"></div>
+                 <div className="absolute top-1/4 right-8 w-5 h-5 bg-teal-400 rounded-full blur-[2px] shadow-[0_0_25px_rgba(45,212,191,1)]"></div>
                  
                  <div className="absolute inset-0 flex items-center justify-center">
-                    <QrCode className="w-20 h-20 text-slate-200 animate-pulse" />
+                    <QrCode className="w-24 h-24 text-cyan-500/20 animate-pulse drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]" />
                  </div>
                </div>
             </div>
