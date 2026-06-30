@@ -517,7 +517,6 @@ export default function HospitalProfileLayout({
           </div>
         </div>
       )}
-      )}
 
       
       {/* CSS for hiding scrollbars easily inline */}
