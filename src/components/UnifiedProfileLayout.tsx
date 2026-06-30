@@ -306,7 +306,7 @@ export default function UnifiedProfileLayout({
                         setShowUnverifiedModal(true);
                       }
                     }}
-                    className="bg-[#0A1128] hover:bg-slate-800 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(10,17,40,0.2)] hover:-translate-y-0.5 flex items-center gap-2"
+                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(6,182,212,0.3)] border border-cyan-400/20 hover:-translate-y-0.5 flex items-center gap-2"
                   >
                     <Video className="w-4 h-4" />
                     Consult Now
@@ -587,7 +587,7 @@ export default function UnifiedProfileLayout({
                            {verified && (
                             <button 
                               onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name, package: pkg.name } }))}
-                              className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-black tracking-widest uppercase text-xs py-3 rounded-full transition-all shadow-md"
+                              className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black tracking-widest uppercase text-xs py-3 rounded-full transition-all shadow-md shadow-cyan-500/25 border border-cyan-400/20"
                             >
                               {isPharmacy ? "Order Product" : isLab ? "Book Test" : "Book Package"}
                             </button>
@@ -653,7 +653,7 @@ export default function UnifiedProfileLayout({
                       <div className="flex flex-col gap-4">
                         <button 
                           onClick={() => setShowPhone(!showPhone)}
-                          className="w-full bg-[#0A1128] text-white px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-3"
+                          className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-lg shadow-cyan-500/25 border border-cyan-400/20 flex items-center justify-center gap-3"
                         >
                           <Phone className="w-5 h-5" />
                           {showPhone ? (profile.phone || profile.clinic?.phone || "Not available") : "Reveal Private Number"}
@@ -767,7 +767,7 @@ export default function UnifiedProfileLayout({
                     )}
                     <button 
                       onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
-                      className="flex-1 sm:flex-none bg-[#0A1128] hover:bg-slate-800 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                      className="flex-1 sm:flex-none bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg shadow-cyan-500/30 border border-cyan-400/20 flex items-center justify-center gap-2"
                     >
                       <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5" />
                       {type === 'lab' ? 'Book Test' : type === 'pharmacy' ? 'Order Medicines' : 'Book Appointment'}
@@ -784,7 +784,7 @@ export default function UnifiedProfileLayout({
                     </button>
                     <button 
                       onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
-                      className="flex-1 sm:flex-none bg-[#0A1128] hover:bg-slate-800 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
+                      className="flex-1 sm:flex-none bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg shadow-cyan-500/30 border border-cyan-400/20 flex items-center justify-center gap-2"
                     >
                       <HeartPulse className="w-4 h-4 md:w-5 md:h-5" />
                       Schedule Video
@@ -899,7 +899,7 @@ export default function UnifiedProfileLayout({
             <button 
               onClick={() => handleRequestConnection(false)}
               disabled={isRequestingConnection}
-              className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:from-slate-400 disabled:to-slate-500 disabled:border-transparent text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-cyan-500/25 border border-cyan-400/20 uppercase tracking-widest flex items-center justify-center gap-3"
             >
               {isRequestingConnection ? "Sending Request..." : "Send Connection Request"}
             </button>
@@ -928,7 +928,7 @@ export default function UnifiedProfileLayout({
             
             <button 
               onClick={() => setShowUnverifiedModal(false)}
-              className="w-full bg-[#0A1128] hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-cyan-500/25 border border-cyan-400/20 uppercase tracking-widest flex items-center justify-center gap-2"
             >
               Understood
             </button>
