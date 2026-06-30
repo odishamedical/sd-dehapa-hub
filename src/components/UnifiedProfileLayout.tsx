@@ -427,21 +427,6 @@ export default function UnifiedProfileLayout({
               </div>
             </div>
 
-            {/* Claim Profile Upsell */}
-            {!verified && (
-              <div className="bg-[#0A1128] rounded-[2rem] p-8 md:p-12 mb-16 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-900/20 to-amber-900/20"></div>
-                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-colors"></div>
-                
-                <div className="relative z-10 text-center sm:text-left">
-                  <h4 className="font-black text-white text-2xl md:text-3xl">Are you {profile.name}?</h4>
-                  <p className="text-slate-400 mt-2 max-w-lg text-lg">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
-                </div>
-                <Link href={`/claim-profile?id=${profile.id}`} className="relative z-10 shrink-0 bg-white text-[#0A1128] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-100 transition-colors shadow-[0_10px_30px_rgba(255,255,255,0.2)]">
-                  Claim Exclusivity
-                </Link>
-              </div>
-            )}
 
             <div className="space-y-24">
               
@@ -710,6 +695,22 @@ export default function UnifiedProfileLayout({
                     </div>
                   )}
                 </section>
+              )}
+
+              {/* Claim Profile Upsell (Moved to Bottom) */}
+              {!verified && (
+                <div className="bg-[#00897B] rounded-[2rem] p-8 md:p-12 mb-8 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors"></div>
+                  
+                  <div className="relative z-10 text-center sm:text-left">
+                    <h4 className="font-black text-white text-2xl md:text-3xl">Are you {profile.name}?</h4>
+                    <p className="text-teal-50 mt-2 max-w-lg text-lg">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
+                  </div>
+                  <Link href={`/claim-profile?id=${profile.id}`} className="relative z-10 shrink-0 bg-white text-[#00897B] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+                    Claim Exclusivity
+                  </Link>
+                </div>
               )}
 
               {/* Location & Map section moved to top */}
