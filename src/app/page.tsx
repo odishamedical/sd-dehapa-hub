@@ -70,53 +70,66 @@ export default function DehapaHome() {
   };
 
   return (
-    <main className="min-h-screen bg-[#020810] font-sans selection:bg-teal-500/30 overflow-x-hidden text-slate-100">
+    <main className="min-h-screen bg-slate-50 font-sans selection:bg-teal-500/30 overflow-x-hidden text-slate-800">
       
-      {/* 1. HERO SECTION (The Gateway) - Futuristic Edition */}
-      <section className="relative pt-6 pb-8 lg:pt-28 lg:pb-36 overflow-hidden">
-        {/* Dynamic Holographic Background Matrix */}
-        <div className="absolute inset-0 bg-[#020810] z-0">
-          {/* Animated Grid */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.05)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_10%,transparent_100%)] animate-[pulse_4s_ease-in-out_infinite_alternate]" />
+      {/* 1. HERO SECTION (The Premium Medical Gateway) */}
+      <section className="relative pt-8 pb-12 lg:pt-24 lg:pb-32 overflow-hidden">
+        {/* Soft Medical Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-teal-50/50 z-0">
+          {/* Subtle Clean Grid */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_20%,transparent_100%)]" />
           
-          {/* Deep Space Orbs */}
-          <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-teal-500/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]" />
-          <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+          {/* Soft Glow Orbs */}
+          <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-teal-100/40 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-[80px] pointer-events-none" />
         </div>
 
-        {/* Floating Holographic Elements */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden hidden lg:block z-0">
-           <Activity className="absolute top-[15%] right-[20%] text-teal-400/20 w-32 h-32 transform rotate-12 animate-[bounce_8s_infinite]" />
-           <ShieldCheck className="absolute top-[50%] left-[10%] text-blue-400/10 w-48 h-48 transform -rotate-12 animate-[bounce_12s_infinite]" />
-           <div className="absolute bottom-[20%] right-[10%] w-24 h-24 border border-teal-500/30 rounded-full animate-[ping_4s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
-        </div>
-
-        <div className="relative z-10 w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/30 text-teal-300 text-xs font-bold uppercase tracking-widest mb-8 shadow-[0_0_20px_rgba(20,184,166,0.2)] backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+        <div className="relative z-10 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
             Sovereign Health Network
           </div>
           
-          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black font-serif text-white mb-6 leading-[1.1] tracking-tight drop-shadow-2xl">
-            The Future of <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-blue-500 animate-gradient-x">Integrated Healthcare.</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black font-serif text-slate-900 mb-6 leading-[1.15] tracking-tight">
+            Your Health, <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Perfectly Connected.</span>
           </h1>
-          <p className="text-base sm:text-xl lg:text-2xl text-slate-400 max-w-3xl mx-auto font-medium mb-8 lg:mb-16 drop-shadow-sm">
-            Access world-class specialists, live hospital metrics, and instant emergency response through a single unified portal.
+          <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto font-medium mb-10">
+            Access world-class specialists, instantly book appointments, and carry your encrypted medical vault in your pocket.
           </p>
 
-          {/* Holographic Search Console (2-Row Layout) */}
-          <div className="max-w-5xl mx-auto bg-slate-900/60 backdrop-blur-2xl border border-teal-500/30 p-4 sm:p-6 rounded-3xl flex flex-col gap-4 shadow-[0_0_50px_rgba(20,184,166,0.15)] relative z-40 group transition-all duration-500 hover:shadow-[0_0_80px_rgba(20,184,166,0.25)] hover:bg-slate-900/80">
-            {/* Glowing borders effect */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-3xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-500 pointer-events-none"></div>
+          {/* Primary Call to Action Buttons (Mobile First) */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <button 
+              onClick={() => {
+                const searchEl = document.getElementById('search-console');
+                searchEl?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="w-full sm:w-auto bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-[0_10px_30px_rgba(20,184,166,0.3)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
+            >
+              Start Your Journey <ChevronRight className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => setIsScannerOpen(true)}
+              className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 hover:border-teal-500 px-8 py-4 rounded-2xl font-bold text-lg shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-3 group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center group-hover:bg-teal-100 transition-colors">
+                <QrCode className="w-5 h-5 text-teal-600" />
+              </div>
+              Scan Clinic QR
+            </button>
+          </div>
+
+          {/* Premium Glass Search Console */}
+          <div id="search-console" className="max-w-5xl mx-auto bg-white/70 backdrop-blur-2xl border border-white p-4 sm:p-6 rounded-[2rem] flex flex-col gap-4 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05),inset_0_1px_3px_rgba(255,255,255,1)] relative z-40 transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)]">
             
             {/* Row 1: The "What" */}
             <div className="flex flex-col sm:flex-row gap-4 relative z-20 w-full">
-              <div className="sm:w-64 shrink-0">
+              <div className="w-full sm:w-64 shrink-0">
                 <GlassSelect 
                   value={searchType}
                   onChange={setSearchType}
-                  icon={<Activity className="w-5 h-5" />}
+                  icon={<Activity className="w-5 h-5 text-slate-500" />}
                   options={[
                     { value: 'all', label: 'All Services' },
                     { value: 'doctor', label: 'Doctors' },
@@ -127,14 +140,14 @@ export default function DehapaHome() {
                   ]}
                 />
               </div>
-              <div className="flex-1 w-full flex items-center gap-3 px-4 py-3 h-[52px] bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors relative z-10">
-                <Search className="w-5 h-5 text-teal-400 shrink-0" />
+              <div className="flex-1 w-full flex items-center gap-3 px-4 py-3 h-[52px] bg-white rounded-2xl border border-slate-200 focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10 transition-all relative z-10 shadow-sm">
+                <Search className="w-5 h-5 text-teal-500 shrink-0" />
                 <input 
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search name, specialty, or condition..." 
-                  className="w-full bg-transparent border-none outline-none text-white text-sm font-medium placeholder:text-slate-500 focus:ring-0" 
+                  className="w-full bg-transparent border-none outline-none text-slate-800 text-sm font-medium placeholder:text-slate-400 focus:ring-0" 
                 />
               </div>
             </div>
@@ -204,13 +217,13 @@ export default function DehapaHome() {
                     ]}
                   />
                 ) : (
-                  <div className="w-full flex items-center px-4 py-3 h-[52px] bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors">
+                  <div className="w-full flex items-center px-4 py-3 h-[52px] bg-white rounded-2xl border border-slate-200 focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10 transition-all shadow-sm">
                     <input 
                       type="text" 
                       value={searchState}
                       onChange={(e) => setSearchState(e.target.value)}
                       placeholder="Enter State/Region" 
-                      className="w-full bg-transparent border-none outline-none text-white text-sm font-medium placeholder:text-slate-500 focus:ring-0" 
+                      className="w-full bg-transparent border-none outline-none text-slate-800 text-sm font-medium placeholder:text-slate-400 focus:ring-0" 
                     />
                   </div>
                 )}
@@ -256,13 +269,13 @@ export default function DehapaHome() {
                     ]}
                   />
                 ) : (
-                  <div className="w-full flex items-center px-4 py-3 h-[52px] bg-slate-800/50 rounded-2xl border border-slate-700/50 focus-within:border-teal-400/50 focus-within:bg-slate-800/80 transition-colors">
+                  <div className="w-full flex items-center px-4 py-3 h-[52px] bg-white rounded-2xl border border-slate-200 focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10 transition-all shadow-sm">
                     <input 
                       type="text" 
                       value={searchDistrict}
                       onChange={(e) => setSearchDistrict(e.target.value)}
                       placeholder="Enter District/City" 
-                      className="w-full bg-transparent border-none outline-none text-white text-sm font-medium placeholder:text-slate-500 focus:ring-0" 
+                      className="w-full bg-transparent border-none outline-none text-slate-800 text-sm font-medium placeholder:text-slate-400 focus:ring-0" 
                     />
                   </div>
                 )}
@@ -278,9 +291,9 @@ export default function DehapaHome() {
           </div>
 
           {/* Shareable Banner Image */}
-          <div className="mt-8 md:mt-16 max-w-5xl mx-auto rounded-[32px] overflow-hidden border border-teal-500/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] relative group cursor-pointer animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-150">
-            <div className="absolute inset-0 bg-gradient-to-t from-[#020810] via-transparent to-transparent z-10 pointer-events-none"></div>
-            <img src="/og-home.png" alt="DehaPa Hub - Sovereign Health Network" className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
+          <div className="mt-8 md:mt-16 max-w-5xl mx-auto rounded-[32px] overflow-hidden border border-slate-200 shadow-sm relative group cursor-pointer animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-150">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent z-10 pointer-events-none"></div>
+            <img src="/og-home.png" alt="DehaPa Hub - Sovereign Health Network" className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
             <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <button 
                 onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent('DehaPa Hub: Your Health, Our Mission. Instantly find and book verified top-rated doctors, premium hospitals, pharmacies, and emergency services. https://sd-dehapa-hub.vercel.app/')}`, '_blank')}
@@ -335,22 +348,110 @@ export default function DehapaHome() {
         </div>
       </section>
 
-      {/* 2. CORE SERVICE TICKETS (Futuristic Cards) */}
-      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-8 lg:-mt-16 mb-8 lg:mb-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
+      {/* 2. HOW DEHAPA WORKS (Mobile-First Visual Explainer) */}
+      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 -mt-4 lg:-mt-12 mb-16 lg:mb-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl lg:text-4xl font-black font-serif text-slate-900 mb-4">How It Works</h2>
+            <p className="text-slate-600 font-medium">Your entire healthcare journey in 3 simple steps.</p>
+          </div>
+
+          <div className="relative border-l-2 border-teal-100 ml-4 md:ml-0 md:border-l-0">
+            {/* Step 1 */}
+            <div className="mb-12 relative flex flex-col md:flex-row md:items-center gap-6 pl-8 md:pl-0">
+              <div className="absolute left-[-9px] md:static md:w-1/2 flex justify-start md:justify-end md:pr-10">
+                <div className="hidden md:flex w-16 h-16 rounded-2xl bg-teal-50 border border-teal-200 items-center justify-center shadow-sm relative z-10">
+                  <Search className="w-8 h-8 text-teal-600" />
+                </div>
+                <div className="md:hidden w-4 h-4 rounded-full bg-teal-500 border-4 border-white shadow-sm mt-1 z-10"></div>
+              </div>
+              <div className="md:w-1/2 md:pl-10 relative">
+                {/* Connecting Line for Desktop */}
+                <div className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-10 h-0.5 bg-teal-100"></div>
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-teal-500"></div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2">1. Find or Scan</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed mb-4">Search for a doctor above, or physically visit a clinic and scan their DehaPa QR Code using the scanner on this page.</p>
+                  <div className="h-24 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                    <QrCode className="w-10 h-10 text-slate-300" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="mb-12 relative flex flex-col md:flex-row-reverse md:items-center gap-6 pl-8 md:pl-0">
+              <div className="absolute left-[-9px] md:static md:w-1/2 flex justify-start md:justify-start md:pl-10">
+                <div className="hidden md:flex w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 items-center justify-center shadow-sm relative z-10">
+                  <UserCircle className="w-8 h-8 text-blue-600" />
+                </div>
+                <div className="md:hidden w-4 h-4 rounded-full bg-blue-500 border-4 border-white shadow-sm mt-1 z-10"></div>
+              </div>
+              <div className="md:w-1/2 md:pr-10 relative text-left md:text-right">
+                {/* Connecting Line for Desktop */}
+                <div className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-10 h-0.5 bg-blue-100"></div>
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+                  <div className="absolute top-0 right-0 md:left-0 w-1 h-full bg-blue-500"></div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2">2. Connect & Book</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed mb-4">Tap "Request Connection" on their profile. Once approved, your Health Vault is linked and you can instantly book appointments.</p>
+                  <div className="h-24 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-xs pointer-events-none">Request Connection</button>
+                  </div>
+                </div>
+              </div>
+              {/* Desktop center line connector */}
+              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-slate-100 -translate-x-1/2 -z-10"></div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative flex flex-col md:flex-row md:items-center gap-6 pl-8 md:pl-0">
+              <div className="absolute left-[-9px] md:static md:w-1/2 flex justify-start md:justify-end md:pr-10">
+                <div className="hidden md:flex w-16 h-16 rounded-2xl bg-fuchsia-50 border border-fuchsia-200 items-center justify-center shadow-sm relative z-10">
+                  <ShieldCheck className="w-8 h-8 text-fuchsia-600" />
+                </div>
+                <div className="md:hidden w-4 h-4 rounded-full bg-fuchsia-500 border-4 border-white shadow-sm mt-1 z-10"></div>
+              </div>
+              <div className="md:w-1/2 md:pl-10 relative">
+                {/* Connecting Line for Desktop */}
+                <div className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-10 h-0.5 bg-fuchsia-100"></div>
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-fuchsia-500"></div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2">3. Consult & Store</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed mb-4">Complete your visit. The doctor's digital prescription and any lab requests are instantly saved to your encrypted Vault.</p>
+                  <div className="h-24 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                    <div className="bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-fuchsia-500" />
+                      <span className="text-xs font-bold text-slate-700">Vault Synced</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+
+      {/* 3. CORE SERVICE TICKETS (Premium Medical Aesthetic) */}
+      <section className="relative z-20 w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 mb-8 lg:mb-16">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl sm:text-3xl font-black font-serif text-slate-900">Explore Services</h2>
+          <div className="h-px flex-1 bg-slate-200 ml-6 hidden sm:block"></div>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
           
           {[
-            { title: "Find Doctors", desc: "Book Specialists", icon: <Stethoscope className="w-10 h-10" />, href: "/doctors", color: "from-blue-600 to-cyan-400", glow: "shadow-cyan-500/50" },
-            { title: "Hospitals", desc: "Live Bed Arrays", icon: <Building2 className="w-10 h-10" />, href: "/hospitals", color: "from-teal-600 to-emerald-400", glow: "shadow-emerald-500/50" },
-            { title: "Diagnostics", desc: "Digital Lab Scans", icon: <TestTube2 className="w-10 h-10" />, href: "/labs", color: "from-purple-600 to-pink-400", glow: "shadow-pink-500/50" },
-            { title: "Medicines", desc: "Drone Pharmacy", icon: <Pill className="w-10 h-10" />, href: "/pharmacies", color: "from-orange-600 to-yellow-400", glow: "shadow-yellow-500/50" },
-            { title: "Ambulance", desc: "Hyper-Dispatch", icon: <Ambulance className="w-10 h-10" />, href: "#ambulance-ping", color: "from-red-600 to-rose-400", glow: "shadow-rose-500/50" },
-            { title: "Health QR", desc: "Patient Identity", icon: <QrCode className="w-10 h-10" />, href: "#qr-code", action: () => setIsQrModalOpen(true), color: "from-fuchsia-600 to-purple-400", glow: "shadow-purple-500/50" },
+            { title: "Find Doctors", desc: "Book Specialists", icon: <Stethoscope className="w-10 h-10" />, href: "/doctors", color: "from-blue-500 to-cyan-500" },
+            { title: "Hospitals", desc: "Live Bed Arrays", icon: <Building2 className="w-10 h-10" />, href: "/hospitals", color: "from-teal-500 to-emerald-500" },
+            { title: "Diagnostics", desc: "Digital Lab Scans", icon: <TestTube2 className="w-10 h-10" />, href: "/labs", color: "from-purple-500 to-pink-500" },
+            { title: "Medicines", desc: "Drone Pharmacy", icon: <Pill className="w-10 h-10" />, href: "/pharmacies", color: "from-orange-500 to-yellow-500" },
+            { title: "Ambulance", desc: "Hyper-Dispatch", icon: <Ambulance className="w-10 h-10" />, href: "#ambulance-ping", color: "from-red-500 to-rose-500" },
+            { title: "Health QR", desc: "Patient Identity", icon: <QrCode className="w-10 h-10" />, href: "#qr-code", action: () => setIsQrModalOpen(true), color: "from-fuchsia-500 to-purple-500" },
           ].map((item, i) => (
             <Link 
               key={i} 
               href={item.href}
-              className={`group relative flex flex-col items-start justify-between min-h-[180px] sm:min-h-[260px] bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-5 sm:p-8 overflow-hidden transition-all duration-700 hover:-translate-y-4 hover:bg-slate-800/80 hover:border-slate-500 hover:shadow-[0_20px_60px_-15px_rgba(255,255,255,0.1)]`}
+              className={`group relative flex flex-col items-start justify-between min-h-[180px] sm:min-h-[260px] bg-white border border-slate-200 rounded-[2.5rem] p-5 sm:p-8 overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:border-slate-300`}
               onClick={(e) => {
                 if (item.action) {
                   e.preventDefault();
@@ -359,27 +460,22 @@ export default function DehapaHome() {
               }}
             >
               {/* Dynamic Glow Behind Card on Hover */}
-              <div className={`absolute -inset-0.5 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-700 rounded-[2.5rem] pointer-events-none`}></div>
+              <div className={`absolute -inset-0.5 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-5 blur-xl transition-opacity duration-500 rounded-[2.5rem] pointer-events-none`}></div>
               
-              {/* Animated Techno-Grid */}
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 group-hover:opacity-30 transition-opacity duration-700 mix-blend-overlay"></div>
-
               {/* Icon Orb */}
-              <div className={`relative z-10 w-20 h-20 rounded-[1.5rem] bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-6 shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]`}>
+              <div className={`relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-[1.5rem] bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-6 shadow-md transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)]`}>
                 {item.icon}
-                {/* Floating inner glow */}
-                <div className="absolute inset-0 bg-white/20 rounded-[1.5rem] blur-md mix-blend-overlay"></div>
+                <div className="absolute inset-0 bg-white/20 rounded-[1.5rem] blur-sm mix-blend-overlay"></div>
               </div>
               
               <div className="relative z-10 w-full">
-                <h3 className={`font-black text-xl sm:text-2xl mb-2 tracking-tight text-white transition-all duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400`}>
+                <h3 className={`font-black text-xl sm:text-2xl mb-1 sm:mb-2 tracking-tight text-slate-900 transition-colors duration-500 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:${item.color}`}>
                   {item.title}
                 </h3>
-                <p className="text-sm sm:text-base text-slate-400 font-medium group-hover:text-slate-300 transition-colors">
+                <p className="text-sm sm:text-base text-slate-500 font-medium group-hover:text-slate-700 transition-colors">
                   {item.desc}
                 </p>
-                {/* Neon progress bar effect at bottom */}
-                <div className={`h-1 w-0 bg-gradient-to-r ${item.color} mt-6 rounded-full group-hover:w-full transition-all duration-700 ease-out shadow-[0_0_10px_currentColor]`}></div>
+                <div className={`h-1 w-0 bg-gradient-to-r ${item.color} mt-4 sm:mt-6 rounded-full group-hover:w-full transition-all duration-700 ease-out`}></div>
               </div>
             </Link>
           ))}
@@ -387,113 +483,96 @@ export default function DehapaHome() {
         </div>
       </section>
 
-      {/* 3. UBER-LIKE AMBULANCE PING (Holographic Map) */}
+      {/* 4. UBER-LIKE AMBULANCE PING (Emergency Module) */}
       <section id="ambulance-ping" className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-2 lg:py-8 mb-2 lg:mb-16 scroll-mt-24 relative">
-        {/* Background ambient glow for map section */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[500px] bg-red-900/10 blur-[150px] pointer-events-none rounded-full"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[500px] bg-red-100 blur-[150px] pointer-events-none rounded-full"></div>
 
-        <div className="bg-slate-900/80 backdrop-blur-2xl rounded-[3rem] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-slate-700/50 flex flex-col lg:flex-row relative z-10">
+        <div className="bg-white rounded-[3rem] overflow-hidden shadow-[0_20px_50px_-15px_rgba(239,68,68,0.15)] border border-red-100 flex flex-col lg:flex-row relative z-10">
           
-          {/* Left Side: Cyberpunk Interface */}
-          <div className="w-full lg:w-5/12 p-5 sm:p-12 lg:p-20 flex flex-col justify-center relative z-20 border-r border-slate-800">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-black uppercase tracking-widest mb-8 w-max shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+          {/* Left Side: Clean Interface */}
+          <div className="w-full lg:w-5/12 p-5 sm:p-12 lg:p-20 flex flex-col justify-center relative z-20 border-r border-slate-100">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-black uppercase tracking-widest mb-8 w-max">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
               Emergency Override
             </div>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-white mb-6 leading-tight drop-shadow-lg">
-              Hyper-Speed <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">Dispatch.</span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-slate-900 mb-6 leading-tight">
+              Hyper-Speed <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-500">Dispatch.</span>
             </h2>
-            <p className="text-slate-400 text-base sm:text-lg mb-8 sm:mb-12 leading-relaxed">
-              Our satellite-linked ping system instantly alerts all DehaPa emergency vehicles within a 5km radius. Live holographic tracking engaged.
+            <p className="text-slate-600 text-base sm:text-lg mb-8 sm:mb-12 leading-relaxed font-medium">
+              Our satellite-linked ping system instantly alerts all DehaPa emergency vehicles within a 5km radius.
             </p>
             
-            <div className="bg-black/40 border border-slate-700/50 rounded-3xl p-8 backdrop-blur-md shadow-inner relative overflow-hidden group">
-              {/* Scanline effect */}
-              <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.25)_50%)] bg-[size:100%_4px] pointer-events-none opacity-50"></div>
-              
-              <div className="flex items-center gap-5 mb-8 pb-8 border-b border-slate-800 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center shrink-0 border border-slate-600 shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]">
-                  <MapPin className="w-6 h-6 text-teal-400" />
+            <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+              <div className="flex items-center gap-5 mb-8 pb-8 border-b border-slate-200 relative z-10">
+                <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0 border border-slate-200 shadow-sm">
+                  <MapPin className="w-6 h-6 text-red-500" />
                 </div>
                 <div>
-                  <span className="text-xs uppercase tracking-[0.2em] font-black text-slate-500 block mb-1">Target Coordinates</span>
-                  <span className="text-white font-bold text-lg tracking-wide font-mono">20.296° N, 85.824° E</span>
+                  <span className="text-xs uppercase tracking-widest font-bold text-slate-500 block mb-1">Target Coordinates</span>
+                  <span className="text-slate-900 font-bold text-lg tracking-wide font-mono">20.296° N, 85.824° E</span>
                 </div>
               </div>
               
               <button 
                 onClick={handlePingAmbulance}
                 disabled={isPinging || !!ambulanceETA}
-                className={`w-full py-5 rounded-2xl font-black text-base uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden z-10 ${
+                className={`w-full py-5 rounded-2xl font-black text-base uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden z-10 ${
                   ambulanceETA 
-                    ? 'bg-emerald-500 text-white shadow-[0_0_30px_rgba(16,185,129,0.4)] border border-emerald-400' 
+                    ? 'bg-emerald-500 text-white shadow-[0_10px_20px_rgba(16,185,129,0.2)]' 
                     : isPinging 
-                      ? 'bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-700' 
-                      : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-[0_0_40px_rgba(239,68,68,0.4)] hover:shadow-[0_0_60px_rgba(239,68,68,0.6)] border border-red-500 hover:-translate-y-1'
+                      ? 'bg-slate-200 text-slate-500 cursor-not-allowed border border-slate-300' 
+                      : 'bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white shadow-[0_10px_20px_rgba(239,68,68,0.2)] hover:shadow-[0_15px_30px_rgba(239,68,68,0.3)] hover:-translate-y-1'
                 }`}
               >
                 {ambulanceETA ? (
                   <><ShieldCheck className="w-6 h-6 animate-pulse" /> Driver Locked (ETA: {ambulanceETA})</>
                 ) : isPinging ? (
-                  <><div className="w-6 h-6 border-4 border-slate-500 border-t-white rounded-full animate-spin"></div> Scanning Grid...</>
+                  <><div className="w-6 h-6 border-4 border-slate-400 border-t-slate-700 rounded-full animate-spin"></div> Scanning Grid...</>
                 ) : (
                   <><PhoneCall className="w-6 h-6" /> PING NEAREST AMBULANCE</>
-                )}
-                
-                {/* Button shine */}
-                {!ambulanceETA && !isPinging && (
-                  <div className="absolute inset-0 h-full w-full bg-white/20 -skew-x-12 translate-x-[-150%] animate-[shimmer_2s_infinite]"></div>
                 )}
               </button>
             </div>
           </div>
 
-          {/* Right Side: Holographic Radar Map */}
-          <div className="w-full lg:w-7/12 min-h-[300px] lg:min-h-full bg-[#030b14] relative overflow-hidden flex items-center justify-center py-4 lg:py-0">
-            {/* Base Dark Map Grid */}
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.1)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-30"></div>
+          {/* Right Side: Clean Radar Map */}
+          <div className="w-full lg:w-7/12 min-h-[300px] lg:min-h-full bg-slate-50 relative overflow-hidden flex items-center justify-center py-4 lg:py-0 border-t lg:border-t-0 border-slate-100">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(239,68,68,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(239,68,68,0.05)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-60"></div>
             
             {/* The Radar Circle */}
-            <div className="relative w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] lg:w-[600px] lg:h-[600px] rounded-full border border-teal-500/20 shadow-[inset_0_0_50px_rgba(20,184,166,0.1)] flex items-center justify-center">
-              
-              {/* Inner Rings */}
-              <div className="absolute w-[66%] h-[66%] rounded-full border border-teal-500/20"></div>
-              <div className="absolute w-[33%] h-[33%] rounded-full border border-teal-500/20"></div>
-              
-              {/* Crosshairs */}
-              <div className="absolute w-full h-px bg-teal-500/20"></div>
-              <div className="absolute h-full w-px bg-teal-500/20"></div>
+            <div className="relative w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] lg:w-[600px] lg:h-[600px] rounded-full border border-red-200 shadow-inner flex items-center justify-center bg-white/50 backdrop-blur-sm">
+              <div className="absolute w-[66%] h-[66%] rounded-full border border-red-100"></div>
+              <div className="absolute w-[33%] h-[33%] rounded-full border border-red-100"></div>
+              <div className="absolute w-full h-px bg-red-100"></div>
+              <div className="absolute h-full w-px bg-red-100"></div>
 
               {/* User Center Pin */}
               <div className="absolute z-30 flex flex-col items-center">
-                <div className="w-8 h-8 bg-teal-400 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(45,212,191,0.8)] relative">
-                  <div className="absolute inset-0 bg-teal-400 rounded-full animate-ping opacity-75"></div>
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg relative">
+                  <div className="absolute inset-0 bg-blue-400 rounded-full animate-ping opacity-75"></div>
                   <div className="w-3 h-3 bg-white rounded-full"></div>
                 </div>
               </div>
 
               {/* Radar Sweep Cone */}
               {isPinging && (
-                <div className="absolute w-full h-full rounded-full bg-[conic-gradient(from_0deg,transparent_0deg,rgba(20,184,166,0.1)_90deg,rgba(20,184,166,0.8)_360deg)] animate-[spin_3s_linear_infinite] z-20" style={{ transformOrigin: "center" }}>
-                  <div className="absolute top-0 right-[50%] w-[50%] h-[50%] border-r-2 border-teal-400"></div>
+                <div className="absolute w-full h-full rounded-full bg-[conic-gradient(from_0deg,transparent_0deg,rgba(239,68,68,0.05)_90deg,rgba(239,68,68,0.2)_360deg)] animate-[spin_3s_linear_infinite] z-20" style={{ transformOrigin: "center" }}>
+                  <div className="absolute top-0 right-[50%] w-[50%] h-[50%] border-r-2 border-red-400"></div>
                 </div>
               )}
 
-              {/* Target Found (Ambulance blips appear after ping) */}
+              {/* Target Found */}
               {ambulanceETA && (
                 <>
                   <div className="absolute top-[20%] left-[60%] z-40 animate-in zoom-in duration-500 delay-300 flex flex-col items-center">
-                    <div className="bg-red-500/20 border border-red-500/50 backdrop-blur-md text-red-100 text-[10px] font-black uppercase px-2 py-1 rounded mb-2 shadow-[0_0_15px_rgba(239,68,68,0.5)]">ALS Unit-42</div>
-                    <div className="w-6 h-6 bg-red-500 rounded-full shadow-[0_0_20px_rgba(239,68,68,0.8)] flex items-center justify-center border-2 border-white">
-                      <Ambulance className="w-3 h-3 text-white" />
+                    <div className="bg-red-50 border border-red-200 text-red-600 text-[10px] font-black uppercase px-2 py-1 rounded mb-2 shadow-sm">ALS Unit-42</div>
+                    <div className="w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center border-2 border-red-500">
+                      <Ambulance className="w-4 h-4 text-red-500" />
                     </div>
                   </div>
-                  
-                  {/* Digital path line drawing (simulated with CSS border) */}
-                  <div className="absolute top-[35%] left-[55%] w-[80px] h-[80px] border-l-2 border-b-2 border-dashed border-red-400/50 animate-pulse z-10"></div>
+                  <div className="absolute top-[35%] left-[55%] w-[80px] h-[80px] border-l-2 border-b-2 border-dashed border-red-300 animate-pulse z-10"></div>
                 </>
               )}
-
             </div>
           </div>
         </div>
@@ -550,30 +629,30 @@ export default function DehapaHome() {
           </div>
           
           {/* Futuristic Text Content */}
-          <div className="w-full lg:w-1/2 relative z-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-black uppercase tracking-widest mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(34,211,238,0.15)]">
-              <QrCode className="w-4 h-4" /> Physical-to-Digital Bridge
+          <div className="w-full lg:w-1/2 relative z-20 mt-12 lg:mt-0 lg:pl-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-700 text-xs font-black uppercase tracking-widest mb-8 shadow-sm">
+              <QrCode className="w-4 h-4" /> Seamless Clinic Sync
             </div>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-white mb-8 leading-tight">
-              Scan & Upload <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">to the Matrix.</span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-slate-900 mb-8 leading-tight">
+              Scan & Instantly <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">Connect.</span>
             </h2>
-            <p className="text-slate-400 text-lg mb-10 leading-relaxed font-medium">
-              Every DehaPa partner clinic has a unique Smart QR Node. Scan it to instantly bridge the physical clinic desk with your digital health vault.
+            <p className="text-slate-600 text-lg mb-10 leading-relaxed font-medium">
+              Every DehaPa partner clinic has a unique Smart QR. Scan it to instantly bridge the physical clinic desk with your digital health vault.
             </p>
             
             <div className="space-y-6">
               {[
-                { title: "Live Holographic Queues", desc: "Instantly join the doctor's digital queue and track your exact waiting number from your device." },
-                { title: "Sovereign Health Vault Auth", desc: "Grant the doctor encrypted, temporary access to your medical history via cryptographic handshake." },
-                { title: "Frictionless Transactions", desc: "Process consultation fees via instant UPI payment without queuing at the physical counter." }
+                { title: "Live Digital Queues", desc: "Instantly join the doctor's queue and track your exact waiting number from your phone." },
+                { title: "Secure Vault Access", desc: "Grant the doctor temporary access to your medical history via cryptographic handshake." },
+                { title: "Frictionless Payments", desc: "Process consultation fees via instant UPI payment without waiting at the physical counter." }
               ].map((feat, i) => (
-                <div key={i} className="flex gap-4 sm:gap-6 group bg-slate-800/30 p-4 sm:p-6 rounded-3xl border border-slate-700/50 hover:border-cyan-500/50 hover:bg-slate-800/80 transition-all duration-500 cursor-default shadow-lg hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]">
-                  <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 group-hover:border-cyan-400 group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all">
-                    <span className="text-cyan-400 font-black font-mono text-xl">0{i + 1}</span>
+                <div key={i} className="flex gap-4 sm:gap-6 group bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 hover:border-cyan-300 hover:bg-slate-50 transition-all duration-300 shadow-sm hover:shadow-md">
+                  <div className="w-14 h-14 rounded-2xl bg-cyan-50 border border-cyan-100 flex items-center justify-center shrink-0 group-hover:border-cyan-300 transition-all">
+                    <span className="text-cyan-600 font-black font-mono text-xl">0{i + 1}</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-white text-xl mb-2 group-hover:text-cyan-300 transition-colors">{feat.title}</h4>
-                    <p className="text-sm text-slate-400 leading-relaxed">{feat.desc}</p>
+                    <h4 className="font-bold text-slate-900 text-xl mb-2 group-hover:text-cyan-700 transition-colors">{feat.title}</h4>
+                    <p className="text-sm text-slate-600 leading-relaxed">{feat.desc}</p>
                   </div>
                 </div>
               ))}
@@ -582,26 +661,26 @@ export default function DehapaHome() {
         </div>
       </section>
 
-      {/* 5. INSTRUCTION PORTAL (Glassmorphic Tabs) */}
-      <section className="relative z-20 bg-slate-900/50 backdrop-blur-3xl border-t border-slate-800 py-8 lg:py-16 mb-6 lg:mb-12">
+      {/* 5. INSTRUCTION PORTAL (Premium Medical Tabs) */}
+      <section className="relative z-20 bg-white border-t border-slate-200 py-12 lg:py-20 mb-6 lg:mb-12">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 text-center">
-          <h2 className="text-4xl sm:text-5xl font-black font-serif text-white mb-6">DehaPa Operating Protocols</h2>
-          <p className="text-slate-400 mb-16 max-w-2xl mx-auto text-lg">Select your entity classification to download operational guidelines and access secure gateways.</p>
+          <h2 className="text-4xl sm:text-5xl font-black font-serif text-slate-900 mb-6">Operating Protocols</h2>
+          <p className="text-slate-600 mb-12 max-w-2xl mx-auto text-lg font-medium">Select your role to view operational guidelines and access secure gateways.</p>
 
-          {/* Futuristic Tab Navigation */}
-          <div className="inline-flex bg-slate-950 p-2 rounded-[2rem] mb-16 border border-slate-800 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] overflow-x-auto max-w-full">
+          {/* Premium Tab Navigation */}
+          <div className="inline-flex bg-slate-100 p-2 rounded-[2rem] mb-12 border border-slate-200 shadow-sm overflow-x-auto max-w-full">
             {[
-              { id: "patients", label: "End User (Patient)", icon: <UserCircle className="w-5 h-5" /> },
-              { id: "doctors", label: "Specialist Node", icon: <Stethoscope className="w-5 h-5" /> },
-              { id: "hospitals", label: "Facility Hub", icon: <Building2 className="w-5 h-5" /> }
+              { id: "patients", label: "Patient Portal", icon: <UserCircle className="w-5 h-5" /> },
+              { id: "doctors", label: "Doctor Portal", icon: <Stethoscope className="w-5 h-5" /> },
+              { id: "hospitals", label: "Hospital Portal", icon: <Building2 className="w-5 h-5" /> }
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-3 px-8 py-4 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
+                className={`flex items-center gap-3 px-8 py-4 rounded-[1.5rem] text-sm font-bold uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
                   activeTab === tab.id 
-                    ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-[0_0_20px_rgba(20,184,166,0.4)]' 
-                    : 'text-slate-500 hover:text-white hover:bg-slate-800'
+                    ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-md' 
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                 }`}
               >
                 {tab.icon} {tab.label}
@@ -609,88 +688,87 @@ export default function DehapaHome() {
             ))}
           </div>
 
-          {/* Holographic Tab Content Box */}
-          <div className="max-w-6xl mx-auto bg-slate-900/80 border border-slate-700/50 rounded-[3rem] p-6 sm:p-10 lg:p-16 text-left shadow-[0_30px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl relative overflow-hidden min-h-[400px]">
+          {/* Light Tab Content Box */}
+          <div className="max-w-6xl mx-auto bg-slate-50 border border-slate-200 rounded-[3rem] p-6 sm:p-10 lg:p-16 text-left shadow-lg relative overflow-hidden min-h-[400px]">
             {/* Grid overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
             {activeTab === "patients" && (
-              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-10">
-                <h3 className="text-3xl font-black text-white mb-10 flex items-center gap-4">
-                  <UserCircle className="w-8 h-8 text-teal-400" /> Patient Lifecycle
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 relative z-10">
+                <h3 className="text-3xl font-black text-slate-900 mb-10 flex items-center gap-4">
+                  <UserCircle className="w-8 h-8 text-teal-500" /> Patient Lifecycle
                 </h3>
                 <div className="grid md:grid-cols-3 gap-6 sm:gap-10 mb-8 sm:mb-12">
-                  <div className="bg-slate-800/50 p-6 sm:p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-teal-400 mb-4 text-xl">01 / Search & Locate</h4>
-                    <p className="text-slate-400 leading-relaxed">Query the central database using the search matrix or core tickets to locate specialized care modules in your sector.</p>
+                  <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-teal-600 mb-4 text-xl">01 / Find Care</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Use the search system to locate highly-rated doctors, hospitals, and pharmacies in your local area.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-6 sm:p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-teal-400 mb-4 text-xl">02 / Secure Booking</h4>
-                    <p className="text-slate-400 leading-relaxed">Lock in consultation slots digitally or use the physical clinic QR code to sync with the doctor's live queue dashboard.</p>
+                  <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-teal-600 mb-4 text-xl">02 / Book Online</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Instantly book consultation slots or use the physical clinic QR code to sync with the doctor's live queue.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-6 sm:p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-teal-400 mb-4 text-xl">03 / Data Vault</h4>
-                    <p className="text-slate-400 leading-relaxed">All digital prescriptions and diagnostic logs are automatically compiled and encrypted into your personal Sovereign Vault.</p>
+                  <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-teal-600 mb-4 text-xl">03 / Secure Vault</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">All digital prescriptions and diagnostic logs are automatically saved directly into your personal Health Vault.</p>
                   </div>
                 </div>
-                <div className="pt-8 border-t border-slate-800 flex justify-end">
-                  <Link href="/portal" className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 border border-white/10">
-                    Access Patient Module <ChevronRight className="w-5 h-5" />
+                <div className="pt-8 border-t border-slate-200 flex justify-end">
+                  <Link href="/portal" className="bg-teal-50 hover:bg-teal-100 text-teal-700 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 border border-teal-200">
+                    Access Patient Portal <ChevronRight className="w-5 h-5" />
                   </Link>
                 </div>
               </div>
             )}
 
-            {/* Doctor and Hospital tabs similarly upgraded... (abbreviated here for symmetry) */}
             {activeTab === "doctors" && (
-              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-10">
-                <h3 className="text-3xl font-black text-white mb-10 flex items-center gap-4">
-                  <Stethoscope className="w-8 h-8 text-cyan-400" /> Specialist Deployment
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 relative z-10">
+                <h3 className="text-3xl font-black text-slate-900 mb-10 flex items-center gap-4">
+                  <Stethoscope className="w-8 h-8 text-blue-500" /> Doctor Onboarding
                 </h3>
                 <div className="grid md:grid-cols-3 gap-10 mb-12">
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-cyan-400 mb-4 text-xl">01 / Node Verification</h4>
-                    <p className="text-slate-400 leading-relaxed">Authenticate your credentials to claim your digital profile, dictating your public presence and operational hours.</p>
+                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-blue-600 mb-4 text-xl">01 / Profile Verification</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Verify your medical credentials to claim your digital profile, manage your hours, and build patient trust.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-cyan-400 mb-4 text-xl">02 / Queue Sync</h4>
-                    <p className="text-slate-400 leading-relaxed">Deploy the Admin CRM at your clinic. Patients scanning your QR code are instantly injected into your digital dashboard.</p>
+                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-blue-600 mb-4 text-xl">02 / Queue Management</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Deploy our digital token system at your clinic to effortlessly manage patient queues and walk-ins.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-cyan-400 mb-4 text-xl">03 / Rx Transmission</h4>
-                    <p className="text-slate-400 leading-relaxed">Issue cryptographically secure digital prescriptions that bypass paper and load directly into the patient's ecosystem.</p>
+                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-blue-600 mb-4 text-xl">03 / Digital Rx</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Write digital prescriptions that sync directly to the patient's vault and local pharmacies automatically.</p>
                   </div>
                 </div>
-                <div className="pt-8 border-t border-slate-800 flex justify-end">
-                  <Link href="/login?redirect=/portal/verify?role=doctor" className="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 border border-cyan-500/30">
-                    Init Doctor Verification <ChevronRight className="w-5 h-5" />
+                <div className="pt-8 border-t border-slate-200 flex justify-end">
+                  <Link href="/login?redirect=/portal/verify?role=doctor" className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 border border-blue-200">
+                    Verify Your Practice <ChevronRight className="w-5 h-5" />
                   </Link>
                 </div>
               </div>
             )}
 
             {activeTab === "hospitals" && (
-              <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-10">
-                <h3 className="text-3xl font-black text-white mb-10 flex items-center gap-4">
-                  <Building2 className="w-8 h-8 text-blue-400" /> Hub Administration
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 relative z-10">
+                <h3 className="text-3xl font-black text-slate-900 mb-10 flex items-center gap-4">
+                  <Building2 className="w-8 h-8 text-indigo-500" /> Hospital Administration
                 </h3>
                 <div className="grid md:grid-cols-3 gap-10 mb-12">
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-blue-400 mb-4 text-xl">01 / Infrastructure Sync</h4>
-                    <p className="text-slate-400 leading-relaxed">Broadcast your facility's departments, ICU specs, and capabilities to the global DehaPa routing network.</p>
+                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-indigo-600 mb-4 text-xl">01 / Facility Broadcast</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Publish your hospital's departments, specialists, and surgical capabilities to the entire DehaPa network.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-blue-400 mb-4 text-xl">02 / Live Telemetry</h4>
-                    <p className="text-slate-400 leading-relaxed">Stream real-time bed availability to the network, allowing instant routing for emergency dispatch modules.</p>
+                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-indigo-600 mb-4 text-xl">02 / Live Bed Tracking</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Update real-time ICU and ward bed availability so ambulances can route critical patients instantly.</p>
                   </div>
-                  <div className="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
-                    <h4 className="font-black text-blue-400 mb-4 text-xl">03 / Staff Roster</h4>
-                    <p className="text-slate-400 leading-relaxed">Digitally link verified Specialist Nodes (doctors) to your Hub to amplify your institutional authority.</p>
+                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 className="font-black text-indigo-600 mb-4 text-xl">03 / Staff Management</h4>
+                    <p className="text-slate-600 leading-relaxed font-medium">Digitally link verified doctors to your hospital to showcase your world-class medical team to patients.</p>
                   </div>
                 </div>
-                <div className="pt-8 border-t border-slate-800 flex justify-end">
-                  <Link href="/login?redirect=/portal/verify?role=hospital" className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 border border-blue-500/30">
-                    Init Hospital Auth <ChevronRight className="w-5 h-5" />
+                <div className="pt-8 border-t border-slate-200 flex justify-end">
+                  <Link href="/login?redirect=/portal/verify?role=hospital" className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 border border-indigo-200">
+                    Register Hospital <ChevronRight className="w-5 h-5" />
                   </Link>
                 </div>
               </div>
@@ -702,29 +780,29 @@ export default function DehapaHome() {
 
       {/* QR Code Modal */}
       {isQrModalOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-[#020810]/80 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="relative bg-slate-900 border border-slate-700/50 shadow-2xl rounded-3xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="relative bg-white border border-slate-200 shadow-2xl rounded-3xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300">
             {/* Glowing top border */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-fuchsia-500 to-purple-500" />
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-fuchsia-500 to-purple-500" />
             
             <button 
               onClick={() => setIsQrModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors bg-slate-800 hover:bg-slate-700 rounded-full p-1"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors bg-slate-100 hover:bg-slate-200 rounded-full p-1"
             >
               <X className="w-5 h-5" />
             </button>
             
             <div className="p-8 text-center flex flex-col items-center">
-              <div className="w-12 h-12 bg-fuchsia-500/20 rounded-full flex items-center justify-center mb-4">
-                <QrCode className="w-6 h-6 text-fuchsia-400" />
+              <div className="w-12 h-12 bg-fuchsia-50 rounded-full flex items-center justify-center mb-4 border border-fuchsia-100">
+                <QrCode className="w-6 h-6 text-fuchsia-600" />
               </div>
               
-              <h2 className="text-xl font-black text-white mb-1">My Health QR</h2>
-              <p className="text-xs text-slate-400 mb-8 max-w-[250px]">
+              <h2 className="text-xl font-black text-slate-900 mb-1">My Health QR</h2>
+              <p className="text-xs text-slate-600 mb-8 max-w-[250px] font-medium">
                 Show this code at any Sovereign Network hospital or clinic for instant identity verification.
               </p>
               
-              <div className="bg-white p-4 rounded-2xl shadow-[0_0_40px_rgba(192,38,211,0.2)] mb-6 ring-4 ring-slate-800">
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 ring-4 ring-slate-50">
                 <QRCode 
                   value={`dehapa-auth://scan?uid=${encodeURIComponent(userUid || "guest")}`}
                   size={200}
@@ -732,8 +810,8 @@ export default function DehapaHome() {
                 />
               </div>
               
-              <div className="inline-block bg-slate-800 px-4 py-2 rounded-full border border-slate-700">
-                <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold font-mono">
+              <div className="inline-block bg-slate-100 px-4 py-2 rounded-full border border-slate-200">
+                <p className="text-[10px] uppercase tracking-widest text-slate-600 font-bold font-mono">
                   ID: {userUid ? userUid.split('@')[0] : "UNVERIFIED"}
                 </p>
               </div>
