@@ -200,7 +200,7 @@ export default function HospitalProfileLayout({
                  {/* Map Banner */}
                  <div className="w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-sm border border-slate-200 relative mb-6">
                     <iframe 
-                      src={profile.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(profile.address ? `${profile.name}, ${profile.address}` : profile.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                       className="absolute inset-0 w-full h-full border-0"
                       allowFullScreen
                       loading="lazy"
