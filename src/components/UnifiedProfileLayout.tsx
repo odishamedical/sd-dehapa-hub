@@ -256,11 +256,11 @@ export default function UnifiedProfileLayout({
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
         
         {/* HERO CARD - FULL WIDTH (Mockup Style) */}
-        <div id="overview" className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
+        <div id="overview" className="p-2 md:p-6 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
               
               {/* Left: The Prestige Portrait */}
               <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 z-10">
-                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-4 border-white bg-slate-100">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[5px] border-white bg-slate-100">
                   <img 
                     src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
                     alt={profile.name}
