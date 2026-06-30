@@ -520,11 +520,14 @@ export default function UnifiedProfileLayout({
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Areas of Excellence</h2>
                   
                   {!hasValidData(profile.specialties) ? (
-                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
-                       <Lock className="w-8 h-8 text-slate-300 mb-3" />
-                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Specialties</h3>
-                       <p className="text-slate-500 text-xs max-w-sm mb-4">Areas of excellence are currently unavailable as this profile is unverified.</p>
-                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    <div className="relative bg-gradient-to-br from-teal-50/80 via-white to-cyan-50/80 border border-teal-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                       <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-teal-500/5 rotate-12 pointer-events-none" />
+                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                          <Lock className="w-8 h-8 text-teal-400 group-hover:scale-110 transition-transform duration-300" />
+                       </div>
+                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Specialties</h3>
+                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Areas of excellence are currently unavailable as this profile is unverified. Claim your profile to display your specialties.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="flex flex-wrap gap-4">
@@ -548,11 +551,14 @@ export default function UnifiedProfileLayout({
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Academic Pedigree</h2>
                   
                   {!hasValidData(profile.education) ? (
-                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
-                       <GraduationCap className="w-8 h-8 text-slate-300 mb-3" />
-                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Education</h3>
-                       <p className="text-slate-500 text-xs max-w-sm mb-4">Educational history is currently unavailable as this profile is unverified.</p>
-                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    <div className="relative bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/80 border border-emerald-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                       <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-emerald-500/5 rotate-12 pointer-events-none" />
+                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                          <GraduationCap className="w-8 h-8 text-emerald-500 group-hover:scale-110 transition-transform duration-300" />
+                       </div>
+                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Education</h3>
+                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Educational history is currently unavailable as this profile is unverified. Claim your profile to showcase your academic background.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="space-y-8">
@@ -586,11 +592,14 @@ export default function UnifiedProfileLayout({
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Professional Trajectory</h2>
                   
                   {!hasValidData(profile.experiences) ? (
-                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
-                       <Briefcase className="w-8 h-8 text-slate-300 mb-3" />
-                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Experience</h3>
-                       <p className="text-slate-500 text-xs max-w-sm mb-4">Professional experience is currently unavailable as this profile is unverified.</p>
-                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    <div className="relative bg-gradient-to-br from-blue-50/80 via-white to-cyan-50/80 border border-blue-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                       <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-blue-500/5 rotate-12 pointer-events-none" />
+                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                          <Briefcase className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform duration-300" />
+                       </div>
+                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Experience</h3>
+                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Professional experience is currently unavailable as this profile is unverified. Claim your profile to showcase your career trajectory.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="space-y-8">
@@ -624,11 +633,14 @@ export default function UnifiedProfileLayout({
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Accolades & Honors</h2>
                   
                   {!hasValidData(profile.awards) ? (
-                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
-                       <Medal className="w-8 h-8 text-slate-300 mb-3" />
-                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Awards</h3>
-                       <p className="text-slate-500 text-xs max-w-sm mb-4">Accolades and honors are currently unavailable as this profile is unverified.</p>
-                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    <div className="relative bg-gradient-to-br from-amber-50/80 via-white to-orange-50/80 border border-amber-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                       <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-amber-500/5 rotate-12 pointer-events-none" />
+                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                          <Medal className="w-8 h-8 text-amber-500 group-hover:scale-110 transition-transform duration-300" />
+                       </div>
+                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Awards</h3>
+                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Accolades and honors are currently unavailable as this profile is unverified. Claim your profile to showcase your achievements.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -652,11 +664,14 @@ export default function UnifiedProfileLayout({
                   <h2 className="text-2xl font-black text-[#0A1128] mb-6">Languages Spoken</h2>
                   
                   {!hasValidData(profile.languages) ? (
-                    <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 flex flex-col items-center justify-center text-center">
-                       <Globe className="w-8 h-8 text-slate-300 mb-3" />
-                       <h3 className="text-base font-bold text-slate-700 mb-1">Unverified Languages</h3>
-                       <p className="text-slate-500 text-xs max-w-sm mb-4">Language data is currently unavailable as this profile is unverified.</p>
-                       <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-5 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">Verify to Unlock</button>
+                    <div className="relative bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                       <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-indigo-500/5 rotate-12 pointer-events-none" />
+                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                          <Globe className="w-8 h-8 text-indigo-500 group-hover:scale-110 transition-transform duration-300" />
+                       </div>
+                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Languages</h3>
+                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Language data is currently unavailable as this profile is unverified. Claim your profile to list the languages you speak.</p>
+                       <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="flex flex-wrap gap-4">

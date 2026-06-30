@@ -9,7 +9,7 @@ import {
   Star, MapPin, Clock, Phone, Globe, Shield, 
   Activity, Video, HeartPulse, CheckCircle2, 
   User, GraduationCap, Briefcase, Share2, 
-  Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2, X, ExternalLink
+  Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2, X, ExternalLink, Lock
 } from 'lucide-react';
 import CategoryNav from '@/components/CategoryNav';
 import ClaimProfileModal from '@/components/ClaimProfileModal';
@@ -301,13 +301,14 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {(!profile.departmentsArray || profile.departmentsArray.length === 0) ? (
-                   <div className="bg-slate-50 border border-slate-200 rounded-3xl p-10 flex flex-col items-center justify-center text-center">
-                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
-                       <Shield className="w-8 h-8 text-slate-300" />
+                   <div className="relative bg-gradient-to-br from-rose-50/80 via-white to-pink-50/80 border border-rose-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                     <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-rose-500/5 rotate-12 pointer-events-none" />
+                     <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                        <HeartPulse className="w-8 h-8 text-rose-500 group-hover:scale-110 transition-transform duration-300" />
                      </div>
-                     <h3 className="text-lg font-black text-slate-700 mb-2">Unverified Departments</h3>
-                     <p className="text-slate-500 text-sm max-w-md mb-6">Department data is currently unavailable as this facility is unverified. If you are the owner, please verify your listing to manage your departments.</p>
-                     <button onClick={() => setShowClaimModal(true)} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full font-bold text-sm shadow-md transition-colors">
+                     <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Departments</h3>
+                     <p className="text-slate-500 text-sm max-w-md mb-6 relative z-10">Department data is currently unavailable as this facility is unverified. If you are the owner, please verify your listing to manage your departments.</p>
+                     <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-rose-500 to-pink-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">
                        Verify to Unlock
                      </button>
                    </div>
@@ -360,13 +361,14 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {(!profile.rosterDoctors || profile.rosterDoctors.length === 0) ? (
-                   <div className="bg-slate-50 border border-slate-200 rounded-3xl p-10 flex flex-col items-center justify-center text-center">
-                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm">
-                       <User className="w-8 h-8 text-slate-300" />
+                   <div className="relative bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/80 border border-indigo-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                     <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-indigo-500/5 rotate-12 pointer-events-none" />
+                     <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                        <User className="w-8 h-8 text-indigo-500 group-hover:scale-110 transition-transform duration-300" />
                      </div>
-                     <h3 className="text-lg font-black text-slate-700 mb-2">Unverified Doctor Roster</h3>
-                     <p className="text-slate-500 text-sm max-w-md mb-6">The list of doctors practicing at this facility is currently unavailable as the listing is unverified. If you are the owner, please verify your listing to add your doctors.</p>
-                     <button onClick={() => setShowClaimModal(true)} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-full font-bold text-sm shadow-md transition-colors">
+                     <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Doctor Roster</h3>
+                     <p className="text-slate-500 text-sm max-w-md mb-6 relative z-10">The list of doctors practicing at this facility is currently unavailable as the listing is unverified. If you are the owner, please verify your listing to add your doctors.</p>
+                     <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">
                        Verify to Unlock
                      </button>
                    </div>
@@ -403,10 +405,14 @@ export default function HospitalProfileLayout({
                  <section id="facilities" className="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 rounded-3xl border border-blue-100 shadow-sm p-6 md:p-8 flex flex-col">
                     <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><Shield className="w-5 h-5 text-cyan-600"/> Facilities & Services</h2>
                     {(!profile.facilities || profile.facilities.length === 0) ? (
-                      <div className="bg-white/50 border border-slate-200/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
-                         <Shield className="w-6 h-6 text-slate-400 mb-3" />
-                         <p className="text-slate-500 text-xs font-bold mb-3">Facility data is unverified.</p>
-                         <button onClick={() => setShowClaimModal(true)} className="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-slate-50 transition-colors">Verify Now</button>
+                      <div className="relative bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/80 border border-emerald-100 rounded-3xl p-8 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                         <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-emerald-500/5 rotate-12 pointer-events-none" />
+                         <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-3 relative z-10">
+                            <Shield className="w-7 h-7 text-emerald-500 group-hover:scale-110 transition-transform duration-300" />
+                         </div>
+                         <h3 className="text-base font-black text-slate-800 mb-1 relative z-10">Unverified Facilities</h3>
+                         <p className="text-slate-500 text-xs font-bold mb-4 relative z-10">Facility data is currently unavailable.</p>
+                         <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-2.5 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify Now</button>
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 gap-4">
