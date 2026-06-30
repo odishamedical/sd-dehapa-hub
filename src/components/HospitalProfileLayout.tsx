@@ -144,7 +144,7 @@ export default function HospitalProfileLayout({
                     window.scrollTo({ top: y, behavior: 'smooth' });
                   }
                 }}
-                className={`whitespace-nowrap px-4 py-4 text-sm sm:text-[15px] font-bold tracking-wide transition-all border-b-[3px] shrink-0 ${activeSection === tab.id ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-[#0A1128] hover:text-cyan-600'}`}
+                className={`whitespace-nowrap px-5 py-2 text-sm sm:text-[15px] font-bold tracking-wide transition-all rounded-full shrink-0 ${activeSection === tab.id ? 'bg-emerald-500 text-white shadow-md' : 'bg-transparent text-[#0A1128] hover:text-cyan-600 hover:bg-slate-50'}`}
               >
                 {tab.label}
               </button>
@@ -247,25 +247,27 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {(!profile.departmentsArray || profile.departmentsArray.length === 0) ? (
-                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4 relative">
+                   <div className="grid grid-cols-2 md:grid-cols-6 gap-4 relative">
                       {/* Transparent overlay for the whole grid to catch clicks easily if needed, but clicking cards is better */}
-                      {['Cardiology', 'Orthopedics', 'Neurology', 'Pediatrics', 'Oncology'].map((dept, i) => {
-                         const colors = [
-                            'bg-gradient-to-b from-teal-50 to-white border-teal-100 text-teal-700',
-                            'bg-gradient-to-b from-cyan-50 to-white border-cyan-100 text-cyan-700',
-                            'bg-gradient-to-b from-blue-50 to-white border-blue-100 text-blue-700',
-                            'bg-gradient-to-b from-purple-50 to-white border-purple-100 text-purple-700',
-                            'bg-gradient-to-b from-orange-50 to-white border-orange-100 text-orange-700',
+                      {['Cardiology', 'Orthopedics', 'Neurology', 'Pediatrics', 'Oncology', 'Gynecology'].map((dept, i) => {
+                         const themes = [
+                            { bg: 'bg-gradient-to-br from-teal-50 to-emerald-100', text: 'text-teal-700' },
+                            { bg: 'bg-gradient-to-br from-cyan-50 to-sky-100', text: 'text-cyan-700' },
+                            { bg: 'bg-gradient-to-br from-blue-50 to-indigo-100', text: 'text-blue-700' },
+                            { bg: 'bg-gradient-to-br from-purple-50 to-fuchsia-100', text: 'text-purple-700' },
+                            { bg: 'bg-gradient-to-br from-orange-50 to-amber-100', text: 'text-orange-700' },
+                            { bg: 'bg-gradient-to-br from-rose-50 to-pink-100', text: 'text-rose-700' },
                          ];
-                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>];
+                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>, <HeartPulse key={6}/>];
+                         const theme = themes[i % themes.length];
                          
                          return (
-                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className={`rounded-2xl border p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer ${colors[i % colors.length]}`}>
-                               <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
-                                  <span className="w-6 h-6">{icons[i % icons.length]}</span>
+                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className={`rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all cursor-pointer ${theme.bg}`}>
+                               <div className={`mb-3 ${theme.text}`}>
+                                  <span className="w-10 h-10 block">{icons[i % icons.length]}</span>
                                </div>
-                               <h4 className="font-black text-sm mb-3">{dept}</h4>
-                               <button className="bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors">
+                               <h4 className={`font-black text-sm md:text-[15px] mb-4 ${theme.text}`}>{dept}</h4>
+                               <button className={`bg-white/90 shadow-sm border border-white ${theme.text} text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full hover:bg-white transition-colors w-full`}>
                                   Explore
                                </button>
                             </div>
@@ -273,27 +275,28 @@ export default function HospitalProfileLayout({
                       })}
                    </div>
                  ) : (
-                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                   <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
                       {profile.departmentsArray.map((dept: any, i: number) => {
-                         const colors = [
-                            'bg-gradient-to-b from-teal-50 to-white border-teal-100 text-teal-700',
-                            'bg-gradient-to-b from-cyan-50 to-white border-cyan-100 text-cyan-700',
-                            'bg-gradient-to-b from-blue-50 to-white border-blue-100 text-blue-700',
-                            'bg-gradient-to-b from-purple-50 to-white border-purple-100 text-purple-700',
-                            'bg-gradient-to-b from-orange-50 to-white border-orange-100 text-orange-700',
+                         const themes = [
+                            { bg: 'bg-gradient-to-br from-teal-50 to-emerald-100', text: 'text-teal-700' },
+                            { bg: 'bg-gradient-to-br from-cyan-50 to-sky-100', text: 'text-cyan-700' },
+                            { bg: 'bg-gradient-to-br from-blue-50 to-indigo-100', text: 'text-blue-700' },
+                            { bg: 'bg-gradient-to-br from-purple-50 to-fuchsia-100', text: 'text-purple-700' },
+                            { bg: 'bg-gradient-to-br from-orange-50 to-amber-100', text: 'text-orange-700' },
+                            { bg: 'bg-gradient-to-br from-rose-50 to-pink-100', text: 'text-rose-700' },
                          ];
-                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>];
+                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>, <HeartPulse key={6}/>];
                          const nameLen = dept.name ? dept.name.length : i;
-                         const colorCls = colors[nameLen % colors.length];
+                         const theme = themes[nameLen % themes.length];
                          const icon = icons[nameLen % icons.length];
                          
                          return (
-                            <div key={i} className={`rounded-2xl border p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer ${colorCls}`}>
-                               <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
-                                  <span className="w-6 h-6">{icon}</span>
+                            <div key={i} className={`rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all cursor-pointer ${theme.bg}`}>
+                               <div className={`mb-3 ${theme.text}`}>
+                                  <span className="w-10 h-10 block">{icon}</span>
                                </div>
-                               <h4 className="font-black text-sm mb-3">{dept.name}</h4>
-                               <button className="bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors">
+                               <h4 className={`font-black text-sm md:text-[15px] mb-4 ${theme.text}`}>{dept.name}</h4>
+                               <button className={`bg-white/90 shadow-sm border border-white ${theme.text} text-[10px] font-black uppercase tracking-widest px-5 py-2 rounded-full hover:bg-white transition-colors w-full`}>
                                   Explore
                                </button>
                             </div>
@@ -313,22 +316,22 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {(!profile.rosterDoctors || profile.rosterDoctors.length === 0) ? (
-                   <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
+                   <div className="flex overflow-x-auto hide-scrollbar gap-5 pb-6 snap-x">
                       {[1, 2, 3, 4, 5].map((_, i) => {
                          const bgColors = ['bg-blue-400', 'bg-orange-400', 'bg-emerald-400', 'bg-purple-400', 'bg-pink-400'];
                          return (
-                           <div key={i} onClick={() => setShowUnverifiedModal(true)} className="w-64 shrink-0 snap-center bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all cursor-pointer">
-                              <div className="flex gap-4 items-center mb-4">
+                           <div key={i} onClick={() => setShowUnverifiedModal(true)} className="w-64 shrink-0 snap-center bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all cursor-pointer">
+                              <div className="flex gap-4 items-center mb-5">
                                  {/* Faceless Silhouette with colorful background */}
-                                 <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white shadow-sm ${bgColors[i % 5]}`}>
-                                    <User className="w-7 h-7 opacity-80" />
+                                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-sm ${bgColors[i % 5]}`}>
+                                    <User className="w-8 h-8 opacity-90" />
                                  </div>
                                  <div className="overflow-hidden">
-                                    <h4 className="font-bold text-slate-800 leading-tight truncate">Doctor {i + 1}</h4>
-                                    <p className="text-xs text-slate-500 font-medium mt-1 truncate">Specialist</p>
+                                    <h4 className="font-bold text-slate-800 text-[15px] leading-tight truncate">Doctor {i + 1}</h4>
+                                    <p className="text-[13px] text-cyan-600 font-bold mt-1 truncate">Specialist</p>
                                  </div>
                               </div>
-                              <button className="w-full bg-slate-200 text-slate-500 font-bold text-xs py-2.5 rounded-lg mt-auto shadow-sm flex items-center justify-center pointer-events-none">
+                              <button className="w-full bg-slate-200 text-slate-500 font-bold text-xs py-3 rounded-full mt-auto flex items-center justify-center pointer-events-none">
                                  Unverified
                               </button>
                            </div>
@@ -336,22 +339,22 @@ export default function HospitalProfileLayout({
                       })}
                    </div>
                  ) : (
-                   <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
+                   <div className="flex overflow-x-auto hide-scrollbar gap-5 pb-6 snap-x">
                       {profile.rosterDoctors.map((doc: any, i: number) => (
-                         <div key={i} className="w-64 shrink-0 snap-center bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
-                            <div className="flex gap-4 items-center mb-4">
-                               <img src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} className="w-14 h-14 rounded-xl object-cover shadow-sm" alt={doc.name} />
+                         <div key={i} className="w-64 shrink-0 snap-center bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
+                            <div className="flex gap-4 items-center mb-5">
+                               <img src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} className="w-16 h-16 rounded-2xl object-cover shadow-sm" alt={doc.name} />
                                <div className="overflow-hidden">
-                                  <h4 className="font-bold text-slate-800 leading-tight truncate" title={doc.name}>{doc.name}</h4>
-                                  <p className="text-xs text-slate-500 font-medium mt-1 truncate" title={doc.specialty}>{doc.specialty}</p>
+                                  <h4 className="font-bold text-slate-800 text-[15px] leading-tight truncate" title={doc.name}>{doc.name}</h4>
+                                  <p className="text-[13px] text-cyan-600 font-bold mt-1 truncate" title={doc.specialty}>{doc.specialty}</p>
                                </div>
                             </div>
                             {doc.slug ? (
-                              <Link href={`/profile/${doc.slug}`} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs py-2.5 rounded-lg transition-colors mt-auto shadow-sm flex items-center justify-center">
+                              <Link href={`/profile/${doc.slug}`} className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white font-bold text-xs py-3 rounded-full transition-all mt-auto shadow-[0_4px_10px_rgba(6,182,212,0.3)] flex items-center justify-center">
                                  View Profile
                               </Link>
                             ) : (
-                              <button className="w-full bg-slate-300 text-slate-500 font-bold text-xs py-2.5 rounded-lg mt-auto shadow-sm cursor-not-allowed">
+                              <button className="w-full bg-slate-200 text-slate-500 font-bold text-xs py-3 rounded-full mt-auto cursor-not-allowed">
                                  Profile Unavailable
                               </button>
                             )}
@@ -483,6 +486,25 @@ export default function HospitalProfileLayout({
             <p className="text-slate-500 text-center mb-8 font-medium">This section's information is currently unverified. Are you the authorized representative for this institution?</p>
             <button className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm py-4 rounded-xl transition-all shadow-lg shadow-cyan-600/30 flex justify-center items-center gap-2">
               Claim Profile to Update
+            </button>
+          </div>
+        </div>
+      )}
+      {/* BOTTOM VERIFICATION BANNER */}
+      {!verified && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0A1128] border-t border-slate-800 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] p-4 sm:p-5 animate-in slide-in-from-bottom duration-500">
+          <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center shrink-0 border border-cyan-500/30">
+                <Shield className="w-6 h-6 text-cyan-400" />
+              </div>
+              <div>
+                <h4 className="text-white font-black text-sm sm:text-base">Are you the hospital owner?</h4>
+                <p className="text-slate-400 text-xs sm:text-sm">Claim and verify this profile to update information and unlock premium features.</p>
+              </div>
+            </div>
+            <button onClick={() => setShowUnverifiedModal(true)} className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-400 text-[#0A1128] font-black text-sm px-8 py-3.5 rounded-full transition-colors whitespace-nowrap shadow-[0_4px_15px_rgba(6,182,212,0.4)]">
+              Claim Profile
             </button>
           </div>
         </div>
