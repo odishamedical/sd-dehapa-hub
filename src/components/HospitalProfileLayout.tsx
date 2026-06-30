@@ -178,10 +178,10 @@ export default function HospitalProfileLayout({
           {/* LEFT COLUMN (75%) */}
           <div className="lg:col-span-3 space-y-8">
             
-            {/* OVERVIEW CARD */}
-            <section id="overview" className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            {/* OVERVIEW SECTION */}
+            <section id="overview" className="relative w-full pt-2">
                {/* Pills Row */}
-               <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-wrap gap-3 bg-white">
+               <div className="p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap gap-3 bg-white mb-6">
                   <div className="text-[#0A1128] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                      <Building2 className="w-4 h-4 text-teal-600" /> {profile.type || "Multi-Specialty Hospital"}
                   </div>
@@ -195,10 +195,10 @@ export default function HospitalProfileLayout({
                      <Building2 className="w-4 h-4 text-cyan-600" /> {profile.ownershipType || "Private Hospital"}
                   </div>
                </div>
-               {/* Map & Contact Layout (Premium Stacked) */}
+               {/* Map & Contact Layout */}
                <div className="w-full">
                  {/* Map Banner */}
-                 <div className="w-full h-64 md:h-80 relative overflow-hidden border-b border-slate-200">
+                 <div className="w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-sm border border-slate-200 relative mb-6">
                     {typeof profile.mapUrl === 'string' && profile.mapUrl.includes('http') ? (
                       <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0" loading="lazy" allowFullScreen />
                     ) : (
@@ -207,7 +207,7 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {/* Contact Card */}
-                 <div className="bg-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                 <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-start gap-4 w-full">
                        <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center shrink-0 border border-teal-100">
                          <Building2 className="w-6 h-6 text-teal-600" />
