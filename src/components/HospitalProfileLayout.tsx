@@ -11,6 +11,7 @@ import {
   User, GraduationCap, Briefcase, Share2, 
   Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2, X, ExternalLink
 } from 'lucide-react';
+import CategoryNav from '@/components/CategoryNav';
 
 interface HospitalProfileLayoutProps {
   profile: any;
@@ -68,83 +69,98 @@ export default function HospitalProfileLayout({
   const heroRightAd = getAdSlot('hero_right') || platformAds?.heroRight; // Fallback to old property if new ones don't exist yet
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-cyan-100 selection:text-cyan-900 pb-20">
+    <div className="min-h-screen bg-[#FAFAFC] font-sans selection:bg-cyan-100 selection:text-cyan-900 pb-20">
       
-      {/* 1. HERO SECTION (Mockup Style - Vibrant Cyan to Peach Gradient) */}
-      <div className="relative w-full pt-16 pb-20 md:pb-28 overflow-hidden bg-gradient-to-r from-cyan-400 via-cyan-50 to-orange-200">
-        
-        {/* Background Decorative SVG */}
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
-          <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white fill-current translate-y-10">
-            <path d="M0,160L48,170.7C96,181,192,203,288,192C384,181,480,139,576,144C672,149,768,203,864,224C960,245,1056,235,1152,197.3C1248,160,1344,96,1392,64L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-          </svg>
-        </div>
-
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row gap-6 md:gap-10 items-center md:items-start">
-          
-          {/* Logo Box */}
-          <div className="w-32 h-32 md:w-40 md:h-40 shrink-0 bg-white rounded-3xl p-2.5 shadow-[0_20px_40px_rgba(0,0,0,0.1)] border-4 border-white relative">
-            <img src={profile.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=0f766e&color=fff`} className="w-full h-full object-cover rounded-2xl" alt={profile.name} />
-            {verified && (
-              <div className="absolute -bottom-3 -right-3 bg-emerald-500 p-2 rounded-full border-4 border-white shadow-md" title="Verified Institution">
-                <CheckCircle2 className="w-5 h-5 text-white" />
-              </div>
-            )}
-          </div>
-
-          {/* Title & Stats */}
-          <div className="flex-1 text-center md:text-left mt-2">
-            <h1 className="text-3xl md:text-5xl font-black text-[#0A1128] tracking-tight leading-none mb-3 drop-shadow-sm">
-              {profile.name}
-            </h1>
-            <p className="text-lg text-[#0A1128] font-bold mb-4 opacity-80">
-              {profile.about?.substring(0, 60) || "Empowering Care, Every Second."}
-            </p>
-            
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-              <div className="flex items-center gap-1 bg-white/60 px-3 py-1.5 rounded-full shadow-sm backdrop-blur-sm">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <span className="text-xs font-bold text-slate-700 ml-1">({profile.stats?.reviews || "1,245"} Reviews)</span>
-              </div>
-              <div className="flex items-center gap-1 bg-white/60 px-3 py-1.5 rounded-full shadow-sm backdrop-blur-sm">
-                <Activity className="w-4 h-4 text-emerald-600" />
-                <span className="text-xs font-bold text-slate-700 ml-1">({profile.stats?.beds || "500+"} Beds)</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col gap-3 w-full sm:w-auto mt-6 md:mt-0">
-            <div className="flex gap-3 w-full">
-               <button className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 whitespace-nowrap">
-                  <Calendar className="w-4 h-4" /> Book Appointment
-               </button>
-               <button className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-md shadow-red-600/20 flex items-center justify-center gap-2 whitespace-nowrap">
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Call SOS
-               </button>
-            </div>
-            <div className="flex w-full rounded-xl shadow-md overflow-hidden bg-[#5856D6] text-white">
-              <button className="flex-1 px-6 py-3 font-bold text-sm flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
-                 <Video className="w-4 h-4" /> Telemedicine
-              </button>
-              <div className="w-[1px] bg-white/20"></div>
-              <button className="px-4 py-3 hover:bg-white/10 transition-colors flex items-center justify-center">
-                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
-              </button>
-            </div>
-          </div>
-
+      {/* Editorial Navigation with Breadcrumb */}
+      <div className="bg-white/90 backdrop-blur-2xl border-b border-slate-200/50 sticky top-0 z-50 transition-all shadow-sm">
+        <div className="h-1 w-full bg-gradient-to-r from-teal-500 to-cyan-500" />
+        <CategoryNav />
+        <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center gap-2 text-xs font-semibold tracking-widest text-slate-500 uppercase hidden md:flex">
+          <Link href="/" className="hover:text-teal-600 transition-colors">Home</Link>
+          <span>/</span>
+          <Link href={`/${type}s`} className="hover:text-teal-600 transition-colors">{type}s</Link>
+          <span>/</span>
+          <span className="text-slate-900 truncate max-w-[400px]">{profile.name}</span>
         </div>
       </div>
 
-      {/* 2. DYNAMIC TABS BAR */}
-      <div className="sticky top-[73px] z-40 bg-white/90 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-b border-slate-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex overflow-x-auto hide-scrollbar gap-2 sm:gap-6 lg:gap-8 items-center py-2 sm:py-0 h-16">
+      {/* Main Content Container - Fluid Grid */}
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
+        
+        {/* HERO CARD - FULL WIDTH (Mockup Style) */}
+        <div id="overview" className="bg-gradient-to-r from-cyan-50/80 via-white to-teal-50/80 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] border-t-[#D32F2F] rounded-t-3xl shadow-sm">
+          
+          {/* Background Decorative SVG */}
+          <div className="absolute inset-0 pointer-events-none z-0">
+           {/* Background Wave */}
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#80DEEA] fill-current opacity-10 translate-y-16">
+             <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+           </svg>
+           {/* Middle Wave */}
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#4DB6AC] fill-current opacity-[0.15] translate-y-8">
+             <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+           </svg>
+           <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-emerald-50/40 to-transparent"></div>
+           <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-100/30 rounded-tr-full blur-3xl"></div>
+          </div>
+
+          <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 z-10">
+            <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[5px] border-white bg-slate-100">
+              <img 
+                src={profile.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=0f766e&color=fff&size=800`} 
+                className="w-full h-full object-cover" 
+                alt={profile.name} 
+              />
+              {verified && (
+                <div className="absolute -bottom-2 -right-2 bg-emerald-500 p-1.5 rounded-full border-4 border-white shadow-md" title="Verified Institution">
+                  <CheckCircle2 className="w-4 h-4 text-white" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Title & Stats */}
+          <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col justify-center py-2 md:py-4">
+            <h1 className="text-3xl md:text-4xl lg:text-[42px] font-black text-[#0A1128] tracking-tight leading-tight mb-1">
+              {profile.name}
+            </h1>
+            <div className="text-slate-600 text-lg md:text-xl font-medium mb-4">
+              {profile.about?.substring(0, 80) || "Empowering Care, Every Second."}
+            </div>
+            
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+              <div className="flex items-center">
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
+                </div>
+                <span className="text-sm font-medium text-slate-600 ml-2">({profile.stats?.reviews || "1,245"} Reviews)</span>
+              </div>
+              <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-emerald-100">
+                <Activity className="w-3 h-3 text-emerald-600" /> {profile.stats?.beds || "500+"} Beds
+              </div>
+            </div>
+          </div>
+
+          {/* Action Stack */}
+          <div className="flex flex-col gap-3 w-full lg:w-[280px] shrink-0 justify-center z-10">
+            <button className="bg-[#0F9D58] hover:bg-emerald-600 text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5">
+              <span className="flex items-center gap-2"><Calendar className="w-4 h-4"/> Book Appointment</span>
+              <span className="opacity-50 text-[10px]">▼</span>
+            </button>
+            <button className="bg-[#FF3B30] hover:bg-red-600 text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5">
+              <span className="flex items-center gap-2"><svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Call SOS</span>
+              <span className="opacity-50 text-[10px]">▼</span>
+            </button>
+            <button className="bg-white border-[1.5px] border-slate-200 text-[#5856D6] hover:bg-slate-50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5">
+              <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Telemedicine</span>
+              <span className="opacity-50 text-[10px]">▼</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 2. DYNAMIC TABS BAR (Flush with Hero) */}
+        <div className="sticky top-[73px] z-40 bg-white/95 backdrop-blur-md shadow-[0_4px_10px_rgba(0,0,0,0.02)] border-b border-slate-200 px-4 rounded-b-3xl">
+          <div className="flex overflow-x-auto hide-scrollbar gap-1 items-end pt-3 max-w-[1000px] mx-auto">
             {[
               { id: 'overview', label: 'Overview' },
               { id: 'departments', label: 'Departments' },
@@ -162,18 +178,16 @@ export default function HospitalProfileLayout({
                     window.scrollTo({ top: y, behavior: 'smooth' });
                   }
                 }}
-                className={`whitespace-nowrap px-5 py-2 text-sm sm:text-[15px] font-bold tracking-wide transition-all rounded-full shrink-0 ${activeSection === tab.id ? 'bg-emerald-500 text-white shadow-md' : 'bg-transparent text-[#0A1128] hover:text-cyan-600 hover:bg-slate-50'}`}
+                className={`whitespace-nowrap px-6 py-3 text-[15px] font-bold tracking-wide transition-all rounded-t-xl border-b-2 shrink-0 ${activeSection === tab.id ? 'bg-[#009688] text-white border-[#00796B] shadow-sm' : 'bg-transparent text-[#0A1128] border-transparent hover:text-[#009688] hover:bg-teal-50'}`}
               >
                 {tab.label}
               </button>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* 3. MAIN CONTENT GRID */}
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-8 mb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start">
+        {/* 3. MAIN CONTENT GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start mt-8">
           
           {/* LEFT COLUMN (75%) */}
           <div className="lg:col-span-3 space-y-8">
