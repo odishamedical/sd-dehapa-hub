@@ -324,11 +324,11 @@ export default function HospitalProfileLayout({
                  </div>
                  
                  {(!profile.rosterDoctors || profile.rosterDoctors.length === 0) ? (
-                   <div className="flex overflow-x-auto hide-scrollbar gap-5 pb-6 snap-x">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 pb-2">
                       {[1, 2, 3, 4, 5].map((_, i) => {
                          const bgColors = ['bg-blue-400', 'bg-orange-400', 'bg-emerald-400', 'bg-purple-400', 'bg-pink-400'];
                          return (
-                           <div key={i} onClick={() => setShowUnverifiedModal(true)} className="w-64 shrink-0 snap-center bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all cursor-pointer">
+                           <div key={i} onClick={() => setShowUnverifiedModal(true)} className="bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all cursor-pointer">
                               <div className="flex gap-4 items-center mb-5">
                                  {/* Faceless Silhouette with colorful background */}
                                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-sm ${bgColors[i % 5]}`}>
@@ -347,9 +347,9 @@ export default function HospitalProfileLayout({
                       })}
                    </div>
                  ) : (
-                   <div className="flex overflow-x-auto hide-scrollbar gap-5 pb-6 snap-x">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 pb-2">
                       {profile.rosterDoctors.map((doc: any, i: number) => (
-                         <div key={i} className="w-64 shrink-0 snap-center bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
+                         <div key={i} className="bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
                             <div className="flex gap-4 items-center mb-5">
                                <img src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} className="w-16 h-16 rounded-2xl object-cover shadow-sm" alt={doc.name} />
                                <div className="overflow-hidden">
@@ -374,9 +374,9 @@ export default function HospitalProfileLayout({
             )}
 
             {/* FACILITIES & TESTIMONIALS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                {(!verified || (profile.facilities && profile.facilities.length > 0)) && (
-                 <section id="facilities" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col">
+                 <section id="facilities" className="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 rounded-3xl border border-blue-100 shadow-sm p-6 md:p-8 flex flex-col">
                     <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><Shield className="w-5 h-5 text-cyan-600"/> Facilities & Services</h2>
                     {(!profile.facilities || profile.facilities.length === 0) ? (
                       <div className="grid grid-cols-2 gap-4">
@@ -406,7 +406,7 @@ export default function HospitalProfileLayout({
                  </section>
                )}
 
-               <section id="reviews" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col justify-between">
+               <section id="reviews" className="bg-gradient-to-br from-rose-50/80 to-orange-50/80 rounded-3xl border border-orange-100 shadow-sm p-6 md:p-8 flex flex-col justify-between">
                   <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><User className="w-5 h-5 text-cyan-600"/> Patient Testimonials</h2>
                   <div className="flex items-start gap-4">
                      <img src="https://ui-avatars.com/api/?name=Patient&background=e2e8f0" className="w-12 h-12 rounded-full shadow-sm" alt="Patient" />
@@ -420,6 +420,25 @@ export default function HospitalProfileLayout({
                   </div>
                </section>
             </div>
+            
+            {/* BOTTOM VERIFICATION TICKET */}
+            {!verified && (
+              <div className="bg-[#0A1128] rounded-3xl shadow-xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden mt-8 border border-slate-800">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                <div className="flex items-center gap-5 relative z-10">
+                  <div className="w-14 h-14 rounded-full bg-cyan-500/20 flex items-center justify-center shrink-0 border border-cyan-500/30">
+                    <Shield className="w-7 h-7 text-cyan-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-white font-black text-lg md:text-xl mb-1">Are you the hospital owner?</h4>
+                    <p className="text-slate-400 text-sm max-w-md">Claim and verify this profile to update information, customize sections, and unlock premium features.</p>
+                  </div>
+                </div>
+                <button onClick={() => setShowUnverifiedModal(true)} className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-400 text-[#0A1128] font-black px-8 py-4 rounded-full transition-colors whitespace-nowrap shadow-[0_4px_15px_rgba(6,182,212,0.4)] relative z-10">
+                  Claim Profile
+                </button>
+              </div>
+            )}
             
           </div>
 
@@ -498,25 +517,8 @@ export default function HospitalProfileLayout({
           </div>
         </div>
       )}
-      {/* BOTTOM VERIFICATION BANNER */}
-      {!verified && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0A1128] border-t border-slate-800 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] p-4 sm:p-5 animate-in slide-in-from-bottom duration-500">
-          <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center shrink-0 border border-cyan-500/30">
-                <Shield className="w-6 h-6 text-cyan-400" />
-              </div>
-              <div>
-                <h4 className="text-white font-black text-sm sm:text-base">Are you the hospital owner?</h4>
-                <p className="text-slate-400 text-xs sm:text-sm">Claim and verify this profile to update information and unlock premium features.</p>
-              </div>
-            </div>
-            <button onClick={() => setShowUnverifiedModal(true)} className="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-400 text-[#0A1128] font-black text-sm px-8 py-3.5 rounded-full transition-colors whitespace-nowrap shadow-[0_4px_15px_rgba(6,182,212,0.4)]">
-              Claim Profile
-            </button>
-          </div>
-        </div>
       )}
+
       
       {/* CSS for hiding scrollbars easily inline */}
       <style jsx>{`
