@@ -22,8 +22,7 @@ import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 export default function PharmacyProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [pharmacy, setPharmacy] = useState<any>(null);
   const [similarEntities, setSimilarEntities] = useState<any[]>([]);
-  const [topHospitals, setTopHospitals] = useState<any[]>([]);
-  const [nearbyCenters, setNearbyCenters] = useState<any[]>([]);
+  const [platformAds, setPlatformAds] = useState<any>({});
   const [loading, setLoading] = useState(true);
 
   // Edit Mode State
@@ -162,21 +161,50 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
             }
           }
           
-          // Fetch sidebar widgets safely without needing complex indexes
           try {
-            const cityQuery = query(
-              collection(db, 'directory'),
-              where("city", "==", rawData.city || ""),
-              limit(30)
+            const broadQuery = query(collection(db, 'directory'), limit(50));
+            const broadSnap = await getDocs(broadQuery);
+            const allDocs = broadSnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId && !!d.image);
+            let similarDocs = allDocs.filter(d => 
+              d.category === "Pharmacy" || 
+              d.category === "Chemist" ||
+              d.category === "Hospital"
             );
-            const citySnap = await getDocs(cityQuery);
-            const allCityDocs = citySnap.docs.map(d => ({ id: d.id, ...d.data() as any })).filter(d => d.id !== docId);
             
-            setSimilarEntities(allCityDocs.filter(d => d.subCategory === rawData.subCategory).slice(0, 3));
-            setTopHospitals(allCityDocs.filter(d => d.category === "Hospital").slice(0, 3));
-            setNearbyCenters(allCityDocs.filter(d => d.category !== "Pharmacy" && d.category !== "Hospital").slice(0, 3));
-          } catch (e) {
-            console.error("Failed to fetch sidebar widgets", e);
+            if (similarDocs.length < 5) {
+              similarDocs = allDocs;
+            }
+            
+            similarDocs.sort(() => 0.5 - Math.random());
+            setSimilarEntities(similarDocs.slice(0, 15));
+          } catch(e) {
+            console.error("Failed to fetch similar pharmacies", e);
+          }
+
+          try {
+            const adsQuery = query(collection(db, 'platform_ads'), where('active', '==', true));
+            const adsSnap = await getDocs(adsQuery);
+            const adsData: any = {};
+            
+            adsSnap.forEach(d => {
+              const ad = d.data();
+              const slot = ad.slot || ad.slotId;
+              if (slot && (ad.targetType === 'global' || !ad.targetType)) {
+                adsData[slot] = ad;
+              }
+            });
+
+            adsSnap.forEach(d => {
+              const ad = d.data();
+              const slot = ad.slot || ad.slotId;
+              if (slot && ad.targetType === 'specific_profile' && ad.targetId === docId) {
+                adsData[slot] = ad; 
+              }
+            });
+            
+            setPlatformAds(adsData);
+          } catch(e) {
+            console.error("Ads fetch failed", e);
           }
         }
       } catch (err) {
@@ -201,5 +229,5 @@ export default function PharmacyProfileView({ id, customSlug }: { id?: string, c
     );
   }
 
-  return <UnifiedProfileLayout profile={pharmacy} type="pharmacy" similarEntities={similarEntities} canEdit={canEdit} onInlineSave={handleInlineSave} />;
+  return <UnifiedProfileLayout profile={pharmacy} type="pharmacy" similarEntities={similarEntities} platformAds={platformAds} canEdit={canEdit} onInlineSave={handleInlineSave} />;
 }
