@@ -228,7 +228,7 @@ export default function UnifiedProfileLayout({
       </div>
 
       {/* FULL WIDTH HERO BANNER (Mockup Style) */}
-      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-br from-teal-50 via-cyan-50 to-emerald-50 overflow-hidden z-0 border-t-[6px] border-t-rose-500 shadow-inner">
+      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-500 overflow-hidden z-0 border-t-[6px] border-t-rose-500 shadow-inner">
          <div className="absolute inset-0 opacity-[0.15]">
            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-600 fill-current">
              <path d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,197.3C672,224,768,224,864,202.7C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
@@ -376,6 +376,33 @@ export default function UnifiedProfileLayout({
               </div>
             </div>
 
+            {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) - Moved directly under Hero */}
+            <div className="sticky top-[73px] z-40 bg-[#FAFAFC]/90 backdrop-blur-md border-b border-slate-200">
+              <div className="flex overflow-x-auto hide-scrollbar gap-1 md:gap-2 items-end px-1 pt-4">
+                {[
+                  { id: 'overview', label: 'Profile' },
+                  { id: 'location', label: 'Locations' },
+                  { id: 'education', label: 'Education' },
+                  { id: 'experience', label: 'Experience' },
+                  { id: 'media', label: 'Media' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      const el = document.getElementById(tab.id);
+                      if (el) {
+                        const y = el.getBoundingClientRect().top + window.scrollY - 140;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                      }
+                    }}
+                    className={`px-6 py-4 text-sm font-black tracking-wide transition-all shrink-0 border-b-[3px] ${activeSection === tab.id ? 'text-teal-600 border-teal-600 bg-white shadow-[0_-4px_6px_-2px_rgba(0,0,0,0.05)] rounded-t-xl' : 'text-slate-500 border-transparent hover:text-teal-600 hover:bg-white/50 rounded-t-xl'}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* The Prestige Trust Bar (Data as Art) */}
             <div className="w-full relative z-30 group">
               <div className="bg-white/90 backdrop-blur-md rounded-[2rem] shadow-sm border border-slate-200 hover:border-teal-300/50 p-8 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
@@ -456,37 +483,8 @@ export default function UnifiedProfileLayout({
 
             <div className="space-y-24">
               
-              {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) */}
-              <div className="sticky top-[73px] z-40 -mt-8 pt-4 bg-[#FAFAFC]/90 backdrop-blur-md border-b border-slate-200">
-                <div className="flex overflow-x-auto hide-scrollbar gap-1 md:gap-2 items-end px-1">
-                  {[
-                    { id: 'overview', label: 'Profile' },
-                    { id: 'location', label: 'Locations' },
-                    { id: 'education', label: 'Education' },
-                    { id: 'experience', label: 'Experience' },
-                    { id: 'media', label: 'Media' },
-                  ].map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => {
-                        const el = document.getElementById(tab.id);
-                        if (el) {
-                          const y = el.getBoundingClientRect().top + window.scrollY - 140;
-                          window.scrollTo({ top: y, behavior: 'smooth' });
-                        }
-                      }}
-                      className={`px-6 py-4 text-sm font-black tracking-wide transition-all shrink-0 border-b-[3px] ${activeSection === tab.id ? 'text-teal-600 border-teal-600 bg-white shadow-[0_-4px_6px_-2px_rgba(0,0,0,0.05)] rounded-t-xl' : 'text-slate-500 border-transparent hover:text-teal-600 hover:bg-white/50 rounded-t-xl'}`}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Location & Map (Horizontal Banner Mockup Style) */}
-              <section id="location" className="relative pl-0 md:pl-16 pt-8">
-                <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                
+              <section id="location" className="relative w-full pt-8">
                 {/* Wide Map Banner */}
                 <div className="w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-sm border border-slate-200 relative mb-6">
                   <iframe 
