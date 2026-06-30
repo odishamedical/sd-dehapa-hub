@@ -6,7 +6,7 @@ import {
   Star, MapPin, Clock, Phone, Globe, Shield, 
   Activity, Video, HeartPulse, CheckCircle2, 
   User, GraduationCap, Briefcase, Share2, 
-  Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2
+  Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2, X
 } from 'lucide-react';
 
 interface HospitalProfileLayoutProps {
@@ -27,6 +27,7 @@ export default function HospitalProfileLayout({
   onInlineSave 
 }: HospitalProfileLayoutProps) {
   const [activeSection, setActiveSection] = useState('overview');
+  const [showUnverifiedModal, setShowUnverifiedModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,27 +48,6 @@ export default function HospitalProfileLayout({
   }, []);
 
   const verified = profile.verified;
-
-  const renderEmptyState = (title: string) => (
-    <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center p-12">
-       {/* Faded Background Pattern to simulate content */}
-       <div className="absolute inset-0 opacity-10 blur-sm pointer-events-none flex flex-wrap gap-4 p-8 items-center justify-center">
-          {[1,2,3,4,5,6].map(i => <div key={i} className="w-24 h-24 bg-slate-400 rounded-xl"></div>)}
-       </div>
-       
-       {/* Glassmorphism Lock Box */}
-       <div className="relative z-10 bg-white/80 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-white max-w-sm text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-sm">
-             <Shield className="w-8 h-8 text-slate-400" />
-          </div>
-          <h3 className="text-lg font-black text-slate-800 mb-2">Data Unavailable</h3>
-          <p className="text-sm font-medium text-slate-500 mb-6">This institution has not yet verified their {title} roster.</p>
-          <button className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm py-3 rounded-xl transition-colors shadow-sm">
-             Claim Profile to Update
-          </button>
-       </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans selection:bg-cyan-100 selection:text-cyan-900 pb-20">
@@ -164,7 +144,7 @@ export default function HospitalProfileLayout({
                     window.scrollTo({ top: y, behavior: 'smooth' });
                   }
                 }}
-                className={`whitespace-nowrap px-5 py-2 text-sm sm:text-[15px] font-bold tracking-wide transition-all shrink-0 ${activeSection === tab.id ? 'bg-emerald-500 text-white rounded-full shadow-sm' : 'text-cyan-700 hover:text-cyan-900 bg-transparent'}`}
+                className={`whitespace-nowrap px-4 py-4 text-sm sm:text-[15px] font-bold tracking-wide transition-all border-b-[3px] shrink-0 ${activeSection === tab.id ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-[#0A1128] hover:text-cyan-600'}`}
               >
                 {tab.label}
               </button>
@@ -259,106 +239,161 @@ export default function HospitalProfileLayout({
             </section>
 
             {/* DEPARTMENTS CARD */}
-            <section id="departments" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
-               <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-black text-slate-800">Our Departments</h2>
-                  {profile.departmentsArray && profile.departmentsArray.length > 0 && <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">Explore All</Link>}
-               </div>
-               
-               {(!profile.departmentsArray || profile.departmentsArray.length === 0) ? (
-                 renderEmptyState("Departments")
-               ) : (
-                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    {profile.departmentsArray.map((dept: any, i: number) => {
-                       const colors = [
-                          'bg-gradient-to-b from-teal-50 to-white border-teal-100 text-teal-700',
-                          'bg-gradient-to-b from-cyan-50 to-white border-cyan-100 text-cyan-700',
-                          'bg-gradient-to-b from-blue-50 to-white border-blue-100 text-blue-700',
-                          'bg-gradient-to-b from-purple-50 to-white border-purple-100 text-purple-700',
-                          'bg-gradient-to-b from-orange-50 to-white border-orange-100 text-orange-700',
-                       ];
-                       const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>];
-                       // Simple pseudo-random mapping based on name length
-                       const nameLen = dept.name ? dept.name.length : i;
-                       const colorCls = colors[nameLen % colors.length];
-                       const icon = icons[nameLen % icons.length];
-                       
-                       return (
-                          <div key={i} className={`rounded-2xl border p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer ${colorCls}`}>
-                             <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
-                                <span className="w-6 h-6">{icon}</span>
-                             </div>
-                             <h4 className="font-black text-sm mb-3">{dept.name}</h4>
-                             <button className="bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors">
-                                Explore
-                             </button>
-                          </div>
-                       );
-                    })}
+            {(!verified || (profile.departmentsArray && profile.departmentsArray.length > 0)) && (
+              <section id="departments" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
+                 <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-2xl font-black text-slate-800">Our Departments</h2>
+                    {profile.departmentsArray && profile.departmentsArray.length > 0 && <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">Explore All</Link>}
                  </div>
-               )}
-            </section>
+                 
+                 {(!profile.departmentsArray || profile.departmentsArray.length === 0) ? (
+                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4 relative">
+                      {/* Transparent overlay for the whole grid to catch clicks easily if needed, but clicking cards is better */}
+                      {['Cardiology', 'Orthopedics', 'Neurology', 'Pediatrics', 'Oncology'].map((dept, i) => {
+                         const colors = [
+                            'bg-gradient-to-b from-teal-50 to-white border-teal-100 text-teal-700',
+                            'bg-gradient-to-b from-cyan-50 to-white border-cyan-100 text-cyan-700',
+                            'bg-gradient-to-b from-blue-50 to-white border-blue-100 text-blue-700',
+                            'bg-gradient-to-b from-purple-50 to-white border-purple-100 text-purple-700',
+                            'bg-gradient-to-b from-orange-50 to-white border-orange-100 text-orange-700',
+                         ];
+                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>];
+                         
+                         return (
+                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className={`rounded-2xl border p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer ${colors[i % colors.length]}`}>
+                               <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
+                                  <span className="w-6 h-6">{icons[i % icons.length]}</span>
+                               </div>
+                               <h4 className="font-black text-sm mb-3">{dept}</h4>
+                               <button className="bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors">
+                                  Explore
+                               </button>
+                            </div>
+                         );
+                      })}
+                   </div>
+                 ) : (
+                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                      {profile.departmentsArray.map((dept: any, i: number) => {
+                         const colors = [
+                            'bg-gradient-to-b from-teal-50 to-white border-teal-100 text-teal-700',
+                            'bg-gradient-to-b from-cyan-50 to-white border-cyan-100 text-cyan-700',
+                            'bg-gradient-to-b from-blue-50 to-white border-blue-100 text-blue-700',
+                            'bg-gradient-to-b from-purple-50 to-white border-purple-100 text-purple-700',
+                            'bg-gradient-to-b from-orange-50 to-white border-orange-100 text-orange-700',
+                         ];
+                         const icons = [<HeartPulse key={1}/>, <Activity key={2}/>, <Shield key={3}/>, <User key={4}/>, <FileText key={5}/>];
+                         const nameLen = dept.name ? dept.name.length : i;
+                         const colorCls = colors[nameLen % colors.length];
+                         const icon = icons[nameLen % icons.length];
+                         
+                         return (
+                            <div key={i} className={`rounded-2xl border p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-shadow cursor-pointer ${colorCls}`}>
+                               <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center mb-3">
+                                  <span className="w-6 h-6">{icon}</span>
+                               </div>
+                               <h4 className="font-black text-sm mb-3">{dept.name}</h4>
+                               <button className="bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-full hover:bg-slate-50 transition-colors">
+                                  Explore
+                               </button>
+                            </div>
+                         );
+                      })}
+                   </div>
+                 )}
+              </section>
+            )}
 
             {/* DOCTORS SCROLL */}
-            <section id="doctors" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
-               <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-black text-slate-800">Meet Our Doctors</h2>
-                  {profile.rosterDoctors && profile.rosterDoctors.length > 0 && <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">View All</Link>}
-               </div>
-               
-               {(!profile.rosterDoctors || profile.rosterDoctors.length === 0) ? (
-                 renderEmptyState("Doctors")
-               ) : (
-                 <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
-                    {profile.rosterDoctors.map((doc: any, i: number) => (
-                       <div key={i} className="w-64 shrink-0 snap-center bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
-                          <div className="flex gap-4 items-center mb-4">
-                             <img src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} className="w-14 h-14 rounded-xl object-cover shadow-sm" alt={doc.name} />
-                             <div className="overflow-hidden">
-                                <h4 className="font-bold text-slate-800 leading-tight truncate" title={doc.name}>{doc.name}</h4>
-                                <p className="text-xs text-slate-500 font-medium mt-1 truncate" title={doc.specialty}>{doc.specialty}</p>
-                             </div>
-                          </div>
-                          {doc.slug ? (
-                            <Link href={`/profile/${doc.slug}`} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs py-2.5 rounded-lg transition-colors mt-auto shadow-sm flex items-center justify-center">
-                               View Profile
-                            </Link>
-                          ) : (
-                            <button className="w-full bg-slate-300 text-slate-500 font-bold text-xs py-2.5 rounded-lg mt-auto shadow-sm cursor-not-allowed">
-                               Profile Unavailable
-                            </button>
-                          )}
-                       </div>
-                    ))}
+            {(!verified || (profile.rosterDoctors && profile.rosterDoctors.length > 0)) && (
+              <section id="doctors" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
+                 <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-2xl font-black text-slate-800">Meet Our Doctors</h2>
+                    {profile.rosterDoctors && profile.rosterDoctors.length > 0 && <Link href="#" className="text-sm font-bold text-cyan-600 hover:text-cyan-700 transition-colors">View All</Link>}
                  </div>
-               )}
-            </section>
+                 
+                 {(!profile.rosterDoctors || profile.rosterDoctors.length === 0) ? (
+                   <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
+                      {[1, 2, 3, 4, 5].map((_, i) => {
+                         const bgColors = ['bg-blue-400', 'bg-orange-400', 'bg-emerald-400', 'bg-purple-400', 'bg-pink-400'];
+                         return (
+                           <div key={i} onClick={() => setShowUnverifiedModal(true)} className="w-64 shrink-0 snap-center bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all cursor-pointer">
+                              <div className="flex gap-4 items-center mb-4">
+                                 {/* Faceless Silhouette with colorful background */}
+                                 <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white shadow-sm ${bgColors[i % 5]}`}>
+                                    <User className="w-7 h-7 opacity-80" />
+                                 </div>
+                                 <div className="overflow-hidden">
+                                    <h4 className="font-bold text-slate-800 leading-tight truncate">Doctor {i + 1}</h4>
+                                    <p className="text-xs text-slate-500 font-medium mt-1 truncate">Specialist</p>
+                                 </div>
+                              </div>
+                              <button className="w-full bg-slate-200 text-slate-500 font-bold text-xs py-2.5 rounded-lg mt-auto shadow-sm flex items-center justify-center pointer-events-none">
+                                 Unverified
+                              </button>
+                           </div>
+                         );
+                      })}
+                   </div>
+                 ) : (
+                   <div className="flex overflow-x-auto hide-scrollbar gap-4 pb-4 snap-x">
+                      {profile.rosterDoctors.map((doc: any, i: number) => (
+                         <div key={i} className="w-64 shrink-0 snap-center bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
+                            <div className="flex gap-4 items-center mb-4">
+                               <img src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} className="w-14 h-14 rounded-xl object-cover shadow-sm" alt={doc.name} />
+                               <div className="overflow-hidden">
+                                  <h4 className="font-bold text-slate-800 leading-tight truncate" title={doc.name}>{doc.name}</h4>
+                                  <p className="text-xs text-slate-500 font-medium mt-1 truncate" title={doc.specialty}>{doc.specialty}</p>
+                               </div>
+                            </div>
+                            {doc.slug ? (
+                              <Link href={`/profile/${doc.slug}`} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs py-2.5 rounded-lg transition-colors mt-auto shadow-sm flex items-center justify-center">
+                                 View Profile
+                              </Link>
+                            ) : (
+                              <button className="w-full bg-slate-300 text-slate-500 font-bold text-xs py-2.5 rounded-lg mt-auto shadow-sm cursor-not-allowed">
+                                 Profile Unavailable
+                              </button>
+                            )}
+                         </div>
+                      ))}
+                   </div>
+                 )}
+              </section>
+            )}
 
             {/* FACILITIES & TESTIMONIALS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               <section id="facilities" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col">
-                  <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><Shield className="w-5 h-5 text-cyan-600"/> Facilities & Services</h2>
-                  {(!profile.facilities || profile.facilities.length === 0) ? (
-                    <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
-                       <Shield className="w-12 h-12 text-slate-200 mb-3" />
-                       <p className="text-sm font-bold text-slate-400">Facilities not verified.</p>
-                       <button className="mt-3 text-xs font-bold text-cyan-600 hover:underline">Update Now</button>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                       {profile.facilities.map((fac: string, i: number) => {
-                          const iconColors = ['text-orange-500', 'text-blue-500', 'text-emerald-500', 'text-purple-500'];
-                          const color = iconColors[i % iconColors.length];
-                          return (
-                            <div key={i} className="flex items-center gap-2">
-                               <svg className={`w-4 h-4 shrink-0 ${color}`} fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                               <span className="text-sm font-bold text-slate-700">{fac}</span>
+               {(!verified || (profile.facilities && profile.facilities.length > 0)) && (
+                 <section id="facilities" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col">
+                    <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><Shield className="w-5 h-5 text-cyan-600"/> Facilities & Services</h2>
+                    {(!profile.facilities || profile.facilities.length === 0) ? (
+                      <div className="grid grid-cols-2 gap-4">
+                         {['ICU & Trauma Care', 'MRI & CT Scan', '24/7 Pharmacy', 'Deluxe Rooms', 'Blood Bank', 'Ambulance'].map((fac, i) => (
+                            <div key={i} onClick={() => setShowUnverifiedModal(true)} className="flex items-center gap-2 cursor-pointer group p-2 hover:bg-slate-50 rounded-lg transition-colors">
+                               <div className="w-5 h-5 rounded flex items-center justify-center bg-slate-200 group-hover:bg-cyan-500 transition-colors shadow-inner">
+                                  <CheckCircle2 className="w-3 h-3 text-white" />
+                               </div>
+                               <span className="text-sm font-bold text-slate-400 group-hover:text-cyan-700">{fac}</span>
                             </div>
-                          )
-                       })}
-                    </div>
-                  )}
-               </section>
+                         ))}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-4">
+                         {profile.facilities.map((fac: string, i: number) => {
+                            const iconColors = ['text-orange-500', 'text-blue-500', 'text-emerald-500', 'text-purple-500'];
+                            const color = iconColors[i % iconColors.length];
+                            return (
+                              <div key={i} className="flex items-center gap-2">
+                                 <svg className={`w-4 h-4 shrink-0 ${color}`} fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                                 <span className="text-sm font-bold text-slate-700">{fac}</span>
+                              </div>
+                            )
+                         })}
+                      </div>
+                    )}
+                 </section>
+               )}
 
                <section id="reviews" className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 flex flex-col justify-between">
                   <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><User className="w-5 h-5 text-cyan-600"/> Patient Testimonials</h2>
@@ -433,6 +468,25 @@ export default function HospitalProfileLayout({
           
         </div>
       </div>
+      
+      {/* UNVERIFIED MODAL */}
+      {showUnverifiedModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-16 h-16 bg-cyan-100 rounded-2xl flex items-center justify-center mb-6 border border-cyan-200 shadow-sm mx-auto">
+              <Shield className="w-8 h-8 text-cyan-600" />
+            </div>
+            <h3 className="text-2xl font-black text-slate-800 text-center mb-2">Unverified Data</h3>
+            <p className="text-slate-500 text-center mb-8 font-medium">This section's information is currently unverified. Are you the authorized representative for this institution?</p>
+            <button className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm py-4 rounded-xl transition-all shadow-lg shadow-cyan-600/30 flex justify-center items-center gap-2">
+              Claim Profile to Update
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* CSS for hiding scrollbars easily inline */}
       <style jsx>{`
