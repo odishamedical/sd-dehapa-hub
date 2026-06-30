@@ -44,6 +44,25 @@ export default function UnifiedProfileLayout({
   const isPharmacy = type === 'pharmacy';
   const isAmbulance = type === 'ambulance';
 
+  const [activeSection, setActiveSection] = useState('overview');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['overview', 'location', 'education', 'experience', 'media', 'reviews'];
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top >= 0 && rect.top <= 300) {
+            setActiveSection(section);
+          }
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const [isEditMode, setIsEditMode] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
@@ -216,15 +235,15 @@ export default function UnifiedProfileLayout({
           <div className="lg:col-span-3 space-y-16">
             
             {/* The Classic Hero (Left Image, Right Details) */}
-            <div className="bg-white/90 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group hover:border-teal-400/50 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
+            <div id="overview" className="bg-white/90 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group hover:border-teal-400/50 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
               {/* Editorial Background Motif */}
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-teal-400/20 via-cyan-400/10 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-70 pointer-events-none transition-all duration-700 group-hover:from-teal-400/30"></div>
 
               {/* Left: The Prestige Portrait */}
-              <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 group/portrait z-10">
+              <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 group/portrait z-10 md:-mb-12">
                 <div className="absolute inset-0 bg-slate-900 rounded-3xl rotate-2 opacity-5 group-hover/portrait:rotate-3 transition-transform duration-700"></div>
                 
-                <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-slate-100 transition-transform duration-700 group-hover/portrait:-translate-y-1">
+                <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-slate-100 transition-transform duration-700 group-hover/portrait:-translate-y-1">
                   <img 
                     src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
                     alt={profile.name}
@@ -247,10 +266,13 @@ export default function UnifiedProfileLayout({
               </div>
 
               {/* Right: The Details & Actions */}
-              <div className="flex-1 text-center md:text-left z-10 w-full">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#0A1128] tracking-tight leading-tight mb-2">
-                  {profile.name}
-                </h1>
+              <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col lg:flex-row gap-6 lg:gap-8">
+                
+                {/* Center: Details */}
+                <div className="flex-1">
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#0A1128] tracking-tight leading-tight mb-2">
+                    {profile.name}
+                  </h1>
                 
                 <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-4 text-slate-500 mb-6">
                   {profile.specialties && profile.specialties.length > 0 ? (
@@ -297,8 +319,18 @@ export default function UnifiedProfileLayout({
                   </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                </div>
+
+                {/* Right: Action Stack (Mockup Style) */}
+                <div className="flex flex-col gap-3 w-full lg:w-64 shrink-0">
+                  <button 
+                    onClick={() => {}} 
+                    className="bg-emerald-500 hover:bg-emerald-400 text-white w-full py-3 rounded-xl font-black text-sm transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_25px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 flex items-center justify-between px-5"
+                  >
+                    <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
+                    <span className="opacity-50 text-xs">▼</span>
+                  </button>
+                  
                   <button 
                     onClick={() => {
                       if (verified) {
@@ -307,28 +339,31 @@ export default function UnifiedProfileLayout({
                         setShowUnverifiedModal(true);
                       }
                     }}
-                    className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-[0_10px_25px_rgba(20,184,166,0.3)] hover:shadow-[0_15px_35px_rgba(20,184,166,0.4)] border border-teal-400/30 hover:-translate-y-1 flex items-center gap-2"
+                    className="bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 hover:border-rose-300 w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
                   >
-                    <Video className="w-4 h-4" />
-                    Consult Now
+                    <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Urgent Video Call</span>
+                    <span className="opacity-50 text-xs">▼</span>
                   </button>
                   
                   <button 
-                    onClick={() => setShowShareModal(true)}
-                    className="bg-white hover:bg-teal-50 border border-slate-200 text-slate-700 hover:text-teal-600 hover:border-teal-400 px-6 py-3 rounded-full font-bold text-sm transition-all shadow-sm hover:shadow-[0_10px_25px_rgba(20,184,166,0.2)] hover:-translate-y-0.5 flex items-center gap-2"
+                    onClick={() => {}} 
+                    className="bg-indigo-50 border border-indigo-200 text-indigo-600 hover:bg-indigo-100 hover:border-indigo-300 w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
                   >
-                    <Share2 className="w-4 h-4" />
-                    Share
+                    <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
+                    <span className="opacity-50 text-xs">▼</span>
                   </button>
-                  
-                  <button 
-                    onClick={() => setShowQRModal(true)}
-                    className="bg-white hover:bg-teal-50 border border-slate-200 text-slate-700 hover:text-teal-600 hover:border-teal-400 px-4 py-3 rounded-full transition-all shadow-sm hover:shadow-[0_10px_25px_rgba(20,184,166,0.2)] hover:-translate-y-0.5 flex items-center justify-center"
-                    title="QR Code"
-                  >
-                    <QrCode className="w-4 h-4" />
-                  </button>
+
+                  {/* Secondary Util Actions */}
+                  <div className="flex items-center justify-between gap-3 mt-1">
+                    <button onClick={() => setShowShareModal(true)} className="flex-1 bg-white border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-300 hover:bg-teal-50 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-sm">
+                      <Share2 className="w-3 h-3" /> Share
+                    </button>
+                    <button onClick={() => setShowQRModal(true)} className="flex-1 bg-white border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-300 hover:bg-teal-50 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-sm">
+                      <QrCode className="w-3 h-3" /> QR
+                    </button>
+                  </div>
                 </div>
+
               </div>
             </div>
 
@@ -412,8 +447,35 @@ export default function UnifiedProfileLayout({
 
             <div className="space-y-24">
               
+              {/* Scroll-Spy Sticky Navigation */}
+              <div className="sticky top-[73px] z-40 -mt-8 pt-4 pb-4 bg-[#FAFAFC]/90 backdrop-blur-md border-b border-slate-200/50">
+                <div className="flex overflow-x-auto hide-scrollbar gap-2 md:gap-4 items-center px-1">
+                  {[
+                    { id: 'overview', label: 'Profile' },
+                    { id: 'location', label: 'Locations' },
+                    { id: 'education', label: 'Education' },
+                    { id: 'experience', label: 'Experience' },
+                    { id: 'media', label: 'Media' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        const el = document.getElementById(tab.id);
+                        if (el) {
+                          const y = el.getBoundingClientRect().top + window.scrollY - 140;
+                          window.scrollTo({ top: y, behavior: 'smooth' });
+                        }
+                      }}
+                      className={`px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all shrink-0 ${activeSection === tab.id ? 'bg-teal-600 text-white shadow-md' : 'text-slate-500 hover:bg-white hover:text-teal-600'}`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* About / Bio Narrative */}
-              <section className="relative pl-0 md:pl-16">
+              <section className="relative pl-0 md:pl-16 pt-8">
                 <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                 <h2 className="text-3xl font-black text-[#0A1128] mb-8">The Profile</h2>
                 <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-loose font-serif">
@@ -453,7 +515,7 @@ export default function UnifiedProfileLayout({
 
               {/* Education Timeline */}
               {isDoctor && hasValidData(profile.education) && (
-                <section className="relative pl-0 md:pl-16">
+                <section id="education" className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Academic Pedigree</h2>
                   <div className="space-y-8">
@@ -482,7 +544,7 @@ export default function UnifiedProfileLayout({
 
               {/* Past Experience Timeline */}
               {isDoctor && hasValidData(profile.experiences) && (
-                <section className="relative pl-0 md:pl-16">
+                <section id="experience" className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Professional Trajectory</h2>
                   <div className="space-y-8">
@@ -603,7 +665,7 @@ export default function UnifiedProfileLayout({
 
               {/* Media / Gallery (Editorial Strip) */}
               {((profile.galleryImages && profile.galleryImages.length > 0) || (profile.rawImages && profile.rawImages.length > 0) || (profile.youtubeLinks && profile.youtubeLinks.length > 0)) && (
-                <section className="relative pl-0 md:pl-16">
+                <section id="media" className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">Visual Narrative</h2>
                   
@@ -639,7 +701,7 @@ export default function UnifiedProfileLayout({
               )}
 
               {/* Location & Map (Cinematic Presentation) */}
-              <section className="relative pl-0 md:pl-16">
+              <section id="location" className="relative pl-0 md:pl-16">
                 <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                 <h2 className="text-3xl font-black text-[#0A1128] mb-8">Practice Location</h2>
                 
@@ -697,8 +759,41 @@ export default function UnifiedProfileLayout({
           </div>
 
           {/* Right Sidebar (25%) */}
-          <div className="lg:col-span-1 space-y-8">
+          <div className="lg:col-span-1 space-y-8 lg:sticky lg:top-[120px] lg:self-start">
             
+            {/* Care Connect Booking Hub */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl overflow-hidden relative group">
+              {/* Decorative top border */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+              
+              <h3 className="font-black text-xl text-[#0A1128] mb-1">Care Connect</h3>
+              <p className="text-xs text-slate-500 font-bold mb-6">Secure Priority Booking</p>
+              
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-4 text-center">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1">Clinic Direct Line</p>
+                <div className="flex items-center justify-center gap-2">
+                  <Phone className="w-4 h-4 text-emerald-600" />
+                  <p className="text-lg font-black text-[#0A1128] font-mono">+91 98765 <span className="opacity-40">*****</span></p>
+                </div>
+              </div>
+
+              {!user ? (
+                <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 text-center">
+                  <p className="text-xs text-rose-700 font-bold mb-3">To protect our doctors from spam, please log in to view contact details.</p>
+                  <Link href={`/login?redirect=${encodeURIComponent(window.location.pathname)}`} className="w-full inline-block bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl text-sm font-black transition-colors">
+                    Login / Register
+                  </Link>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => alert("Care Connect modal will open here.")} 
+                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5"
+                >
+                  Request Callback
+                </button>
+              )}
+            </div>
+
             {/* Ad Space */}
             {heroRightAd && (
               <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white aspect-square md:aspect-[4/3] lg:aspect-[3/4]">
