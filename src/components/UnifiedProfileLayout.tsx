@@ -227,12 +227,28 @@ export default function UnifiedProfileLayout({
         </div>
       </div>
 
-      {/* FULL WIDTH HERO BANNER (Mockup Style) */}
-      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-r from-[#E0F7FA] to-[#E8F5E9] overflow-hidden z-0 border-t-[6px] border-t-[#D32F2F]">
-         <div className="absolute inset-0 opacity-[0.15]">
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-300 fill-current">
-             <path d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,197.3C672,224,768,224,864,202.7C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+      {/* FULL WIDTH HERO BANNER (Mockup Style) - Liquid Multi-Layered Wave */}
+      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-r from-[#E0F7FA] via-[#E8F5E9] to-[#E0F2F1] overflow-hidden z-0 border-t-[6px] border-t-[#D32F2F]">
+         <div className="absolute inset-0">
+           
+           {/* Background Wave - Tall, Faint Cyan */}
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#80DEEA] fill-current opacity-30 translate-y-16">
+             <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
            </svg>
+           
+           {/* Middle Wave - Sweeping Teal */}
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#4DB6AC] fill-current opacity-40 translate-y-8">
+             <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+           </svg>
+
+           {/* Foreground Wave - Deep, Rich Teal Mix */}
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#009688] fill-current opacity-20">
+             <path d="M0,192L48,192C96,192,192,192,288,208C384,224,480,256,576,245.3C672,235,768,181,864,170.7C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+           </svg>
+           
+           {/* Organic Blobs/Gradients to match the far right and far left textures */}
+           <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-emerald-100/30 to-transparent"></div>
+           <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-200/20 rounded-tr-full blur-3xl"></div>
          </div>
       </div>
 
