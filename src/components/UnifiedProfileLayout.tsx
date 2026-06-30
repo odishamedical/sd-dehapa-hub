@@ -228,163 +228,109 @@ export default function UnifiedProfileLayout({
       </div>
 
       {/* FULL WIDTH HERO BANNER (Mockup Style) */}
-      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-500 overflow-hidden z-0 border-t-[6px] border-t-rose-500 shadow-inner">
-         <div className="absolute inset-0 opacity-[0.15]">
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-600 fill-current">
+      <div className="absolute top-[125px] left-0 w-full h-[350px] bg-gradient-to-r from-teal-50 to-cyan-100 overflow-hidden z-0 border-t-[6px] border-t-rose-600 shadow-inner">
+         <div className="absolute inset-0 opacity-[0.5]">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-200 fill-current">
              <path d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,197.3C672,224,768,224,864,202.7C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-           </svg>
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-cyan-600 fill-current opacity-50 translate-y-8">
-             <path d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,128C672,107,768,85,864,106.7C960,128,1056,192,1152,213.3C1248,235,1344,213,1392,202.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
            </svg>
          </div>
       </div>
 
       {/* Main Content Container - Fluid Grid */}
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-16 mb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start">
-          
-          {/* Main Content (75%) */}
-          <div className="lg:col-span-3 space-y-16">
-            
-            {/* The Classic Hero (Left Image, Right Details) */}
-            <div id="overview" className="bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
+        
+        {/* HERO CARD - FULL WIDTH (Mockup Style) */}
+        <div id="overview" className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group">
               
               {/* Left: The Prestige Portrait */}
-              <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 group/portrait z-10 md:-mb-12">
-                
-                <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-slate-100 transition-transform duration-700 group-hover/portrait:-translate-y-1">
+              <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 z-10">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-4 border-white bg-slate-100">
                   <img 
                     src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
                     alt={profile.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                
-                {/* Platinum / Gold Seal */}
-                {verified && (
-                  <div className="absolute -bottom-3 -right-3 bg-gradient-to-br from-[#D4AF37] via-[#F3E5AB] to-[#AA7C11] text-[#4A3B00] rounded-full p-1 shadow-lg border-2 border-white hover:scale-105 transition-transform cursor-default group/badge">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center border border-white/40">
-                      <CheckCircle2 className="w-5 h-5 drop-shadow-sm" />
-                    </div>
-                    {/* Tooltip */}
-                    <div className="absolute top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg whitespace-nowrap font-bold pointer-events-none z-50">
-                      Dehapa Verified
-                    </div>
-                  </div>
-                )}
               </div>
 
-              {/* Right: The Details & Actions */}
-              <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col lg:flex-row gap-6 lg:gap-8">
+              {/* Center: Details */}
+              <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col justify-center py-2 md:py-4">
+                <h1 className="text-3xl md:text-4xl lg:text-[42px] font-black text-[#0A1128] tracking-tight leading-tight mb-1">
+                  {profile.name}
+                </h1>
                 
-                {/* Center: Details */}
-                <div className="flex-1">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#0A1128] tracking-tight leading-tight mb-2">
-                    {profile.name}
-                  </h1>
-                
-                <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-2 md:gap-4 text-slate-500 mb-6">
+                <div className="text-slate-600 text-lg md:text-xl font-medium mb-4">
                   {profile.specialties && profile.specialties.length > 0 ? (
-                    <span className="font-bold text-cyan-700 text-lg">{profile.specialties[0]}</span>
+                    <span>{profile.specialties.join(", ")}</span>
                   ) : profile.category ? (
-                    <span className="font-bold text-cyan-700 text-lg">{profile.category}</span>
+                    <span>{profile.category}</span>
                   ) : null}
-                  
                   {profile.education && profile.education.length > 0 && (
-                    <>
-                      <span className="hidden md:inline text-slate-300">•</span>
-                      <span className="text-sm font-semibold uppercase tracking-widest">{profile.education[0]?.degree || "M.B.B.S"}</span>
-                    </>
+                    <span>, {profile.education[0]?.degree || "MBBS, MD"}</span>
                   )}
                 </div>
 
-                {/* Info Pills */}
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-8">
-                  {/* Rating */}
-                  <div className="bg-amber-50 border border-amber-200 text-amber-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
-                    <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-                    <div className="flex flex-col text-left">
-                      <span className="text-xs font-black leading-none">{profile.rating || profile.stats?.rating || "4.8"}</span>
-                      <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Rating</span>
+                {/* Simple Stars and Verified (Mockup Style) */}
+                <div className="flex items-center justify-center md:justify-start gap-4">
+                  <div className="flex items-center">
+                    <div className="flex gap-0.5">
+                      {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
                     </div>
+                    <span className="text-sm font-medium text-slate-600 ml-2">{profile.reviews || "4,325"} Reviews)</span>
                   </div>
-
-                  {/* Experience */}
-                  <div className="bg-cyan-50 border border-cyan-200 text-cyan-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
-                    <Briefcase className="w-4 h-4 text-cyan-500" />
-                    <div className="flex flex-col text-left">
-                      <span className="text-xs font-black leading-none">{profile.experience?.replace(/\D/g,'') || "10+"} Years</span>
-                      <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Experience</span>
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div className="bg-rose-50 border border-rose-200 text-rose-900 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm cursor-default">
-                    <MapPin className="w-4 h-4 text-rose-500" />
-                    <div className="flex flex-col text-left">
-                      <span className="text-xs font-black leading-none">{profile.city || profile.location || "Bhubaneswar"}</span>
-                      <span className="text-[9px] uppercase tracking-widest opacity-80 mt-0.5">Location</span>
-                    </div>
-                  </div>
-                </div>
-
-                </div>
-
-                {/* Right: Action Stack (Mockup Style) */}
-                <div className="flex flex-col gap-3 w-full lg:w-64 shrink-0">
-                  <button 
-                    onClick={() => {}} 
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white w-full py-3 rounded-xl font-black text-sm transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_25px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 flex items-center justify-between px-5"
-                  >
-                    <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
-                    <span className="opacity-50 text-xs">▼</span>
-                  </button>
                   
-                  <button 
-                    onClick={() => {
-                      if (verified) {
-                        window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
-                      } else {
-                        setShowUnverifiedModal(true);
-                      }
-                    }}
-                    className="bg-rose-500 hover:bg-rose-600 text-white w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
-                  >
-                    <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Urgent Video Call</span>
-                    <span className="opacity-50 text-xs">▼</span>
-                  </button>
-                  
-                  <button 
-                    onClick={() => {}} 
-                    className="bg-white border-2 border-indigo-100 text-indigo-700 hover:bg-indigo-50 w-full py-3 rounded-xl font-bold text-sm transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 flex items-center justify-between px-5"
-                  >
-                    <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
-                    <span className="opacity-50 text-xs">▼</span>
-                  </button>
-
-                  {/* Secondary Util Actions */}
-                  <div className="flex items-center justify-between gap-3 mt-1">
-                    <button onClick={() => setShowShareModal(true)} className="flex-1 bg-white border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-300 hover:bg-teal-50 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-sm">
-                      <Share2 className="w-3 h-3" /> Share
-                    </button>
-                    <button onClick={() => setShowQRModal(true)} className="flex-1 bg-white border border-slate-200 text-slate-600 hover:text-teal-600 hover:border-teal-300 hover:bg-teal-50 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shadow-sm">
-                      <QrCode className="w-3 h-3" /> QR
-                    </button>
-                  </div>
+                  {verified && (
+                    <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-emerald-100">
+                      <Shield className="w-3 h-3 fill-emerald-600 text-white" /> Verified
+                    </div>
+                  )}
                 </div>
+              </div>
 
+              {/* Right: Action Stack (Mockup Style) */}
+              <div className="flex flex-col gap-3 w-full lg:w-[280px] shrink-0 justify-center">
+                <button 
+                  onClick={() => {}} 
+                  className="bg-[#0F9D58] hover:bg-emerald-600 text-white w-full py-3.5 rounded-xl font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                >
+                  <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
+                  <span className="opacity-50 text-[10px]">▼</span>
+                </button>
+                
+                <button 
+                  onClick={() => {
+                    if (verified) {
+                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
+                    } else {
+                      setShowUnverifiedModal(true);
+                    }
+                  }}
+                  className="bg-[#FF3B30] hover:bg-red-600 text-white w-full py-3.5 rounded-xl font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                >
+                  <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Urgent Video Call</span>
+                  <span className="opacity-50 text-[10px]">▼</span>
+                </button>
+                
+                <button 
+                  onClick={() => {}} 
+                  className="bg-white border-[1.5px] border-slate-200 text-[#5856D6] hover:bg-slate-50 w-full py-3.5 rounded-xl font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                >
+                  <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
+                  <span className="opacity-50 text-[10px]">▼</span>
+                </button>
               </div>
             </div>
 
-            {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) - Moved directly under Hero */}
-            <div className="sticky top-[73px] z-40 bg-[#FAFAFC]/90 backdrop-blur-md border-b border-slate-200">
-              <div className="flex overflow-x-auto hide-scrollbar gap-1 md:gap-2 items-end px-1 pt-4">
+            {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) - Full Width under Hero */}
+            <div className="sticky top-[73px] z-40 bg-[#FAFAFC]/90 backdrop-blur-md mb-12 shadow-sm rounded-b-2xl -mt-6 mx-2 px-2 border border-slate-200 border-t-0">
+              <div className="flex overflow-x-auto hide-scrollbar gap-1 items-end pt-2">
                 {[
                   { id: 'overview', label: 'Profile' },
-                  { id: 'location', label: 'Locations' },
                   { id: 'education', label: 'Education' },
                   { id: 'experience', label: 'Experience' },
-                  { id: 'media', label: 'Media' },
+                  { id: 'media', label: 'Expertise' },
+                  { id: 'location', label: 'Associations' },
+                  { id: 'reviews', label: 'Reviews' },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -395,13 +341,18 @@ export default function UnifiedProfileLayout({
                         window.scrollTo({ top: y, behavior: 'smooth' });
                       }
                     }}
-                    className={`px-6 py-4 text-sm font-black tracking-wide transition-all shrink-0 border-b-[3px] ${activeSection === tab.id ? 'text-teal-600 border-teal-600 bg-white shadow-[0_-4px_6px_-2px_rgba(0,0,0,0.05)] rounded-t-xl' : 'text-slate-500 border-transparent hover:text-teal-600 hover:bg-white/50 rounded-t-xl'}`}
+                    className={`px-6 py-3.5 text-[15px] font-black tracking-wide transition-all shrink-0 border-b-[4px] ${activeSection === tab.id ? 'text-teal-600 border-teal-600 bg-white rounded-t-xl' : 'text-slate-600 border-transparent hover:text-teal-600 hover:bg-white/50 rounded-t-xl'}`}
                   >
                     {tab.label}
                   </button>
                 ))}
               </div>
             </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-12 items-start">
+          
+          {/* Main Content (75%) */}
+          <div className="lg:col-span-3 space-y-16">
 
             {/* The Prestige Trust Bar (Data as Art) */}
             <div className="w-full relative z-30 group">
