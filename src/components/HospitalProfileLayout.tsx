@@ -218,18 +218,18 @@ export default function HospitalProfileLayout({
                   {/* Map Container */}
                   <div className="flex-1 p-6 md:p-8 bg-white flex flex-col">
                      <div className="relative w-full h-full min-h-[300px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                        {profile.mapUrl && profile.mapUrl.includes('http') ? (
+                        {typeof profile.mapUrl === 'string' && profile.mapUrl.includes('http') ? (
                           <iframe src={profile.mapUrl} className="absolute inset-0 w-full h-full border-0 grayscale-[20%] contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
                         ) : (
                           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119743.53374959132!2d85.7380517!3d20.2960587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a1909d2d5170aa5%3A0xfc580e2b68b33fa8!2sBhubaneswar%2C%20Odisha!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" className="absolute inset-0 w-full h-full border-0 grayscale-[20%] contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-500" loading="lazy" allowFullScreen />
                         )}
                         <div className="absolute top-4 left-4 z-10">
-                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-white hover:bg-slate-50 text-blue-600 px-4 py-2 rounded border border-slate-200 font-bold text-sm shadow-sm flex items-center gap-1.5 transition-colors">
+                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name || 'Hospital')}`} target="_blank" rel="noreferrer" className="bg-white hover:bg-slate-50 text-blue-600 px-4 py-2 rounded border border-slate-200 font-bold text-sm shadow-sm flex items-center gap-1.5 transition-colors">
                               Open in Maps <ExternalLink className="w-3.5 h-3.5" />
                            </a>
                         </div>
                         <div className="absolute bottom-4 right-4 z-10">
-                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg flex items-center gap-2 transition-transform hover:-translate-y-0.5">
+                           <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.name || 'Hospital')}`} target="_blank" rel="noreferrer" className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg flex items-center gap-2 transition-transform hover:-translate-y-0.5">
                               <MapPin className="w-4 h-4" /> Get Directions
                            </a>
                         </div>
@@ -475,7 +475,7 @@ export default function HospitalProfileLayout({
                  {platformAds.heroRight.imageUrl ? (
                    <img src={platformAds.heroRight.imageUrl} alt="Ad" className="w-full h-full object-cover" />
                  ) : (
-                   <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: platformAds.heroRight.htmlCode }} />
+                   <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: platformAds.heroRight.htmlCode || '' }} />
                  )}
                </div>
              )}
@@ -487,7 +487,7 @@ export default function HospitalProfileLayout({
                  <div className="flex flex-col gap-4">
                    {similarEntities.slice(0,4).map((sim, idx) => (
                      <Link key={idx} href={`/hospitals/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md">
-                       <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name)}`} alt={sim.name} className="w-12 h-12 object-cover border border-slate-200 rounded-lg shrink-0" />
+                       <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || 'Hospital')}`} alt={sim.name || 'Hospital'} className="w-12 h-12 object-cover border border-slate-200 rounded-lg shrink-0" />
                        <div className="min-w-0 flex-1">
                          <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600">{sim.name}</h4>
                          <div className="flex items-center gap-1 mt-0.5">
