@@ -39,6 +39,16 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
           if (!querySnapshot.empty) {
             docSnap = querySnapshot.docs[0];
             docId = docSnap.id;
+          } else {
+            const docRef = doc(db, 'directory', customSlug);
+            const fallbackSnap = await Promise.race([
+              getDoc(docRef),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 3000))
+            ]) as any;
+            if (fallbackSnap && fallbackSnap.exists()) {
+              docSnap = fallbackSnap;
+              docId = fallbackSnap.id;
+            }
           }
         } else if (id) {
           const docRef = doc(db, 'directory', id);
@@ -181,36 +191,6 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
       } finally {
         setLoading(false);
       }
-      
-      // Fallback Mock Data for testing if document does not exist
-      setProfile({
-        id: id || "mock-hospital",
-        name: "Health Village Hospital",
-        subtitle: "Corporate Hospital",
-        image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&q=80",
-        verified: false,
-        stats: { rating: "4.7", reviews: "128" },
-        about: "State-of-the-art medical care facility offering comprehensive health services.",
-        details: [
-          { label: "Phone", value: "+91 98765 43210" },
-          { label: "Address", value: "Bhubaneswar, Odisha" },
-          { label: "Hours", value: "24/7 Open" }
-        ],
-        roster: ["Cardiology", "Neurology", "General Surgery"],
-        rawImages: ["https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80"],
-        galleryImages: [],
-        healthPackages: [
-          { name: "Master Health Check", price: "₹4,500", included: "CBC, Lipid, Liver" }
-        ],
-        mapUrl: "https://maps.google.com/maps?q=Odisha&t=&z=15&ie=UTF8&iwloc=&output=embed",
-        phone: "+91 98765 43210"
-      });
-      setSimilarHospitals([
-        { id: 'mock-1', name: 'Apollo Hospitals', category: 'Hospital', rating: 4.8, subtitle: 'Multi-Specialty', image: 'https://ui-avatars.com/api/?name=Apollo&background=0f766e&color=fff' },
-        { id: 'mock-2', name: 'Kalinga Hospital', category: 'Hospital', rating: 4.5, subtitle: 'Corporate Hospital', image: 'https://ui-avatars.com/api/?name=Kalinga&background=0f766e&color=fff' },
-        { id: 'mock-3', name: 'Care Hospitals', category: 'Hospital', rating: 4.6, subtitle: 'Multi-Specialty', image: 'https://ui-avatars.com/api/?name=Care&background=0f766e&color=fff' }
-      ]);
-      setLoading(false);
     };
     fetchHospital();
   }, [id, customSlug]);
