@@ -809,74 +809,7 @@ export default function UnifiedProfileLayout({
         </div>
       </div>
 
-      {/* Floating Glassmorphic VIP Pill */}
-      <div className="fixed bottom-[100px] md:bottom-10 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[600px] z-40 pointer-events-none">
-        <div className="bg-white/80 backdrop-blur-3xl border border-white/80 p-1.5 md:p-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] rounded-full pointer-events-auto flex items-center justify-between gap-3">
-          <div className="hidden sm:block pl-5">
-            <p className="font-black text-slate-900 text-sm md:text-base">{profile.name}</p>
-            <p className="text-[9px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest">Priority Access</p>
-          </div>
-          <div className="flex-1 sm:flex-none">
-            {verified ? (
-              <div className="flex gap-2 w-full sm:w-auto">
-                {(type === 'hospital' || type === 'lab' || type === 'pharmacy' || type === 'ambulance') ? (
-                  <>
-                    {(type === 'hospital' || type === 'ambulance') && (
-                      <button 
-                        onClick={() => setShowEmergencyModal(true)}
-                        className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
-                      >
-                        <Activity className="w-4 h-4 md:w-5 md:h-5" />
-                        {type === 'ambulance' ? 'Dispatch Ambulance' : 'Emergency Booking'}
-                      </button>
-                    )}
-                    <button 
-                      onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
-                      className="flex-1 sm:flex-none bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg shadow-cyan-500/30 border border-cyan-400/20 flex items-center justify-center gap-2"
-                    >
-                      <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5" />
-                      {type === 'lab' ? 'Book Test' : type === 'pharmacy' ? 'Order Medicines' : 'Book Appointment'}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button 
-                      onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }))}
-                      className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2"
-                    >
-                      <Video className="w-4 h-4 md:w-5 md:h-5" />
-                      Urgent Video Call
-                    </button>
-                    <button 
-                      onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }))}
-                      className="flex-1 sm:flex-none bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-4 md:px-6 py-3.5 md:py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-lg shadow-cyan-500/30 border border-cyan-400/20 flex items-center justify-center gap-2"
-                    >
-                      <HeartPulse className="w-4 h-4 md:w-5 md:h-5" />
-                      Schedule Video
-                    </button>
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center gap-1 w-full sm:w-auto">
-                <button 
-                  onClick={() => setShowUnverifiedModal(true)}
-                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-500 px-6 py-3 md:px-8 md:py-3.5 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest transition-all shadow-sm flex items-center justify-center gap-2 md:gap-3"
-                >
-                  <Shield className="w-4 h-4 md:w-5 md:h-5 text-slate-400" />
-                  Services Unavailable
-                </button>
-                <button 
-                  onClick={() => setShowClaimModal(true)} 
-                  className="text-[9px] md:text-[10px] font-bold text-slate-400 hover:text-cyan-600 transition-colors uppercase tracking-widest"
-                >
-                  Are you the owner? Claim Profile
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+
 
       <style jsx>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
