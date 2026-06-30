@@ -137,17 +137,59 @@ export default function DehapaHome() {
                     <GlassSelect value={searchCountry} onChange={handleCountryChange} icon={<MapPin className="w-5 h-5 text-slate-400" />} options={[{ value: 'India', label: 'India' }, { value: 'Other', label: 'Other' }]} />
                   </div>
                   {searchCountry === 'India' ? (
-                    <div className="h-14">
-                      <GlassSelect value={searchState} onChange={handleStateChange} placeholder="State" options={[{ value: '', label: 'State' }, { value: 'Odisha', label: 'Odisha' }, { value: 'Maharashtra', label: 'Maharashtra' }]} />
-                    </div>
-                  ) : (
+                  <div className="h-14">
+                    <GlassSelect value={searchState} onChange={handleStateChange} placeholder="State" options={[
+                      { value: '', label: 'State' },
+                      { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+                      { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+                      { value: 'Assam', label: 'Assam' },
+                      { value: 'Bihar', label: 'Bihar' },
+                      { value: 'Chhattisgarh', label: 'Chhattisgarh' },
+                      { value: 'Goa', label: 'Goa' },
+                      { value: 'Gujarat', label: 'Gujarat' },
+                      { value: 'Haryana', label: 'Haryana' },
+                      { value: 'Himachal Pradesh', label: 'Himachal Pradesh' },
+                      { value: 'Jharkhand', label: 'Jharkhand' },
+                      { value: 'Karnataka', label: 'Karnataka' },
+                      { value: 'Kerala', label: 'Kerala' },
+                      { value: 'Madhya Pradesh', label: 'Madhya Pradesh' },
+                      { value: 'Maharashtra', label: 'Maharashtra' },
+                      { value: 'Manipur', label: 'Manipur' },
+                      { value: 'Meghalaya', label: 'Meghalaya' },
+                      { value: 'Mizoram', label: 'Mizoram' },
+                      { value: 'Nagaland', label: 'Nagaland' },
+                      { value: 'Odisha', label: 'Odisha' },
+                      { value: 'Punjab', label: 'Punjab' },
+                      { value: 'Rajasthan', label: 'Rajasthan' },
+                      { value: 'Sikkim', label: 'Sikkim' },
+                      { value: 'Tamil Nadu', label: 'Tamil Nadu' },
+                      { value: 'Telangana', label: 'Telangana' },
+                      { value: 'Tripura', label: 'Tripura' },
+                      { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+                      { value: 'Uttarakhand', label: 'Uttarakhand' },
+                      { value: 'West Bengal', label: 'West Bengal' }
+                    ]} />
+                  </div>
+                ) : (
                     <div className="w-full flex items-center px-4 h-14 bg-slate-50/50 rounded-2xl border border-slate-200"><input type="text" value={searchState} onChange={(e) => setSearchState(e.target.value)} placeholder="State" className="w-full bg-transparent border-none outline-none focus:ring-0" /></div>
                   )}
                   {searchCountry === 'India' && searchState === 'Odisha' ? (
-                    <div className="h-14">
-                      <GlassSelect value={searchDistrict} onChange={setSearchDistrict} placeholder="District" options={[{ value: '', label: 'District' }, { value: 'Cuttack', label: 'Cuttack' }, { value: 'Khordha', label: 'Bhubaneswar' }, { value: 'Sambalpur', label: 'Sambalpur' }]} />
-                    </div>
-                  ) : (
+                  <div className="h-14">
+                    <GlassSelect value={searchDistrict} onChange={setSearchDistrict} placeholder="District" options={[
+                      { value: '', label: 'District' },
+                      { value: 'Angul', label: 'Angul' }, { value: 'Balangir', label: 'Balangir' }, { value: 'Balasore', label: 'Balasore' },
+                      { value: 'Bargarh', label: 'Bargarh' }, { value: 'Bhadrak', label: 'Bhadrak' }, { value: 'Boudh', label: 'Boudh' },
+                      { value: 'Cuttack', label: 'Cuttack' }, { value: 'Deogarh', label: 'Deogarh' }, { value: 'Dhenkanal', label: 'Dhenkanal' },
+                      { value: 'Gajapati', label: 'Gajapati' }, { value: 'Ganjam', label: 'Ganjam' }, { value: 'Jagatsinghpur', label: 'Jagatsinghpur' },
+                      { value: 'Jajpur', label: 'Jajpur' }, { value: 'Jharsuguda', label: 'Jharsuguda' }, { value: 'Kalahandi', label: 'Kalahandi' },
+                      { value: 'Kandhamal', label: 'Kandhamal' }, { value: 'Kendrapara', label: 'Kendrapara' }, { value: 'Kendujhar', label: 'Kendujhar' },
+                      { value: 'Khordha', label: 'Khordha (Bhubaneswar)' }, { value: 'Koraput', label: 'Koraput' }, { value: 'Malkangiri', label: 'Malkangiri' },
+                      { value: 'Mayurbhanj', label: 'Mayurbhanj' }, { value: 'Nabarangpur', label: 'Nabarangpur' }, { value: 'Nayagarh', label: 'Nayagarh' },
+                      { value: 'Nuapada', label: 'Nuapada' }, { value: 'Puri', label: 'Puri' }, { value: 'Rayagada', label: 'Rayagada' },
+                      { value: 'Sambalpur', label: 'Sambalpur' }, { value: 'Subarnapur', label: 'Subarnapur' }, { value: 'Sundargarh', label: 'Sundargarh' }
+                    ]} />
+                  </div>
+                ) : (
                     <div className="w-full flex items-center px-4 h-14 bg-slate-50/50 rounded-2xl border border-slate-200"><input type="text" value={searchDistrict} onChange={(e) => setSearchDistrict(e.target.value)} placeholder="District" className="w-full bg-transparent border-none outline-none focus:ring-0" /></div>
                   )}
                 </div>
@@ -238,52 +280,52 @@ export default function DehapaHome() {
           </div>
         </section>
 
-        {/* 3. PLATFORM CAPABILITIES (Abstract Network Scale) */}
-        <section className="bg-slate-900 rounded-[3rem] p-8 sm:p-12 relative overflow-hidden shadow-2xl">
+        {/* 3. PLATFORM CAPABILITIES (Abstract Network Scale - Bright Edition) */}
+        <section className="bg-gradient-to-br from-white to-slate-50 border border-slate-200 rounded-[3rem] p-8 sm:p-12 relative overflow-hidden shadow-sm">
           {/* Grid Background */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
           
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/20 border border-teal-500/30 text-teal-300 font-bold text-xs uppercase tracking-widest mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-200 text-teal-700 font-bold text-xs uppercase tracking-widest mb-6">
                 <Activity className="w-4 h-4" /> Sovereign Trust
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-6 leading-tight">
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6 leading-tight">
                 A highly secure, verifiable healthcare ecosystem.
               </h2>
-              <p className="text-slate-400 text-lg mb-8 max-w-lg">
+              <p className="text-slate-500 text-lg mb-8 max-w-lg">
                 We are mapping the future of medical identity. Every entity on Dehapa undergoes strict verification to ensure you receive authentic and trusted care.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
-                  <Shield className="w-8 h-8 text-teal-400 mb-4" />
-                  <h4 className="text-white font-bold text-lg">Anti-Fraud</h4>
-                  <p className="text-slate-400 text-sm mt-2">Zero tolerance for fake degrees or unverified clinics.</p>
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <Shield className="w-8 h-8 text-teal-500 mb-4" />
+                  <h4 className="text-slate-800 font-bold text-lg">Anti-Fraud</h4>
+                  <p className="text-slate-500 text-sm mt-2">Zero tolerance for fake degrees or unverified clinics.</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
-                  <UserCircle className="w-8 h-8 text-blue-400 mb-4" />
-                  <h4 className="text-white font-bold text-lg">Your Identity</h4>
-                  <p className="text-slate-400 text-sm mt-2">Own your health records with your Dehapa UID.</p>
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <UserCircle className="w-8 h-8 text-blue-500 mb-4" />
+                  <h4 className="text-slate-800 font-bold text-lg">Your Identity</h4>
+                  <p className="text-slate-500 text-sm mt-2">Own your health records with your Dehapa UID.</p>
                 </div>
               </div>
             </div>
             
             {/* Visual Network Map */}
             <div className="relative aspect-video lg:aspect-square flex justify-center items-center">
-               <div className="w-full max-w-md h-full max-h-md rounded-full border border-teal-500/20 relative animate-[spin_60s_linear_infinite]">
+               <div className="w-full max-w-md h-full max-h-md rounded-full border border-teal-100 relative animate-[spin_60s_linear_infinite]">
                  {/* Inner orbits */}
-                 <div className="absolute inset-4 rounded-full border border-blue-500/20 animate-[spin_40s_linear_infinite_reverse]"></div>
-                 <div className="absolute inset-12 rounded-full border border-purple-500/20 animate-[spin_20s_linear_infinite]"></div>
+                 <div className="absolute inset-4 rounded-full border border-blue-100 animate-[spin_40s_linear_infinite_reverse]"></div>
+                 <div className="absolute inset-12 rounded-full border border-purple-100 animate-[spin_20s_linear_infinite]"></div>
                  
                  {/* Glowing Nodes */}
-                 <div className="absolute top-0 left-1/2 w-4 h-4 bg-teal-400 rounded-full blur-[2px] shadow-[0_0_20px_rgba(45,212,191,1)] -translate-x-1/2 -translate-y-1/2"></div>
-                 <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-blue-400 rounded-full blur-[2px] shadow-[0_0_15px_rgba(96,165,250,1)] -translate-x-1/2 translate-y-1/2"></div>
-                 <div className="absolute top-1/2 left-4 w-2 h-2 bg-purple-400 rounded-full blur-[1px] shadow-[0_0_10px_rgba(192,132,252,1)] -translate-y-1/2"></div>
-                 <div className="absolute top-1/4 right-8 w-5 h-5 bg-teal-200 rounded-full blur-[3px] shadow-[0_0_25px_rgba(153,246,228,1)]"></div>
+                 <div className="absolute top-0 left-1/2 w-4 h-4 bg-teal-400 rounded-full blur-[1px] shadow-[0_0_15px_rgba(45,212,191,0.5)] -translate-x-1/2 -translate-y-1/2"></div>
+                 <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-blue-400 rounded-full blur-[1px] shadow-[0_0_10px_rgba(96,165,250,0.5)] -translate-x-1/2 translate-y-1/2"></div>
+                 <div className="absolute top-1/2 left-4 w-2 h-2 bg-purple-400 rounded-full blur-[1px] shadow-[0_0_10px_rgba(192,132,252,0.5)] -translate-y-1/2"></div>
+                 <div className="absolute top-1/4 right-8 w-5 h-5 bg-teal-300 rounded-full blur-[2px] shadow-[0_0_20px_rgba(94,234,212,0.5)]"></div>
                  
                  <div className="absolute inset-0 flex items-center justify-center">
-                    <QrCode className="w-20 h-20 text-white/10 animate-pulse" />
+                    <QrCode className="w-20 h-20 text-slate-200 animate-pulse" />
                  </div>
                </div>
             </div>
@@ -321,7 +363,7 @@ export default function DehapaHome() {
           </div>
         </section>
 
-        {/* 5. PORTALS: Premium Dark Mode Cards */}
+        {/* 5. PORTALS: Premium Bright/Glassmorphic Cards */}
         <section className="pt-4">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-black font-serif text-slate-900 mb-3">Sovereign Portals</h2>
@@ -329,46 +371,46 @@ export default function DehapaHome() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Link href="/portal" className="bg-[#0A1128] rounded-[2.5rem] p-8 border border-slate-800 flex flex-col justify-between hover:border-teal-500/50 transition-all group overflow-hidden relative">
+            <Link href="/portal" className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-teal-300 hover:shadow-lg transition-all group overflow-hidden relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-teal-400 mb-6 group-hover:scale-110 group-hover:bg-teal-500/20 transition-all">
+                <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 group-hover:bg-teal-100 transition-all">
                   <UserCircle className="w-7 h-7" />
                 </div>
-                <h4 className="font-black text-white text-xl mb-2">Patient Portal</h4>
-                <p className="text-slate-400 text-sm">Access your secure vault and digital health records.</p>
+                <h4 className="font-black text-slate-900 text-xl mb-2">Patient Portal</h4>
+                <p className="text-slate-500 text-sm">Access your secure vault and digital health records.</p>
               </div>
-              <div className="mt-8 flex items-center justify-between text-teal-500 font-bold text-sm relative z-10">
+              <div className="mt-8 flex items-center justify-between text-teal-600 font-bold text-sm relative z-10">
                 <span>Access Vault</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
             
-            <Link href="/login?redirect=/portal/verify?role=doctor" className="bg-[#0A1128] rounded-[2.5rem] p-8 border border-slate-800 flex flex-col justify-between hover:border-cyan-500/50 transition-all group overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <Link href="/login?redirect=/portal/verify?role=doctor" className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-lg transition-all group overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all">
+                <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 group-hover:bg-blue-100 transition-all">
                   <Stethoscope className="w-7 h-7" />
                 </div>
-                <h4 className="font-black text-white text-xl mb-2">Doctor Portal</h4>
-                <p className="text-slate-400 text-sm">Manage your verified profile, clinic, and appointments.</p>
+                <h4 className="font-black text-slate-900 text-xl mb-2">Doctor Portal</h4>
+                <p className="text-slate-500 text-sm">Manage your verified profile, clinic, and appointments.</p>
               </div>
-              <div className="mt-8 flex items-center justify-between text-cyan-500 font-bold text-sm relative z-10">
+              <div className="mt-8 flex items-center justify-between text-blue-600 font-bold text-sm relative z-10">
                 <span>Manage Clinic</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
 
-            <Link href="/login?redirect=/portal/verify?role=hospital" className="bg-[#0A1128] rounded-[2.5rem] p-8 border border-slate-800 flex flex-col justify-between hover:border-indigo-500/50 transition-all group overflow-hidden relative">
+            <Link href="/login?redirect=/portal/verify?role=hospital" className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-110 group-hover:bg-indigo-100 transition-all">
                   <Building2 className="w-7 h-7" />
                 </div>
-                <h4 className="font-black text-white text-xl mb-2">Hospital Admin</h4>
-                <p className="text-slate-400 text-sm">Verify your facility, roster doctors, and capabilities.</p>
+                <h4 className="font-black text-slate-900 text-xl mb-2">Hospital Admin</h4>
+                <p className="text-slate-500 text-sm">Verify your facility, roster doctors, and capabilities.</p>
               </div>
-              <div className="mt-8 flex items-center justify-between text-indigo-500 font-bold text-sm relative z-10">
+              <div className="mt-8 flex items-center justify-between text-indigo-600 font-bold text-sm relative z-10">
                 <span>Access Dashboard</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
