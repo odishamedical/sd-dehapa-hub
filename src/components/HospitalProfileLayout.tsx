@@ -6,7 +6,7 @@ import {
   Star, MapPin, Clock, Phone, Globe, Shield, 
   Activity, Video, HeartPulse, CheckCircle2, 
   User, GraduationCap, Briefcase, Share2, 
-  Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2, X
+  Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2, X, ExternalLink
 } from 'lucide-react';
 
 interface HospitalProfileLayoutProps {
