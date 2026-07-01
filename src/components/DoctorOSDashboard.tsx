@@ -161,7 +161,7 @@ export default function DoctorOSDashboard() {
         onAcceptPing={handleAcceptPing} 
       />
 
-      <div className="max-w-5xl mx-auto space-y-6 pb-20 md:pb-8">
+      <div className="max-w-7xl space-y-6 pb-20 md:pb-8">
         
         {/* TAB ROUTING */}
         
