@@ -367,7 +367,8 @@ export default function GlobalTelemedicineFAB() {
         const data = snapshot.data();
         if (data && data.status === "accepted") {
           unsubscribe();
-          setIsOpen(false);
+          setStep("connecting_success"); // Show instant feedback
+          // Let Next.js handle the route transition while showing the success UI
           router.push(`/consultation/${docRef.id}`);
         }
       });
@@ -865,6 +866,20 @@ export default function GlobalTelemedicineFAB() {
                     {paymentType === "direct" ? "Calling Doctor..." : "Pinging Network..."}
                   </h3>
                   <p className="text-slate-500 text-center font-medium max-w-xs">Establishing encrypted video link. Do not close this window.</p>
+                </div>
+              )}
+
+              {/* STEP 8: SUCCESS / ENTERING ROOM */}
+              {step === "connecting_success" && (
+                <div className="h-full flex flex-col items-center justify-center animate-in zoom-in duration-300 py-12">
+                  <div className="w-32 h-32 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mb-8 relative border border-emerald-200 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                    <div className="absolute inset-[-10px] border-4 border-emerald-500/20 rounded-full animate-ping"></div>
+                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                  </div>
+                  <h3 className="text-3xl font-black text-emerald-600 mb-3 tracking-tight">
+                    Doctor Accepted!
+                  </h3>
+                  <p className="text-slate-500 text-center font-bold uppercase tracking-widest text-xs animate-pulse">Entering Video Room...</p>
                 </div>
               )}
 
