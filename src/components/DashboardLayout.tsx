@@ -196,7 +196,7 @@ export default function DashboardLayout({
       </div>
 
       {/* Main Header (Sticky) */}
-      <header className="sticky top-20 md:top-24 z-30 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3 md:gap-4">
           <button 
             onClick={() => setIsMobileMenuOpen(true)} 
@@ -249,7 +249,7 @@ export default function DashboardLayout({
             LEFT SIDEBAR (Glassmorphism)
            ========================================================================= */}
         <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
-          <div className="sticky top-[180px] bg-white/70 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/80 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+          <div className="sticky top-[100px] bg-white/70 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/80 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             {userProfile && (
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
                 {userProfile.image ? (
