@@ -19,7 +19,7 @@ import MyNetworkHub from '@/components/network/MyNetworkHub';
 import CareTeamSeatingChart from '@/components/network/CareTeamSeatingChart';
 import LiveHealthFeed from '@/components/network/LiveHealthFeed';
 
-function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName: string | null, userUid: string | null, userRole: string | null, onTabChange: (id: string) => void }) {
+function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }: { userName: string | null, userUid: string | null, userRole: string | null, userPhoto: string | null, onTabChange: (id: string) => void }) {
   return (
     <div className="flex flex-col md:grid md:grid-cols-3 gap-4 md:gap-6">
         
@@ -44,9 +44,18 @@ function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName
         {/* 1. Welcome Banner (Top on both) */}
         <div className="order-1 md:col-span-2 bg-gradient-to-br from-white to-slate-50 border border-slate-200 shadow-sm rounded-[24px] p-6 md:p-8 flex flex-col justify-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
-            <div className="z-10 relative">
-              <h2 className="text-2xl md:text-3xl font-serif font-black text-slate-800 mb-2">Welcome back, {userName}</h2>
-              <p className="text-sm md:text-base text-slate-500 font-medium">Your medical profile is secure and up to date.</p>
+            <div className="z-10 relative flex items-center gap-6">
+              {userPhoto ? (
+                <img src={userPhoto} alt={userName || "Profile"} className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-white shadow-sm object-cover" />
+              ) : (
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm border-4 border-white">
+                  {userName ? userName.charAt(0).toUpperCase() : "U"}
+                </div>
+              )}
+              <div>
+                <h2 className="text-2xl md:text-3xl font-serif font-black text-slate-800 mb-2">Welcome back, {userName}</h2>
+                <p className="text-sm md:text-base text-slate-500 font-medium">Your medical profile is secure and up to date.</p>
+              </div>
             </div>
         </div>
 
@@ -357,10 +366,11 @@ export default function UserDashboard() {
       userProfile={{
         name: userName || "User",
         subtitle: userEmail,
-        uid: userUid || undefined
+        uid: userUid || undefined,
+        image: identityData.profilePhoto || undefined
       }}
       hideDefaultModulesList={true}
-      homeWidget={<UserHomeWidget userName={userName} userUid={userEmail} userRole={userRole} onTabChange={handleTabChange} />}
+      homeWidget={<UserHomeWidget userName={userName} userUid={userEmail} userRole={userRole} userPhoto={identityData.profilePhoto || null} onTabChange={handleTabChange} />}
     >
       <div className="max-w-4xl mx-auto pb-24">
         
@@ -370,6 +380,42 @@ export default function UserDashboard() {
               Account Settings
               <AutosaveIndicator status={identitySaveStatus} />
             </h3>
+
+            {/* Profile Photo Upload */}
+            <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 p-6 bg-slate-50/50 rounded-2xl border border-slate-100">
+              <div className="relative group cursor-pointer">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg bg-teal-50 flex items-center justify-center">
+                  {identityData.profilePhoto ? (
+                    <img src={identityData.profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <svg className="w-10 h-10 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                  )}
+                </div>
+                <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <input 
+                  type="file" 
+                  className="absolute inset-0 opacity-0 cursor-pointer" 
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        if (event.target?.result) {
+                          setIdentityData({...identityData, profilePhoto: event.target.result as string});
+                        }
+                      };
+                      reader.readAsDataURL(e.target.files[0]);
+                    }
+                  }}
+                />
+              </div>
+              <div className="text-center sm:text-left">
+                <h4 className="font-bold text-slate-800 text-lg">Profile Picture</h4>
+                <p className="text-xs text-slate-500 mt-1 max-w-sm">Upload a square image. A high-quality photo builds trust with doctors during telemedicine calls.</p>
+              </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -431,6 +477,87 @@ export default function UserDashboard() {
                   <option value="Other">Other</option>
                 </select>
               </div>
+            </div>
+
+            {/* Family Members Section */}
+            <div className="mt-12">
+              <h4 className="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2 flex items-center justify-between">
+                Family Members
+                <AutosaveIndicator status={familySaveStatus} />
+              </h4>
+              <p className="text-sm text-slate-500 mb-4">Add your family members here so you can easily select them during urgent telemedicine calls without typing their details.</p>
+              
+              <div className="space-y-4 mb-4">
+                {familyMembers.map((member, idx) => (
+                  <div key={idx} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4 relative group">
+                    <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center text-teal-600 font-bold shrink-0">
+                      {member.name ? member.name.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <input 
+                        type="text" 
+                        value={member.name || ''} 
+                        onChange={e => {
+                          const newArr = [...familyMembers];
+                          newArr[idx].name = e.target.value;
+                          setFamilyMembers(newArr);
+                        }}
+                        placeholder="Name"
+                        className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-teal-500"
+                      />
+                      <input 
+                        type="number" 
+                        value={member.age || ''} 
+                        onChange={e => {
+                          const newArr = [...familyMembers];
+                          newArr[idx].age = e.target.value;
+                          setFamilyMembers(newArr);
+                        }}
+                        placeholder="Age"
+                        className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-teal-500"
+                      />
+                      <select 
+                        value={member.gender || ''} 
+                        onChange={e => {
+                          const newArr = [...familyMembers];
+                          newArr[idx].gender = e.target.value;
+                          setFamilyMembers(newArr);
+                        }}
+                        className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-teal-500"
+                      >
+                        <option value="">Sex...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        const newArr = familyMembers.filter((_, i) => i !== idx);
+                        setFamilyMembers(newArr);
+                      }}
+                      className="text-red-400 hover:text-red-600 p-2 sm:opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Remove Family Member"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                ))}
+                
+                {familyMembers.length === 0 && (
+                  <div className="text-center py-6 border-2 border-dashed border-slate-200 rounded-xl text-slate-400">
+                    No family members added yet.
+                  </div>
+                )}
+              </div>
+              
+              <button 
+                onClick={() => setFamilyMembers([...familyMembers, { id: Date.now().toString(), name: '', age: '', gender: '' }])}
+                className="bg-white border-2 border-teal-500 text-teal-600 hover:bg-teal-50 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                Add Family Member
+              </button>
             </div>
             
             <p className="text-xs text-slate-400 mt-6 bg-slate-50 p-4 rounded-xl border border-slate-100">

@@ -98,25 +98,46 @@ export default function DashboardLayout({
           const isAccordion = roleName === "User Portal" && sectionObj.section !== "DEFAULT";
           const isExpanded = expandedNavSection === sectionObj.section;
           
+          let headerColorClass = "text-slate-500 hover:text-slate-900 hover:bg-slate-50";
+          let headerTextClass = "text-[10px] uppercase tracking-widest";
+          let headerBgClass = "";
+          
+          if (isAccordion) {
+            headerTextClass = "text-xs font-black uppercase tracking-wider";
+            if (sectionObj.section === "Personal Details") {
+              headerColorClass = "text-purple-700 hover:text-purple-900";
+              headerBgClass = "bg-purple-50/50 hover:bg-purple-100 border border-purple-100";
+            } else if (sectionObj.section === "Healthcare & Consults") {
+              headerColorClass = "text-rose-700 hover:text-rose-900";
+              headerBgClass = "bg-rose-50/50 hover:bg-rose-100 border border-rose-100";
+            } else if (sectionObj.section === "Medical Records") {
+              headerColorClass = "text-emerald-700 hover:text-emerald-900";
+              headerBgClass = "bg-emerald-50/50 hover:bg-emerald-100 border border-emerald-100";
+            } else if (sectionObj.section === "Network & Financials") {
+              headerColorClass = "text-blue-700 hover:text-blue-900";
+              headerBgClass = "bg-blue-50/50 hover:bg-blue-100 border border-blue-100";
+            }
+          }
+          
           return (
           <React.Fragment key={sectionObj.section}>
             {sectionObj.section !== "DEFAULT" && (
-              <div className={`pt-2 pb-1 ${idx > 0 ? 'border-t border-slate-200/50 mt-2' : ''}`}>
+              <div className={`pt-2 pb-1 ${idx > 0 ? 'mt-2' : ''}`}>
                 {isAccordion ? (
                   <button 
                     onClick={() => setExpandedNavSection(isExpanded ? null : sectionObj.section)}
-                    className="w-full flex items-center justify-between px-4 py-2 text-slate-500 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-50"
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all shadow-sm ${headerColorClass} ${headerBgClass}`}
                   >
-                    <span className="text-[10px] font-black uppercase tracking-widest">{sectionObj.section}</span>
+                    <span className={headerTextClass}>{sectionObj.section}</span>
                     <svg className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                   </button>
                 ) : (
-                  <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400 py-2">{sectionObj.section}</p>
+                  <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400 py-2 border-t border-slate-200/50">{sectionObj.section}</p>
                 )}
               </div>
             )}
             
-            <div className={`space-y-1 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0') : ''}`}>
+            <div className={`space-y-1 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0') : ''}`}>
               {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;

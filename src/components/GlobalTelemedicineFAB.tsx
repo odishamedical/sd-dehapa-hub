@@ -96,42 +96,47 @@ export default function GlobalTelemedicineFAB() {
             
             const options: any[] = [];
             
-            // Fetch Primary Identity
-            const identityDoc = await getDoc(doc(db, "users", uid, "data", "identity"));
-            if (identityDoc.exists()) {
-              const data = identityDoc.data();
+            // Fetch Primary Identity & Family Members from User Document
+            const userDoc = await getDoc(doc(db, "users", uid));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              const identity = userData.identity || {};
+              const family = userData.familyMembers || [];
+
+              // Primary User
               options.push({
                 id: "myself",
-                name: data.fullName || localStorage.getItem("sd_current_user_name") || "Myself",
-                age: data.age || "",
-                sex: data.sex || "",
-                phone: data.phone || "",
-                whatsapp: data.whatsappNumber || ""
+                name: identity.fullName || localStorage.getItem("sd_current_user_name") || "Myself",
+                age: identity.age || "",
+                sex: identity.sex || "",
+                phone: identity.phone || "",
+                whatsapp: identity.whatsappNumber || ""
               });
               
               // Pre-fill if myself
-              setPhone(data.phone || "");
-              setWhatsapp(data.whatsappNumber || "");
-              setAge(data.age || "");
-              setGender(data.sex || "");
+              setPhone(identity.phone || "");
+              setWhatsapp(identity.whatsappNumber || "");
+              setAge(identity.age || "");
+              setGender(identity.sex || "");
+
+              // Family Members
+              if (Array.isArray(family)) {
+                family.forEach((member: any) => {
+                  if (member && member.name) {
+                    options.push({
+                      id: member.id || Math.random().toString(),
+                      name: member.name || "Family Member",
+                      age: member.age || "",
+                      sex: member.gender || "",
+                      phone: options[0]?.phone || "",
+                      whatsapp: options[0]?.whatsapp || ""
+                    });
+                  }
+                });
+              }
             } else {
               options.push({ id: "myself", name: "Myself", age: "", sex: "", phone: "", whatsapp: "" });
             }
-
-            // Fetch Family Members
-            const familyQuery = query(collection(db, "users", uid, "family_members"));
-            const familyDocs = await getDocs(familyQuery);
-            familyDocs.forEach(doc => {
-              const data = doc.data();
-              options.push({
-                id: doc.id,
-                name: data.name || "Family Member",
-                age: data.age || "",
-                sex: data.gender || "",
-                phone: options[0]?.phone || "", // Fallback to primary phone
-                whatsapp: options[0]?.whatsapp || ""
-              });
-            });
 
             setPatientOptions(options);
           } catch (e) {

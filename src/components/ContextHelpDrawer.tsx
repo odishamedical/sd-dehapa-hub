@@ -76,28 +76,80 @@ export default function ContextHelpDrawer({ isOpen, onClose, activeTab, userProf
         };
       case 'vault':
         return {
-          title: "Health Vault",
-          content: "Your Health Vault is a secure digital locker for all your medical records. You can upload past prescriptions, lab reports, and x-rays here. When you consult a doctor on DehaPa, they can securely access these records to provide a better diagnosis."
+          title: "Health Vault: Your Medical Records",
+          content: (
+            <div className="space-y-3">
+              <p><strong>What is the Health Vault?</strong><br/>It is a highly secure, encrypted digital locker where you can upload and permanently store your medical history, including prescriptions, lab reports, X-rays, and MRI scans.</p>
+              <p><strong>How to use it:</strong></p>
+              <ul className="list-decimal pl-4 space-y-1">
+                <li>Click the "Upload Record" button.</li>
+                <li>Select a photo or PDF from your device.</li>
+                <li>Give it a clear title (e.g., "Blood Test Jan 2026").</li>
+              </ul>
+              <p><strong>Privacy & Sharing:</strong><br/>Your data is private. When you start an urgent video call with a doctor on DehaPa, the doctor is granted <em>temporary</em> read-only access to your vault to provide an accurate diagnosis. The moment the call ends, their access is immediately revoked.</p>
+            </div>
+          )
         };
       case 'appointments':
         return {
-          title: "My Appointments",
-          content: "View all your upcoming and past consultations here. You can join your scheduled video calls directly from this page when it's time for your appointment."
+          title: "My Appointments & Bookings",
+          content: (
+            <div className="space-y-3">
+              <p><strong>Managing your schedule:</strong><br/>This section displays all your upcoming and past medical consultations. It helps you keep track of your healthcare journey.</p>
+              <p><strong>How to join a Video Call:</strong></p>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Find your scheduled appointment in the list.</li>
+                <li>Exactly 5 minutes before the scheduled time, a "Join Call" button will become active.</li>
+                <li>Click it to enter the secure waiting room.</li>
+              </ul>
+              <p className="text-xs text-indigo-600 font-bold bg-indigo-50 p-2 rounded">Tip: Ensure you have a stable internet connection and are in a quiet room before joining.</p>
+            </div>
+          )
         };
       case 'settings':
         return {
-          title: "Account Settings",
-          content: "Keep your profile up to date. Filling out your age, sex, and phone number here saves you time during emergencies, as our Smart Booking system will auto-fill your details instantly."
+          title: "Account Settings & Family",
+          content: (
+            <div className="space-y-3">
+              <p><strong>Why fill this out?</strong><br/>Completing your profile here saves crucial minutes during a medical emergency. Our Smart Booking system uses this data.</p>
+              <p><strong>Profile Photo:</strong><br/>Uploading a high-quality picture builds trust with the doctor during telemedicine calls, ensuring they know exactly who they are treating.</p>
+              <p><strong>Family Members:</strong></p>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Click "Add Family Member" at the bottom of the page.</li>
+                <li>Enter their name, age, and biological sex.</li>
+                <li>During an urgent call, you can instantly select them from the dropdown menu, completely skipping the manual data entry process!</li>
+              </ul>
+            </div>
+          )
         };
       case 'network':
         return {
-          title: "My Doctors",
-          content: "This is your personal healthcare network. Doctors you have consulted with or added to your favorites will appear here for quick access in the future."
+          title: "My Care Network",
+          content: (
+            <div className="space-y-3">
+              <p><strong>Your Digital Healthcare Circle</strong><br/>This is your personal directory of trusted medical professionals. Any doctor you consult with, or any clinic you bookmark, will be saved here.</p>
+              <p><strong>How to use it:</strong></p>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Click on a doctor's card to instantly view their profile.</li>
+                <li>Quickly request a follow-up consultation with a single click.</li>
+                <li>Share their profile with friends via WhatsApp directly from their card.</li>
+              </ul>
+            </div>
+          )
         };
       case 'home':
         return {
-          title: "User Dashboard",
-          content: "Welcome to your DehaPa Portal! From here, you can instantly connect with a doctor for an urgent video call, view your upcoming appointments, or show your QR code for quick hospital check-ins."
+          title: "User Dashboard (Home)",
+          content: (
+            <div className="space-y-3">
+              <p><strong>Welcome to DehaPa!</strong><br/>This is your central hub for managing your healthcare securely and instantly.</p>
+              <p><strong>Quick Actions:</strong></p>
+              <ul className="list-disc pl-4 space-y-1">
+                <li><strong>Consult a Doctor Now:</strong> Tap the large red button during emergencies. You'll be connected to a verified doctor in under 2 minutes.</li>
+                <li><strong>Show My QR Code:</strong> Tap this when visiting a physical hospital. The receptionist will scan it to instantly pull up your file, bypassing the waiting room queue!</li>
+              </ul>
+            </div>
+          )
         };
       default:
         return {
