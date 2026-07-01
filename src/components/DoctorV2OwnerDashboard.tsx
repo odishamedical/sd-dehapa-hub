@@ -429,6 +429,11 @@ export default function DoctorV2OwnerDashboard() {
                    <h3 className="text-lg font-black text-slate-900 mb-1">Digital Rx Pad</h3>
                    <p className="text-xs text-slate-500 font-medium">Write Prescriptions</p>
                 </button>
+                <button onClick={() => window.dispatchEvent(new Event('sd_open_qr_modal'))} className="sd-glass-panel p-6 text-left hover:scale-105 transition-all group col-span-1 sm:col-span-2">
+                   <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-lg group-hover:rotate-12 transition-transform">📱</div>
+                   <h3 className="text-lg font-black text-slate-900 mb-1">Show My QR Code</h3>
+                   <p className="text-xs text-slate-500 font-medium">Instantly connect with patients</p>
+                </button>
               </div>
 
             </div>
