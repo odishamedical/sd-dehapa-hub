@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import DoctorV2OwnerDashboard from '@/components/DoctorV2OwnerDashboard';
+import DoctorOSDashboard from '@/components/DoctorOSDashboard';
 
 export default function DoctorDashboard() {
-  return <DoctorV2OwnerDashboard />;
+  return <DoctorOSDashboard />;
 }
