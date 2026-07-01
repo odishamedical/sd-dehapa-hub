@@ -519,17 +519,38 @@ export default function UserDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Country</label>
-                  <select 
-                    value={identityData.address?.country || "India"}
-                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, country: e.target.value, state: '', district: '', block: ''}})}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
-                  >
-                    <option value="">Select Country</option>
-                    <option value="India">India</option>
-                    <option value="USA">United States</option>
-                    <option value="UK">United Kingdom</option>
-                    <option value="UAE">United Arab Emirates</option>
-                  </select>
+                  {!["India", "USA", "UK", "UAE", ""].includes(identityData.address?.country || "") ? (
+                    <div className="flex gap-2">
+                      <input 
+                        type="text"
+                        value={identityData.address?.country === 'Other' ? '' : (identityData.address?.country || '')}
+                        placeholder="Type your country..."
+                        onChange={e => setIdentityData({...identityData, address: {...identityData.address, country: e.target.value, state: '', district: '', block: ''}})}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                        autoFocus
+                      />
+                      <button 
+                        onClick={() => setIdentityData({...identityData, address: {...identityData.address, country: 'India'}})}
+                        className="bg-slate-100 text-slate-500 px-4 rounded-xl hover:bg-slate-200"
+                        title="Back to list"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <select 
+                      value={identityData.address?.country || ""}
+                      onChange={e => setIdentityData({...identityData, address: {...identityData.address, country: e.target.value, state: '', district: '', block: ''}})}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                    >
+                      <option value="">Select Country</option>
+                      <option value="India">India</option>
+                      <option value="USA">United States</option>
+                      <option value="UK">United Kingdom</option>
+                      <option value="UAE">United Arab Emirates</option>
+                      <option value="Other">Other (Type manually)</option>
+                    </select>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">State</label>
