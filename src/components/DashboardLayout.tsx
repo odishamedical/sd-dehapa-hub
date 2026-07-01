@@ -154,7 +154,7 @@ export default function DashboardLayout({
       {/* =========================================================================
           LEFT SIDEBAR (Fixed Desktop)
          ========================================================================= */}
-      <aside className="hidden lg:flex w-[280px] shrink-0 flex-col bg-white border-r border-slate-200 h-screen fixed left-0 top-0 z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+      <aside className="hidden lg:flex w-[280px] shrink-0 flex-col bg-white border-r border-slate-200 h-[calc(100vh-5rem)] md:h-[calc(100vh-6rem)] sticky top-20 md:top-24 z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         {/* Brand Header */}
         <div className="h-16 flex items-center px-6 border-b border-slate-100 shrink-0">
           <Link href="/" className="flex items-center gap-2">
@@ -247,7 +247,7 @@ export default function DashboardLayout({
       {/* =========================================================================
           MAIN CONTENT AREA
          ========================================================================= */}
-      <div className="flex-1 flex flex-col w-full lg:ml-[280px] min-h-screen transition-all duration-300">
+      <div className="flex-1 flex flex-col w-full min-h-screen transition-all duration-300">
         
         {/* Main Header (Sticky) */}
         <header className="sticky top-0 z-30 bg-white border-b border-slate-200 h-16 px-4 lg:px-8 flex items-center justify-between shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
@@ -310,11 +310,7 @@ export default function DashboardLayout({
         <main className="flex-1 p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-24 md:pb-8">
           {activeTab === "home" ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out w-full">
-              {homeWidget && (
-                <div className="w-full">
-                  {homeWidget}
-                </div>
-              )}
+              {children}
             </div>
           ) : (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
