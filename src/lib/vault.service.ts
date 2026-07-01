@@ -29,6 +29,10 @@ export type VaultDocument = {
   senderId?: string; // For tracking who forwarded it
   senderName?: string;
   isRead?: boolean; // For inbox bolding
+  accessLevel?: 'temporary' | 'permanent';
+  expiresAt?: any;
+  creatorId?: string;
+  consultationId?: string;
 };
 
 export class VaultService {
@@ -85,7 +89,9 @@ export class VaultService {
               ...metadata,
               fileUrl: downloadURL,
               fileSize: file.size,
-              uploadDate: serverTimestamp()
+              uploadDate: serverTimestamp(),
+              creatorId: metadata.creatorId || providerId,
+              consultationId: metadata.consultationId || `episode_${Date.now()}`
             };
 
             const docRef = await addDoc(collection(db, `medicalVault/${providerId}/records`), docData);
@@ -169,16 +175,16 @@ export class VaultService {
     }
   }
 
-  /**
-   * Forward a document to another provider
-   */
   static async forwardDocument(
     senderId: string,
     senderName: string,
     recipientId: string,
-    docData: VaultDocument
+    docData: VaultDocument,
+    accessLevel: 'temporary' | 'permanent' = 'temporary'
   ) {
     try {
+      const expiresAt = accessLevel === 'temporary' ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
+
       // 1. Create a copy in the Recipient's Inbox
       const inboxRef = collection(db, `medicalVault/${recipientId}/records`);
       await addDoc(inboxRef, {
@@ -192,7 +198,11 @@ export class VaultService {
         folder: 'inbox',
         isRead: false,
         senderId: senderId,
-        senderName: senderName
+        senderName: senderName,
+        accessLevel: accessLevel,
+        expiresAt: expiresAt,
+        creatorId: docData.creatorId || senderId,
+        consultationId: docData.consultationId || null
       });
 
       // 2. Create a log in the Sender's Sent folder
@@ -206,7 +216,10 @@ export class VaultService {
         fileSize: docData.fileSize,
         uploadDate: serverTimestamp(),
         folder: 'sent',
-        recipientId: recipientId // Store who it was sent to
+        recipientId: recipientId, // Store who it was sent to
+        accessLevel: accessLevel,
+        creatorId: docData.creatorId || senderId,
+        consultationId: docData.consultationId || null
       });
 
       // Phase 5 Tracking

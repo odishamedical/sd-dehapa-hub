@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { VaultService, VaultDocument } from '@/lib/vault.service';
+import { ConnectionService } from '@/services/connection.service';
 
 interface VaultForwardModalProps {
   isOpen: boolean;
@@ -57,7 +58,7 @@ export default function VaultForwardModal({
     setFetchingNetwork(false);
   };
 
-  const handleForward = async () => {
+  const handleForward = async (accessLevel: 'temporary' | 'permanent') => {
     if (!recipient.trim()) {
       alert("Please enter a recipient Vault ID or @handle");
       return;
@@ -84,9 +85,19 @@ export default function VaultForwardModal({
         if (conn) targetName = conn.displayName;
       }
 
+      // Enforce connection check for Permanent Access
+      if (accessLevel === 'permanent') {
+        const status = await ConnectionService.checkConnectionStatus(senderId, targetId);
+        if (status !== 'approved') {
+          alert("You must have an approved connection with this provider to grant Permanent Access.");
+          setLoading(false);
+          return;
+        }
+      }
+
       // Forward all selected documents
       for (const doc of selectedDocs) {
-        await VaultService.forwardDocument(senderId, senderName, targetId, doc);
+        await VaultService.forwardDocument(senderId, senderName, targetId, doc, accessLevel);
       }
 
       onSuccess();
@@ -166,21 +177,32 @@ export default function VaultForwardModal({
           </div>
         </div>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50 flex gap-3">
+        <div className="p-6 border-t border-slate-100 bg-slate-50 flex flex-col gap-3">
           <button 
-            onClick={onClose}
-            className="flex-1 py-3 text-slate-600 font-bold hover:bg-slate-200 rounded-xl transition-colors"
-          >
-            Cancel
-          </button>
-          <button 
-            onClick={handleForward}
+            onClick={() => handleForward('temporary')}
             disabled={loading}
-            className="flex-[2] py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-md flex items-center justify-center gap-2"
+            className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2"
           >
             {loading ? (
               <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            ) : "Forward Now ➔"}
+            ) : "🕒 Send with Temporary Access (24h)"}
+          </button>
+          
+          <button 
+            onClick={() => handleForward('permanent')}
+            disabled={loading}
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-md flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            ) : "♾️ Send with Permanent Access"}
+          </button>
+          
+          <button 
+            onClick={onClose}
+            className="w-full py-2 mt-2 text-slate-500 font-bold hover:text-slate-800 transition-colors text-sm"
+          >
+            Cancel
           </button>
         </div>
       </div>
