@@ -317,7 +317,7 @@ export default function UnifiedProfileLayout({
                 <button 
                   onClick={() => {
                     if (verified) {
-                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
+                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }));
                     } else {
                       setShowUnverifiedModal(true);
                     }

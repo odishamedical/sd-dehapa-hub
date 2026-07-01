@@ -230,7 +230,12 @@ export default function GlobalTelemedicineFAB() {
     if ((modeOverride || urgencyMode) === "schedule") {
       setStep("datetime_picker");
     } else {
-      setStep("payment_gate");
+      // Bypass payment directly to auth or connect
+      if (userUid) {
+        createConsultationRequest(userUid, userName || "Patient", false);
+      } else {
+        setStep("auth_gate");
+      }
     }
   };
 
@@ -287,7 +292,7 @@ export default function GlobalTelemedicineFAB() {
       setUserUid(user.uid);
       setUserName(user.displayName);
       
-      createConsultationRequest(user.uid, user.displayName || "Patient", true);
+      createConsultationRequest(user.uid, user.displayName || "Patient", false);
     } catch (err) {
       console.error("Auth failed", err);
       alert("Authentication failed.");
