@@ -46,6 +46,10 @@ export default function GlobalTelemedicineFAB() {
   const [gender, setGender] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  
+  // Smart Patient Selector State
+  const [patientOptions, setPatientOptions] = useState<any[]>([]);
+  const [selectedPatientId, setSelectedPatientId] = useState<string>("myself");
 
   // Payment State
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
@@ -81,9 +85,77 @@ export default function GlobalTelemedicineFAB() {
       };
       
       window.addEventListener('open-telemedicine-fab', listener);
+
+      // Fetch User Identity and Family Members for Smart Selector
+      const uid = localStorage.getItem("sd_current_user_uid");
+      if (uid) {
+        const fetchPatientData = async () => {
+          try {
+            const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+            const db = getFirestore(app);
+            
+            const options: any[] = [];
+            
+            // Fetch Primary Identity
+            const identityDoc = await getDoc(doc(db, "users", uid, "data", "identity"));
+            if (identityDoc.exists()) {
+              const data = identityDoc.data();
+              options.push({
+                id: "myself",
+                name: data.fullName || localStorage.getItem("sd_current_user_name") || "Myself",
+                age: data.age || "",
+                sex: data.sex || "",
+                phone: data.phone || "",
+                whatsapp: data.whatsappNumber || ""
+              });
+              
+              // Pre-fill if myself
+              setPhone(data.phone || "");
+              setWhatsapp(data.whatsappNumber || "");
+              setAge(data.age || "");
+              setGender(data.sex || "");
+            } else {
+              options.push({ id: "myself", name: "Myself", age: "", sex: "", phone: "", whatsapp: "" });
+            }
+
+            // Fetch Family Members
+            const familyQuery = query(collection(db, "users", uid, "family_members"));
+            const familyDocs = await getDocs(familyQuery);
+            familyDocs.forEach(doc => {
+              const data = doc.data();
+              options.push({
+                id: doc.id,
+                name: data.name || "Family Member",
+                age: data.age || "",
+                sex: data.gender || "",
+                phone: options[0]?.phone || "", // Fallback to primary phone
+                whatsapp: options[0]?.whatsapp || ""
+              });
+            });
+
+            setPatientOptions(options);
+          } catch (e) {
+            console.error("Error fetching patient data", e);
+          }
+        };
+        fetchPatientData();
+      }
+
       return () => window.removeEventListener('open-telemedicine-fab', listener);
     }
   }, []);
+
+  const handlePatientSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setSelectedPatientId(val);
+    const selected = patientOptions.find(p => p.id === val);
+    if (selected) {
+      setAge(selected.age || "");
+      setGender(selected.sex || "");
+      setPhone(selected.phone || "");
+      setWhatsapp(selected.whatsapp || "");
+    }
+  };
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -773,10 +845,28 @@ export default function GlobalTelemedicineFAB() {
                         required 
                         value={symptoms}
                         onChange={e => setSymptoms(e.target.value)}
-                        className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-slate-900 focus:ring-0 transition-all outline-none resize-none h-20"
+                        className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-slate-900 focus:ring-0 transition-all outline-none resize-none h-20 shadow-sm"
                         placeholder="e.g. Mild fever since yesterday..."
                       ></textarea>
                     </div>
+
+                    {userUid && patientOptions.length > 0 && (
+                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-2">
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider flex items-center gap-2">
+                          <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                          Who is this for?
+                        </label>
+                        <select 
+                          value={selectedPatientId}
+                          onChange={handlePatientSelect}
+                          className="w-full px-4 py-3 bg-white rounded-xl border-2 border-slate-200 text-slate-900 focus:border-teal-500 outline-none font-bold"
+                        >
+                          {patientOptions.map(opt => (
+                            <option key={opt.id} value={opt.id}>{opt.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Age (Years) *</label>

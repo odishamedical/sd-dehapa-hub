@@ -50,35 +50,53 @@ function UserHomeWidget({ userName, userUid, userRole, onTabChange }: { userName
             </div>
         </div>
 
-        {/* 2. Quick Actions (Middle on mobile, Bottom on desktop) */}
-        <div className="order-2 md:order-3 md:col-span-3 bg-white/80 backdrop-blur-xl border border-slate-200 rounded-[24px] p-6 md:p-8 shadow-sm">
+        {/* 2. Quick Actions (Simplified for Village Users) */}
+        <div className="order-2 md:order-3 md:col-span-3">
             <h3 className="text-lg md:text-xl font-bold text-slate-800 mb-4 md:mb-6">Quick Actions</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                {[
-                    { id: 'find_doctor', label: 'Find a Doctor', icon: <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>, color: 'text-teal-600', bg: 'bg-teal-50' },
-                    { id: 'network', label: 'My Network', icon: <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-                    { id: 'appointments', label: 'My Appointments', icon: <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>, color: 'text-blue-600', bg: 'bg-blue-50' },
-                    { id: 'settings', label: 'Family Members', icon: <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>, color: 'text-purple-600', bg: 'bg-purple-50' },
-                    { id: 'vault', label: 'Health Vault', icon: <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                    { id: 'show_qr', label: 'Show My QR', icon: <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>, color: 'text-pink-600', bg: 'bg-pink-50' },
-                ].map(action => (
-                    <button 
-                        key={action.id}
-                        onClick={() => {
-                          if (action.id === 'show_qr') {
-                            window.dispatchEvent(new Event('sd_open_qr_modal'));
-                          } else {
-                            onTabChange(action.id);
-                          }
-                        }}
-                        className="flex flex-col items-center justify-center p-4 md:p-6 bg-slate-50 border border-slate-200 hover:border-teal-300 hover:bg-white rounded-xl md:rounded-2xl transition-all hover:shadow-md group"
-                    >
-                        <div className={`w-12 h-12 md:w-14 md:h-14 ${action.bg} ${action.color} rounded-full flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform`}>
-                            {action.icon}
-                        </div>
-                        <span className="font-bold text-slate-700 text-xs md:text-sm text-center">{action.label}</span>
-                    </button>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button 
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent' } }))}
+                  className="col-span-1 md:col-span-3 flex items-center justify-between p-6 md:p-8 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 rounded-[24px] shadow-lg shadow-red-500/20 text-white transition-all transform hover:scale-[1.01] active:scale-95 group"
+                >
+                  <div className="flex items-center gap-4 md:gap-6">
+                    <div className="w-14 h-14 md:w-16 md:h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shrink-0">
+                      <svg className="w-7 h-7 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-xl md:text-2xl font-black mb-1">Consult a Doctor Now</h4>
+                      <p className="text-red-100 font-medium text-xs md:text-sm">Tap here for instant secure video call</p>
+                    </div>
+                  </div>
+                  <div className="hidden md:flex bg-white text-red-600 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs shadow-sm">
+                    Connect
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => window.dispatchEvent(new Event('sd_open_qr_modal'))}
+                  className="flex items-center gap-4 p-5 md:p-6 bg-slate-900 hover:bg-slate-800 rounded-[24px] shadow-md text-white transition-all transform hover:scale-[1.02] active:scale-95 group"
+                >
+                  <div className="w-12 h-12 md:w-14 md:h-14 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shrink-0">
+                    <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                  </div>
+                  <div className="text-left">
+                    <h4 className="text-base md:text-lg font-bold mb-1">Show My QR Code</h4>
+                    <p className="text-slate-400 text-[10px] md:text-xs font-medium uppercase tracking-widest">For hospital check-in</p>
+                  </div>
+                </button>
+                
+                <button 
+                  onClick={() => onTabChange('appointments')}
+                  className="flex items-center gap-4 p-5 md:p-6 bg-blue-50 border border-blue-100 hover:bg-blue-100 rounded-[24px] shadow-sm text-blue-900 transition-all transform hover:scale-[1.02] active:scale-95 group md:col-span-2"
+                >
+                  <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-200/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform text-blue-700 shrink-0">
+                    <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  </div>
+                  <div className="text-left">
+                    <h4 className="text-base md:text-lg font-bold mb-1">My Appointments</h4>
+                    <p className="text-blue-600/70 text-[10px] md:text-xs font-medium uppercase tracking-widest">View upcoming bookings</p>
+                  </div>
+                </button>
             </div>
         </div>
 
@@ -133,7 +151,9 @@ export default function UserDashboard() {
     fullName: "",
     phone: "",
     whatsappNumber: "",
-    email: ""
+    email: "",
+    age: "",
+    sex: ""
   });
   const identitySaveStatus = useAutosave(identityData, userUid, 'identity', 1000, 'users');
 
@@ -260,44 +280,44 @@ export default function UserDashboard() {
     {
       id: "settings",
       label: "Account Settings",
-      section: "PROFILE",
+      section: "Personal Details",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
     },
     {
       id: "appointments",
       label: "My Appointments",
-      section: "QUICK ACTIONS",
+      section: "Healthcare & Consults",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
     },
     {
-      id: "billing",
-      label: "Billing & Invoices",
-      section: "QUICK ACTIONS",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-    },
-    {
-      id: "vault",
-      label: "Health Vault",
-      section: "QUICK ACTIONS",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-    },
-    {
-      id: "network",
-      label: "My Network",
-      section: "GLOBAL NETWORK",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-    },
-    {
       id: "telemedicine",
-      label: "Instant Consult",
-      section: "QUICK ACTIONS",
+      label: "Video Call",
+      section: "Healthcare & Consults",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
     },
     {
       id: "find_doctor",
       label: "Find a Doctor",
-      section: "QUICK ACTIONS",
+      section: "Healthcare & Consults",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    },
+    {
+      id: "vault",
+      label: "Medical Records",
+      section: "Medical Records",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+    },
+    {
+      id: "network",
+      label: "My Doctors",
+      section: "Network & Financials",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    },
+    {
+      id: "billing",
+      label: "Billing & Invoices",
+      section: "Network & Financials",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
     }
   ];
 
@@ -345,12 +365,77 @@ export default function UserDashboard() {
       <div className="max-w-4xl mx-auto pb-24">
         
         {activeTab === "settings" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4 text-center py-16">
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Account Settings</h3>
-            <p className="text-slate-500 mb-6">Manage your identity, address, and family members here.</p>
-            <button className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm">
-              Edit Profile Details
-            </button>
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-6 md:p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4 flex items-center justify-between">
+              Account Settings
+              <AutosaveIndicator status={identitySaveStatus} />
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Full Name</label>
+                <input 
+                  type="text"
+                  value={identityData.fullName}
+                  onChange={e => setIdentityData({...identityData, fullName: e.target.value})}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Email Address</label>
+                <input 
+                  type="email"
+                  disabled
+                  value={identityData.email}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 cursor-not-allowed outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Phone Number</label>
+                <input 
+                  type="tel"
+                  value={identityData.phone}
+                  onChange={e => setIdentityData({...identityData, phone: e.target.value})}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">WhatsApp Number</label>
+                <input 
+                  type="tel"
+                  value={identityData.whatsappNumber}
+                  onChange={e => setIdentityData({...identityData, whatsappNumber: e.target.value})}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Age</label>
+                <input 
+                  type="number"
+                  value={identityData.age}
+                  onChange={e => setIdentityData({...identityData, age: e.target.value})}
+                  placeholder="e.g. 35"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Biological Sex</label>
+                <select 
+                  value={identityData.sex}
+                  onChange={e => setIdentityData({...identityData, sex: e.target.value})}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                >
+                  <option value="">Select Sex</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            
+            <p className="text-xs text-slate-400 mt-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+              Note: Changes here are auto-saved instantly. This information will be automatically filled for you during urgent video calls or hospital bookings to save time.
+            </p>
           </div>
         )}
 

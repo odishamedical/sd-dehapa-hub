@@ -74,15 +74,35 @@ export default function ContextHelpDrawer({ isOpen, onClose, activeTab, userProf
           title: "Key Personnel & Roster",
           content: "Link Verified Doctors (Chief Pathologists and Radiologists) to your lab here. This shows patients exactly who is signing their reports."
         };
+      case 'vault':
+        return {
+          title: "Health Vault",
+          content: "Your Health Vault is a secure digital locker for all your medical records. You can upload past prescriptions, lab reports, and x-rays here. When you consult a doctor on DehaPa, they can securely access these records to provide a better diagnosis."
+        };
+      case 'appointments':
+        return {
+          title: "My Appointments",
+          content: "View all your upcoming and past consultations here. You can join your scheduled video calls directly from this page when it's time for your appointment."
+        };
+      case 'settings':
+        return {
+          title: "Account Settings",
+          content: "Keep your profile up to date. Filling out your age, sex, and phone number here saves you time during emergencies, as our Smart Booking system will auto-fill your details instantly."
+        };
+      case 'network':
+        return {
+          title: "My Doctors",
+          content: "This is your personal healthcare network. Doctors you have consulted with or added to your favorites will appear here for quick access in the future."
+        };
       case 'home':
         return {
-          title: "Dashboard Home",
-          content: "Welcome to your DehaPa Operating System! From here, you can navigate to different modules to build out your profile. Remember, you must reach 100% completion before you can publish your profile live to the public."
+          title: "User Dashboard",
+          content: "Welcome to your DehaPa Portal! From here, you can instantly connect with a doctor for an urgent video call, view your upcoming appointments, or show your QR code for quick hospital check-ins."
         };
       default:
         return {
           title: `Guide: ${tabId.replace(/_/g, ' ')}`,
-          content: "Fill out the fields in this section accurately. This data will be used to generate your premium public profile. If you get stuck, feel free to open a support ticket!"
+          content: "Fill out the fields in this section accurately. If you get stuck or need help, feel free to open a support ticket or start a live chat!"
         };
     }
   };
