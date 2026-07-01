@@ -230,12 +230,8 @@ export default function GlobalTelemedicineFAB() {
     if ((modeOverride || urgencyMode) === "schedule") {
       setStep("datetime_picker");
     } else {
-      // Bypass payment directly to auth or connect
-      if (userUid) {
-        createConsultationRequest(userUid, userName || "Patient", false);
-      } else {
-        setStep("auth_gate");
-      }
+      // Direct call bypasses payment, but must always collect contact info & symptoms
+      setStep("auth_gate");
     }
   };
 
@@ -277,6 +273,13 @@ export default function GlobalTelemedicineFAB() {
     if (!phone || !whatsapp) return alert("Phone and WhatsApp are mandatory.");
     
     setIsAuthenticating(true);
+
+    if (userUid) {
+      // User is already logged in, just submit the form
+      createConsultationRequest(userUid, userName || "Patient", false);
+      return;
+    }
+
     const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
@@ -833,6 +836,11 @@ export default function GlobalTelemedicineFAB() {
                       >
                         {isAuthenticating ? (
                           <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+                        ) : userUid ? (
+                          <>
+                            <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Submit & Connect
+                          </>
                         ) : (
                           <>
                             <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"></path></svg>
