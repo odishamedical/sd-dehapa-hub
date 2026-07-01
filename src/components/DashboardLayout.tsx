@@ -195,14 +195,12 @@ export default function DashboardLayout({
       {/* Main Header (Sticky) */}
       <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3 md:gap-4">
-          {roleName !== "User Portal" && (
-            <button 
-              onClick={() => setIsMobileMenuOpen(true)} 
-              className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-          )}
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)} 
+            className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
           <button onClick={() => onTabChange("home")} className="text-xl md:text-2xl font-black text-slate-800 tracking-tight hover:text-teal-600 transition-colors">
             DehaPa Portal
           </button>
@@ -275,7 +273,7 @@ export default function DashboardLayout({
         {/* =========================================================================
             MOBILE SLIDE-IN SIDEBAR (Drawer)
            ========================================================================= */}
-        {isMobileMenuOpen && roleName !== "User Portal" && (
+        {isMobileMenuOpen && (
           <div className="fixed inset-0 z-[100] lg:hidden flex">
             <div 
               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
