@@ -5,6 +5,7 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDocs, collection, query, where } from 'firebase/firestore';
+import DigitalRxPad from '@/components/DigitalRxPad';
 
 export default function DoctorOSDashboard() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function DoctorOSDashboard() {
   const [userName, setUserName] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [showAddWalkIn, setShowAddWalkIn] = useState(false);
+  const [activeConsult, setActiveConsult] = useState<any>(null);
 
   // Mock Data for UI presentation
   const mockQueue = [
@@ -168,10 +170,10 @@ export default function DoctorOSDashboard() {
                     </div>
                     
                     <div className="col-span-12 md:col-span-2 w-full flex justify-end gap-2">
-                       <button className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors">
+                       <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors">
                          Vitals
                        </button>
-                       <button className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors">
+                       <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors">
                          Consult
                        </button>
                     </div>
@@ -337,6 +339,10 @@ export default function DoctorOSDashboard() {
             </div>
           </div>
         </div>
+      )}
+      {/* Digital Rx Pad Overlay */}
+      {activeConsult && (
+        <DigitalRxPad patient={activeConsult} onClose={() => setActiveConsult(null)} />
       )}
     </DashboardLayout>
   );
