@@ -122,7 +122,7 @@ export default function DashboardLayout({
           return (
           <React.Fragment key={sectionObj.section}>
             {sectionObj.section !== "DEFAULT" && (
-              <div className={`pt-2 pb-1 ${idx > 0 ? 'mt-2' : ''}`}>
+              <div className={`pt-4 pb-2 ${idx > 0 ? 'mt-2 border-t border-slate-200/50' : ''}`}>
                 {isAccordion ? (
                   <button 
                     onClick={() => setExpandedNavSection(isExpanded ? null : sectionObj.section)}
@@ -132,31 +132,33 @@ export default function DashboardLayout({
                     <svg className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                   </button>
                 ) : (
-                  <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400 py-2 border-t border-slate-200/50">{sectionObj.section}</p>
+                  <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400 py-1">{sectionObj.section}</p>
                 )}
               </div>
             )}
             
-            <div className={`space-y-1 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0') : ''}`}>
+            <div className={`space-y-1.5 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0') : ''}`}>
               {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
-                const tintClasses = isActive ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900';
+                const tintClasses = isActive 
+                  ? 'bg-gradient-to-r from-indigo-50 to-indigo-100/50 border-l-4 border-indigo-600 text-indigo-700 shadow-sm' 
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent hover:border-slate-300';
                 
                 return (
                   <button 
                     key={tab.id}
                     onClick={() => { onTabChange(tab.id); if (isMobile) setIsMobileMenuOpen(false); }} 
-                    className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between group ${tintClasses}`}
+                    className={`w-full text-left pl-3 pr-4 py-3 rounded-r-xl font-bold transition-all flex items-center justify-between group hover:translate-x-1 duration-200 ${tintClasses}`}
                   >
                     <div className="flex items-center gap-3 truncate">
-                      <div className={isActive ? 'text-indigo-700' : 'text-slate-400 group-hover:text-slate-600'}>
+                      <div className={isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-400 transition-colors'}>
                         {tab.icon}
                       </div>
                       <span className="truncate">{tab.label}</span>
                     </div>
                     {tab.badge !== undefined && (
-                      <span className="ml-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                      <span className="ml-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 shadow-sm shadow-rose-200">
                         {tab.badge}
                       </span>
                     )}
@@ -185,11 +187,12 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
       
-      {/* Background Orbs for Glassmorphism effect */}
+      {/* Enhanced Background Orbs for Glassmorphism effect */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200/40 rounded-full blur-[120px] animate-float-slow"></div>
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[50%] bg-indigo-200/40 rounded-full blur-[100px] animate-float-slow-reverse"></div>
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] bg-rose-200/30 rounded-full blur-[100px] animate-float-slow"></div>
+        <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] bg-teal-300/30 rounded-full blur-[140px] animate-float-slow"></div>
+        <div className="absolute top-[10%] right-[-10%] w-[40%] h-[60%] bg-indigo-300/30 rounded-full blur-[120px] animate-float-slow-reverse"></div>
+        <div className="absolute bottom-[-20%] left-[10%] w-[60%] h-[50%] bg-rose-300/20 rounded-full blur-[130px] animate-float-slow"></div>
+        <div className="absolute bottom-[20%] right-[20%] w-[30%] h-[40%] bg-amber-200/20 rounded-full blur-[100px] animate-float-slow-reverse delay-1000"></div>
       </div>
 
       {/* Main Header (Sticky) */}
@@ -245,8 +248,8 @@ export default function DashboardLayout({
         {/* =========================================================================
             LEFT SIDEBAR (Glassmorphism)
            ========================================================================= */}
-        <aside className="hidden lg:block w-72 shrink-0 p-6">
-          <div className="sticky top-[100px] sd-glass-panel p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
+        <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
+          <div className="sticky top-[100px] bg-white/70 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/80 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             {userProfile && (
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
                 {userProfile.image ? (
@@ -320,65 +323,66 @@ export default function DashboardLayout({
               )}
               
               {!hideDefaultModulesList && (
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold text-slate-900 mb-1">Welcome to {roleName} Dashboard</h3>
-                  <p className="text-sm text-slate-500">Select a module below to get started.</p>
-                </div>
-              )}
-              
-              {!hideDefaultModulesList && (
-                <div className="space-y-4">
-                {sectionedTabsList.map((sectionObj) => {
-                  const sectionName = sectionObj.section;
-                  const isDefault = sectionName === "DEFAULT";
-                  const displayName = isDefault ? "General Modules" : sectionName;
-                  const isExpanded = isDefault || expandedHomeSections[sectionName];
-                  
-                  const displayTabs = sectionObj.tabs.filter(t => t.id !== "home");
-                  if (displayTabs.length === 0) return null;
-
-                  return (
-                    <div key={sectionName} className="bg-white border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm transition-all duration-300">
-                      <button 
-                        onClick={() => toggleHomeSection(sectionName)}
-                        className="w-full flex items-center justify-between p-5 bg-slate-50/50 hover:bg-slate-50 transition-colors"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isExpanded ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-500'}`}>
-                            {isExpanded ? (
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                            ) : (
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                            )}
-                          </div>
-                          <div className="text-left">
-                            <h3 className="text-sm md:text-base font-bold text-slate-900">{displayName}</h3>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{displayTabs.length} Modules</p>
-                          </div>
-                        </div>
-                      </button>
-
-                      <div className={`transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-                        <div className="p-5 pt-0 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 bg-white">
-                          {displayTabs.map(tab => (
-                            <button 
-                              key={tab.id} 
-                              onClick={() => onTabChange(tab.id)} 
-                              className="group flex flex-col p-4 rounded-xl border border-slate-100 bg-white hover:border-teal-200 hover:shadow-md hover:shadow-teal-900/5 transition-all text-left"
-                            >
-                              <div className="w-8 h-8 bg-slate-50 text-slate-500 rounded-lg flex items-center justify-center mb-3 group-hover:bg-teal-50 group-hover:text-teal-600 transition-colors">
-                                {tab.icon}
-                              </div>
-                              <h4 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-teal-700 transition-colors">{tab.label}</h4>
-                              <p className="text-xs text-slate-500 line-clamp-1">Manage {tab.label.toLowerCase()}</p>
-                            </button>
-                          ))}
-                        </div>
+                <>
+                  {/* Premium Hero Section */}
+                  <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-900 via-slate-900 to-teal-900 p-8 md:p-12 mb-8 overflow-hidden shadow-2xl">
+                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
+                    <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/30 rounded-full blur-[80px]"></div>
+                    <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[80px]"></div>
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                      <div>
+                        <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">Welcome to {roleName}</h2>
+                        <p className="text-indigo-200 text-lg max-w-xl">Your central command center for managing operations across the DehaPa Ecosystem.</p>
                       </div>
+                      {userProfile?.image && (
+                        <div className="w-20 h-20 rounded-full border-4 border-white/20 shadow-lg overflow-hidden shrink-0 hidden md:block">
+                          <img src={userProfile.image} alt={userProfile.name} className="w-full h-full object-cover" />
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+
+                  {/* Bento Grid Layout */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {sectionedTabsList.map((sectionObj) => {
+                      const sectionName = sectionObj.section;
+                      const isDefault = sectionName === "DEFAULT";
+                      const displayName = isDefault ? "General Modules" : sectionName;
+                      
+                      const displayTabs = sectionObj.tabs.filter(t => t.id !== "home");
+                      if (displayTabs.length === 0) return null;
+
+                      // For Bento Grid, we let the cards fill the grid.
+                      // We will render a title for the section if needed, or group them logically.
+                      // To keep the bento grid tight, we can wrap each section in a col-span block, or just render the tabs directly.
+                      return (
+                        <div key={sectionName} className="col-span-1 md:col-span-2 lg:col-span-3 mb-2">
+                          <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 ml-2">{displayName}</h3>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {displayTabs.map(tab => (
+                              <button 
+                                key={tab.id} 
+                                onClick={() => onTabChange(tab.id)} 
+                                className="group relative bg-white/60 backdrop-blur-xl p-6 rounded-3xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.12)] hover:-translate-y-1 transition-all duration-300 text-left overflow-hidden flex flex-col justify-between min-h-[160px]"
+                              >
+                                <div className="absolute -right-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl group-hover:bg-indigo-100 transition-colors"></div>
+                                
+                                <div className="relative z-10">
+                                  <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                                    {tab.icon}
+                                  </div>
+                                  <h4 className="font-bold text-slate-800 text-lg mb-1 group-hover:text-indigo-700 transition-colors">{tab.label}</h4>
+                                  <p className="text-sm text-slate-500 line-clamp-2">Manage settings and records for {tab.label.toLowerCase()}.</p>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
           ) : (

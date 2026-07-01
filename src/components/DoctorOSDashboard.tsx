@@ -12,7 +12,7 @@ import IncomingPingWidget from '@/components/IncomingPingWidget';
 
 export default function DoctorOSDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("queue");
+  const [activeTab, setActiveTab] = useState("home");
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [isMounted, setIsMounted] = useState(false);
