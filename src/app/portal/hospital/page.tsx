@@ -9,6 +9,7 @@ import InviteWidget from '@/components/InviteWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import SecureMedicalVault from '@/components/SecureMedicalVault';
 
 export default function HospitalDashboard() {
   const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
@@ -89,6 +90,12 @@ export default function HospitalDashboard() {
       label: "Doctor Roster",
       section: "HOSPITAL TOOLS",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+    },
+    {
+      id: "vault",
+      label: "Patient Vault",
+      section: "HOSPITAL TOOLS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
     }
   ];
 
@@ -101,6 +108,14 @@ export default function HospitalDashboard() {
       return (
         <div className="animate-in fade-in slide-in-from-bottom-4">
           <PatientLeadsWidget providerId={entityData.id || ''} />
+        </div>
+      );
+    }
+    
+    if (tabId === "vault") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4">
+          <SecureMedicalVault providerId={entityData.id || ''} />
         </div>
       );
     }

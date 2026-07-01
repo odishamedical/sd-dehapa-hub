@@ -8,6 +8,7 @@ import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
 import LiveOrderWidget from '@/components/LiveOrderWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
+import SecureMedicalVault from '@/components/SecureMedicalVault';
 
 export default function LabDashboard() {
   const customTabs: DashboardTab[] = [
@@ -31,7 +32,7 @@ export default function LabDashboard() {
     },
     {
       id: "vault",
-      label: "Upload Report to Vault",
+      label: "Patient Vault",
       section: "REPORTS",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
     }
@@ -52,28 +53,8 @@ export default function LabDashboard() {
     
     if (tabId === "vault") {
       return (
-        <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-          <div className="w-16 h-16 bg-white/60 text-cyan-500 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-white">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-          </div>
-          <h2 className="text-2xl font-serif font-bold mb-2 text-slate-800">Upload to Sovereign Vault</h2>
-          <p className="text-slate-600 mb-8">Enter the patient's exact Vault ID (registered email or phone) to push finalized PDF reports securely to their account.</p>
-
-          <form onSubmit={(e) => { e.preventDefault(); alert("Vault connection initiated"); }} className="space-y-6">
-            <div>
-              <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">Patient Vault ID</label>
-              <input 
-                type="text" 
-                required
-                placeholder="e.g. patient@example.com"
-                className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all font-mono"
-              />
-            </div>
-            <button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white py-4 rounded-xl font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-lg">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-              Lookup Vault
-            </button>
-          </form>
+        <div className="animate-in fade-in slide-in-from-bottom-4">
+          <SecureMedicalVault providerId={entityData.id || ''} />
         </div>
       );
     }
