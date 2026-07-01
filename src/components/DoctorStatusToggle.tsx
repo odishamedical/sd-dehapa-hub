@@ -1,17 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, doc, setDoc, onSnapshot, query, collection, where, updateDoc } from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
-  authDomain: "sd-auth-center.firebaseapp.com",
-  projectId: "sd-auth-center",
-  storageBucket: "sd-auth-center.firebasestorage.app",
-  messagingSenderId: "393346058191",
-  appId: "1:393346058191:web:a5e96e1c481a72f86db4ba"
-};
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function DoctorStatusToggle() {
   const [isOnline, setIsOnline] = useState(false);
@@ -31,9 +22,6 @@ export default function DoctorStatusToggle() {
 
   useEffect(() => {
     if (userRole !== "doctor" || !userUid) return;
-
-    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    const db = getFirestore(app, "default");
 
     // 1. Listen to own status in Firestore to sync across tabs
     const statusRef = doc(db, "doctor_status", userUid);
@@ -75,8 +63,6 @@ export default function DoctorStatusToggle() {
       console.warn("Audio context unlock error:", e);
     }
 
-    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    const db = getFirestore(app, "default");
     const statusRef = doc(db, "doctor_status", userUid);
     
     const newStatus = !isOnline;
@@ -89,6 +75,7 @@ export default function DoctorStatusToggle() {
       }, { merge: true });
     } catch (err) {
       console.error("Failed to update status", err);
+      alert("Failed to update online status. Please check your connection.");
       setIsOnline(!newStatus); // Revert
     }
   };
