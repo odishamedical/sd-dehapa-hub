@@ -8,11 +8,11 @@ export type DashboardTab = {
   label: string;
   icon: ReactNode;
   badge?: string | number;
-  section?: string;
+  section?: string; // Optional section header before this tab
 };
 
 interface DashboardLayoutProps {
-  roleName: string;
+  roleName: string; // e.g., "Admin", "Doctor", "Hospital"
   tabs: DashboardTab[];
   activeTab: string;
   onTabChange: (tabId: string) => void;
@@ -46,7 +46,9 @@ export default function DashboardLayout({
   const [origin, setOrigin] = useState("https://dehapa.com");
   const [expandedNavSection, setExpandedNavSection] = useState<string | null>(null);
 
+  // Automatically expand the section that contains the activeTab on mount or when activeTab changes
   useEffect(() => {
+    // Only auto-expand if it's the User Portal, since other portals might not have accordion set up
     if (roleName === "User Portal") {
       for (const section of sectionedTabsList) {
         if (section.tabs.some(t => t.id === activeTab)) {
@@ -69,6 +71,7 @@ export default function DashboardLayout({
     return () => window.removeEventListener('sd_open_qr_modal', handleOpenQR);
   }, []);
 
+  // Group tabs by section (maintain order)
   const sectionedTabsList: { section: string, tabs: DashboardTab[] }[] = [];
   tabs.forEach(tab => {
     const sectionName = tab.section || "DEFAULT";
@@ -82,61 +85,77 @@ export default function DashboardLayout({
 
   const renderNavLinks = (isMobile = false) => {
     return (
-      <nav className="flex flex-col w-full space-y-1">
-        {/* Home Tab */}
+      <nav className="space-y-2 w-full">
         <button 
           onClick={() => { onTabChange('home'); if (isMobile) setIsMobileMenuOpen(false); }} 
-          className={`w-full text-left pr-4 pl-3 py-3 rounded-xl font-bold transition-all flex items-center justify-between group ${activeTab === 'home' ? 'bg-gradient-to-r from-teal-50 to-teal-100/50 border-l-4 border-teal-500 text-teal-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 border-l-4 border-transparent hover:border-slate-300'}`}
+          className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'home' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
         >
-          <div className="flex items-center gap-3 truncate">
-             <div className={activeTab === 'home' ? 'text-teal-600' : 'text-slate-400 group-hover:text-teal-400 transition-colors'}>
-                <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-             </div>
-             <span className="truncate">{roleName}</span>
-          </div>
+          <span className={`w-2 h-2 rounded-full ${activeTab === 'home' ? 'bg-indigo-500' : 'bg-slate-300'}`}></span>
+          {roleName === "Patient" ? "User Dashboard" : `${roleName} Dashboard`}
         </button>
         
         {sectionedTabsList.map((sectionObj, idx) => {
           const isAccordion = roleName === "User Portal" && sectionObj.section !== "DEFAULT";
           const isExpanded = expandedNavSection === sectionObj.section;
           
+          let headerColorClass = "text-slate-500 hover:text-slate-900 hover:bg-slate-50";
+          let headerTextClass = "text-[10px] uppercase tracking-widest";
+          let headerBgClass = "";
+          
+          if (isAccordion) {
+            headerTextClass = "text-xs font-black uppercase tracking-wider";
+            if (sectionObj.section === "Personal Details") {
+              headerColorClass = "text-rose-600 hover:text-rose-800";
+              headerBgClass = "bg-rose-50 hover:bg-rose-100";
+            } else if (sectionObj.section === "Healthcare & Consults") {
+              headerColorClass = "text-red-600 hover:text-red-800";
+              headerBgClass = "bg-red-50 hover:bg-red-100";
+            } else if (sectionObj.section === "Medical Records") {
+              headerColorClass = "text-emerald-600 hover:text-emerald-800";
+              headerBgClass = "bg-emerald-50 hover:bg-emerald-100";
+            } else if (sectionObj.section === "Network & Financials") {
+              headerColorClass = "text-blue-600 hover:text-blue-800";
+              headerBgClass = "bg-blue-50 hover:bg-blue-100";
+            }
+          }
+          
           return (
-          <div key={sectionObj.section} className="flex flex-col w-full">
+          <React.Fragment key={sectionObj.section}>
             {sectionObj.section !== "DEFAULT" && (
-              <div className="pt-4 pb-2">
+              <div className={`pt-4 pb-2 ${idx > 0 ? 'mt-2 border-t border-slate-200/50' : ''}`}>
                 {isAccordion ? (
                   <button 
                     onClick={() => setExpandedNavSection(isExpanded ? null : sectionObj.section)}
-                    className="w-full flex items-center justify-between px-2 py-2 text-slate-500 hover:text-slate-900"
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all shadow-sm ${headerColorClass} ${headerBgClass}`}
                   >
-                    <span className="text-xs font-black uppercase tracking-widest">{sectionObj.section}</span>
+                    <span className={headerTextClass}>{sectionObj.section}</span>
                     <svg className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                   </button>
                 ) : (
-                  <p className="px-2 text-[10px] font-black uppercase tracking-widest text-slate-400 py-1">{sectionObj.section}</p>
+                  <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400 py-1">{sectionObj.section}</p>
                 )}
               </div>
             )}
             
-            <div className={`flex flex-col space-y-1 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0') : ''}`}>
-              {sectionObj.tabs.map((tab, tabIdx) => {
+            <div className={`space-y-1.5 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0') : ''}`}>
+              {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
                 const tintClasses = isActive 
-                  ? 'bg-gradient-to-r from-teal-50 to-teal-100/50 border-l-4 border-teal-500 text-teal-700 shadow-sm' 
+                  ? 'bg-gradient-to-r from-indigo-50 to-indigo-100/50 border-l-4 border-indigo-600 text-indigo-700 shadow-sm' 
                   : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent hover:border-slate-300';
                 
                 return (
                   <button 
                     key={tab.id}
                     onClick={() => { onTabChange(tab.id); if (isMobile) setIsMobileMenuOpen(false); }} 
-                    className={`w-full text-left pl-3 pr-4 py-3 font-semibold rounded-r-xl transition-all flex items-center justify-between group ${tintClasses}`}
+                    className={`w-full text-left pl-3 pr-4 py-3 rounded-r-xl font-bold transition-all flex items-center justify-between group hover:translate-x-1 duration-200 ${tintClasses}`}
                   >
                     <div className="flex items-center gap-3 truncate">
-                      <div className={isActive ? 'text-teal-600' : 'text-slate-400 group-hover:text-teal-400 transition-colors'}>
+                      <div className={isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-400 transition-colors'}>
                         {tab.icon}
                       </div>
-                      <span className="truncate text-sm">{tab.label}</span>
+                      <span className="truncate">{tab.label}</span>
                     </div>
                     {tab.badge !== undefined && (
                       <span className="ml-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 shadow-sm shadow-rose-200">
@@ -147,185 +166,227 @@ export default function DashboardLayout({
                 );
               })}
             </div>
-          </div>
+          </React.Fragment>
           );
         })}
       </nav>
     );
   };
 
+  const [expandedHomeSections, setExpandedHomeSections] = useState<Record<string, boolean>>({});
+
+  const toggleHomeSection = (sectionName: string) => {
+    setExpandedHomeSections(prev => {
+      if (!prev[sectionName]) {
+        return { [sectionName]: true };
+      }
+      return { ...prev, [sectionName]: false };
+    });
+  };
+
   return (
-    <div className="min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-6rem)] bg-slate-50 text-slate-900 font-sans relative flex">
+    <div className="min-h-screen bg-white text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
       
-      {/* Background Orbs for subtle premium feel */}
-      <div className="fixed top-20 md:top-24 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[0%] left-[10%] w-[40%] h-[40%] bg-teal-400/10 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px]"></div>
+      {/* Enhanced Background Orbs for Glassmorphism effect */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] bg-teal-300/30 rounded-full blur-[140px] animate-float-slow"></div>
+        <div className="absolute top-[10%] right-[-10%] w-[40%] h-[60%] bg-indigo-300/30 rounded-full blur-[120px] animate-float-slow-reverse"></div>
+        <div className="absolute bottom-[-20%] left-[10%] w-[60%] h-[50%] bg-rose-300/20 rounded-full blur-[130px] animate-float-slow"></div>
+        <div className="absolute bottom-[20%] right-[20%] w-[30%] h-[40%] bg-amber-200/20 rounded-full blur-[100px] animate-float-slow-reverse delay-1000"></div>
       </div>
 
-      {/* =========================================================================
-          LEFT SIDEBAR (Fixed Desktop)
-         ========================================================================= */}
-      <aside className="hidden lg:flex w-[280px] shrink-0 flex-col bg-white/80 backdrop-blur-xl border-r border-slate-200/60 fixed left-0 top-20 md:top-24 bottom-0 z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-        {/* Brand Header */}
-        <div className="h-16 flex items-center px-6 border-b border-slate-100/50 shrink-0">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-500 flex items-center justify-center shrink-0 shadow-sm group-hover:shadow-md transition-all">
-              <span className="text-white font-bold text-lg leading-none">D</span>
-            </div>
-            <span className="text-xl font-black text-slate-900 tracking-tight">DehaPa</span>
-          </Link>
-        </div>
-
-        {/* User Profile Widget */}
-        <div className="p-4 shrink-0">
-          <div 
-            onClick={() => setShowQRModal(true)}
-            className="bg-white border border-slate-200/60 rounded-2xl p-3 flex items-center gap-3 cursor-pointer hover:border-teal-200 hover:shadow-md hover:-translate-y-0.5 transition-all group"
+      {/* Main Header (Sticky) */}
+      <header className="sticky top-20 md:top-24 z-30 bg-white/60 backdrop-blur-xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3 md:gap-4">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)} 
+            className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            {userProfile?.image ? (
-              <img src={userProfile.image} alt={userProfile.name} className="w-10 h-10 rounded-full object-cover shrink-0 border-2 border-white shadow-sm" />
-            ) : (
-              <div className="w-10 h-10 bg-teal-50 text-teal-600 border-2 border-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">
-                {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-teal-700 transition-colors">{userProfile?.name || roleName}</h3>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider truncate flex items-center gap-1 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span> Online
-              </p>
-            </div>
-            <svg className="w-4 h-4 text-slate-400 group-hover:text-teal-500 shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-          </div>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <button onClick={() => onTabChange("home")} className="text-xl md:text-2xl font-black text-slate-800 tracking-tight hover:text-teal-600 transition-colors">
+            DehaPa Portal
+          </button>
         </div>
 
-        {/* Navigation */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar px-4 pb-6 space-y-1">
-          {renderNavLinks(false)}
-        </div>
-      </aside>
+        <div className="flex items-center gap-4 md:gap-6">
+          <button 
+            onClick={() => {
+              if (window.location.hash !== '#scan') {
+                window.location.hash = 'scan';
+              }
+            }}
+            className="hidden md:flex items-center gap-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            Scan QR
+          </button>
 
-      {/* =========================================================================
-          MOBILE SLIDE-IN SIDEBAR (Drawer)
-         ========================================================================= */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[9999] lg:hidden flex">
-          <div 
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
-            onClick={() => setIsMobileMenuOpen(false)}
-          ></div>
-          <div className="relative w-[280px] max-w-[85vw] bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-500 flex items-center justify-center shrink-0">
-                  <span className="text-white font-bold text-lg leading-none">D</span>
-                </div>
-                <span className="text-xl font-black text-slate-900 tracking-tight">DehaPa</span>
-              </div>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-              </button>
-            </div>
-            
-            <div className="p-4 shrink-0">
-              <div 
-                onClick={() => setShowQRModal(true)}
-                className="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex items-center gap-3 cursor-pointer group"
-              >
-                {userProfile?.image ? (
-                  <img src={userProfile.image} alt={userProfile.name} className="w-10 h-10 rounded-full object-cover shrink-0 border-2 border-white shadow-sm" />
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            className="hidden md:flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Help & Guide
+          </button>
+          
+          <button 
+            onClick={() => setIsHelpOpen(true)}
+            className="md:hidden p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </button>
+
+          <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-slate-900">
+            Sign Out
+          </button>
+        </div>
+      </header>
+
+      <div className="flex flex-1 relative z-10 w-full max-w-[1400px] mx-auto">
+        
+        {/* =========================================================================
+            LEFT SIDEBAR (Glassmorphism)
+           ========================================================================= */}
+        <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
+          <div className="sticky top-[180px] bg-white/70 backdrop-blur-2xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white/80 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+            {userProfile && (
+              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
+                {userProfile.image ? (
+                  <img src={userProfile.image} alt={userProfile.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
                 ) : (
-                  <div className="w-10 h-10 bg-teal-100 text-teal-700 border-2 border-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">
-                    {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
+                  <div className="w-12 h-12 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
+                    {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                 )}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-slate-900 text-sm truncate">{userProfile?.name || roleName}</h3>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span> Online
-                  </p>
+                <div className="overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-1 group" onClick={() => setShowQRModal(true)}>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-slate-900 truncate group-hover:text-teal-600 transition-colors" title={userProfile.name}>{userProfile.name}</h3>
+                    <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-500 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                  </div>
+                  <p className="text-xs text-slate-500 truncate mt-0.5" title={userProfile.subtitle}>{userProfile.subtitle}</p>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex-1 overflow-y-auto px-4 pb-safe custom-scrollbar space-y-1">
-              {renderNavLinks(true)}
-            </div>
+            {renderNavLinks(false)}
           </div>
-        </div>
-      )}
+        </aside>
 
-      {/* =========================================================================
-          MAIN CONTENT AREA
-         ========================================================================= */}
-      <div className="flex-1 lg:ml-[280px] flex flex-col w-full min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-6rem)] transition-all duration-300 relative z-10">
-        
-        {/* Main Header (Sticky) */}
-        <header className="sticky top-20 md:top-24 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/60 h-16 px-4 lg:px-8 flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-3">
-            {/* Hamburger Menu (Mobile Only) */}
-            <button 
-              onClick={() => setIsMobileMenuOpen(true)} 
-              className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <h1 className="text-lg md:text-xl font-bold text-slate-800 tracking-tight hidden sm:block">
-              {headerTitle || <><span className="font-black text-teal-700">{roleName.split(' ')[0]}</span> {roleName.split(' ').slice(1).join(' ')} Dashboard</>}
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-3 md:gap-5">
-            <button 
-              className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest transition-colors shadow-sm shadow-rose-200 flex items-center gap-1.5"
-            >
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-              SOS
-            </button>
-
-            <button 
-              onClick={() => {
-                if (window.location.hash !== '#scan') {
-                  window.location.hash = 'scan';
-                }
-              }}
-              className="hidden md:flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              Scan
-            </button>
-
-            <div className="h-6 w-px bg-slate-200 hidden md:block"></div>
-            
-            <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-slate-900 hidden md:block">
-              Logout
-            </button>
-            
-            {/* User Dropdown - Mockup */}
-            <div className="hidden sm:flex items-center gap-2 cursor-pointer border border-slate-200 p-1 pr-3 rounded-full hover:bg-slate-50 hover:border-slate-300 transition-all">
-              {userProfile?.image ? (
-                <img src={userProfile.image} alt="User" className="w-7 h-7 rounded-full object-cover" />
-              ) : (
-                <div className="w-7 h-7 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-xs">{userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : "U"}</div>
-              )}
-              <div className="flex flex-col text-left">
-                 <span className="text-xs font-bold text-slate-900 leading-none">{userProfile?.name || "Dr. Rajesh Mishra"}</span>
-                 <span className="text-[9px] text-slate-500 leading-none mt-0.5 truncate max-w-[100px]">{userProfile?.subtitle || "Cardiologist"}</span>
+        {/* =========================================================================
+            MOBILE SLIDE-IN SIDEBAR (Drawer)
+           ========================================================================= */}
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 z-[100] lg:hidden flex">
+            <div 
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+              onClick={() => setIsMobileMenuOpen(false)}
+            ></div>
+            <div className="relative w-72 max-w-sm bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {userProfile?.image ? (
+                    <img src={userProfile.image} alt={userProfile.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-bold text-lg shrink-0">
+                      {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                  )}
+                  <div className="overflow-hidden flex-1 group" onClick={() => setShowQRModal(true)}>
+                    <div className="flex items-center justify-between cursor-pointer">
+                      <h3 className="font-bold text-slate-900 truncate text-sm group-hover:text-teal-600 transition-colors">{userProfile?.name || roleName}</h3>
+                      <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-500 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
               </div>
-              <svg className="w-3 h-3 text-slate-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                {renderNavLinks(true)}
+              </div>
             </div>
           </div>
-        </header>
+        )}
 
-        {/* Page Content */}
-        <main className="flex-1 p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-24 md:pb-8">
+        {/* =========================================================================
+            MAIN CONTENT AREA
+           ========================================================================= */}
+        <main className="flex-1 py-8 px-4 md:px-8 w-full max-w-5xl mx-auto overflow-x-hidden min-h-[calc(100vh-80px)]">
           {activeTab === "home" ? (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out w-full">
-              {children}
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+              {homeWidget && (
+                <div className="mb-6">
+                  {homeWidget}
+                </div>
+              )}
+              
+              {!hideDefaultModulesList && (
+                <>
+                  {/* Premium Hero Section */}
+                  <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-900 via-slate-900 to-teal-900 p-8 md:p-12 mb-8 overflow-hidden shadow-2xl">
+                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
+                    <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/30 rounded-full blur-[80px]"></div>
+                    <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[80px]"></div>
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                      <div>
+                        <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">Welcome to {roleName}</h2>
+                        <p className="text-indigo-200 text-lg max-w-xl">Your central command center for managing operations across the DehaPa Ecosystem.</p>
+                      </div>
+                      {userProfile?.image && (
+                        <div className="w-20 h-20 rounded-full border-4 border-white/20 shadow-lg overflow-hidden shrink-0 hidden md:block">
+                          <img src={userProfile.image} alt={userProfile.name} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bento Grid Layout */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {sectionedTabsList.map((sectionObj) => {
+                      const sectionName = sectionObj.section;
+                      const isDefault = sectionName === "DEFAULT";
+                      const displayName = isDefault ? "General Modules" : sectionName;
+                      
+                      const displayTabs = sectionObj.tabs.filter(t => t.id !== "home");
+                      if (displayTabs.length === 0) return null;
+
+                      // For Bento Grid, we let the cards fill the grid.
+                      // We will render a title for the section if needed, or group them logically.
+                      // To keep the bento grid tight, we can wrap each section in a col-span block, or just render the tabs directly.
+                      return (
+                        <div key={sectionName} className="col-span-1 md:col-span-2 lg:col-span-3 mb-2">
+                          <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 ml-2">{displayName}</h3>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {displayTabs.map(tab => (
+                              <button 
+                                key={tab.id} 
+                                onClick={() => onTabChange(tab.id)} 
+                                className="group relative bg-white/60 backdrop-blur-xl p-6 rounded-3xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.12)] hover:-translate-y-1 transition-all duration-300 text-left overflow-hidden flex flex-col justify-between min-h-[160px]"
+                              >
+                                <div className="absolute -right-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl group-hover:bg-indigo-100 transition-colors"></div>
+                                
+                                <div className="relative z-10">
+                                  <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                                    {tab.icon}
+                                  </div>
+                                  <h4 className="font-bold text-slate-800 text-lg mb-1 group-hover:text-indigo-700 transition-colors">{tab.label}</h4>
+                                  <p className="text-sm text-slate-500 line-clamp-2">Manage settings and records for {tab.label.toLowerCase()}.</p>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
           ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out w-full bg-white/60 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/60 p-6">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-6 md:p-8">
               {children}
             </div>
           )}
@@ -333,35 +394,36 @@ export default function DashboardLayout({
       </div>
 
       {/* =========================================================================
-          MOBILE BOTTOM NAVIGATION BAR
+          MOBILE BOTTOM NAVIGATION BAR (Only for Patient Portal)
          ========================================================================= */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-200/80 z-[90] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe">
-        <div className="flex items-center justify-around px-2 py-2">
-          {(() => {
-            const bottomNavTabs = [{ id: 'home', label: 'Home', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> }, ...tabs.slice(0, 3).map(t => ({ id: t.id, label: t.label, icon: t.icon }))];
-            return [
-              ...bottomNavTabs,
-              { id: 'more', label: 'More', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>, isMenuToggle: true }
+      {roleName === "User Portal" && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-[90] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe">
+          <div className="flex items-center justify-around px-2 py-3">
+            {[
+              { id: 'home', label: 'Home', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> },
+              { id: 'appointments', label: 'Bookings', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> },
+              { id: 'vault', label: 'Records', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> },
+              { id: 'settings', label: 'Profile', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> }
             ].map((navItem) => {
-              const isActive = activeTab === navItem.id && !('isMenuToggle' in navItem && navItem.isMenuToggle);
+              const isActive = activeTab === navItem.id;
               return (
                 <button
                   key={navItem.id}
-                  onClick={() => ('isMenuToggle' in navItem && navItem.isMenuToggle) ? setIsMobileMenuOpen(true) : onTabChange(navItem.id)}
-                  className={`flex flex-col items-center justify-center w-14 transition-colors ${isActive ? 'text-teal-600' : 'text-slate-400 hover:text-slate-700'}`}
+                  onClick={() => onTabChange(navItem.id)}
+                  className={`flex flex-col items-center justify-center w-16 transition-colors ${isActive ? 'text-teal-600' : 'text-slate-400 hover:text-slate-700'}`}
                 >
                   <div className={`mb-1 transition-transform ${isActive ? 'scale-110' : ''}`}>
                     {navItem.icon}
                   </div>
-                  <span className={`text-[9px] font-bold ${isActive ? 'text-teal-700' : ''} truncate max-w-full px-1`}>
+                  <span className={`text-[10px] font-bold ${isActive ? 'text-teal-700' : ''}`}>
                     {navItem.label}
                   </span>
                 </button>
               );
-            });
-          })()}
+            })}
+          </div>
         </div>
-      </div>
+      )}
       
       {/* QR Code Modal */}
       {showQRModal && userProfile && (
@@ -396,12 +458,37 @@ export default function DashboardLayout({
             </div>
 
             <div className="w-full flex flex-col gap-3">
-               <button 
-                 onClick={() => alert("Copied")}
-                 className="w-full bg-slate-900 text-white rounded-xl py-3 font-bold text-sm"
-               >
-                 Copy Link
-               </button>
+              <button 
+                onClick={() => {
+                  const link = roleName === "User Portal" && userProfile.uid
+                    ? `dehapa-auth://scan?uid=${userProfile.uid}`
+                    : (userProfile.profileUrl || `${origin}/profile/${roleName.split(' ')[0].toLowerCase()}/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect';
+                  navigator.clipboard.writeText(link);
+                  alert(roleName === "User Portal" ? "Patient QR Data Copied!" : "Invitation Link Copied to Clipboard!");
+                }}
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-xl py-3 font-bold text-sm transition-colors flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                {roleName === "User Portal" ? "Copy ID Link" : "Copy Invitation Link"}
+              </button>
+
+              <button 
+                onClick={() => {
+                  const link = roleName === "User Portal" && userProfile.uid
+                    ? `dehapa-auth://scan?uid=${userProfile.uid}`
+                    : (userProfile.profileUrl || `${origin}/profile/${roleName.split(' ')[0].toLowerCase()}/${userProfile.name.toLowerCase().replace(/\s+/g, '-')}`) + '?action=connect';
+                  
+                  const message = roleName === "User Portal" 
+                    ? `Add me to your patient roster on DehaPa: ${link}`
+                    : `Book an appointment or connect with me on DehaPa: ${link}`;
+                  
+                  window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                }}
+                className="w-full bg-[#25D366] hover:bg-[#1ebd5a] text-white rounded-xl py-3 font-bold text-sm transition-colors flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Share via WhatsApp
+              </button>
             </div>
           </div>
         </div>
