@@ -834,6 +834,28 @@ export default function AdminDataCRM() {
                       <button onClick={() => setIsSlugModalOpen(true)} className="bg-teal-600 text-white px-4 py-1 rounded-lg text-sm font-bold whitespace-nowrap">Super Search</button>
                     </div>
                   </div>
+                  
+                  {/* Vault Storage Metrics (Read-only) */}
+                  <div className="col-span-1 md:col-span-2 bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-wrap gap-8 items-center">
+                    <div>
+                      <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Vault Storage Usage</div>
+                      <div className="text-2xl font-black text-slate-800 flex items-end gap-2">
+                        {selectedListing.vaultFilesStored || 0} <span className="text-sm font-medium text-slate-500 mb-1">Files</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Vault Network Forwards</div>
+                      <div className="text-2xl font-black text-slate-800 flex items-end gap-2">
+                        {selectedListing.vaultFilesSent || 0} <span className="text-sm font-medium text-slate-500 mb-1">Sent</span>
+                      </div>
+                    </div>
+                    <div className="ml-auto">
+                      <span className="text-xs bg-amber-100 text-amber-700 font-bold px-3 py-1.5 rounded-lg border border-amber-200">
+                        Tiered Billing Data
+                      </span>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="form-label">Phone</label>
                     <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="form-input" />

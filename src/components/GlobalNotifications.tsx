@@ -63,6 +63,36 @@ export default function GlobalNotifications({ userEmail }: { userEmail: string |
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  const prevUnreadCountRef = useRef(0);
+  const isFirstLoadRef = useRef(true);
+
+  useEffect(() => {
+    if (isFirstLoadRef.current) {
+      prevUnreadCountRef.current = unreadCount;
+      if (notifications.length > 0) {
+        isFirstLoadRef.current = false;
+      }
+      return;
+    }
+
+    if (unreadCount > prevUnreadCountRef.current) {
+      // Play sound and voice
+      try {
+        const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+        audio.play().catch(e => console.warn("Audio play blocked by browser policy:", e));
+        
+        if ('speechSynthesis' in window) {
+           const utterance = new SpeechSynthesisUtterance("You have a new notification in your medical vault.");
+           utterance.rate = 1.1;
+           window.speechSynthesis.speak(utterance);
+        }
+      } catch (e) {
+        console.warn("Error playing notification sound:", e);
+      }
+    }
+    prevUnreadCountRef.current = unreadCount;
+  }, [unreadCount, notifications.length]);
+
   const handleNotificationClick = async (notification: Notification) => {
     if (!notification.read) {
       try {
