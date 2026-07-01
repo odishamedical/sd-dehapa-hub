@@ -562,5 +562,66 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     );
   }
 
+  if (activeTab === "staff") {
+    const staffList = Array.isArray(entityData.staff) ? entityData.staff : [];
+    
+    return (
+      <div className="space-y-10">
+        <div>
+          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Staff & Receptionists</h2>
+          <p className="text-slate-500 font-medium text-lg">Add your clinic staff so they can manage the Live Queue and Vitals on your behalf.</p>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+           <div className="p-6 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+             <h3 className="text-lg font-bold text-slate-800">Authorized Staff</h3>
+             <button onClick={() => addArrayItem('staff')} className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm shadow-teal-200">
+               + Add Staff Member
+             </button>
+           </div>
+           
+           <div className="p-6 space-y-4">
+             {staffList.map((st: any, idx: number) => (
+               <div key={idx} className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col md:flex-row md:items-center gap-4 relative group">
+                 <button onClick={() => removeArrayItem('staff', idx)} className="absolute top-4 right-4 text-slate-300 hover:text-rose-500 transition-colors">
+                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                 </button>
+                 
+                 <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 pr-8">
+                   <div>
+                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Staff Name</label>
+                     <input type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. Ramesh" value={st.name || ""} onChange={e => handleArrayUpdate('staff', idx, 'name', e.target.value)} />
+                   </div>
+                   <div>
+                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Phone Number (Login ID)</label>
+                     <input type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-teal-500 outline-none" placeholder="10-digit mobile" value={st.phone || ""} onChange={e => handleArrayUpdate('staff', idx, 'phone', e.target.value)} />
+                   </div>
+                   <div>
+                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Role</label>
+                     <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-teal-500 outline-none" value={st.role || ""} onChange={e => handleArrayUpdate('staff', idx, 'role', e.target.value)}>
+                       <option value="">Select Role...</option>
+                       <option value="Receptionist">Receptionist (Queue Only)</option>
+                       <option value="Nurse">Nurse (Vitals + Queue)</option>
+                       <option value="Clinic Manager">Clinic Manager (Full Access)</option>
+                     </select>
+                   </div>
+                 </div>
+               </div>
+             ))}
+             {staffList.length === 0 && (
+               <div className="text-center py-8">
+                 <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                 </div>
+                 <p className="text-slate-500 font-medium">No staff members added yet.</p>
+                 <p className="text-xs text-slate-400 mt-1">Staff will use their phone number to log in to the OS.</p>
+               </div>
+             )}
+           </div>
+        </div>
+      </div>
+    );
+  }
+
   return null;
 }

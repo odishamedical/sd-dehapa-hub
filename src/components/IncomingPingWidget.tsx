@@ -9,9 +9,10 @@ import { ConnectionService } from '@/services/connection.service';
 interface IncomingPingWidgetProps {
   doctorId: string;
   doctorSpecialty: string;
+  onAcceptPing?: (request: any) => void;
 }
 
-export default function IncomingPingWidget({ doctorId, doctorSpecialty }: IncomingPingWidgetProps) {
+export default function IncomingPingWidget({ doctorId, doctorSpecialty, onAcceptPing }: IncomingPingWidgetProps) {
   const [incomingRequest, setIncomingRequest] = useState<any | null>(null);
   const [isOnline, setIsOnline] = useState(false);
   const router = useRouter();
@@ -195,8 +196,13 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty }: Incomi
           console.error("Failed to implicitly connect:", connErr);
         }
         
-        // Success! Route the doctor to the video consultation room
-        router.push(`/consultation/${incomingRequest.id}`);
+        // Success! Route the doctor to the video consultation room or pass it up
+        if (onAcceptPing) {
+           onAcceptPing(incomingRequest);
+           setIncomingRequest(null);
+        } else {
+           router.push(`/consultation/${incomingRequest.id}`);
+        }
       } else {
         alert("Sorry, another doctor already accepted this request!");
         setIncomingRequest(null);

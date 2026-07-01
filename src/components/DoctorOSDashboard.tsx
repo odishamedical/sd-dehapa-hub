@@ -8,6 +8,7 @@ import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/fire
 import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
+import IncomingPingWidget from '@/components/IncomingPingWidget';
 
 export default function DoctorOSDashboard() {
   const router = useRouter();
@@ -82,6 +83,25 @@ export default function DoctorOSDashboard() {
     return () => clearTimeout(timeout);
   }, [entityData, entityDocId]);
 
+  const handleAcceptPing = (request: any) => {
+    // Transform ping request into activeConsult queue item
+    const newPatient = {
+      id: request.id,
+      name: request.patientName || "Unknown Patient",
+      age: "--",
+      sex: "--",
+      mode: "Video Call",
+      time: "Just now",
+      status: "In Lobby",
+      type: "online",
+      phone: ""
+    };
+    
+    // Switch to queue tab and open rx pad immediately with video shell
+    setActiveTab("queue");
+    setActiveConsult(newPatient);
+  };
+
   const handleTabChange = (id: string) => {
     setActiveTab(id);
     window.history.pushState(null, "", `#${id}`);
@@ -135,6 +155,12 @@ export default function DoctorOSDashboard() {
         isVerified: true
       }}
     >
+      <IncomingPingWidget 
+        doctorId={entityData?.id || ""} 
+        doctorSpecialty={entityData?.primarySpecialty || ""} 
+        onAcceptPing={handleAcceptPing} 
+      />
+
       <div className="max-w-6xl mx-auto space-y-6 pb-20 md:pb-8">
         
         {/* TAB ROUTING */}
@@ -210,7 +236,12 @@ export default function DoctorOSDashboard() {
                       </div>
                     </div>
                     
-                    <div className="col-span-12 md:col-span-2 w-full flex justify-end gap-2">
+                    <div className="col-span-12 md:col-span-2 w-full flex justify-end gap-2 flex-wrap md:flex-nowrap">
+                       {patient.mode === 'Walk-in' && (
+                         <button className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors border border-slate-200 shadow-sm" onClick={() => window.print()}>
+                           🖨️ Token
+                         </button>
+                       )}
                        <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors">
                          Vitals
                        </button>
@@ -442,7 +473,8 @@ export default function DoctorOSDashboard() {
                  { id: "professional", label: "Professional Bio" },
                  { id: "consultation_setup", label: "Consultations" },
                  { id: "location", label: "Clinic Location" },
-                 { id: "bank_details", label: "Bank & Payouts" }
+                 { id: "bank_details", label: "Bank & Payouts" },
+                 { id: "staff", label: "Staff & Receptionist" }
                ].map(tab => (
                  <button 
                    key={tab.id}

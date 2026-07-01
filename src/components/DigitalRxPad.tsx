@@ -9,6 +9,7 @@ interface DigitalRxPadProps {
 
 export default function DigitalRxPad({ patient, onClose }: DigitalRxPadProps) {
   const [step, setStep] = useState(1);
+  const [isPiPExpanded, setIsPiPExpanded] = useState(true);
   const totalSteps = 4;
 
   const handleNext = () => {
@@ -216,6 +217,52 @@ export default function DigitalRxPad({ patient, onClose }: DigitalRxPadProps) {
           </button>
         </div>
       </div>
+
+      {/* Telemedicine Video Shell (Picture-in-Picture) */}
+      {patient.type === 'online' && (
+        <div className={`fixed z-[60] transition-all duration-300 shadow-2xl rounded-2xl overflow-hidden border border-slate-700 bg-slate-900 ${isPiPExpanded ? 'bottom-20 right-4 md:right-8 w-64 h-80' : 'bottom-20 right-4 md:right-8 w-24 h-24 rounded-full border-2 border-teal-500'}`}>
+          {isPiPExpanded ? (
+            <div className="relative w-full h-full flex flex-col">
+              {/* Fake Video Stream (Patient) */}
+              <div className="flex-1 bg-slate-800 relative flex items-center justify-center">
+                <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
+                <div className="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center font-bold text-slate-500 text-3xl">
+                  {patient.name.charAt(0)}
+                </div>
+                <div className="absolute top-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded font-bold backdrop-blur-sm">
+                  {patient.name}
+                </div>
+                <button onClick={() => setIsPiPExpanded(false)} className="absolute top-2 right-2 p-1.5 bg-black/50 hover:bg-black/70 text-white rounded-lg transition-colors backdrop-blur-sm">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+              </div>
+              
+              {/* Fake Video Stream (Doctor/Self) - Smaller overlay */}
+              <div className="absolute bottom-16 right-2 w-16 h-24 bg-slate-900 rounded-lg border border-slate-700 overflow-hidden shadow-lg flex items-center justify-center text-[10px] text-slate-500 font-bold">
+                You
+              </div>
+              
+              {/* Controls */}
+              <div className="h-14 bg-slate-900 flex items-center justify-center gap-3 shrink-0">
+                <button className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+                <button className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
+                <button onClick={onClose} className="w-10 h-10 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-lg transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z"></path></svg>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button onClick={() => setIsPiPExpanded(true)} className="w-full h-full flex items-center justify-center bg-slate-800 text-teal-400 relative group overflow-hidden">
+              <div className="absolute inset-0 bg-teal-500/20 group-hover:bg-teal-500/40 transition-colors"></div>
+              <svg className="w-8 h-8 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
