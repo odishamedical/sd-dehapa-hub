@@ -82,19 +82,22 @@ function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }:
 
                 <button 
                   onClick={() => window.dispatchEvent(new Event('sd_open_qr_modal'))}
-                  className="flex flex-col justify-center p-6 bg-white hover:bg-slate-50 border border-slate-100 rounded-[16px] shadow-sm text-slate-800 transition-all transform hover:-translate-y-1 group min-h-[160px] relative overflow-hidden"
+                  className="flex flex-col justify-between p-6 bg-[#00b894] hover:bg-teal-500 rounded-[16px] shadow-lg shadow-teal-500/20 text-white transition-all transform hover:-translate-y-1 group min-h-[160px] relative overflow-hidden"
                 >
-                  <div className="absolute right-0 bottom-0 opacity-5 w-32 h-32 pointer-events-none">
+                  <div className="absolute right-0 bottom-0 opacity-10 w-32 h-32 pointer-events-none">
                     <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6zm4 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                   </div>
                   <div className="flex items-start gap-4 relative z-10">
-                    <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 text-slate-700">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shrink-0 text-white">
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
                     </div>
                     <div className="text-left flex-1">
-                      <h4 className="text-lg font-bold mb-1 leading-tight text-slate-800">Show My<br/>QR Code</h4>
-                      <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">For hospital check-in</p>
+                      <h4 className="text-lg font-bold mb-1 leading-tight text-white">Show My<br/>QR Code</h4>
+                      <p className="text-teal-100 text-[10px] font-bold uppercase tracking-widest mt-1">For hospital check-in</p>
                     </div>
+                  </div>
+                  <div className="w-full mt-4 bg-white text-teal-600 py-2 rounded-full font-bold text-sm text-center shadow-sm hover:bg-teal-50 transition-colors">
+                    View
                   </div>
                 </button>
                 
