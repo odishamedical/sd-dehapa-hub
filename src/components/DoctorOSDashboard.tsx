@@ -4,8 +4,10 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
-import { doc, getDocs, collection, query, where } from 'firebase/firestore';
+import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/firestore';
 import DigitalRxPad from '@/components/DigitalRxPad';
+import SecureMedicalVault from '@/components/SecureMedicalVault';
+import DoctorV2Forms from '@/components/DoctorV2Forms';
 
 export default function DoctorOSDashboard() {
   const router = useRouter();
@@ -15,6 +17,12 @@ export default function DoctorOSDashboard() {
   const [isMounted, setIsMounted] = useState(false);
   const [showAddWalkIn, setShowAddWalkIn] = useState(false);
   const [activeConsult, setActiveConsult] = useState<any>(null);
+
+  // Entity state for Profile Builder & Vault
+  const [entityData, setEntityData] = useState<any>({});
+  const [entityDocId, setEntityDocId] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [settingsTab, setSettingsTab] = useState("identity");
 
   // Mock Data for UI presentation
   const mockQueue = [
@@ -38,8 +46,41 @@ export default function DoctorOSDashboard() {
       
       const hash = window.location.hash.replace("#", "");
       if (hash) setActiveTab(hash);
+      
+      fetchEntity(email);
     }
   }, []);
+
+  const fetchEntity = async (email: string) => {
+    try {
+      const q = query(collection(db, "directory"), where("ownerEmail", "==", email));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const docSnap = snap.docs[0];
+        setEntityDocId(docSnap.id);
+        setEntityData({ id: docSnap.id, ...docSnap.data() });
+      }
+    } catch (err) {
+      console.error("Error fetching entity:", err);
+    }
+  };
+
+  // Autosave for Settings (DoctorV2Forms)
+  useEffect(() => {
+    if (!entityDocId) return;
+    setSaveStatus("saving");
+    const timeout = setTimeout(async () => {
+      try {
+        const docRef = doc(db, 'directory', entityDocId);
+        await updateDoc(docRef, entityData);
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus("idle"), 3000);
+      } catch (err) {
+        setSaveStatus("error");
+      }
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [entityData, entityDocId]);
 
   const handleTabChange = (id: string) => {
     setActiveTab(id);
@@ -269,8 +310,13 @@ export default function DoctorOSDashboard() {
 
         {activeTab === "patients" && (
            <div className="space-y-6">
-             <h1 className="text-2xl font-bold text-slate-900 font-display">Patient EMR</h1>
-             <p className="text-slate-500 text-sm mt-1">Coming soon...</p>
+             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+               <div>
+                 <h1 className="text-2xl font-bold text-slate-900 font-display">Patient EMR & Vault</h1>
+                 <p className="text-slate-500 text-sm mt-1">Access global health records via Dehapa QR</p>
+               </div>
+             </div>
+             <SecureMedicalVault providerId={entityData?.id || ""} providerName={entityData?.name || userName} />
            </div>
         )}
         
@@ -379,8 +425,38 @@ export default function DoctorOSDashboard() {
 
         {activeTab === "settings" && (
            <div className="space-y-6">
-             <h1 className="text-2xl font-bold text-slate-900 font-display">Clinic Profile & Settings</h1>
-             <p className="text-slate-500 text-sm mt-1">Link to setup components here...</p>
+             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+               <div>
+                 <h1 className="text-2xl font-bold text-slate-900 font-display">Clinic Profile Builder</h1>
+                 <p className="text-slate-500 text-sm mt-1">Configure your public page and payouts</p>
+               </div>
+               <div className="flex gap-2 items-center">
+                  {saveStatus === "saving" && <span className="text-sm font-bold text-teal-600 animate-pulse">Autosaving...</span>}
+                  {saveStatus === "saved" && <span className="text-sm font-bold text-emerald-500">✓ Saved</span>}
+               </div>
+             </div>
+             
+             <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+               {[
+                 { id: "identity", label: "Identity & Media" },
+                 { id: "professional", label: "Professional Bio" },
+                 { id: "consultation_setup", label: "Consultations" },
+                 { id: "location", label: "Clinic Location" },
+                 { id: "bank_details", label: "Bank & Payouts" }
+               ].map(tab => (
+                 <button 
+                   key={tab.id}
+                   onClick={() => setSettingsTab(tab.id)}
+                   className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-colors ${settingsTab === tab.id ? 'bg-teal-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                 >
+                   {tab.label}
+                 </button>
+               ))}
+             </div>
+
+             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+               <DoctorV2Forms activeTab={settingsTab} entityData={entityData} setEntityData={setEntityData} />
+             </div>
            </div>
         )}
 
