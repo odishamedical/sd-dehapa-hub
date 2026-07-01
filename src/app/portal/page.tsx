@@ -11,6 +11,7 @@ import PatientOnboardingModal from '@/components/PatientOnboardingModal'; // Kee
 import PatientVaultWidget from '@/components/PatientVaultWidget';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 
 import InviteWidget from '@/components/InviteWidget';
 import PatientConsultWidget from '@/components/PatientConsultWidget';
@@ -518,39 +519,86 @@ export default function UserDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Country</label>
-                  <input 
-                    type="text"
-                    disabled
+                  <select 
                     value={identityData.address?.country || "India"}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 outline-none"
-                  />
+                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, country: e.target.value, state: '', district: '', block: ''}})}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                  >
+                    <option value="">Select Country</option>
+                    <option value="India">India</option>
+                    <option value="USA">United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="UAE">United Arab Emirates</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">State</label>
-                  <input 
-                    type="text"
-                    disabled
-                    value={identityData.address?.state || "Odisha"}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 outline-none"
-                  />
+                  {identityData.address?.country === "India" ? (
+                    <select 
+                      value={identityData.address?.state || ''}
+                      onChange={e => setIdentityData({...identityData, address: {...identityData.address, state: e.target.value, district: '', block: ''}})}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                    >
+                      <option value="">Select State</option>
+                      {indianStates.map(state => (
+                        <option key={state} value={state}>{state}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input 
+                      type="text"
+                      value={identityData.address?.state || ''}
+                      onChange={e => setIdentityData({...identityData, address: {...identityData.address, state: e.target.value}})}
+                      placeholder="Enter State/Region"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">District</label>
-                  <input 
-                    type="text"
-                    value={identityData.address?.district || ''}
-                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, district: e.target.value}})}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
-                  />
+                  {identityData.address?.country === "India" && identityData.address?.state && districtsByState[identityData.address.state] ? (
+                    <select 
+                      value={identityData.address?.district || ''}
+                      onChange={e => setIdentityData({...identityData, address: {...identityData.address, district: e.target.value, block: ''}})}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                    >
+                      <option value="">Select District</option>
+                      {districtsByState[identityData.address.state].map(district => (
+                        <option key={district} value={district}>{district}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input 
+                      type="text"
+                      value={identityData.address?.district || ''}
+                      onChange={e => setIdentityData({...identityData, address: {...identityData.address, district: e.target.value}})}
+                      placeholder="Enter District/County"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Block</label>
-                  <input 
-                    type="text"
-                    value={identityData.address?.block || ''}
-                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, block: e.target.value}})}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
-                  />
+                  {identityData.address?.country === "India" && identityData.address?.district && blocksByDistrict[identityData.address.district] ? (
+                    <select 
+                      value={identityData.address?.block || ''}
+                      onChange={e => setIdentityData({...identityData, address: {...identityData.address, block: e.target.value}})}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                    >
+                      <option value="">Select Block</option>
+                      {blocksByDistrict[identityData.address.district].map(block => (
+                        <option key={block} value={block}>{block}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input 
+                      type="text"
+                      value={identityData.address?.block || ''}
+                      onChange={e => setIdentityData({...identityData, address: {...identityData.address, block: e.target.value}})}
+                      placeholder="Enter Block/Area"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">City / Town / Village</label>
