@@ -24,6 +24,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   const [videoCall, setVideoCall] = useState(false);
   const [loading, setLoading] = useState(true);
   const [callObject, setCallObject] = useState<DailyCall | null>(null);
+  const [isEndingCall, setIsEndingCall] = useState(false);
   const [patientHasVideo, setPatientHasVideo] = useState(true);
   const [patientId, setPatientId] = useState<string | null>(null);
 
@@ -129,6 +130,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   };
 
   const handleEndCall = async () => {
+    setIsEndingCall(true);
     setVideoCall(false);
     if (callObject) {
       callObject.leave();
@@ -136,7 +138,11 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
       setCallObject(null);
     }
     if (userRole === 'doctor' || userRole === 'super_admin') {
-      await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
+      try {
+        await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
+      } catch (e) {
+        console.error("Failed to mark as completed", e);
+      }
       if (patientId) {
         window.location.href = `/doctor/prescription-pad?patient=${patientId}&request=${roomId}`;
       } else {
@@ -149,10 +155,11 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 
   const isDoctor = userRole === 'doctor' || userRole === 'super_admin';
 
-  if (loading) {
+  if (loading || isEndingCall) {
      return (
        <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
-          <div className="w-16 h-16 border-4 border-slate-700 border-t-emerald-500 rounded-full animate-spin"></div>
+          <div className="w-16 h-16 border-4 border-slate-700 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
+          {isEndingCall && <p className="text-emerald-400 font-bold tracking-widest uppercase animate-pulse">Closing Secure Connection...</p>}
        </div>
      );
   }
