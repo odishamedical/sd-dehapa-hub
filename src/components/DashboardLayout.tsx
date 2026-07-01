@@ -105,17 +105,17 @@ export default function DashboardLayout({
           if (isAccordion) {
             headerTextClass = "text-xs font-black uppercase tracking-wider";
             if (sectionObj.section === "Personal Details") {
-              headerColorClass = "text-purple-700 hover:text-purple-900";
-              headerBgClass = "bg-purple-50/50 hover:bg-purple-100 border border-purple-100";
+              headerColorClass = "text-rose-600 hover:text-rose-800";
+              headerBgClass = "bg-rose-50 hover:bg-rose-100";
             } else if (sectionObj.section === "Healthcare & Consults") {
-              headerColorClass = "text-rose-700 hover:text-rose-900";
-              headerBgClass = "bg-rose-50/50 hover:bg-rose-100 border border-rose-100";
+              headerColorClass = "text-red-600 hover:text-red-800";
+              headerBgClass = "bg-red-50 hover:bg-red-100";
             } else if (sectionObj.section === "Medical Records") {
-              headerColorClass = "text-emerald-700 hover:text-emerald-900";
-              headerBgClass = "bg-emerald-50/50 hover:bg-emerald-100 border border-emerald-100";
+              headerColorClass = "text-emerald-600 hover:text-emerald-800";
+              headerBgClass = "bg-emerald-50 hover:bg-emerald-100";
             } else if (sectionObj.section === "Network & Financials") {
-              headerColorClass = "text-blue-700 hover:text-blue-900";
-              headerBgClass = "bg-blue-50/50 hover:bg-blue-100 border border-blue-100";
+              headerColorClass = "text-blue-600 hover:text-blue-800";
+              headerBgClass = "bg-blue-50 hover:bg-blue-100";
             }
           }
           
@@ -141,7 +141,7 @@ export default function DashboardLayout({
               {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
-                const tintClasses = isActive ? 'bg-teal-50 text-teal-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900';
+                const tintClasses = isActive ? 'bg-indigo-100 text-indigo-700 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900';
                 
                 return (
                   <button 
@@ -150,7 +150,7 @@ export default function DashboardLayout({
                     className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between group ${tintClasses}`}
                   >
                     <div className="flex items-center gap-3 truncate">
-                      <div className={isActive ? 'text-teal-600' : 'text-slate-400 group-hover:text-slate-600'}>
+                      <div className={isActive ? 'text-indigo-700' : 'text-slate-400 group-hover:text-slate-600'}>
                         {tab.icon}
                       </div>
                       <span className="truncate">{tab.label}</span>

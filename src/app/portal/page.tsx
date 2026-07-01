@@ -62,48 +62,57 @@ function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }:
         {/* 2. Quick Actions (Simplified for Village Users) */}
         <div className="order-2 md:order-3 md:col-span-3">
             <h3 className="text-lg md:text-xl font-bold text-slate-800 mb-4 md:mb-6">Quick Actions</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <button 
                   onClick={() => window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent' } }))}
-                  className="col-span-1 md:col-span-3 flex items-center justify-between p-6 md:p-8 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 rounded-[24px] shadow-lg shadow-red-500/20 text-white transition-all transform hover:scale-[1.01] active:scale-95 group"
+                  className="flex flex-col justify-between p-6 bg-[#ff1c43] hover:bg-red-600 rounded-[16px] shadow-lg shadow-red-500/20 text-white transition-all transform hover:-translate-y-1 group min-h-[160px]"
                 >
-                  <div className="flex items-center gap-4 md:gap-6">
-                    <div className="w-14 h-14 md:w-16 md:h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shrink-0">
-                      <svg className="w-7 h-7 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shrink-0">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     </div>
-                    <div className="text-left">
-                      <h4 className="text-xl md:text-2xl font-black mb-1">Consult a Doctor Now</h4>
-                      <p className="text-red-100 font-medium text-xs md:text-sm">Tap here for instant secure video call</p>
+                    <div className="text-left flex-1">
+                      <h4 className="text-xl font-bold mb-1 leading-tight">Consult a<br/>Doctor Now</h4>
                     </div>
                   </div>
-                  <div className="hidden md:flex bg-white text-red-600 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs shadow-sm">
+                  <div className="w-full mt-4 bg-white text-red-600 py-2 rounded-full font-bold text-sm text-center shadow-sm hover:bg-red-50 transition-colors">
                     Connect
                   </div>
                 </button>
 
                 <button 
                   onClick={() => window.dispatchEvent(new Event('sd_open_qr_modal'))}
-                  className="flex items-center gap-4 p-5 md:p-6 bg-slate-900 hover:bg-slate-800 rounded-[24px] shadow-md text-white transition-all transform hover:scale-[1.02] active:scale-95 group"
+                  className="flex flex-col justify-center p-6 bg-white hover:bg-slate-50 border border-slate-100 rounded-[16px] shadow-sm text-slate-800 transition-all transform hover:-translate-y-1 group min-h-[160px] relative overflow-hidden"
                 >
-                  <div className="w-12 h-12 md:w-14 md:h-14 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shrink-0">
-                    <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                  <div className="absolute right-0 bottom-0 opacity-5 w-32 h-32 pointer-events-none">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6zm4 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                   </div>
-                  <div className="text-left">
-                    <h4 className="text-base md:text-lg font-bold mb-1">Show My QR Code</h4>
-                    <p className="text-slate-400 text-[10px] md:text-xs font-medium uppercase tracking-widest">For hospital check-in</p>
+                  <div className="flex items-start gap-4 relative z-10">
+                    <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 text-slate-700">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                    </div>
+                    <div className="text-left flex-1">
+                      <h4 className="text-lg font-bold mb-1 leading-tight text-slate-800">Show My<br/>QR Code</h4>
+                      <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">For hospital check-in</p>
+                    </div>
                   </div>
                 </button>
                 
                 <button 
                   onClick={() => onTabChange('appointments')}
-                  className="flex items-center gap-4 p-5 md:p-6 bg-blue-50 border border-blue-100 hover:bg-blue-100 rounded-[24px] shadow-sm text-blue-900 transition-all transform hover:scale-[1.02] active:scale-95 group md:col-span-2"
+                  className="flex flex-col justify-between p-6 bg-[#6c5ce7] hover:bg-indigo-600 rounded-[16px] shadow-lg shadow-indigo-500/20 text-white transition-all transform hover:-translate-y-1 group min-h-[160px]"
                 >
-                  <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-200/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform text-blue-700 shrink-0">
-                    <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shrink-0">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div className="text-left flex-1">
+                      <h4 className="text-lg font-bold mb-1 leading-tight">My<br/>Appointments</h4>
+                      <p className="text-indigo-200 text-xs mt-1">View upcoming</p>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <h4 className="text-base md:text-lg font-bold mb-1">My Appointments</h4>
-                    <p className="text-blue-600/70 text-[10px] md:text-xs font-medium uppercase tracking-widest">View upcoming bookings</p>
+                  <div className="w-full mt-4 bg-white text-indigo-600 py-2 rounded-full font-bold text-sm text-center shadow-sm hover:bg-indigo-50 transition-colors flex items-center justify-center gap-2">
+                    Connect <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                   </div>
                 </button>
             </div>
@@ -122,6 +131,17 @@ function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }:
         {/* 5. Invite Widget (Right side desktop) */}
         <div className="order-5 md:col-span-1">
             <InviteWidget userUid={userUid} userName={userName} />
+        </div>
+
+        {/* 6. Recent Tickets / Appointments */}
+        <div className="order-6 md:col-span-3 mt-4">
+            <div className="bg-white/40 backdrop-blur-xl rounded-[24px] p-6 shadow-sm border border-white/60">
+                <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                    <h3 className="text-xl font-bold text-slate-800">Recent Tickets & Appointments</h3>
+                    <button onClick={() => onTabChange('appointments')} className="text-sm font-bold text-teal-600 hover:text-teal-700">View All</button>
+                </div>
+                <PatientAppointments patientId={userUid || ''} />
+            </div>
         </div>
 
     </div>
