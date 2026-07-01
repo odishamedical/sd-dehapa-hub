@@ -185,7 +185,17 @@ export default function UserDashboard() {
     whatsappNumber: "",
     email: "",
     age: "",
-    sex: ""
+    sex: "",
+    address: {
+      country: "India",
+      state: "Odisha",
+      district: "",
+      block: "",
+      cityTownVillage: "",
+      streetAddress: "",
+      pincode: "",
+      mapPin: ""
+    }
   });
   const identitySaveStatus = useAutosave(identityData, userUid, 'identity', 1000, 'users');
 
@@ -499,6 +509,89 @@ export default function UserDashboard() {
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Address Details Section */}
+            <div className="mt-8">
+              <h4 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4 pb-2 border-b border-slate-100">Location & Address</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Country</label>
+                  <input 
+                    type="text"
+                    disabled
+                    value={identityData.address?.country || "India"}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">State</label>
+                  <input 
+                    type="text"
+                    disabled
+                    value={identityData.address?.state || "Odisha"}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">District</label>
+                  <input 
+                    type="text"
+                    value={identityData.address?.district || ''}
+                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, district: e.target.value}})}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Block</label>
+                  <input 
+                    type="text"
+                    value={identityData.address?.block || ''}
+                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, block: e.target.value}})}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">City / Town / Village</label>
+                  <input 
+                    type="text"
+                    value={identityData.address?.cityTownVillage || ''}
+                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, cityTownVillage: e.target.value}})}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Pincode</label>
+                  <input 
+                    type="text"
+                    value={identityData.address?.pincode || ''}
+                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, pincode: e.target.value}})}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Street Address</label>
+                  <input 
+                    type="text"
+                    value={identityData.address?.streetAddress || ''}
+                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, streetAddress: e.target.value}})}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 flex justify-between items-center">
+                    <span>Google Map Pin URL</span>
+                    <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="text-teal-600 hover:underline">Find Pin 📍</a>
+                  </label>
+                  <input 
+                    type="url"
+                    value={identityData.address?.mapPin || ''}
+                    onChange={e => setIdentityData({...identityData, address: {...identityData.address, mapPin: e.target.value}})}
+                    placeholder="https://maps.app.goo.gl/..."
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                  />
+                </div>
               </div>
             </div>
 
