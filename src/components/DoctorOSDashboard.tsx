@@ -293,21 +293,26 @@ export default function DoctorOSDashboard() {
         
         {/* TAB ROUTING */}
         
-        {!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" ? (
-          <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white/50 backdrop-blur-xl rounded-[2rem] border border-slate-200/60 shadow-xl shadow-slate-200/20 mt-6 animate-in zoom-in-95 duration-500">
-             <div className="w-24 h-24 bg-gradient-to-br from-rose-500 to-pink-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-rose-500/30 transform -rotate-6">
-               <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-             </div>
-             <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tight font-display">Feature Locked</h2>
-             <p className="text-slate-500 max-w-lg text-lg mb-10 leading-relaxed font-medium">
-               This module is part of the DehaPa Premium Suite. You need to complete your Clinic Profile setup to 100% to unlock your full operating system.
-             </p>
-             <button onClick={() => setActiveTab('settings')} className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl shadow-xl shadow-slate-900/20 transition-all hover:scale-105 active:scale-95 text-lg flex items-center gap-3">
-               Resume Profile Setup <span className="text-teal-400 bg-slate-800 px-3 py-1 rounded-lg text-sm">{progress}%</span>
-             </button>
-          </div>
-        ) : (
-          <>
+        {/* TAB ROUTING */}
+        
+        <div className="relative w-full min-h-[600px]">
+          {/* Overlay Lock Screen - Sits on top of the actual UI to build temptation */}
+          {!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" && (
+            <div className="absolute inset-0 z-50 flex items-start justify-center pt-24 pb-10 bg-slate-50/60 backdrop-blur-[6px] rounded-[2rem]">
+              <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-lg text-center border border-slate-200 animate-in zoom-in-95 sticky top-24">
+                <div className="w-20 h-20 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm shadow-rose-200">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+                <h3 className="text-3xl font-black text-slate-900 mb-3 font-display tracking-tight">Feature Locked</h3>
+                <p className="text-slate-500 mb-8 text-base">This powerful module is part of the DehaPa Premium Suite. Complete your Clinic Profile setup to 100% to unlock it and start managing your practice.</p>
+                <button onClick={() => setActiveTab('settings')} className="w-full py-4 bg-slate-900 text-white font-black text-lg rounded-xl shadow-xl shadow-slate-900/20 hover:scale-105 transition-transform flex items-center justify-center gap-3">
+                  Resume Profile Setup <span className="text-teal-400 bg-slate-800 px-2 py-0.5 rounded text-sm">{progress}%</span>
+                </button>
+              </div>
+            </div>
+          )}
+          
+          <div className={`transition-all duration-500 ${!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" ? "pointer-events-none select-none opacity-50 grayscale-[0.3]" : ""}`}>
         
         {activeTab === "home" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -770,8 +775,76 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
+        {/* My Network View (UI Only) */}
+        {activeTab === "network" && (
+           <div className="space-y-6">
+             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+               <div>
+                 <h1 className="text-2xl font-bold text-slate-900 font-display">My Network</h1>
+                 <p className="text-slate-500 text-sm mt-1">Manage and engage with your connected patient base</p>
+               </div>
+               <div className="flex gap-2">
+                 <button className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium text-sm">Import Contacts</button>
+                 <button className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium text-sm shadow-sm">Send Broadcast</button>
+               </div>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Network</p>
+                  <h3 className="text-3xl font-black text-slate-900">2,451</h3>
+                </div>
+                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">New This Month</p>
+                  <h3 className="text-3xl font-black text-emerald-600">+128</h3>
+                </div>
+                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 md:col-span-2 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-1">Health Camp Broadcast</h4>
+                    <p className="text-sm text-slate-500">Reach all 2,451 patients instantly via SMS & App Notification.</p>
+                  </div>
+                  <button className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-sm">Draft Message</button>
+                </div>
+             </div>
+             
+             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+               <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                 <div className="relative">
+                   <svg className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                   <input type="text" placeholder="Search by name, phone, or tags..." className="pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-xl outline-none w-80" />
+                 </div>
+                 <div className="flex gap-2">
+                   <select className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none">
+                     <option>All Tags</option>
+                     <option>Diabetic</option>
+                     <option>Hypertension</option>
+                   </select>
+                 </div>
+               </div>
+               
+               <div className="p-6">
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                   {[1,2,3,4,5,6,7,8].map(i => (
+                     <div key={i} className="border border-slate-100 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                        <div className="w-16 h-16 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-xl mb-3">
+                          {String.fromCharCode(64 + i)}
+                        </div>
+                        <h4 className="font-bold text-slate-900 text-sm">Patient Name</h4>
+                        <p className="text-xs text-slate-500 mb-3">+91 98765 43210</p>
+                        <div className="flex flex-wrap gap-1 justify-center">
+                          <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">VIP</span>
+                          <span className="text-[10px] font-bold bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full">Cardiac</span>
+                        </div>
+                     </div>
+                   ))}
+                 </div>
+               </div>
+             </div>
+           </div>
+        )}
+
         {/* Placeholder Views for Future Tabs */}
-        {["telemedicine", "network", "payouts", "staff"].includes(activeTab) && (
+        {["telemedicine", "payouts", "staff"].includes(activeTab) && (
           <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-2xl border border-slate-200 shadow-sm mt-8">
              <div className="w-20 h-20 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mb-6">
                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -808,8 +881,8 @@ export default function DoctorOSDashboard() {
             </div>
           </div>
         )}
-        </>
-        )}
+          </div>
+        </div>
 
       </div>
 
