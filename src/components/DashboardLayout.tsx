@@ -48,13 +48,11 @@ export default function DashboardLayout({
 
   // Automatically expand the section that contains the activeTab on mount or when activeTab changes
   useEffect(() => {
-    // Only auto-expand if it's the User Portal, since other portals might not have accordion set up
-    if (roleName === "User Portal") {
-      for (const section of sectionedTabsList) {
-        if (section.tabs.some(t => t.id === activeTab)) {
-          setExpandedNavSection(section.section);
-          break;
-        }
+    // Auto-expand active tab section for all portals
+    for (const section of sectionedTabsList) {
+      if (section.tabs.some(t => t.id === activeTab)) {
+        setExpandedNavSection(section.section);
+        break;
       }
     }
   }, [activeTab, tabs, roleName]);
@@ -95,7 +93,7 @@ export default function DashboardLayout({
         </button>
         
         {sectionedTabsList.map((sectionObj, idx) => {
-          const isAccordion = roleName === "User Portal" && sectionObj.section !== "DEFAULT";
+          const isAccordion = sectionObj.section !== "DEFAULT";
           const isExpanded = expandedNavSection === sectionObj.section;
           
           let headerColorClass = "text-slate-500 hover:text-slate-900 hover:bg-slate-50";
@@ -314,82 +312,75 @@ export default function DashboardLayout({
             MAIN CONTENT AREA
            ========================================================================= */}
         <main className="flex-1 py-8 px-4 md:px-8 w-full max-w-5xl mx-auto overflow-x-hidden min-h-[calc(100vh-80px)]">
-          {activeTab === "home" ? (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+          {activeTab === "home" && !hideDefaultModulesList && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out mb-8">
               {homeWidget && (
                 <div className="mb-6">
                   {homeWidget}
                 </div>
               )}
               
-              {!hideDefaultModulesList && (
-                <>
-                  {/* Premium Hero Section */}
-                  <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-900 via-slate-900 to-teal-900 p-8 md:p-12 mb-8 overflow-hidden shadow-2xl">
-                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
-                    <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/30 rounded-full blur-[80px]"></div>
-                    <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[80px]"></div>
-                    
-                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                      <div>
-                        <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">Welcome to {roleName}</h2>
-                        <p className="text-indigo-200 text-lg max-w-xl">Your central command center for managing operations across the DehaPa Ecosystem.</p>
-                      </div>
-                      {userProfile?.image && (
-                        <div className="w-20 h-20 rounded-full border-4 border-white/20 shadow-lg overflow-hidden shrink-0 hidden md:block">
-                          <img src={userProfile.image} alt={userProfile.name} className="w-full h-full object-cover" />
-                        </div>
-                      )}
+              {/* Premium Hero Section */}
+              <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-900 via-slate-900 to-teal-900 p-8 md:p-12 mb-8 overflow-hidden shadow-2xl">
+                <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/30 rounded-full blur-[80px]"></div>
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[80px]"></div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div>
+                    <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">Welcome to {roleName}</h2>
+                    <p className="text-indigo-200 text-lg max-w-xl">Your central command center for managing operations across the DehaPa Ecosystem.</p>
+                  </div>
+                  {userProfile?.image && (
+                    <div className="w-20 h-20 rounded-full border-4 border-white/20 shadow-lg overflow-hidden shrink-0 hidden md:block">
+                      <img src={userProfile.image} alt={userProfile.name} className="w-full h-full object-cover" />
                     </div>
-                  </div>
+                  )}
+                </div>
+              </div>
 
-                  {/* Bento Grid Layout */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sectionedTabsList.map((sectionObj) => {
-                      const sectionName = sectionObj.section;
-                      const isDefault = sectionName === "DEFAULT";
-                      const displayName = isDefault ? "General Modules" : sectionName;
-                      
-                      const displayTabs = sectionObj.tabs.filter(t => t.id !== "home");
-                      if (displayTabs.length === 0) return null;
+              {/* Bento Grid Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sectionedTabsList.map((sectionObj) => {
+                  const sectionName = sectionObj.section;
+                  const isDefault = sectionName === "DEFAULT";
+                  const displayName = isDefault ? "General Modules" : sectionName;
+                  
+                  const displayTabs = sectionObj.tabs.filter(t => t.id !== "home");
+                  if (displayTabs.length === 0) return null;
 
-                      // For Bento Grid, we let the cards fill the grid.
-                      // We will render a title for the section if needed, or group them logically.
-                      // To keep the bento grid tight, we can wrap each section in a col-span block, or just render the tabs directly.
-                      return (
-                        <div key={sectionName} className="col-span-1 md:col-span-2 lg:col-span-3 mb-2">
-                          <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 ml-2">{displayName}</h3>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {displayTabs.map(tab => (
-                              <button 
-                                key={tab.id} 
-                                onClick={() => onTabChange(tab.id)} 
-                                className="group relative bg-white/60 backdrop-blur-xl p-6 rounded-3xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.12)] hover:-translate-y-1 transition-all duration-300 text-left overflow-hidden flex flex-col justify-between min-h-[160px]"
-                              >
-                                <div className="absolute -right-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl group-hover:bg-indigo-100 transition-colors"></div>
-                                
-                                <div className="relative z-10">
-                                  <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
-                                    {tab.icon}
-                                  </div>
-                                  <h4 className="font-bold text-slate-800 text-lg mb-1 group-hover:text-indigo-700 transition-colors">{tab.label}</h4>
-                                  <p className="text-sm text-slate-500 line-clamp-2">Manage settings and records for {tab.label.toLowerCase()}.</p>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
-          ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-6 md:p-8">
-              {children}
+                  return (
+                    <div key={sectionName} className="col-span-1 md:col-span-2 lg:col-span-3 mb-2">
+                      <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4 ml-2">{displayName}</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {displayTabs.map(tab => (
+                          <button 
+                            key={tab.id} 
+                            onClick={() => onTabChange(tab.id)} 
+                            className="group relative bg-white/60 backdrop-blur-xl p-6 rounded-3xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.12)] hover:-translate-y-1 transition-all duration-300 text-left overflow-hidden flex flex-col justify-between min-h-[160px]"
+                          >
+                            <div className="absolute -right-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl group-hover:bg-indigo-100 transition-colors"></div>
+                            
+                            <div className="relative z-10">
+                              <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                                {tab.icon}
+                              </div>
+                              <h4 className="font-bold text-slate-800 text-lg mb-1 group-hover:text-indigo-700 transition-colors">{tab.label}</h4>
+                              <p className="text-sm text-slate-500 line-clamp-2">Manage settings and records for {tab.label.toLowerCase()}.</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
+
+          <div className={activeTab === "home" ? "" : "animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-6 md:p-8"}>
+            {children}
+          </div>
         </main>
       </div>
 

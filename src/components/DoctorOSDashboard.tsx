@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
-import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/firestore';
+import { doc, getDocs, updateDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
@@ -25,11 +25,10 @@ export default function DoctorOSDashboard() {
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [settingsTab, setSettingsTab] = useState("identity");
 
-  // Mock Data for UI presentation
-  const mockQueue = [
-    { id: "Q1", name: "Rahul Sharma", age: 34, sex: "M", mode: "Walk-in", time: "10 mins ago", status: "Waiting", type: "offline", phone: "+91 9876543210" },
-    { id: "Q2", name: "Priya Singh", age: 28, sex: "F", mode: "Video Call", time: "5 mins ago", status: "In Lobby", type: "online", phone: "" }
-  ];
+  // Live Data State
+  const [queue, setQueue] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -82,6 +81,38 @@ export default function DoctorOSDashboard() {
     }, 1000);
     return () => clearTimeout(timeout);
   }, [entityData, entityDocId]);
+
+  // Live Firebase Listeners
+  useEffect(() => {
+    if (!entityData?.id) return;
+    
+    // Listen to live queue
+    const qQueue = query(collection(db, "queue"), where("doctorId", "==", entityData.id));
+    const unsubQueue = onSnapshot(qQueue, (snap) => {
+      const qData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setQueue(qData);
+    });
+
+    // Listen to live appointments
+    const qAppts = query(collection(db, "appointments"), where("doctorId", "==", entityData.id));
+    const unsubAppts = onSnapshot(qAppts, (snap) => {
+      const aData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAppointments(aData);
+    });
+
+    // Listen to live transactions
+    const qTrans = query(collection(db, "transactions"), where("doctorId", "==", entityData.id));
+    const unsubTrans = onSnapshot(qTrans, (snap) => {
+      const tData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setTransactions(tData);
+    });
+
+    return () => {
+      unsubQueue();
+      unsubAppts();
+      unsubTrans();
+    };
+  }, [entityData?.id]);
 
   const handleAcceptPing = (request: any) => {
     // Transform ping request into activeConsult queue item
@@ -148,6 +179,7 @@ export default function DoctorOSDashboard() {
       tabs={doctorTabs} 
       activeTab={activeTab} 
       onTabChange={handleTabChange}
+      hideDefaultModulesList={true}
       userProfile={{
         name: userName || "Dr. Name",
         email: userEmail || "",
@@ -167,7 +199,19 @@ export default function DoctorOSDashboard() {
         
         {activeTab === "home" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* The actual mockup structure for Home Tab */}
+            {/* Premium Welcome Banner */}
+            <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-900 via-slate-900 to-teal-900 p-8 md:p-12 overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
+              <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/30 rounded-full blur-[80px]"></div>
+              <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/30 rounded-full blur-[80px]"></div>
+              
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">Welcome back, {userName}</h2>
+                <p className="text-indigo-200 text-lg max-w-xl">Your active operations and live patient tracking are running smoothly.</p>
+              </div>
+            </div>
+
+            {/* Quick Action Widgets */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               
               {/* Live Queue Card */}
@@ -180,14 +224,14 @@ export default function DoctorOSDashboard() {
                 </div>
                 <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-4xl font-black text-slate-900 tracking-tighter">12</span>
+                    <span className="text-4xl font-black text-slate-900 tracking-tighter">{queue.length}</span>
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patients</span>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium">Avg Wait: <span className="font-bold text-slate-700">15 mins</span></p>
+                  <p className="text-sm text-slate-500 font-medium">{queue.length > 0 ? "Live Updates Active" : "No patients waiting"}</p>
                 </div>
                 <div className="p-4 bg-white border-t border-slate-100">
                   <button onClick={() => handleTabChange('queue')} className="w-full py-2.5 bg-[#FF3B30] hover:bg-[#E0352B] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-red-500/20 text-center">
-                    Start Consultation
+                    View Queue
                   </button>
                 </div>
               </div>
@@ -202,10 +246,10 @@ export default function DoctorOSDashboard() {
                 </div>
                 <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-4xl font-black text-slate-900 tracking-tighter">3</span>
+                    <span className="text-4xl font-black text-slate-900 tracking-tighter">{appointments.length}</span>
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Appts Today</span>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium truncate">Surgery at <span className="font-bold text-slate-700">4:00 PM</span></p>
+                  <p className="text-sm text-slate-500 font-medium truncate">{appointments.length > 0 ? "Live Appointments Syncing" : "Schedule is clear"}</p>
                 </div>
                 <div className="p-4 bg-white border-t border-slate-100">
                   <button onClick={() => handleTabChange('calendar')} className="w-full py-2.5 bg-[#007AFF] hover:bg-[#0062CC] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-blue-500/20 text-center">
@@ -306,24 +350,30 @@ export default function DoctorOSDashboard() {
               </div>
               
               <div className="divide-y divide-slate-100">
-                {mockQueue.map((patient, idx) => (
+                {queue.length === 0 ? (
+                  <div className="p-12 text-center text-slate-500">
+                    <svg className="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <p className="font-bold text-slate-600">No patients in queue</p>
+                    <p className="text-sm mt-1">The live queue is currently empty.</p>
+                  </div>
+                ) : queue.map((patient, idx) => (
                   <div key={patient.id} className="p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-slate-50 transition-colors">
                     <div className="hidden md:block col-span-1 text-slate-400 font-medium text-sm">#{idx + 1}</div>
                     
                     <div className="col-span-12 md:col-span-3 flex items-center w-full md:w-auto">
                       <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm mr-3 shrink-0">
-                        {patient.name.charAt(0)}
+                        {patient.name?.charAt(0) || "U"}
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900">{patient.name}</div>
-                        <div className="text-xs text-slate-500">{patient.age}y • {patient.sex} {patient.phone && `• ${patient.phone}`}</div>
+                        <div className="font-bold text-slate-900">{patient.name || "Unknown"}</div>
+                        <div className="text-xs text-slate-500">{patient.age || "--"}y • {patient.sex || "--"} {patient.phone && `• ${patient.phone}`}</div>
                       </div>
                     </div>
                     
                     <div className="col-span-12 md:col-span-2 w-full md:w-auto flex items-center gap-2">
                       <span className="md:hidden text-xs font-bold text-slate-400 uppercase">Mode:</span>
-                      <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${patient.type === 'online' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
-                        {patient.mode}
+                      <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${patient.type === 'online' || patient.mode === 'Video Call' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                        {patient.mode || "Walk-in"}
                       </span>
                     </div>
                     
@@ -331,7 +381,7 @@ export default function DoctorOSDashboard() {
                       <span className="md:hidden text-xs font-bold text-slate-400 uppercase">Wait:</span>
                       <div className="text-sm text-amber-600 font-medium flex items-center gap-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        {patient.time}
+                        {patient.time || "Just now"}
                       </div>
                     </div>
                     
@@ -339,12 +389,12 @@ export default function DoctorOSDashboard() {
                       <span className="md:hidden text-xs font-bold text-slate-400 uppercase">Status:</span>
                       <div className="flex items-center gap-1.5">
                         <span className={`w-2 h-2 rounded-full ${patient.status === 'In Lobby' ? 'bg-green-500 animate-pulse' : 'bg-amber-400'}`}></span>
-                        <span className="text-sm text-slate-600 font-medium">{patient.status}</span>
+                        <span className="text-sm text-slate-600 font-medium">{patient.status || "Waiting"}</span>
                       </div>
                     </div>
                     
                     <div className="col-span-12 md:col-span-2 w-full flex justify-end gap-2 flex-wrap md:flex-nowrap">
-                       {patient.mode === 'Walk-in' && (
+                       {(patient.mode === 'Walk-in' || !patient.mode) && (
                          <button className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors border border-slate-200 shadow-sm" onClick={() => window.print()}>
                            🖨️ Token
                          </button>
@@ -403,43 +453,27 @@ export default function DoctorOSDashboard() {
                  <div className="space-y-4 relative">
                     <div className="absolute left-16 top-0 bottom-0 w-px bg-slate-100"></div>
                     
-                    {/* Time block 1 */}
-                    <div className="flex gap-4 items-start relative z-10">
-                      <div className="w-16 text-right text-xs font-bold text-slate-400 pt-3">09:00 AM</div>
-                      <div className="flex-1 bg-teal-50 border border-teal-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-bold text-teal-900 text-sm">Morning Walk-in Clinic</h4>
-                          <span className="bg-teal-200 text-teal-800 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md">General</span>
-                        </div>
-                        <p className="text-xs text-teal-700">09:00 AM - 01:00 PM</p>
-                      </div>
-                    </div>
-
-                    {/* Time block 2 */}
-                    <div className="flex gap-4 items-start relative z-10">
-                      <div className="w-16 text-right text-xs font-bold text-slate-400 pt-3">01:00 PM</div>
-                      <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4 border-dashed">
-                        <div className="font-bold text-slate-500 text-sm">Lunch & Rest</div>
-                        <p className="text-xs text-slate-400">01:00 PM - 02:30 PM</p>
-                      </div>
-                    </div>
-
-                    {/* Time block 3 */}
-                    <div className="flex gap-4 items-start relative z-10">
-                      <div className="w-16 text-right text-xs font-bold text-slate-400 pt-3">03:00 PM</div>
-                      <div className="flex-1 bg-indigo-50 border border-indigo-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-bold text-indigo-900 text-sm">Scheduled Telemedicine</h4>
-                          <span className="bg-indigo-200 text-indigo-800 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md">Online</span>
-                        </div>
-                        <p className="text-xs text-indigo-700">03:00 PM - 05:00 PM</p>
-                        <div className="mt-3 flex -space-x-2">
-                           <div className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white"></div>
-                           <div className="w-6 h-6 rounded-full bg-slate-300 border-2 border-white"></div>
-                           <div className="w-6 h-6 rounded-full bg-slate-400 border-2 border-white flex items-center justify-center text-[8px] text-white font-bold">+4</div>
+                    {appointments.length === 0 ? (
+                      <div className="flex gap-4 items-start relative z-10 py-8">
+                        <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-8 border-dashed text-center text-slate-500">
+                          <p className="font-bold">No appointments scheduled</p>
+                          <p className="text-xs text-slate-400 mt-1">Your calendar is currently clear.</p>
                         </div>
                       </div>
-                    </div>
+                    ) : appointments.map((appt, idx) => (
+                      <div key={appt.id || idx} className="flex gap-4 items-start relative z-10">
+                        <div className="w-16 text-right text-xs font-bold text-slate-400 pt-3">{appt.time || "TBD"}</div>
+                        <div className={`flex-1 ${appt.type === 'online' ? 'bg-indigo-50 border border-indigo-100' : 'bg-teal-50 border border-teal-100'} rounded-xl p-4 shadow-sm`}>
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className={`font-bold ${appt.type === 'online' ? 'text-indigo-900' : 'text-teal-900'} text-sm`}>{appt.title || "Appointment"}</h4>
+                            <span className={`${appt.type === 'online' ? 'bg-indigo-200 text-indigo-800' : 'bg-teal-200 text-teal-800'} text-[10px] uppercase font-bold px-2 py-0.5 rounded-md`}>
+                              {appt.type || "General"}
+                            </span>
+                          </div>
+                          <p className={`text-xs ${appt.type === 'online' ? 'text-indigo-700' : 'text-teal-700'}`}>{appt.duration || "1 hr"}</p>
+                        </div>
+                      </div>
+                    ))}
                  </div>
                </div>
              </div>
@@ -480,28 +514,28 @@ export default function DoctorOSDashboard() {
              {/* Financial Summary Widgets */}
              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-                 <div>
-                   <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Patients</p>
-                   <h3 className="text-3xl font-bold text-slate-900">42</h3>
-                 </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Patients</p>
+                    <h3 className="text-3xl font-bold text-slate-900">{transactions.length}</h3>
+                  </div>
                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                  </div>
                </div>
                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-                 <div>
-                   <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Telemedicine</p>
-                   <h3 className="text-3xl font-bold text-slate-900">₹4,500</h3>
-                 </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Telemedicine</p>
+                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.filter(t => t.mode === 'Telemedicine').reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
+                  </div>
                  <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                    <span className="font-bold text-xl">₹</span>
                  </div>
                </div>
                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-                 <div>
-                   <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Offline Cash</p>
-                   <h3 className="text-3xl font-bold text-slate-900">₹10,200</h3>
-                 </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Offline Cash</p>
+                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.filter(t => t.mode !== 'Telemedicine').reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
+                  </div>
                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                  </div>
@@ -530,31 +564,29 @@ export default function DoctorOSDashboard() {
                      </tr>
                    </thead>
                    <tbody className="divide-y divide-slate-50">
-                     {[
-                       { reg: "REG-2026-001", time: "09:15 AM", name: "Rahul Sharma", mode: "Walk-in", status: "Completed", fee: "₹500" },
-                       { reg: "REG-2026-002", time: "09:40 AM", name: "Anita Desai", mode: "Walk-in", status: "Completed", fee: "₹500" },
-                       { reg: "REG-2026-003", time: "10:10 AM", name: "Priya Singh", mode: "Telemedicine", status: "Completed", fee: "Paid Online" },
-                       { reg: "REG-2026-004", time: "10:45 AM", name: "Vikram Mehta", mode: "Walk-in", status: "Completed", fee: "₹500" },
-                       { reg: "REG-2026-005", time: "11:20 AM", name: "Sunita Reddy", mode: "Walk-in", status: "Completed", fee: "₹500" },
-                     ].map((row, i) => (
-                       <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                         <td className="p-4 text-sm font-bold text-slate-600">{row.reg}</td>
-                         <td className="p-4 text-sm text-slate-500">{row.time}</td>
-                         <td className="p-4 text-sm font-bold text-slate-900">{row.name}</td>
-                         <td className="p-4">
-                           <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${row.mode === 'Telemedicine' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
-                             {row.mode}
-                           </span>
-                         </td>
-                         <td className="p-4">
-                           <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-                             {row.status}
-                           </span>
-                         </td>
-                         <td className="p-4 text-sm font-bold text-slate-600 text-right">{row.fee}</td>
-                       </tr>
-                     ))}
-                   </tbody>
+                      {transactions.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-8 text-center text-slate-500 font-medium">No transactions recorded yet.</td>
+                        </tr>
+                      ) : transactions.map((row, i) => (
+                        <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-4 text-sm font-bold text-slate-600">{row.reg || `REG-${i+1}`}</td>
+                          <td className="p-4 text-sm text-slate-500">{row.time || "TBD"}</td>
+                          <td className="p-4 text-sm font-bold text-slate-900">{row.name || "Unknown Patient"}</td>
+                          <td className="p-4">
+                            <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${row.mode === 'Telemedicine' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                              {row.mode || "Walk-in"}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                              {row.status || "Completed"}
+                            </span>
+                          </td>
+                          <td className="p-4 text-sm font-bold text-slate-600 text-right">₹{row.amount || "0"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
                  </table>
                </div>
              </div>
