@@ -158,11 +158,12 @@ export default function DoctorOSDashboard() {
 
   // Force Setup Mode
   useEffect(() => {
-    if (entityData?.id && !isFullySetup && activeTab !== "settings") {
+    // If not fully setup (which includes when entityData is empty), force settings
+    if (!isFullySetup && activeTab !== "settings") {
       setActiveTab("settings");
       setSettingsTab("identity");
     }
-  }, [entityData, isFullySetup, activeTab]);
+  }, [isFullySetup, activeTab]);
 
   const doctorTabs: DashboardTab[] = [
     {
