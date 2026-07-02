@@ -269,6 +269,65 @@ export default function DoctorOSDashboard() {
 
   if (!isMounted) return null;
 
+  const getLockedFeatureContent = (tabId: string) => {
+    switch (tabId) {
+      case 'queue':
+        return {
+          title: "Live Queue",
+          description: "Manage walk-ins and active consultations in real time. Track waiting times, issue digital tokens, and streamline your clinic flow.",
+          benefits: ["✓ Real-time patient tracking", "✓ Digital token generation", "✓ Walk-in management"]
+        };
+      case 'calendar':
+        return {
+          title: "Smart Calendar",
+          description: "Never miss a booking. Manage your time, block out surgery hours, and let patients book you directly.",
+          benefits: ["✓ Automated patient bookings", "✓ Surgery & vacation blocks", "✓ Daily schedule overview"]
+        };
+      case 'patients':
+        return {
+          title: "Patient EMR",
+          description: "Access complete medical histories. View past prescriptions, lab reports, and consultation notes securely.",
+          benefits: ["✓ Global health records", "✓ Secure data storage", "✓ Instant patient history"]
+        };
+      case 'register':
+        return {
+          title: "Digital Register",
+          description: "Automate your daily accounting. Track every consultation, offline payment, and generate instant reports.",
+          benefits: ["✓ Daily financial ledger", "✓ Exportable CSV reports", "✓ Cash & online tracking"]
+        };
+      case 'network':
+        return {
+          title: "My Network",
+          description: "Grow your patient base. Send bulk health updates, SMS broadcasts, and manage your connected patients.",
+          benefits: ["✓ Bulk SMS broadcasts", "✓ Patient CRM & tagging", "✓ Campaign management"]
+        };
+      case 'telemedicine':
+        return {
+          title: "Telemedicine Hub",
+          description: "Conduct secure video and audio consultations directly from your dashboard.",
+          benefits: ["✓ HD Video consultations", "✓ Secure chat & file sharing", "✓ Integrated billing"]
+        };
+      case 'payouts':
+        return {
+          title: "Payouts & Billing",
+          description: "Track your earnings. View pending settlements, platform revenue, and download tax reports easily.",
+          benefits: ["✓ Earnings dashboard", "✓ Automated bank settlements", "✓ Tax report generation"]
+        };
+      case 'staff':
+        return {
+          title: "Staff & Receptionists",
+          description: "Delegate tasks securely. Let your receptionist manage the queue and calendar while you focus on care.",
+          benefits: ["✓ Role-based access control", "✓ Receptionist accounts", "✓ Activity logging"]
+        };
+      default:
+        return {
+          title: "Premium Module",
+          description: "This powerful module is part of the DehaPa Premium Suite.",
+          benefits: ["✓ Premium features", "✓ Advanced analytics", "✓ Priority support"]
+        };
+    }
+  };
+
   return (
     <DashboardLayout 
       roleName="Doctor OS" 
@@ -296,21 +355,49 @@ export default function DoctorOSDashboard() {
         {/* TAB ROUTING */}
         
         <div className="relative w-full min-h-[600px]">
-          {/* Overlay Lock Screen - Sits on top of the actual UI to build temptation */}
-          {!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" && (
-            <div className="absolute inset-0 z-50 flex items-start justify-center pt-24 pb-10 bg-slate-50/60 backdrop-blur-[6px] rounded-[2rem]">
-              <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-lg text-center border border-slate-200 animate-in zoom-in-95 sticky top-24">
-                <div className="w-20 h-20 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm shadow-rose-200">
-                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+          {/* Top Banner & Educational Lock Overlay */}
+          {!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" && (() => {
+            const feature = getLockedFeatureContent(activeTab);
+            return (
+              <div className="absolute inset-0 z-50 flex flex-col items-center p-6 bg-slate-900/5 backdrop-blur-[6px] rounded-[2rem] overflow-hidden">
+                {/* The Red Top Banner as requested by user */}
+                <div className="w-full bg-gradient-to-r from-rose-500 to-red-600 rounded-2xl p-4 shadow-lg shadow-rose-500/20 text-white flex flex-col md:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500 relative overflow-hidden">
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                   <div className="flex items-center gap-4 relative z-10">
+                     <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0 backdrop-blur-md">
+                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                     </div>
+                     <div>
+                       <h3 className="font-black text-lg md:text-xl tracking-tight">Dehapa feature: {feature.title}</h3>
+                       <p className="text-rose-100 text-sm font-medium mt-0.5">This module will be unlocked when you complete the previous step.</p>
+                     </div>
+                   </div>
+                   <button onClick={() => setActiveTab('settings')} className="shrink-0 px-6 py-2.5 bg-white text-rose-600 hover:bg-rose-50 font-black rounded-xl shadow-sm transition-colors text-sm flex items-center gap-2 relative z-10">
+                     Resume Profile Setup <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md text-xs">{progress}%</span>
+                   </button>
                 </div>
-                <h3 className="text-3xl font-black text-slate-900 mb-3 font-display tracking-tight">Feature Locked</h3>
-                <p className="text-slate-500 mb-8 text-base">This powerful module is part of the DehaPa Premium Suite. Complete your Clinic Profile setup to 100% to unlock it and start managing your practice.</p>
-                <button onClick={() => setActiveTab('settings')} className="w-full py-4 bg-slate-900 text-white font-black text-lg rounded-xl shadow-xl shadow-slate-900/20 hover:scale-105 transition-transform flex items-center justify-center gap-3">
-                  Resume Profile Setup <span className="text-teal-400 bg-slate-800 px-2 py-0.5 rounded text-sm">{progress}%</span>
-                </button>
+                
+                {/* The Educational Spotlight Card (Floating in center over the blurred UI) */}
+                <div className="mt-auto mb-auto bg-white/95 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] max-w-2xl w-full border border-slate-200/60 animate-in zoom-in-95 duration-700 delay-150 relative z-10">
+                  <div className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest rounded-lg mb-4">Why use this?</div>
+                  <h2 className="text-3xl font-black text-slate-900 mb-4 font-display">How {feature.title} Works</h2>
+                  <p className="text-slate-600 text-lg leading-relaxed mb-8">{feature.description}</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    {feature.benefits.map((benefit, i) => (
+                      <div key={i} className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-3">
+                        <span className="text-sm font-bold text-slate-700 leading-tight">{benefit}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button onClick={() => setActiveTab('settings')} className="w-full py-4 bg-slate-900 text-white font-black text-lg rounded-xl shadow-xl shadow-slate-900/20 hover:scale-[1.02] transition-transform">
+                    Unlock {feature.title} Now
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
           
           <div className={`transition-all duration-500 ${!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" ? "pointer-events-none select-none opacity-50 grayscale-[0.3]" : ""}`}>
         
@@ -843,14 +930,53 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {/* Placeholder Views for Future Tabs */}
+        {/* Skeleton Temptation UIs for Unbuilt Tabs */}
         {["telemedicine", "payouts", "staff"].includes(activeTab) && (
-          <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-2xl border border-slate-200 shadow-sm mt-8">
-             <div className="w-20 h-20 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mb-6">
-               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-             </div>
-             <h2 className="text-2xl font-black text-slate-900 mb-2">Module Coming Soon</h2>
-             <p className="text-slate-500 max-w-md">This module is currently under active development. Check back later to access these features.</p>
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4">
+               <div>
+                 <div className="h-8 w-48 bg-slate-200 rounded-lg animate-pulse mb-2"></div>
+                 <div className="h-4 w-64 bg-slate-100 rounded-md animate-pulse"></div>
+               </div>
+               <div className="flex gap-3">
+                 <div className="h-10 w-24 bg-slate-100 rounded-xl animate-pulse"></div>
+                 <div className="h-10 w-32 bg-indigo-100 rounded-xl animate-pulse"></div>
+               </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <div className="h-4 w-24 bg-slate-100 rounded mb-4 animate-pulse"></div>
+                  <div className="h-10 w-32 bg-slate-200 rounded-lg animate-pulse mb-2"></div>
+                  <div className="h-3 w-40 bg-slate-50 rounded animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+               <div className="p-4 border-b border-slate-50 flex items-center justify-between">
+                 <div className="h-10 w-64 bg-slate-50 rounded-xl animate-pulse"></div>
+                 <div className="h-10 w-32 bg-slate-50 rounded-xl animate-pulse"></div>
+               </div>
+               <div className="p-0">
+                 {[1, 2, 3, 4, 5].map(i => (
+                   <div key={i} className="p-4 border-b border-slate-50 flex items-center justify-between hover:bg-slate-50/50">
+                     <div className="flex items-center gap-4">
+                       <div className="h-12 w-12 bg-slate-100 rounded-full animate-pulse"></div>
+                       <div>
+                         <div className="h-5 w-32 bg-slate-200 rounded mb-1 animate-pulse"></div>
+                         <div className="h-3 w-20 bg-slate-100 rounded animate-pulse"></div>
+                       </div>
+                     </div>
+                     <div className="flex items-center gap-3">
+                       <div className="h-6 w-20 bg-slate-100 rounded-full animate-pulse"></div>
+                       <div className="h-8 w-8 bg-slate-50 rounded-lg animate-pulse"></div>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+            </div>
           </div>
         )}
 
