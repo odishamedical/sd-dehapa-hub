@@ -189,7 +189,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f766e] via-[#0369a1] to-[#3730a3] text-white font-sans relative overflow-x-hidden flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-[#0a2e38] to-[#1e1b4b] text-white font-sans relative overflow-x-hidden flex flex-col">
       
       {/* Enhanced Background Orbs for Glassmorphism effect */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
