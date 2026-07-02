@@ -10,6 +10,54 @@ import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
 
+const faqData = [
+  {
+    category: "Configuration",
+    question: "What is the Clinic Profile page used for?",
+    answer: "This is the core onboarding page. You use this to fill out your public-facing details (Name, Specializations, Consultation Fees, Available Timings, and Bank Details). You must reach 100% completion to unlock premium features."
+  },
+  {
+    category: "Configuration",
+    question: "How do I add Staff & Receptionists?",
+    answer: "This page allows you to add secondary users (like a clinic receptionist) who can log in and manage the Live Queue or appointments on your behalf. It's the logical next step after completing your profile."
+  },
+  {
+    category: "Clinical Workspace",
+    question: "How does the Live Queue work?",
+    answer: "The Live Queue is your real-time patient token management system. You or your receptionist can use this to mark patients as 'In Consultation', 'Completed', or to add Walk-in patients. It acts as your digital waiting room."
+  },
+  {
+    category: "Clinical Workspace",
+    question: "When should I use the Smart Calendar?",
+    answer: "The Smart Calendar provides a view of all your upcoming advance bookings and appointments. Use it primarily for future planning, blocking out vacation days, or seeing tomorrow's workload."
+  },
+  {
+    category: "Clinical Workspace",
+    question: "What is the Telemedicine Hub?",
+    answer: "The Telemedicine Hub is your central command for conducting video and audio consultations directly with patients."
+  },
+  {
+    category: "Patient Management",
+    question: "What is the 'My Network' tool?",
+    answer: "My Network is a Customer Relationship Management (CRM) tool where you can view all patients who have connected with your profile via QR code or past visits. It helps you see your growing patient base and send bulk health updates."
+  },
+  {
+    category: "Patient Management",
+    question: "How do I use the Patient EMR?",
+    answer: "The Electronic Medical Records (EMR) system is a highly secure search engine for past medical records. You can pull up any patient's previous prescriptions, lab reports, and consultation notes, which is essential for follow-up visits."
+  },
+  {
+    category: "Financial & Admin",
+    question: "What is the Digital Register?",
+    answer: "The Digital Register is a logbook of every single transaction and completed consultation. It completely replaces the physical paper register clinics traditionally use to track daily and weekly patient volume."
+  },
+  {
+    category: "Financial & Admin",
+    question: "How do I track Payouts & Billing?",
+    answer: "The Payouts & Billing page is your financial dashboard where you track how much money you have earned through the DehaPa platform, pending settlements, and download tax reports."
+  }
+];
+
 export default function DoctorOSDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("home");
@@ -730,6 +778,34 @@ export default function DoctorOSDashboard() {
              </div>
              <h2 className="text-2xl font-black text-slate-900 mb-2">Module Coming Soon</h2>
              <p className="text-slate-500 max-w-md">This module is currently under active development. Check back later to access these features.</p>
+          </div>
+        )}
+
+        {/* FAQ View */}
+        {activeTab === "faq" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
+            <div className="mb-8 text-center pt-4">
+              <h2 className="text-3xl font-black text-slate-900 tracking-tight">Doctor OS Dashboard FAQ</h2>
+              <p className="text-slate-500 mt-2 text-lg">Everything you need to know about navigating your premium operating system.</p>
+            </div>
+            
+            <div className="space-y-4">
+              {faqData.map((faq, idx) => (
+                <details key={idx} className="group bg-slate-50 rounded-2xl border border-transparent hover:bg-slate-100 open:bg-white open:border-slate-200 transition-all shadow-sm">
+                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-slate-800 text-[15px]">
+                    {faq.question}
+                    <span className="transition-transform duration-300 group-open:rotate-180 bg-white group-open:bg-slate-100 p-1 rounded-full shadow-sm">
+                      <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </span>
+                  </summary>
+                  <div className="px-6 pb-6 text-slate-600 leading-relaxed text-sm animate-in fade-in duration-300">
+                    <div className="h-px bg-slate-100 w-full mb-4"></div>
+                    <p className="font-black text-slate-800 mb-2 uppercase text-[10px] tracking-widest text-teal-600 bg-teal-50 inline-block px-2 py-1 rounded-lg">{faq.category}</p>
+                    <p>{faq.answer}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
           </div>
         )}
         </>
