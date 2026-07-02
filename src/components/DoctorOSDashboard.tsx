@@ -1069,7 +1069,7 @@ export default function DoctorOSDashboard() {
       )}
 
       {/* GOD MODE TOGGLE (Option B) - Visible to everyone for now so admin can test */}
-      <div className="fixed bottom-6 right-6 z-[9999]">
+      <div className="fixed bottom-24 right-6 z-[9999]">
         <button 
           onClick={() => setGodMode(!godMode)}
           className={`flex items-center gap-2 px-4 py-3 rounded-full font-black text-sm shadow-2xl transition-all hover:scale-105 border-2 ${
