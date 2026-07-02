@@ -63,6 +63,7 @@ export default function DoctorOSDashboard() {
   const [activeTab, setActiveTab] = useState("home");
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
   const [isMounted, setIsMounted] = useState(false);
   const [showAddWalkIn, setShowAddWalkIn] = useState(false);
   const [activeConsult, setActiveConsult] = useState<any>(null);
@@ -92,6 +93,7 @@ export default function DoctorOSDashboard() {
       }
       setUserEmail(email);
       setUserName(name || email.split("@")[0]);
+      setUserRole(role || "");
       
       const hash = window.location.hash.replace("#", "");
       if (hash) setActiveTab(hash);
@@ -337,11 +339,13 @@ export default function DoctorOSDashboard() {
       onTabChange={handleTabChange}
       hideDefaultModulesList={true}
       userProfile={{
-        name: userName || "Dr. Name",
-        email: userEmail || "",
-        avatar: "",
-        isVerified: true
+        name: entityData?.name || userName || "Doctor Profile",
+        subtitle: entityData?.primarySpecialty || "Medical Professional",
+        image: entityData?.profileImageUrl || ""
       }}
+      godMode={godMode}
+      onToggleGodMode={() => setGodMode(!godMode)}
+      userRole={userRole}
     >
       <IncomingPingWidget 
         doctorId={entityData?.id || ""} 
@@ -1067,31 +1071,6 @@ export default function DoctorOSDashboard() {
       {activeConsult && (
         <DigitalRxPad patient={activeConsult} onClose={() => setActiveConsult(null)} />
       )}
-
-      {/* GOD MODE TOGGLE (Option B) - Visible to everyone for now so admin can test */}
-      <div className="fixed bottom-24 right-6 z-[9999]">
-        <button 
-          onClick={() => setGodMode(!godMode)}
-          className={`flex items-center gap-2 px-4 py-3 rounded-full font-black text-sm shadow-2xl transition-all hover:scale-105 border-2 ${
-            godMode 
-            ? "bg-amber-400 border-amber-300 text-amber-900 shadow-amber-400/30" 
-            : "bg-slate-900 border-slate-700 text-white shadow-slate-900/30"
-          }`}
-        >
-          {godMode ? (
-            <>
-              <svg className="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"></path></svg>
-              GOD MODE ON
-            </>
-          ) : (
-            <>
-              <svg className="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-              Enable God Mode
-            </>
-          )}
-        </button>
-      </div>
-
     </DashboardLayout>
   );
 }
