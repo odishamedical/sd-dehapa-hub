@@ -183,65 +183,46 @@ export default function DashboardLayout({
     setExpandedHomeSections(prev => {
       if (!prev[sectionName]) {
         return { [sectionName]: true };
-      }
-      return { ...prev, [sectionName]: false };
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-[#0a2e38] to-[#1e1b4b] text-white font-sans relative overflow-x-hidden flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
       
-      {/* Enhanced Background Orbs for Glassmorphism effect */}
+      {/* Enhanced Vibrant Background Orbs for Soft Glassmorphism effect */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] bg-teal-300/30 rounded-full blur-[140px] animate-float-slow"></div>
-        <div className="absolute top-[10%] right-[-10%] w-[40%] h-[60%] bg-indigo-300/30 rounded-full blur-[120px] animate-float-slow-reverse"></div>
-        <div className="absolute bottom-[-20%] left-[10%] w-[60%] h-[50%] bg-rose-300/20 rounded-full blur-[130px] animate-float-slow"></div>
-        <div className="absolute bottom-[20%] right-[20%] w-[30%] h-[40%] bg-amber-200/20 rounded-full blur-[100px] animate-float-slow-reverse delay-1000"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-400/30 blur-[100px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-400/20 blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-indigo-400/20 blur-[90px] animate-pulse" style={{animationDelay: '4s'}}></div>
       </div>
 
       {/* Main Header (Sticky) */}
-      <header className="sticky top-0 z-50 bg-white/5 backdrop-blur-2xl border-b border-white/10 shadow-lg px-4 md:px-6 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3 md:gap-4">
           <button 
             onClick={() => setIsMobileMenuOpen(true)} 
-            className="lg:hidden p-2 -ml-2 text-white/70 hover:bg-white/10 hover:text-white rounded-lg transition-colors"
+            className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 rounded-lg transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
           </button>
-          <button onClick={() => onTabChange("home")} className="text-xl md:text-2xl font-black text-white tracking-tight hover:text-teal-400 drop-shadow-md transition-colors">
+          <button onClick={() => onTabChange("home")} className="text-xl md:text-2xl font-black text-slate-900 tracking-tight hover:text-teal-600 transition-colors">
             DehaPa Portal
           </button>
         </div>
 
         <div className="flex items-center gap-4 md:gap-6">
           <button 
-            onClick={() => {
-              if (window.location.hash !== '#scan') {
-                window.location.hash = 'scan';
-              }
-            }}
-            className="hidden md:flex items-center gap-1.5 bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/30 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
+            onClick={() => { if (window.location.hash !== '#scan') window.location.hash = 'scan'; }}
+            className="hidden md:flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 border border-teal-500/20 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             Scan QR
           </button>
 
           <button 
             onClick={() => setIsHelpOpen(true)}
-            className="hidden md:flex items-center gap-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
+            className="hidden md:flex items-center gap-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 border border-indigo-500/20 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Help & Guide
+            Help
           </button>
           
-          <button 
-            onClick={() => setIsHelpOpen(true)}
-            className="md:hidden p-2 text-indigo-400 hover:bg-indigo-500/20 rounded-lg transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          </button>
-
-          <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-white transition-colors">
+          <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-slate-900 transition-colors">
             Sign Out
           </button>
         </div>
@@ -253,45 +234,40 @@ export default function DashboardLayout({
             LEFT SIDEBAR (Glassmorphism)
            ========================================================================= */}
         <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
-          <div className="sticky top-[100px] bg-white/10 backdrop-blur-3xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-white/20 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
+          <div className="sticky top-[100px] bg-white/60 backdrop-blur-3xl p-6 rounded-[2rem] shadow-lg border border-white/80 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             {userProfile && (
-              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/10">
+              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
                 {userProfile.image ? (
-                  <img src={userProfile.image} alt={userProfile.name} className="w-12 h-12 rounded-full object-cover shrink-0 border border-white/20" />
+                  <img src={userProfile.image} alt={userProfile.name} className="w-12 h-12 rounded-full object-cover shrink-0 border border-white" />
                 ) : (
-                  <div className="w-12 h-12 bg-teal-500/20 border border-teal-500/30 text-teal-300 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
+                  <div className="w-12 h-12 bg-teal-100 border border-teal-200 text-teal-700 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
                     {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                 )}
                 <div className="overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-1 group" onClick={() => setShowQRModal(true)}>
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-white truncate group-hover:text-teal-400 transition-colors" title={userProfile.name}>{userProfile.name}</h3>
-                    <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-400 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+                    <h3 className="font-bold text-slate-900 truncate group-hover:text-teal-600 transition-colors">{userProfile.name}</h3>
                   </div>
-                  <p className="text-xs text-slate-400 truncate mt-0.5" title={userProfile.subtitle}>{userProfile.subtitle}</p>
+                  <p className="text-xs text-slate-500 truncate mt-0.5">{userProfile.subtitle}</p>
                 </div>
               </div>
             )}
 
             {renderNavLinks(false)}
 
-            {/* Noticeable FAQ Button at bottom of sidebar */}
-            <div className="mt-8 pt-6 border-t border-white/10">
+            <div className="mt-8 pt-6 border-t border-slate-200/50">
               <button 
                 onClick={() => onTabChange('faq')}
-                className={`w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm ${activeTab === 'faq' ? 'bg-blue-600/90 text-white shadow-blue-500/30 shadow-md transform scale-[1.02] border border-blue-500/50' : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-blue-600 hover:text-white hover:border-blue-500 hover:shadow-blue-500/30 hover:shadow-lg hover:scale-[1.02]'}`}
+                className={`w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm ${activeTab === 'faq' ? 'bg-blue-600 text-white shadow-blue-200 shadow-md' : 'bg-white/50 text-slate-600 border border-slate-200/50 hover:bg-blue-600 hover:text-white'}`}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Dashboard FAQ
               </button>
               
-              {/* GOD MODE TOGGLE */}
               {userRole === 'super_admin' && onToggleGodMode && (
                 <button 
                   onClick={onToggleGodMode}
-                  className={`mt-4 w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm border ${godMode ? 'bg-red-500 text-white border-red-500 shadow-red-200 shadow-md' : 'bg-white text-red-500 border-red-200 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-red-200 hover:shadow-lg'}`}
+                  className={`mt-4 w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm border ${godMode ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-200 hover:bg-red-500 hover:text-white'}`}
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd"></path></svg>
                   {godMode ? 'Disable God Mode' : 'Enable God Mode'}
                 </button>
               )}
@@ -305,27 +281,12 @@ export default function DashboardLayout({
         {isMobileMenuOpen && (
           <div className="fixed inset-0 z-[100] lg:hidden flex">
             <div 
-              className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" 
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" 
               onClick={() => setIsMobileMenuOpen(false)}
             ></div>
-            <div className="relative w-72 max-w-sm bg-slate-900/90 backdrop-blur-3xl border-r border-white/10 h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
-              <div className="p-6 border-b border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {userProfile?.image ? (
-                    <img src={userProfile.image} alt={userProfile.name} className="w-10 h-10 rounded-full object-cover shrink-0 border border-white/20" />
-                  ) : (
-                    <div className="w-10 h-10 bg-teal-500/20 border border-teal-500/30 text-teal-300 rounded-full flex items-center justify-center font-bold text-lg shrink-0">
-                      {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
-                    </div>
-                  )}
-                  <div className="overflow-hidden flex-1 group" onClick={() => setShowQRModal(true)}>
-                    <div className="flex items-center justify-between cursor-pointer">
-                      <h3 className="font-bold text-white truncate text-sm group-hover:text-teal-400 transition-colors">{userProfile?.name || roleName}</h3>
-                      <svg className="w-5 h-5 text-slate-400 group-hover:text-teal-400 transition-colors shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-                    </div>
-                  </div>
-                </div>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg">
+            <div className="relative w-72 max-w-sm bg-white/90 backdrop-blur-3xl border-r border-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
+              <div className="p-6 border-b border-slate-200/50 flex items-center justify-between">
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-200 rounded-lg">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
               </div>
@@ -430,7 +391,7 @@ export default function DashboardLayout({
             </div>
           )}
 
-          <div className={activeTab === "home" ? "" : "animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white/10 backdrop-blur-3xl rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-white/20 overflow-hidden p-6 md:p-8"}>
+          <div className={activeTab === "home" ? "" : "animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white/70 backdrop-blur-3xl rounded-2xl shadow-xl border border-white/80 overflow-hidden p-6 md:p-8"}>
             {children}
           </div>
         </main>
