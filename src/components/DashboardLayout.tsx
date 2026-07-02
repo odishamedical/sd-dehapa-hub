@@ -247,7 +247,7 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      <div className="flex flex-1 relative z-10 w-full max-w-[1400px] mx-auto">
+      <div className="flex flex-1 relative z-40 w-full max-w-[1400px] mx-auto">
         
         {/* =========================================================================
             LEFT SIDEBAR (Glassmorphism)
