@@ -44,18 +44,7 @@ export default function DashboardLayout({
   const [showQRModal, setShowQRModal] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [origin, setOrigin] = useState("https://dehapa.com");
-  const [expandedNavSection, setExpandedNavSection] = useState<string | null>(null);
 
-  // Automatically expand the section that contains the activeTab on mount or when activeTab changes
-  useEffect(() => {
-    // Auto-expand active tab section for all portals
-    for (const section of sectionedTabsList) {
-      if (section.tabs.some(t => t.id === activeTab)) {
-        setExpandedNavSection(section.section);
-        break;
-      }
-    }
-  }, [activeTab, tabs, roleName]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -93,49 +82,15 @@ export default function DashboardLayout({
         </button>
         
         {sectionedTabsList.map((sectionObj, idx) => {
-          const isAccordion = sectionObj.section !== "DEFAULT";
-          const isExpanded = expandedNavSection === sectionObj.section;
-          
-          let headerColorClass = "text-slate-500 hover:text-slate-900 hover:bg-slate-50";
-          let headerTextClass = "text-[10px] uppercase tracking-widest";
-          let headerBgClass = "";
-          
-          if (isAccordion) {
-            headerTextClass = "text-xs font-black uppercase tracking-wider";
-            if (sectionObj.section === "Personal Details") {
-              headerColorClass = "text-rose-600 hover:text-rose-800";
-              headerBgClass = "bg-rose-50 hover:bg-rose-100";
-            } else if (sectionObj.section === "Healthcare & Consults") {
-              headerColorClass = "text-red-600 hover:text-red-800";
-              headerBgClass = "bg-red-50 hover:bg-red-100";
-            } else if (sectionObj.section === "Medical Records") {
-              headerColorClass = "text-emerald-600 hover:text-emerald-800";
-              headerBgClass = "bg-emerald-50 hover:bg-emerald-100";
-            } else if (sectionObj.section === "Network & Financials") {
-              headerColorClass = "text-blue-600 hover:text-blue-800";
-              headerBgClass = "bg-blue-50 hover:bg-blue-100";
-            }
-          }
-          
           return (
           <React.Fragment key={sectionObj.section}>
             {sectionObj.section !== "DEFAULT" && (
-              <div className={`pt-4 pb-2 ${idx > 0 ? 'mt-2 border-t border-slate-200/50' : ''}`}>
-                {isAccordion ? (
-                  <button 
-                    onClick={() => setExpandedNavSection(isExpanded ? null : sectionObj.section)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all shadow-sm ${headerColorClass} ${headerBgClass}`}
-                  >
-                    <span className={headerTextClass}>{sectionObj.section}</span>
-                    <svg className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                  </button>
-                ) : (
-                  <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400 py-1">{sectionObj.section}</p>
-                )}
+              <div className={`pt-6 pb-2 ${idx > 0 ? 'mt-2 border-t border-slate-200/50' : ''}`}>
+                <p className="px-4 text-[10px] font-black uppercase tracking-widest text-slate-400 py-1">{sectionObj.section}</p>
               </div>
             )}
             
-            <div className={`space-y-1.5 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0') : ''}`}>
+            <div className="space-y-1.5 mt-1">
               {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
