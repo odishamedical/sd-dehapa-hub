@@ -26,7 +26,6 @@ interface DashboardLayoutProps {
     uid?: string;
   };
   homeWidget?: React.ReactNode;
-  homeWidget?: React.ReactNode;
   hideDefaultModulesList?: boolean;
   godMode?: boolean;
   onToggleGodMode?: () => void;
@@ -39,7 +38,6 @@ export default function DashboardLayout({
   activeTab,
   onTabChange,
   children,
-  headerTitle,
   headerTitle,
   userProfile,
   homeWidget,
