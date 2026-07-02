@@ -156,14 +156,8 @@ export default function DoctorOSDashboard() {
   const progress = getProfileProgress();
   const isFullySetup = progress >= 100 || (entityData && entityData.verified);
 
-  // Force Setup Mode
-  useEffect(() => {
-    // If not fully setup (which includes when entityData is empty), force settings
-    if (!isFullySetup && activeTab !== "settings") {
-      setActiveTab("settings");
-      setSettingsTab("identity");
-    }
-  }, [isFullySetup, activeTab]);
+  // Let users freely navigate the sidebar to see the locked features as teasers.
+  // We handle the lockout in the main render block.
 
   const doctorTabs: DashboardTab[] = [
     {
@@ -222,7 +216,8 @@ export default function DoctorOSDashboard() {
     }
   ];
 
-  const availableTabs = isFullySetup ? doctorTabs : doctorTabs.filter(t => t.id === "settings");
+  // Show all tabs so the user knows what features exist!
+  const availableTabs = doctorTabs;
 
   if (!isMounted) return null;
 
@@ -249,6 +244,22 @@ export default function DoctorOSDashboard() {
       <div className="max-w-7xl space-y-6 pb-20 md:pb-8">
         
         {/* TAB ROUTING */}
+        
+        {!isFullySetup && activeTab !== "settings" && activeTab !== "home" ? (
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white/50 backdrop-blur-xl rounded-[2rem] border border-slate-200/60 shadow-xl shadow-slate-200/20 mt-6 animate-in zoom-in-95 duration-500">
+             <div className="w-24 h-24 bg-gradient-to-br from-rose-500 to-pink-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-rose-500/30 transform -rotate-6">
+               <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+             </div>
+             <h2 className="text-4xl font-black text-slate-900 mb-4 tracking-tight font-display">Feature Locked</h2>
+             <p className="text-slate-500 max-w-lg text-lg mb-10 leading-relaxed font-medium">
+               This module is part of the DehaPa Premium Suite. You need to complete your Clinic Profile setup to 100% to unlock your full operating system.
+             </p>
+             <button onClick={() => setActiveTab('settings')} className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl shadow-xl shadow-slate-900/20 transition-all hover:scale-105 active:scale-95 text-lg flex items-center gap-3">
+               Resume Profile Setup <span className="text-teal-400 bg-slate-800 px-3 py-1 rounded-lg text-sm">{progress}%</span>
+             </button>
+          </div>
+        ) : (
+          <>
         
         {activeTab === "home" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -720,6 +731,8 @@ export default function DoctorOSDashboard() {
              <h2 className="text-2xl font-black text-slate-900 mb-2">Module Coming Soon</h2>
              <p className="text-slate-500 max-w-md">This module is currently under active development. Check back later to access these features.</p>
           </div>
+        )}
+        </>
         )}
 
       </div>
