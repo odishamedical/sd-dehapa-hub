@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface DigitalRxPadProps {
   patient: any;
@@ -11,6 +12,15 @@ export default function DigitalRxPad({ patient, onClose }: DigitalRxPadProps) {
   const [step, setStep] = useState(1);
   const [isPiPExpanded, setIsPiPExpanded] = useState(true);
   const totalSteps = 4;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const handleNext = () => {
     if (step < totalSteps) setStep(step + 1);
@@ -20,8 +30,10 @@ export default function DigitalRxPad({ patient, onClose }: DigitalRxPadProps) {
     if (step > 1) setStep(step - 1);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-slate-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+  if (!patient || !mounted) return null;
+
+  const content = (
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-slate-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
       
       {/* HEADER */}
       <div className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shadow-sm z-20 shrink-0">
@@ -329,4 +341,6 @@ export default function DigitalRxPad({ patient, onClose }: DigitalRxPadProps) {
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }
