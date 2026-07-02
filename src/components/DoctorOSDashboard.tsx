@@ -138,45 +138,97 @@ export default function DoctorOSDashboard() {
     window.history.pushState(null, "", `#${id}`);
   };
 
+  // Calculate Profile Completion
+  const getProfileProgress = () => {
+    if (!entityData || !entityData.id) return 0;
+    let completed = 0;
+    const requiredFields = [
+      'name', 'primarySpecialty', 'clinicName', 'phone', 
+      'state', 'district', 'block', 'address',
+      'walkInFee', 'videoFee'
+    ];
+    requiredFields.forEach(field => {
+      if (entityData[field]) completed++;
+    });
+    return Math.round((completed / requiredFields.length) * 100);
+  };
+  
+  const progress = getProfileProgress();
+  const isFullySetup = progress >= 100 || (entityData && entityData.verified);
+
+  // Force Setup Mode
+  useEffect(() => {
+    if (entityData?.id && !isFullySetup && activeTab !== "settings") {
+      setActiveTab("settings");
+      setSettingsTab("identity");
+    }
+  }, [entityData, isFullySetup, activeTab]);
+
   const doctorTabs: DashboardTab[] = [
     {
       id: "queue",
       label: "Live Queue",
-      section: "Workspace",
+      section: "Clinical Workspace",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
       id: "calendar",
       label: "Smart Calendar",
-      section: "Workspace",
+      section: "Clinical Workspace",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "telemedicine",
+      label: "Telemedicine Hub",
+      section: "Clinical Workspace",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "network",
+      label: "My Network",
+      section: "Patient Management",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
     },
     {
       id: "patients",
       label: "Patient EMR",
-      section: "Practice Management",
+      section: "Patient Management",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
     },
     {
       id: "register",
       label: "Digital Register",
-      section: "Practice Management",
+      section: "Financial & Admin",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+    },
+    {
+      id: "payouts",
+      label: "Payouts & Billing",
+      section: "Financial & Admin",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     },
     {
       id: "settings",
       label: "Clinic Profile",
       section: "Configuration",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+    },
+    {
+      id: "staff",
+      label: "Staff & Receptionists",
+      section: "Configuration",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
     }
   ];
+
+  const availableTabs = isFullySetup ? doctorTabs : doctorTabs.filter(t => t.id === "settings");
 
   if (!isMounted) return null;
 
   return (
     <DashboardLayout 
       roleName="Doctor OS" 
-      tabs={doctorTabs} 
+      tabs={availableTabs} 
       activeTab={activeTab} 
       onTabChange={handleTabChange}
       hideDefaultModulesList={true}
@@ -595,14 +647,43 @@ export default function DoctorOSDashboard() {
 
         {activeTab === "settings" && (
            <div className="space-y-6">
+             {!isFullySetup && (
+               <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-100 p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-center">
+                 <div className="w-20 h-20 shrink-0">
+                   {/* Circular Progress */}
+                   <svg viewBox="0 0 36 36" className="w-full h-full text-teal-500">
+                      <path className="text-teal-100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path className="text-teal-500 transition-all duration-1000 ease-out" strokeDasharray={`${progress}, 100`} strokeWidth="3" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                   </svg>
+                   <div className="absolute inset-0 flex items-center justify-center font-bold text-teal-800 text-sm mt-6 ml-6">{progress}%</div>
+                 </div>
+                 <div className="flex-1">
+                   <h2 className="text-xl font-black text-slate-900 mb-1">Welcome to DehaPa, {userName}! Let's get you set up.</h2>
+                   <p className="text-slate-600 text-sm">Please complete your clinic profile and pricing setup. Once you reach 100%, your public profile will go live and your dashboard features will unlock.</p>
+                 </div>
+               </div>
+             )}
+
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
                  <h1 className="text-2xl font-bold text-slate-900 font-display">Clinic Profile Builder</h1>
                  <p className="text-slate-500 text-sm mt-1">Configure your public page and payouts</p>
                </div>
-               <div className="flex gap-2 items-center">
+               <div className="flex gap-4 items-center">
                   {saveStatus === "saving" && <span className="text-sm font-bold text-teal-600 animate-pulse">Autosaving...</span>}
                   {saveStatus === "saved" && <span className="text-sm font-bold text-emerald-500">✓ Saved</span>}
+                  
+                  {isFullySetup && !entityData?.verified && (
+                    <button onClick={() => setEntityData({...entityData, verified: true})} className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm transition-colors shadow-sm">
+                      Publish Profile
+                    </button>
+                  )}
+                  {entityData?.verified && (
+                    <div className="px-4 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold uppercase flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Live / Published
+                    </div>
+                  )}
                </div>
              </div>
              
@@ -612,8 +693,6 @@ export default function DoctorOSDashboard() {
                  { id: "professional", label: "Professional Bio" },
                  { id: "consultation_setup", label: "Consultations" },
                  { id: "location", label: "Clinic Location" },
-                 { id: "bank_details", label: "Bank & Payouts" },
-                 { id: "staff", label: "Staff & Receptionist" }
                ].map(tab => (
                  <button 
                    key={tab.id}
@@ -629,6 +708,17 @@ export default function DoctorOSDashboard() {
                <DoctorV2Forms activeTab={settingsTab} entityData={entityData} setEntityData={setEntityData} />
              </div>
            </div>
+        )}
+
+        {/* Placeholder Views for Future Tabs */}
+        {["telemedicine", "network", "payouts", "staff"].includes(activeTab) && (
+          <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-2xl border border-slate-200 shadow-sm mt-8">
+             <div className="w-20 h-20 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mb-6">
+               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+             </div>
+             <h2 className="text-2xl font-black text-slate-900 mb-2">Module Coming Soon</h2>
+             <p className="text-slate-500 max-w-md">This module is currently under active development. Check back later to access these features.</p>
+          </div>
         )}
 
       </div>
