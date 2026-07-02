@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
-import { doc, getDocs, updateDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
+import { doc, getDocs, updateDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
@@ -68,6 +68,13 @@ export default function DoctorOSDashboard() {
   const [showAddWalkIn, setShowAddWalkIn] = useState(false);
   const [activeConsult, setActiveConsult] = useState<any>(null);
   const [godMode, setGodMode] = useState(false);
+  
+  // Walk-in form state
+  const [walkInName, setWalkInName] = useState("");
+  const [walkInAge, setWalkInAge] = useState("");
+  const [walkInSex, setWalkInSex] = useState("M");
+  const [walkInPhone, setWalkInPhone] = useState("");
+  const [dateFilter, setDateFilter] = useState(new Date().toISOString().split('T')[0]);
 
   // Entity state for Profile Builder & Vault
   const [entityData, setEntityData] = useState<any>({});
@@ -182,6 +189,57 @@ export default function DoctorOSDashboard() {
     // Switch to queue tab and open rx pad immediately with video shell
     setActiveTab("queue");
     setActiveConsult(newPatient);
+  };
+
+  const handleAddWalkIn = async () => {
+    if (!walkInName || !entityData?.id) return;
+    try {
+      await addDoc(collection(db, "queue"), {
+        doctorId: entityData.id,
+        name: walkInName,
+        age: walkInAge || "--",
+        sex: walkInSex,
+        phone: walkInPhone || "",
+        mode: "Walk-in",
+        type: "offline",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: "Waiting",
+        createdAt: serverTimestamp()
+      });
+      setShowAddWalkIn(false);
+      setWalkInName("");
+      setWalkInAge("");
+      setWalkInSex("M");
+      setWalkInPhone("");
+    } catch (err) {
+      console.error("Error adding walk-in:", err);
+    }
+  };
+
+  const handleSaveRx = async (patient: any) => {
+    if (!entityData?.id) return;
+    try {
+      const fee = patient.type === "online" ? (entityData.videoFee || 500) : (entityData.walkInFee || 500);
+      await addDoc(collection(db, "transactions"), {
+        doctorId: entityData.id,
+        patientId: patient.id || "walk-in",
+        name: patient.name || "Unknown Patient",
+        amount: Number(fee),
+        method: patient.type === "online" ? "online" : "cash",
+        mode: patient.mode || "Walk-in",
+        status: "Completed",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toISOString().split('T')[0],
+        createdAt: serverTimestamp()
+      });
+
+      if (patient.id && !patient.id.startsWith("demo")) {
+        await deleteDoc(doc(db, "queue", patient.id));
+      }
+    } catch (e) {
+      console.error("Error saving rx:", e);
+    }
+    setActiveConsult(null);
   };
 
   const handleTabChange = (id: string) => {
@@ -558,7 +616,16 @@ export default function DoctorOSDashboard() {
                        <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-white/70 hover:bg-white text-slate-700 text-xs font-bold rounded-lg transition-colors border border-slate-200 shadow-sm">
                          Vitals
                        </button>
-                       <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-[#40807b] hover:bg-[#326662] text-white text-xs font-bold rounded-lg shadow-md transition-colors">
+                       <button onClick={async () => {
+                         try {
+                           if (patient.id && !patient.id.startsWith("demo")) {
+                             await updateDoc(doc(db, 'queue', patient.id), { status: "In Consultation" });
+                           }
+                         } catch (e) {
+                           console.error(e);
+                         }
+                         setActiveConsult(patient);
+                       }} className="px-3 py-1.5 bg-[#40807b] hover:bg-[#326662] text-white text-xs font-bold rounded-lg shadow-md transition-colors">
                          Consult
                        </button>
                     </div>
@@ -672,7 +739,7 @@ export default function DoctorOSDashboard() {
                <div className="bg-white/70 p-6 rounded-2xl shadow-sm border border-white/80 flex items-center justify-between backdrop-blur-xl">
                   <div>
                     <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Total Patients</p>
-                    <h3 className="text-3xl font-bold text-slate-900">{transactions.length}</h3>
+                    <h3 className="text-3xl font-bold text-slate-900">{transactions.filter(t => t.date === dateFilter || !t.date).length}</h3>
                   </div>
                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -681,7 +748,7 @@ export default function DoctorOSDashboard() {
                <div className="bg-white/70 p-6 rounded-2xl shadow-sm border border-white/80 flex items-center justify-between backdrop-blur-xl">
                   <div>
                     <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Total Revenue</p>
-                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
+                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.filter(t => t.date === dateFilter || !t.date).reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
                   </div>
                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -690,7 +757,7 @@ export default function DoctorOSDashboard() {
                <div className="bg-white/70 p-6 rounded-2xl shadow-sm border border-white/80 flex items-center justify-between backdrop-blur-xl">
                   <div>
                     <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Cash Collection</p>
-                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.filter(t => t.method === 'cash').reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
+                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.filter(t => (t.date === dateFilter || !t.date) && t.method === 'cash').reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
                   </div>
                  <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -700,7 +767,7 @@ export default function DoctorOSDashboard() {
 
              <div className="bg-white/70 border border-white/80 rounded-2xl shadow-lg overflow-hidden backdrop-blur-xl mt-6">
                <div className="p-4 border-b border-slate-200/50 flex items-center justify-between bg-white/40">
-                 <input type="date" className="bg-white/50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-900 outline-none focus:border-teal-500 shadow-sm" defaultValue="2026-07-02" />
+                 <input type="date" value={dateFilter} onChange={e => setDateFilter(e.target.value)} className="bg-white/50 border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-900 outline-none focus:border-teal-500 shadow-sm" />
                  <div className="relative">
                    <svg className="w-4 h-4 absolute left-3 top-2.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                    <input type="text" placeholder="Search patient..." className="pl-9 pr-4 py-1.5 text-sm bg-white/50 border border-slate-200 text-slate-900 rounded-lg outline-none focus:border-teal-500 w-64 placeholder:text-slate-500 shadow-sm" />
@@ -719,17 +786,17 @@ export default function DoctorOSDashboard() {
                      </tr>
                    </thead>
                    <tbody className="divide-y divide-slate-200/50">
-                      {transactions.length === 0 ? (
+                      {transactions.filter(t => t.date === dateFilter || !t.date).length === 0 ? (
                         <tr>
                           <td colSpan={6} className="p-8 text-center text-slate-500 font-medium">No transactions recorded yet.</td>
                         </tr>
-                      ) : transactions.map((row, i) => (
+                      ) : transactions.filter(t => t.date === dateFilter || !t.date).map((row, i) => (
                         <tr key={i} className="hover:bg-white/40 transition-colors">
                           <td className="p-4 text-sm font-bold text-slate-600">{row.reg || `REG-${i+1}`}</td>
                           <td className="p-4 text-sm text-slate-500">{row.time || "TBD"}</td>
                           <td className="p-4 text-sm font-bold text-slate-900">{row.name || "Unknown Patient"}</td>
                           <td className="p-4">
-                            <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${row.mode === 'Telemedicine' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                            <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${row.mode === 'Telemedicine' || row.mode === 'Video Call' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
                               {row.mode || "Walk-in"}
                             </span>
                           </td>
@@ -987,19 +1054,19 @@ export default function DoctorOSDashboard() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Full Name</label>
-                  <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="Patient Name" />
+                  <input type="text" value={walkInName} onChange={e => setWalkInName(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="Patient Name" />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                    <div>
                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Age</label>
-                     <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. 34" />
+                     <input type="text" value={walkInAge} onChange={e => setWalkInAge(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. 34" />
                    </div>
                    <div>
                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Sex</label>
-                     <select className="w-full bg-white border border-slate-200 rounded-xl px-2 py-3 text-slate-900 focus:border-teal-500 outline-none">
-                       <option>M</option>
-                       <option>F</option>
-                       <option>O</option>
+                     <select value={walkInSex} onChange={e => setWalkInSex(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-2 py-3 text-slate-900 focus:border-teal-500 outline-none">
+                       <option value="M">M</option>
+                       <option value="F">F</option>
+                       <option value="O">O</option>
                      </select>
                    </div>
                 </div>
@@ -1008,14 +1075,14 @@ export default function DoctorOSDashboard() {
             
             <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
               <button onClick={() => setShowAddWalkIn(false)} className="px-5 py-2.5 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors">Cancel</button>
-              <button onClick={() => setShowAddWalkIn(false)} className="px-5 py-2.5 bg-teal-600 text-white font-bold rounded-xl shadow-sm shadow-teal-200 hover:bg-teal-700 transition-colors">Add to Queue</button>
+              <button onClick={handleAddWalkIn} disabled={!walkInName} className="px-5 py-2.5 bg-teal-600 text-white font-bold rounded-xl shadow-sm shadow-teal-200 hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Add to Queue</button>
             </div>
           </div>
         </div>
       )}
       {/* Digital Rx Pad Overlay */}
       {activeConsult && (
-        <DigitalRxPad patient={activeConsult} onClose={() => setActiveConsult(null)} />
+        <DigitalRxPad patient={activeConsult} onClose={() => setActiveConsult(null)} onSave={handleSaveRx} />
       )}
     </DashboardLayout>
   );

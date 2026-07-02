@@ -6,9 +6,10 @@ import { createPortal } from 'react-dom';
 interface DigitalRxPadProps {
   patient: any;
   onClose: () => void;
+  onSave?: (patient: any) => void;
 }
 
-export default function DigitalRxPad({ patient, onClose }: DigitalRxPadProps) {
+export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadProps) {
   const [step, setStep] = useState(1);
   const totalSteps = 4;
   const [mounted, setMounted] = useState(false);
@@ -302,7 +303,7 @@ export default function DigitalRxPad({ patient, onClose }: DigitalRxPadProps) {
               </div>
 
               <button 
-                onClick={step === totalSteps ? onClose : handleNext}
+                onClick={step === totalSteps ? () => onSave ? onSave(patient) : onClose() : handleNext}
                 className="px-6 py-3 bg-teal-500/90 hover:bg-teal-500 backdrop-blur-md border border-teal-400/50 text-white rounded-xl font-bold text-sm shadow-[0_4px_20px_rgba(20,184,166,0.3)] transition-all flex items-center gap-2"
               >
                 {step === totalSteps ? (
