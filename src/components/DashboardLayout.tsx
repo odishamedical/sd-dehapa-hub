@@ -182,7 +182,14 @@ export default function DashboardLayout({
   const toggleHomeSection = (sectionName: string) => {
     setExpandedHomeSections(prev => {
       if (!prev[sectionName]) {
-        return { [sectionName]: true };
+        return { ...prev, [sectionName]: true };
+      }
+      const next = { ...prev };
+      delete next[sectionName];
+      return next;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
       

@@ -420,29 +420,6 @@ export default function DoctorOSDashboard() {
               </div>
             </div>
 
-            {/* Quick Action Widgets */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              
-              {/* Live Queue Card */}
-              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl overflow-hidden flex flex-col hover:bg-white/20 hover:border-white/30 transition-all shadow-lg hover:shadow-xl group">
-                <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-center shrink-0">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path></svg>
-                  </div>
-                  <h3 className="text-base font-bold text-white tracking-tight">Live Queue</h3>
-                </div>
-                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white/5 to-transparent">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-4xl font-black text-white tracking-tighter drop-shadow-md">{queue.length === 0 ? 2 : queue.length}</span>
-                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Patients</span>
-                  </div>
-                  <p className="text-sm text-slate-300 font-medium">Live Updates Active</p>
-                </div>
-                <div className="p-4 bg-white/5 border-t border-white/10">
-                  <button onClick={() => handleTabChange('queue')} className="w-full py-2.5 bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(239,68,68,0.5)] text-center">
-                    View Queue
-                  </button>
-                </div>
             {/* Quick Actions Bento Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             
