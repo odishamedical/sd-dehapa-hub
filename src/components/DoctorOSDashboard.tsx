@@ -424,98 +424,98 @@ export default function DoctorOSDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               
               {/* Live Queue Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl overflow-hidden flex flex-col hover:bg-white/20 hover:border-white/30 transition-all shadow-lg hover:shadow-xl group">
+                <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-center shrink-0">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path></svg>
                   </div>
-                  <h3 className="text-base font-bold text-slate-800 tracking-tight">Live Queue</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">Live Queue</h3>
                 </div>
-                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
+                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white/5 to-transparent">
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-4xl font-black text-slate-900 tracking-tighter">{queue.length === 0 ? 2 : queue.length}</span>
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patients</span>
+                    <span className="text-4xl font-black text-white tracking-tighter drop-shadow-md">{queue.length === 0 ? 2 : queue.length}</span>
+                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Patients</span>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium">Live Updates Active</p>
+                  <p className="text-sm text-slate-300 font-medium">Live Updates Active</p>
                 </div>
-                <div className="p-4 bg-white border-t border-slate-100">
-                  <button onClick={() => handleTabChange('queue')} className="w-full py-2.5 bg-[#FF3B30] hover:bg-[#E0352B] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-red-500/20 text-center">
+                <div className="p-4 bg-white/5 border-t border-white/10">
+                  <button onClick={() => handleTabChange('queue')} className="w-full py-2.5 bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(239,68,68,0.5)] text-center">
                     View Queue
                   </button>
                 </div>
               </div>
 
               {/* Smart Calendar Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl overflow-hidden flex flex-col hover:bg-white/20 hover:border-white/30 transition-all shadow-lg hover:shadow-xl group">
+                <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 flex items-center justify-center shrink-0">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                   </div>
-                  <h3 className="text-base font-bold text-slate-800 tracking-tight">Calendar</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">Calendar</h3>
                 </div>
-                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
+                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white/5 to-transparent">
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-4xl font-black text-slate-900 tracking-tighter">{appointments.length}</span>
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Appts Today</span>
+                    <span className="text-4xl font-black text-white tracking-tighter drop-shadow-md">{appointments.length}</span>
+                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Appts Today</span>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium truncate">{appointments.length > 0 ? "Live Appointments Syncing" : "Schedule is clear"}</p>
+                  <p className="text-sm text-slate-300 font-medium truncate">{appointments.length > 0 ? "Live Appointments Syncing" : "Schedule is clear"}</p>
                 </div>
-                <div className="p-4 bg-white border-t border-slate-100">
-                  <button onClick={() => handleTabChange('calendar')} className="w-full py-2.5 bg-[#007AFF] hover:bg-[#0062CC] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-blue-500/20 text-center">
+                <div className="p-4 bg-white/5 border-t border-white/10">
+                  <button onClick={() => handleTabChange('calendar')} className="w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(59,130,246,0.5)] text-center">
                     Add Event
                   </button>
                 </div>
               </div>
 
               {/* Patient EMR Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-teal-50 text-[#00C7BE] flex items-center justify-center shrink-0">
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl overflow-hidden flex flex-col hover:bg-white/20 hover:border-white/30 transition-all shadow-lg hover:shadow-xl group">
+                <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 text-teal-400 flex items-center justify-center shrink-0">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                   </div>
-                  <h3 className="text-base font-bold text-slate-800 tracking-tight">Patient EMR</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">Patient EMR</h3>
                 </div>
-                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
-                  <p className="text-sm text-slate-500 font-medium leading-relaxed">Search and access comprehensive patient medical records, history, and test results.</p>
+                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white/5 to-transparent">
+                  <p className="text-sm text-slate-300 font-medium leading-relaxed">Search and access comprehensive patient medical records, history, and test results.</p>
                 </div>
-                <div className="p-4 bg-white border-t border-slate-100">
-                  <button onClick={() => handleTabChange('patients')} className="w-full py-2.5 bg-[#00C7BE] hover:bg-[#009F98] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-teal-500/20 text-center">
+                <div className="p-4 bg-white/5 border-t border-white/10">
+                  <button onClick={() => handleTabChange('patients')} className="w-full py-2.5 bg-teal-500 hover:bg-teal-600 text-white text-sm font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(20,184,166,0.5)] text-center">
                     Open EMR
                   </button>
                 </div>
               </div>
 
               {/* Digital Register Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-amber-50 text-[#FF9500] flex items-center justify-center shrink-0">
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl overflow-hidden flex flex-col hover:bg-white/20 hover:border-white/30 transition-all shadow-lg hover:shadow-xl group">
+                <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                   </div>
-                  <h3 className="text-base font-bold text-slate-800 tracking-tight">Register</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">Register</h3>
                 </div>
-                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
-                  <p className="text-sm text-slate-500 font-medium leading-relaxed">Manage daily billing, transaction logs, and patient visit ledgers seamlessly.</p>
+                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white/5 to-transparent">
+                  <p className="text-sm text-slate-300 font-medium leading-relaxed">Manage daily billing, transaction logs, and patient visit ledgers seamlessly.</p>
                 </div>
-                <div className="p-4 bg-white border-t border-slate-100">
-                  <button onClick={() => handleTabChange('register')} className="w-full py-2.5 bg-[#FF9500] hover:bg-[#CC7700] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-amber-500/20 text-center">
+                <div className="p-4 bg-white/5 border-t border-white/10">
+                  <button onClick={() => handleTabChange('register')} className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(245,158,11,0.5)] text-center">
                     Export Report
                   </button>
                 </div>
               </div>
 
               {/* Clinic Profile Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow md:col-span-2 xl:col-span-1">
-                <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-50 text-[#5856D6] flex items-center justify-center shrink-0">
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl overflow-hidden flex flex-col hover:bg-white/20 hover:border-white/30 transition-all shadow-lg hover:shadow-xl group md:col-span-2 xl:col-span-1">
+                <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center shrink-0">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                   </div>
-                  <h3 className="text-base font-bold text-slate-800 tracking-tight">Clinic Profile</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">Clinic Profile</h3>
                 </div>
-                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
-                  <p className="text-sm text-slate-500 font-medium leading-relaxed">Customize your public clinic information, services, and operating hours.</p>
+                <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white/5 to-transparent">
+                  <p className="text-sm text-slate-300 font-medium leading-relaxed">Customize your public clinic information, services, and operating hours.</p>
                 </div>
-                <div className="p-4 bg-white border-t border-slate-100">
-                  <button onClick={() => handleTabChange('settings')} className="w-full py-2.5 bg-[#5856D6] hover:bg-[#4644AB] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-indigo-500/20 text-center">
+                <div className="p-4 bg-white/5 border-t border-white/10">
+                  <button onClick={() => handleTabChange('settings')} className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-bold rounded-lg transition-colors shadow-[0_0_15px_rgba(99,102,241,0.5)] text-center">
                     Edit Profile
                   </button>
                 </div>
@@ -529,17 +529,17 @@ export default function DoctorOSDashboard() {
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 font-display">Live Queue</h1>
-                <p className="text-slate-500 text-sm mt-1">Manage your walk-ins and virtual consultations</p>
+                <h1 className="text-2xl font-bold text-white font-display">Live Queue</h1>
+                <p className="text-slate-300 text-sm mt-1">Manage your walk-ins and virtual consultations</p>
               </div>
               <div className="flex gap-2">
-                <button className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-slate-200 transition-colors">
+                <button className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-white/20 transition-colors shadow-sm">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                   Scan QR
                 </button>
                 <button 
                   onClick={() => setShowAddWalkIn(true)}
-                  className="px-4 py-2 bg-teal-600 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-teal-700 transition-colors shadow-sm shadow-teal-200"
+                  className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-medium text-sm flex items-center gap-2 transition-colors shadow-[0_0_15px_rgba(20,184,166,0.5)]"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                   Add Walk-in
@@ -548,8 +548,8 @@ export default function DoctorOSDashboard() {
             </div>
 
             {/* QUEUE CONTENT */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="hidden md:grid grid-cols-12 gap-4 p-4 bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-widest">
+            <div className="bg-white/5 border border-white/10 rounded-2xl shadow-sm overflow-hidden backdrop-blur-md">
+              <div className="hidden md:grid grid-cols-12 gap-4 p-4 bg-white/5 border-b border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest">
                 <div className="col-span-1">No.</div>
                 <div className="col-span-3">Patient Name</div>
                 <div className="col-span-2">Mode</div>
@@ -558,57 +558,57 @@ export default function DoctorOSDashboard() {
                 <div className="col-span-2 text-right">Actions</div>
               </div>
               
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-white/5">
                 {(queue.length === 0 ? [
                   { id: "demo1", name: "Sarah Jenkins", age: 34, sex: "F", phone: "+91 9876543210", mode: "Video Call", type: "online", time: "2 min", status: "In Lobby" },
                   { id: "demo2", name: "Rahul Sharma", age: 45, sex: "M", phone: "+91 9988776655", mode: "Walk-in", type: "offline", time: "15 min", status: "Waiting" }
                 ] : queue).map((patient, idx) => (
-                  <div key={patient.id} className="p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-slate-50 transition-colors">
+                  <div key={patient.id} className="p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-white/5 transition-colors">
                     <div className="hidden md:block col-span-1 text-slate-400 font-medium text-sm">#{idx + 1}</div>
                     
                     <div className="col-span-12 md:col-span-3 flex items-center w-full md:w-auto">
-                      <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm mr-3 shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 flex items-center justify-center font-bold text-sm mr-3 shrink-0">
                         {patient.name?.charAt(0) || "U"}
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900">{patient.name || "Unknown"}</div>
-                        <div className="text-xs text-slate-500">{patient.age || "--"}y • {patient.sex || "--"} {patient.phone && `• ${patient.phone}`}</div>
+                        <div className="font-bold text-white">{patient.name || "Unknown"}</div>
+                        <div className="text-xs text-slate-400">{patient.age || "--"}y • {patient.sex || "--"} {patient.phone && `• ${patient.phone}`}</div>
                       </div>
                     </div>
                     
                     <div className="col-span-12 md:col-span-2 w-full md:w-auto flex items-center gap-2">
-                      <span className="md:hidden text-xs font-bold text-slate-400 uppercase">Mode:</span>
-                      <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${patient.type === 'online' || patient.mode === 'Video Call' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                      <span className="md:hidden text-xs font-bold text-slate-500 uppercase">Mode:</span>
+                      <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${patient.type === 'online' || patient.mode === 'Video Call' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-white/10 text-slate-300 border border-white/20'}`}>
                         {patient.mode || "Walk-in"}
                       </span>
                     </div>
                     
                     <div className="col-span-12 md:col-span-2 w-full md:w-auto flex items-center gap-2">
-                      <span className="md:hidden text-xs font-bold text-slate-400 uppercase">Wait:</span>
-                      <div className="text-sm text-amber-600 font-medium flex items-center gap-1">
+                      <span className="md:hidden text-xs font-bold text-slate-500 uppercase">Wait:</span>
+                      <div className="text-sm text-amber-400 font-medium flex items-center gap-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         {patient.time || "Just now"}
                       </div>
                     </div>
                     
                     <div className="col-span-12 md:col-span-2 w-full md:w-auto flex items-center gap-2">
-                      <span className="md:hidden text-xs font-bold text-slate-400 uppercase">Status:</span>
+                      <span className="md:hidden text-xs font-bold text-slate-500 uppercase">Status:</span>
                       <div className="flex items-center gap-1.5">
-                        <span className={`w-2 h-2 rounded-full ${patient.status === 'In Lobby' ? 'bg-green-500 animate-pulse' : 'bg-amber-400'}`}></span>
-                        <span className="text-sm text-slate-600 font-medium">{patient.status || "Waiting"}</span>
+                        <span className={`w-2 h-2 rounded-full ${patient.status === 'In Lobby' ? 'bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.8)]' : 'bg-amber-400'}`}></span>
+                        <span className="text-sm text-slate-300 font-medium">{patient.status || "Waiting"}</span>
                       </div>
                     </div>
                     
                     <div className="col-span-12 md:col-span-2 w-full flex justify-end gap-2 flex-wrap md:flex-nowrap">
                        {(patient.mode === 'Walk-in' || !patient.mode) && (
-                         <button className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors border border-slate-200 shadow-sm" onClick={() => window.print()}>
+                         <button className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-lg transition-colors border border-white/20 shadow-sm" onClick={() => window.print()}>
                            🖨️ Token
                          </button>
                        )}
-                       <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors">
+                       <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-lg transition-colors border border-white/20">
                          Vitals
                        </button>
-                       <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors">
+                       <button onClick={() => setActiveConsult(patient)} className="px-3 py-1.5 bg-teal-500 hover:bg-teal-600 text-white text-xs font-bold rounded-lg shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-colors">
                          Consult
                        </button>
                     </div>
@@ -623,30 +623,30 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">Smart Calendar</h1>
-                 <p className="text-slate-500 text-sm mt-1">Manage your clinic hours, surgery blocks, and appointments</p>
+                 <h1 className="text-2xl font-bold text-white font-display">Smart Calendar</h1>
+                 <p className="text-slate-300 text-sm mt-1">Manage your clinic hours, surgery blocks, and appointments</p>
                </div>
                <div className="flex gap-2">
-                 <button className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium text-sm hover:bg-slate-200 transition-colors">
+                 <button className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-xl font-medium text-sm hover:bg-white/20 transition-colors shadow-sm">
                    Today
                  </button>
-                 <button className="px-4 py-2 bg-teal-600 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-teal-700 transition-colors shadow-sm shadow-teal-200">
+                 <button className="px-4 py-2 bg-teal-500 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-teal-600 transition-colors shadow-[0_0_15px_rgba(20,184,166,0.5)]">
                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                    Block Time
                  </button>
                </div>
              </div>
 
-             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row min-h-[500px]">
+             <div className="bg-white/5 border border-white/10 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[500px] backdrop-blur-md">
                {/* Mini Calendar Sidebar */}
-               <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-100 p-6 bg-slate-50">
-                 <div className="font-bold text-slate-900 mb-4">July 2026</div>
+               <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/10 p-6 bg-white/5">
+                 <div className="font-bold text-white mb-4">July 2026</div>
                  <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-slate-400 mb-2">
                    <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
                  </div>
                  <div className="grid grid-cols-7 gap-1 text-center text-sm font-medium">
                    {Array.from({length: 31}).map((_, i) => (
-                     <div key={i} className={`p-1.5 rounded-lg cursor-pointer ${i+1 === 2 ? 'bg-teal-600 text-white font-bold shadow-sm shadow-teal-200' : 'text-slate-700 hover:bg-slate-200'}`}>
+                     <div key={i} className={`p-1.5 rounded-lg cursor-pointer ${i+1 === 2 ? 'bg-teal-500 text-white font-bold shadow-[0_0_10px_rgba(20,184,166,0.5)]' : 'text-slate-300 hover:bg-white/10'}`}>
                        {i + 1}
                      </div>
                    ))}
@@ -655,28 +655,28 @@ export default function DoctorOSDashboard() {
 
                {/* Day View */}
                <div className="flex-1 p-6">
-                 <div className="text-lg font-bold text-slate-900 mb-6">Thursday, July 2, 2026</div>
+                 <div className="text-lg font-bold text-white mb-6">Thursday, July 2, 2026</div>
                  <div className="space-y-4 relative">
-                    <div className="absolute left-16 top-0 bottom-0 w-px bg-slate-100"></div>
+                    <div className="absolute left-16 top-0 bottom-0 w-px bg-white/10"></div>
                     
                     {appointments.length === 0 ? (
                       <div className="flex gap-4 items-start relative z-10 py-8">
-                        <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-8 border-dashed text-center text-slate-500">
-                          <p className="font-bold">No appointments scheduled</p>
+                        <div className="flex-1 bg-white/5 border border-white/10 rounded-xl p-8 border-dashed text-center text-slate-400">
+                          <p className="font-bold text-slate-300">No appointments scheduled</p>
                           <p className="text-xs text-slate-400 mt-1">Your calendar is currently clear.</p>
                         </div>
                       </div>
                     ) : appointments.map((appt, idx) => (
                       <div key={appt.id || idx} className="flex gap-4 items-start relative z-10">
                         <div className="w-16 text-right text-xs font-bold text-slate-400 pt-3">{appt.time || "TBD"}</div>
-                        <div className={`flex-1 ${appt.type === 'online' ? 'bg-indigo-50 border border-indigo-100' : 'bg-teal-50 border border-teal-100'} rounded-xl p-4 shadow-sm`}>
+                        <div className={`flex-1 ${appt.type === 'online' ? 'bg-indigo-500/10 border border-indigo-500/20' : 'bg-teal-500/10 border border-teal-500/20'} rounded-xl p-4 shadow-sm`}>
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className={`font-bold ${appt.type === 'online' ? 'text-indigo-900' : 'text-teal-900'} text-sm`}>{appt.title || "Appointment"}</h4>
-                            <span className={`${appt.type === 'online' ? 'bg-indigo-200 text-indigo-800' : 'bg-teal-200 text-teal-800'} text-[10px] uppercase font-bold px-2 py-0.5 rounded-md`}>
+                            <h4 className={`font-bold ${appt.type === 'online' ? 'text-indigo-300' : 'text-teal-300'} text-sm`}>{appt.title || "Appointment"}</h4>
+                            <span className={`${appt.type === 'online' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-teal-500/20 text-teal-300'} text-[10px] uppercase font-bold px-2 py-0.5 rounded-md`}>
                               {appt.type || "General"}
                             </span>
                           </div>
-                          <p className={`text-xs ${appt.type === 'online' ? 'text-indigo-700' : 'text-teal-700'}`}>{appt.duration || "1 hr"}</p>
+                          <p className={`text-xs ${appt.type === 'online' ? 'text-indigo-400' : 'text-teal-400'}`}>{appt.duration || "1 hr"}</p>
                         </div>
                       </div>
                     ))}
@@ -690,8 +690,8 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">Patient EMR & Vault</h1>
-                 <p className="text-slate-500 text-sm mt-1">Access global health records via Dehapa QR</p>
+                 <h1 className="text-2xl font-bold text-white font-display">Patient EMR & Vault</h1>
+                 <p className="text-slate-300 text-sm mt-1">Access global health records via Dehapa QR</p>
                </div>
              </div>
              <SecureMedicalVault providerId={entityData?.id || ""} providerName={entityData?.name || userName} />
@@ -702,15 +702,15 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">Digital Clinic Register</h1>
-                 <p className="text-slate-500 text-sm mt-1">Daily patient ledger and financial summary</p>
+                 <h1 className="text-2xl font-bold text-white font-display">Digital Clinic Register</h1>
+                 <p className="text-slate-300 text-sm mt-1">Daily patient ledger and financial summary</p>
                </div>
                <div className="flex gap-2">
-                 <button className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-slate-200 transition-colors">
+                 <button className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-white/20 transition-colors shadow-sm">
                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                    Export CSV
                  </button>
-                 <button className="px-4 py-2 bg-teal-600 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-teal-700 transition-colors shadow-sm shadow-teal-200">
+                 <button className="px-4 py-2 bg-teal-500 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-teal-600 transition-colors shadow-[0_0_15px_rgba(20,184,166,0.5)]">
                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                    Scan Document
                  </button>
@@ -719,48 +719,47 @@ export default function DoctorOSDashboard() {
 
              {/* Financial Summary Widgets */}
              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+               <div className="bg-white/5 p-6 rounded-2xl shadow-sm border border-white/10 flex items-center justify-between backdrop-blur-sm">
                   <div>
                     <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Patients</p>
-                    <h3 className="text-3xl font-bold text-slate-900">{transactions.length}</h3>
+                    <h3 className="text-3xl font-bold text-white">{transactions.length}</h3>
                   </div>
-                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                 <div className="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                  </div>
                </div>
-               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+               <div className="bg-white/5 p-6 rounded-2xl shadow-sm border border-white/10 flex items-center justify-between backdrop-blur-sm">
                   <div>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Telemedicine</p>
-                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.filter(t => t.mode === 'Telemedicine').reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Revenue</p>
+                    <h3 className="text-3xl font-bold text-white">₹{transactions.reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
                   </div>
-                 <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                   <span className="font-bold text-xl">₹</span>
+                 <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
+                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                  </div>
                </div>
-               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+               <div className="bg-white/5 p-6 rounded-2xl shadow-sm border border-white/10 flex items-center justify-between backdrop-blur-sm">
                   <div>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Offline Cash</p>
-                    <h3 className="text-3xl font-bold text-slate-900">₹{transactions.filter(t => t.mode !== 'Telemedicine').reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
+                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Cash Collection</p>
+                    <h3 className="text-3xl font-bold text-white">₹{transactions.filter(t => t.method === 'cash').reduce((acc, curr) => acc + (curr.amount || 0), 0)}</h3>
                   </div>
-                 <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                 <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                  </div>
                </div>
              </div>
 
-             {/* Ledger Table */}
-             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-               <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-                 <input type="date" className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 outline-none focus:border-teal-500" defaultValue="2026-07-02" />
+             <div className="bg-white/5 border border-white/10 rounded-2xl shadow-sm overflow-hidden backdrop-blur-md mt-6">
+               <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+                 <input type="date" className="bg-transparent border border-white/20 rounded-lg px-3 py-1.5 text-sm font-medium text-white outline-none focus:border-teal-500" defaultValue="2026-07-02" />
                  <div className="relative">
                    <svg className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                   <input type="text" placeholder="Search patient..." className="pl-9 pr-4 py-1.5 text-sm border border-slate-200 rounded-lg outline-none focus:border-teal-500 w-64" />
+                   <input type="text" placeholder="Search patient..." className="pl-9 pr-4 py-1.5 text-sm bg-transparent border border-white/20 text-white rounded-lg outline-none focus:border-teal-500 w-64 placeholder:text-slate-400" />
                  </div>
                </div>
                <div className="overflow-x-auto">
                  <table className="w-full text-left border-collapse">
                    <thead>
-                     <tr className="bg-white border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                     <tr className="bg-white/5 border-b border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest">
                        <th className="p-4 whitespace-nowrap">Reg No.</th>
                        <th className="p-4 whitespace-nowrap">Time</th>
                        <th className="p-4 whitespace-nowrap">Patient Name</th>
@@ -769,27 +768,27 @@ export default function DoctorOSDashboard() {
                        <th className="p-4 whitespace-nowrap text-right">Fee</th>
                      </tr>
                    </thead>
-                   <tbody className="divide-y divide-slate-50">
+                   <tbody className="divide-y divide-white/5">
                       {transactions.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="p-8 text-center text-slate-500 font-medium">No transactions recorded yet.</td>
+                          <td colSpan={6} className="p-8 text-center text-slate-400 font-medium">No transactions recorded yet.</td>
                         </tr>
                       ) : transactions.map((row, i) => (
-                        <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                          <td className="p-4 text-sm font-bold text-slate-600">{row.reg || `REG-${i+1}`}</td>
-                          <td className="p-4 text-sm text-slate-500">{row.time || "TBD"}</td>
-                          <td className="p-4 text-sm font-bold text-slate-900">{row.name || "Unknown Patient"}</td>
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="p-4 text-sm font-bold text-slate-300">{row.reg || `REG-${i+1}`}</td>
+                          <td className="p-4 text-sm text-slate-400">{row.time || "TBD"}</td>
+                          <td className="p-4 text-sm font-bold text-white">{row.name || "Unknown Patient"}</td>
                           <td className="p-4">
-                            <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${row.mode === 'Telemedicine' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                            <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${row.mode === 'Telemedicine' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-white/10 text-slate-300 border border-white/20'}`}>
                               {row.mode || "Walk-in"}
                             </span>
                           </td>
                           <td className="p-4">
-                            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                            <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                               {row.status || "Completed"}
                             </span>
                           </td>
-                          <td className="p-4 text-sm font-bold text-slate-600 text-right">₹{row.amount || "0"}</td>
+                          <td className="p-4 text-sm font-bold text-white text-right">₹{row.amount || "0"}</td>
                         </tr>
                       ))}
                     </tbody>
