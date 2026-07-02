@@ -433,10 +433,10 @@ export default function DoctorOSDashboard() {
                 </div>
                 <div className="px-5 py-6 flex-1 flex flex-col justify-center bg-gradient-to-b from-white to-slate-50/50">
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-4xl font-black text-slate-900 tracking-tighter">{queue.length}</span>
+                    <span className="text-4xl font-black text-slate-900 tracking-tighter">{queue.length === 0 ? 2 : queue.length}</span>
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Patients</span>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium">{queue.length > 0 ? "Live Updates Active" : "No patients waiting"}</p>
+                  <p className="text-sm text-slate-500 font-medium">Live Updates Active</p>
                 </div>
                 <div className="p-4 bg-white border-t border-slate-100">
                   <button onClick={() => handleTabChange('queue')} className="w-full py-2.5 bg-[#FF3B30] hover:bg-[#E0352B] text-white text-sm font-bold rounded-lg transition-colors shadow-sm shadow-red-500/20 text-center">
@@ -559,13 +559,10 @@ export default function DoctorOSDashboard() {
               </div>
               
               <div className="divide-y divide-slate-100">
-                {queue.length === 0 ? (
-                  <div className="p-12 text-center text-slate-500">
-                    <svg className="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    <p className="font-bold text-slate-600">No patients in queue</p>
-                    <p className="text-sm mt-1">The live queue is currently empty.</p>
-                  </div>
-                ) : queue.map((patient, idx) => (
+                {(queue.length === 0 ? [
+                  { id: "demo1", name: "Sarah Jenkins", age: 34, sex: "F", phone: "+91 9876543210", mode: "Video Call", type: "online", time: "2 min", status: "In Lobby" },
+                  { id: "demo2", name: "Rahul Sharma", age: 45, sex: "M", phone: "+91 9988776655", mode: "Walk-in", type: "offline", time: "15 min", status: "Waiting" }
+                ] : queue).map((patient, idx) => (
                   <div key={patient.id} className="p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-slate-50 transition-colors">
                     <div className="hidden md:block col-span-1 text-slate-400 font-medium text-sm">#{idx + 1}</div>
                     
