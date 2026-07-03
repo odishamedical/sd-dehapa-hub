@@ -92,7 +92,7 @@ export default function DashboardLayout({
       <nav className="space-y-2 w-full">
         <button 
           onClick={() => { onTabChange('home'); if (isMobile) setIsMobileMenuOpen(false); }} 
-          className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'home' ? 'bg-teal-50 text-teal-700 border border-teal-200 shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+          className={`w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'home' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-sm' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
         >
           <span className={`w-2 h-2 rounded-full ${activeTab === 'home' ? 'bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.6)]' : 'bg-slate-400'}`}></span>
           {roleName === "Patient" ? "User Dashboard" : `${roleName} Dashboard`}
@@ -104,12 +104,12 @@ export default function DashboardLayout({
           
           let headerTextClass = "text-xs uppercase tracking-wider transition-all duration-300 font-bold";
           let headerColorClass = isExpanded 
-            ? "text-teal-900 font-black shadow-sm" 
+            ? "text-cyan-400 font-black shadow-sm" 
             : "text-slate-600 hover:text-slate-900";
             
           let headerBgClass = isExpanded
-            ? "bg-teal-500/15 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgba(20,184,166,0.2)] ring-1 ring-teal-500/30 scale-[1.02]"
-            : "bg-white/30 hover:bg-white/50 backdrop-blur-sm border border-white/40 shadow-sm";
+            ? "bg-cyan-500/10 backdrop-blur-3xl border border-cyan-500/20 shadow-[0_8px_30px_rgba(20,184,166,0.2)] ring-1 ring-teal-500/30 scale-[1.02]"
+            : "bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 shadow-sm";
           
           return (
           <React.Fragment key={sectionObj.section}>
@@ -134,7 +134,7 @@ export default function DashboardLayout({
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
                 const tintClasses = isActive 
-                  ? 'bg-gradient-to-r from-teal-500/20 to-teal-400/5 backdrop-blur-xl border-l-4 border-teal-500 text-teal-900 font-black shadow-lg ring-1 ring-white/80 scale-[1.02] transform' 
+                  ? 'bg-gradient-to-r from-teal-500/20 to-teal-400/5 backdrop-blur-xl border-l-4 border-teal-500 text-cyan-400 font-black shadow-lg ring-1 ring-white/80 scale-[1.02] transform' 
                   : 'text-slate-700 hover:bg-white/80 backdrop-blur-md hover:text-slate-900 border-l-4 border-transparent hover:border-teal-300 shadow-[0_2px_8px_rgba(0,0,0,0.02)] font-semibold';
                 
                 return (
@@ -179,17 +179,17 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
+    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans relative overflow-x-hidden flex flex-col">
       
       {/* Premium Soft-Light Background Orbs */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-300/50 blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-300/40 blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-cyan-300/40 blur-[90px] animate-pulse" style={{animationDelay: '4s'}}></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/20 blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-500/20 blur-[140px] animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-purple-500/20 blur-[100px] animate-pulse" style={{animationDelay: '4s'}}></div>
       </div>
 
       {/* Main Header (Sticky) */}
-      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-white/80 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-slate-950/70 backdrop-blur-3xl border-b border-white/10 shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3 md:gap-4">
           <button 
             onClick={() => setIsMobileMenuOpen(true)} 
@@ -197,7 +197,7 @@ export default function DashboardLayout({
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
           </button>
-          <button onClick={() => onTabChange("home")} className="text-xl md:text-2xl font-black text-slate-900 tracking-tight hover:text-teal-600 transition-colors">
+          <button onClick={() => onTabChange("home")} className="text-xl md:text-2xl font-black text-white tracking-tight hover:text-cyan-400 transition-colors">
             DehaPa Portal
           </button>
         </div>
@@ -229,7 +229,7 @@ export default function DashboardLayout({
             LEFT SIDEBAR (Glassmorphism)
            ========================================================================= */}
         <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
-          <div className="sticky top-[100px] bg-white/90 backdrop-blur-3xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
+          <div className="sticky top-[100px] bg-white/5 backdrop-blur-3xl p-6 rounded-[2rem] shadow-2xl border border-white/10 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             {userProfile && (
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
                 {userProfile.image ? (
