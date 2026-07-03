@@ -134,11 +134,11 @@ html {
   }
   
   .sd-input-v3 {
-    @apply w-full bg-black/40 backdrop-blur-lg border border-white/10 hover:border-cyan-400 text-white placeholder-slate-500 focus:border-cyan-400 focus:bg-white/5 rounded-xl px-5 py-3.5 shadow-inner focus:ring-4 focus:ring-cyan-400/20 outline-none transition-all;
+    @apply w-full bg-white border border-slate-200 hover:border-cyan-500 text-slate-900 placeholder-slate-400 focus:border-cyan-500 focus:bg-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all;
   }
 
   .sd-label-v3 {
-    @apply block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider;
+    @apply block text-xs uppercase font-bold text-slate-200 mb-2 tracking-wider;
   }
 
   .sd-btn-v3 {

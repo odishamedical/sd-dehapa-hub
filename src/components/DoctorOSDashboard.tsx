@@ -855,7 +855,7 @@ export default function DoctorOSDashboard() {
                ))}
              </div>
 
-             <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl">
+             <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl">
                {activeTab === 'identity' && (
                  <div className="mb-8 p-4 bg-black/20 backdrop-blur-3xl border border-white/10 rounded-2xl flex items-center justify-between">
                    <div>

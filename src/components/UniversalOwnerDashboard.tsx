@@ -372,7 +372,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* OWNER KYC TAB */}
         {activeTab === "owner_kyc" && (
-          <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-white mb-6 border-b border-slate-100 pb-4 tracking-tight">Owner Verification (KYC)</h3>
             
             <div className="mb-8 bg-amber-50 border border-amber-200 p-6 rounded-2xl">
@@ -436,7 +436,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* STAFF MANAGEMENT TAB */}
         {activeTab === "staff_management" && (
-          <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
               <h3 className="text-xl font-bold text-slate-900">Staff & Team Access</h3>
               <button 
@@ -547,7 +547,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* PERSONAL INFORMATION TAB */}
         {activeTab === "personal" && (
-          <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-white mb-6 border-b border-slate-100 pb-4 tracking-tight">Personal Information</h3>
             <UniversalPersonalForm 
               entityData={entityData} 
@@ -560,7 +560,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* IDENTITY TAB */}
         {activeTab === "identity" && (
-          <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-white mb-6 border-b border-slate-100 pb-4 tracking-tight">Property Identity & Info</h3>
             
             <div className="mb-8 p-4 bg-black/20 backdrop-blur-3xl border border-white/10 rounded-2xl flex items-center justify-between">
@@ -662,7 +662,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* BANK DETAILS TAB */}
         {activeTab === "bank_details" && (
-          <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-white mb-6 border-b border-slate-100 pb-4 tracking-tight">Bank & Payout Details</h3>
             
             <div className="mb-8 bg-emerald-50 border border-emerald-200 p-6 rounded-2xl">
@@ -744,7 +744,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* DOCUMENT VAULT TAB */}
         {activeTab === "document_vault" && (
-          <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-white mb-6 border-b border-slate-100 pb-4 tracking-tight">Document Vault</h3>
             
             <div className="mb-8 bg-blue-50 border border-blue-200 p-6 rounded-2xl">
@@ -773,7 +773,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* LOCATION TAB */}
         {activeTab === "location" && (
-          <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-white mb-6 border-b border-slate-100 pb-4 tracking-tight">Location & Address</h3>
             <AddressBlock 
               data={{
@@ -818,7 +818,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         {categoryConfig?.tabs.map(tab => {
           if (activeTab === tab.id) {
             return (
-              <div key={tab.id} className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+              <div key={tab.id} className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
                 <h3 className="text-2xl font-black text-white mb-6 border-b border-slate-100 pb-4 tracking-tight">{tab.label}</h3>
 
                 <div className="space-y-8">
