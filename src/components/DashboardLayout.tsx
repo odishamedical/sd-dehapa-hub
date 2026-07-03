@@ -102,13 +102,13 @@ export default function DashboardLayout({
           const isAccordion = sectionObj.section !== "DEFAULT";
           const isExpanded = expandedNavSection === sectionObj.section;
           
-          let headerTextClass = "text-xs font-black uppercase tracking-wider transition-colors duration-300";
+          let headerTextClass = "text-xs uppercase tracking-wider transition-all duration-300 font-bold";
           let headerColorClass = isExpanded 
-            ? "text-teal-900" 
+            ? "text-teal-900 font-black shadow-sm" 
             : "text-slate-600 hover:text-slate-900";
             
           let headerBgClass = isExpanded
-            ? "bg-white/60 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-white/50"
+            ? "bg-teal-500/15 backdrop-blur-2xl border border-white/60 shadow-[0_8px_30px_rgba(20,184,166,0.2)] ring-1 ring-teal-500/30 scale-[1.02]"
             : "bg-white/30 hover:bg-white/50 backdrop-blur-sm border border-white/40 shadow-sm";
           
           return (
@@ -129,19 +129,19 @@ export default function DashboardLayout({
               </div>
             )}
             
-            <div className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out ${isAccordion ? (isExpanded ? 'max-h-[800px] opacity-100 mt-3 p-2 bg-white/30 backdrop-blur-xl rounded-xl border border-white/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]' : 'max-h-0 opacity-0 m-0 p-0 border-transparent') : ''}`}>
+            <div className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out ${isAccordion ? (isExpanded ? 'max-h-[800px] opacity-100 mt-3 p-2 bg-white/40 backdrop-blur-2xl rounded-xl border border-white/60 shadow-[inset_0_2px_10px_rgba(255,255,255,0.7)]' : 'max-h-0 opacity-0 m-0 p-0 border-transparent') : ''}`}>
               {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
                 const tintClasses = isActive 
-                  ? 'bg-white/70 backdrop-blur-md border-l-4 border-teal-500 text-teal-900 font-black shadow-sm ring-1 ring-white/50' 
-                  : 'text-slate-700 hover:bg-white/60 backdrop-blur-sm hover:text-slate-900 border-l-4 border-transparent hover:border-teal-300 shadow-[0_2px_8px_rgba(0,0,0,0.02)] font-semibold';
+                  ? 'bg-gradient-to-r from-teal-500/20 to-teal-400/5 backdrop-blur-xl border-l-4 border-teal-500 text-teal-900 font-black shadow-lg ring-1 ring-white/80 scale-[1.02] transform' 
+                  : 'text-slate-700 hover:bg-white/80 backdrop-blur-md hover:text-slate-900 border-l-4 border-transparent hover:border-teal-300 shadow-[0_2px_8px_rgba(0,0,0,0.02)] font-semibold';
                 
                 return (
                   <button 
                     key={tab.id}
                     onClick={() => { onTabChange(tab.id); if (isMobile) setIsMobileMenuOpen(false); }} 
-                    className={`w-full text-left pl-3 pr-4 py-3 rounded-r-xl font-bold transition-all flex items-center justify-between group hover:translate-x-1 duration-200 ${tintClasses}`}
+                    className={`w-full text-left pl-3 pr-4 py-3 rounded-r-xl transition-all flex items-center justify-between group hover:translate-x-1 duration-200 ${tintClasses}`}
                   >
                     <div className="flex items-center gap-3 truncate">
                       <div className={isActive ? 'text-teal-600 drop-shadow-[0_0_4px_rgba(20,184,166,0.3)]' : 'text-slate-400 group-hover:text-slate-600 transition-colors'}>

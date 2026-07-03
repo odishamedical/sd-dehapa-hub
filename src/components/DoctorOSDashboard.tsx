@@ -857,9 +857,9 @@ export default function DoctorOSDashboard() {
                </div>
              </div>
              
-             <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+             <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 custom-scrollbar">
                {[
-                 { id: "identity", label: "Identity & Media" },
+                 { id: "identity", label: "Personal Details" },
                  { id: "professional", label: "Professional Bio" },
                  { id: "consultation_setup", label: "Consultations" },
                  { id: "location", label: "Clinic Location" },

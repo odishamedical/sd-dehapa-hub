@@ -5,6 +5,7 @@ import { storage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
 import SmartEntitySearch from '@/components/SmartEntitySearch';
+import AddressBlock from '@/components/AddressBlock';
 
 interface DoctorV2FormsProps {
   activeTab: string;
@@ -108,14 +109,12 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
   };
 
   if (activeTab === "identity") {
-    const gallery = Array.isArray(entityData.galleryImages) ? entityData.galleryImages : [];
-    const youtube = Array.isArray(entityData.youtubeLinks) ? entityData.youtubeLinks : [];
 
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Identity & Media</h2>
-          <p className="text-slate-500 font-medium text-lg">Define how patients see you across the DehaPa Ecosystem.</p>
+          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Personal Details</h2>
+          <p className="text-slate-500 font-medium text-lg">Standard personal information for your account.</p>
         </div>
 
         {/* Avatar Upload */}
@@ -142,89 +141,105 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="sd-label-v3">Full Name <span className="text-rose-500">*</span></label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. Dr. John Doe" value={entityData.name || ""} onChange={e => updateField('name', e.target.value)} />
+            <label className="sd-label-v3">Prefix</label>
+            <select className="sd-input-v3" value={entityData.prefix || ""} onChange={e => updateField('prefix', e.target.value)}>
+              <option value="">Select</option>
+              <option value="Mr.">Mr.</option>
+              <option value="Mrs.">Mrs.</option>
+              <option value="Miss.">Miss.</option>
+              <option value="Dr.">Dr.</option>
+            </select>
           </div>
-          <div>
-            <label className="sd-label-v3">Primary Specialty <span className="text-rose-500">*</span></label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. Cardiologist" value={entityData.primarySpecialty || ""} onChange={e => updateField('primarySpecialty', e.target.value)} />
+          <div className="md:col-span-1">
+            <label className="sd-label-v3">First Name <span className="text-rose-500">*</span></label>
+            <input type="text" className="sd-input-v3" placeholder="e.g. John" value={entityData.firstName || ""} onChange={e => updateField('firstName', e.target.value)} />
           </div>
+          <div className="md:col-span-1">
+            <label className="sd-label-v3">Middle Name</label>
+            <input type="text" className="sd-input-v3" placeholder="" value={entityData.middleName || ""} onChange={e => updateField('middleName', e.target.value)} />
+          </div>
+          <div className="md:col-span-1">
+            <label className="sd-label-v3">Last Name <span className="text-rose-500">*</span></label>
+            <input type="text" className="sd-input-v3" placeholder="e.g. Doe" value={entityData.lastName || ""} onChange={e => updateField('lastName', e.target.value)} />
+          </div>
+        </div>
+        
+        <div className="mt-2 mb-8">
+           <label className="flex items-center gap-3 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+              <input type="checkbox" className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" checked={entityData.isDoctor || false} onChange={e => updateField('isDoctor', e.target.checked)} />
+              <span className="font-bold text-slate-800">I am a registered medical practitioner (Doctor)</span>
+           </label>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
           <div>
             <label className="sd-label-v3">Phone Number <span className="text-rose-500">*</span></label>
             <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.phone || ""} onChange={e => updateField('phone', e.target.value)} />
           </div>
           <div>
-            <label className="sd-label-v3 flex justify-between">
-              Custom Vanity URL 
-              <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold">Premium</span>
+            <label className="sd-label-v3 flex justify-between items-center">
+              WhatsApp Number
+              <label className="flex items-center gap-2 text-xs text-slate-500 cursor-pointer hover:text-teal-600 font-bold normal-case tracking-normal">
+                <input type="checkbox" checked={entityData.whatsapp === entityData.phone && !!entityData.phone} onChange={e => updateField('whatsapp', e.target.checked ? entityData.phone : '')} />
+                Same as Phone
+              </label>
             </label>
-            <div className="flex w-full">
-              <span className="inline-flex items-center px-4 bg-slate-100 border border-r-0 border-slate-200 text-slate-500 rounded-l-2xl font-mono text-sm shrink-0">dehapa.com/doctors/</span>
-              <input type="text" className="sd-input-v3 rounded-none bg-slate-50" disabled value={entityData.customSlug || ""} />
-              <button onClick={() => setIsSlugModalOpen(true)} className="px-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-r-2xl text-sm transition-colors whitespace-nowrap shadow-sm">
-                Reserve URL
-              </button>
-            </div>
+            <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.whatsapp || ""} onChange={e => updateField('whatsapp', e.target.value)} />
           </div>
+          
           <div>
             <label className="sd-label-v3">Date of Birth</label>
             <input type="date" className="sd-input-v3" value={entityData.dob || ""} onChange={e => updateField('dob', e.target.value)} />
           </div>
           <div>
-            <label className="sd-label-v3">Marital Status</label>
-            <select className="sd-input-v3" value={entityData.maritalStatus || ""} onChange={e => updateField('maritalStatus', e.target.value)}>
-              <option value="">Select Status</option>
-              <option value="Single">Single</option>
-              <option value="Married">Married</option>
-              <option value="Divorced">Divorced</option>
-              <option value="Widowed">Widowed</option>
+            <label className="sd-label-v3">Biological Sex</label>
+            <select className="sd-input-v3" value={entityData.sex || ""} onChange={e => updateField('sex', e.target.value)}>
+              <option value="">Select Sex</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
             </select>
           </div>
-        </div>
-
-        <div className="pt-8 border-t border-slate-200/60">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-slate-800">Media Gallery (Up to 10 Images)</h3>
-            <label className="text-sm font-bold text-teal-600 hover:text-teal-700 bg-teal-50 px-4 py-2 rounded-xl transition-colors cursor-pointer inline-flex items-center gap-2">
-              {uploadingGallery ? (
-                <><span className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></span> Uploading...</>
-              ) : (
-                <><span>+</span> Add Gallery Images</>
-              )}
-              <input type="file" multiple accept="image/*" className="hidden" onChange={handleGalleryUpload} disabled={uploadingGallery} />
-            </label>
+          
+          <div>
+            <label className="sd-label-v3">Blood Group</label>
+            <select className="sd-input-v3" value={entityData.bloodGroup || ""} onChange={e => updateField('bloodGroup', e.target.value)}>
+              <option value="">Select Blood Group</option>
+              <option value="A+">A+</option><option value="A-">A-</option>
+              <option value="B+">B+</option><option value="B-">B-</option>
+              <option value="AB+">AB+</option><option value="AB-">AB-</option>
+              <option value="O+">O+</option><option value="O-">O-</option>
+            </select>
           </div>
-          <div className="flex flex-wrap gap-4">
-            {gallery.map((img: string, idx: number) => (
-              <div key={idx} className="relative w-24 h-24 rounded-2xl overflow-hidden border border-slate-200 shadow-sm group">
-                <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
-                <button onClick={() => removeStringArrayItem('galleryImages', idx)} className="absolute top-1 right-1 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity font-bold text-xs shadow-md">×</button>
-              </div>
-            ))}
-            {gallery.length === 0 && !uploadingGallery && (
-              <p className="text-sm text-slate-400 italic">No gallery images uploaded yet.</p>
-            )}
+          <div>
+            <label className="sd-label-v3">Languages Spoken</label>
+            <input type="text" className="sd-input-v3" placeholder="e.g. English, Odia, Hindi" value={entityData.languages || ""} onChange={e => updateField('languages', e.target.value)} />
           </div>
         </div>
 
-        <div className="pt-8 border-t border-slate-200/60">
-          <h3 className="text-xl font-bold text-slate-800 mb-6">Featured YouTube Videos (Up to 10)</h3>
-          <div className="grid grid-cols-1 gap-4">
-            {youtube.map((vid: string, idx: number) => (
-              <div key={idx} className="flex gap-2">
-                <input type="text" className="sd-input-v3 font-mono text-sm py-3" placeholder="https://youtube.com/watch?v=..." value={vid} onChange={e => handleStringArrayUpdate('youtubeLinks', idx, e.target.value)} />
-                <button onClick={() => removeStringArrayItem('youtubeLinks', idx)} className="px-4 bg-rose-50 hover:bg-rose-100 text-rose-500 rounded-xl transition-colors font-bold text-xl">×</button>
-              </div>
-            ))}
-          </div>
-          {youtube.length < 10 && (
-            <button onClick={() => addStringArrayItem('youtubeLinks')} className="mt-4 text-sm font-bold text-rose-600 hover:text-rose-700 bg-rose-50 px-4 py-2 rounded-xl transition-colors inline-flex items-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-              Add YouTube Link
-            </button>
-          )}
+        <div className="pt-8 border-t border-slate-200/60 mt-8">
+           <h3 className="text-xl font-bold text-slate-800 mb-6">Address & Location</h3>
+           <AddressBlock 
+             data={{
+               country: entityData.country || "India",
+               state: entityData.state || "",
+               district: entityData.district || "",
+               block: entityData.block || "",
+               city: entityData.city || "",
+               pincode: entityData.pincode || "",
+               localAddress: entityData.localAddress || "",
+             }} 
+             onChange={(newData) => setEntityData({ ...entityData, ...newData })} 
+           />
+           <div className="mt-6">
+             <label className="sd-label-v3 flex justify-between">
+               Google Maps PIN URL
+               <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded uppercase tracking-wider font-bold flex items-center gap-1 hover:bg-red-200">FIND PIN 📍</a>
+             </label>
+             <input type="text" className="sd-input-v3 font-mono text-sm" placeholder="https://maps.app.goo.gl/..." value={entityData.mapUrl || ""} onChange={e => updateField('mapUrl', e.target.value)} />
+           </div>
         </div>
         
         <PremiumSlugModal 
@@ -242,6 +257,8 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     const exps = Array.isArray(entityData.experiences) ? entityData.experiences : [];
     const research = Array.isArray(entityData.research) ? entityData.research : [];
     const awards = Array.isArray(entityData.awards) ? entityData.awards : [];
+    const gallery = Array.isArray(entityData.galleryImages) ? entityData.galleryImages : [];
+    const youtube = Array.isArray(entityData.youtubeLinks) ? entityData.youtubeLinks : [];
 
     return (
       <div className="space-y-10">
@@ -252,6 +269,23 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
           <div>
+            <label className="sd-label-v3">Primary Specialty <span className="text-rose-500">*</span></label>
+            <input type="text" className="sd-input-v3" placeholder="e.g. Cardiologist" value={entityData.primarySpecialty || ""} onChange={e => updateField('primarySpecialty', e.target.value)} />
+          </div>
+          <div>
+            <label className="sd-label-v3 flex justify-between">
+              Custom Vanity URL 
+              <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold">Premium</span>
+            </label>
+            <div className="flex w-full">
+              <span className="inline-flex items-center px-4 bg-slate-100 border border-r-0 border-slate-200 text-slate-500 rounded-l-2xl font-mono text-sm shrink-0">dehapa.com/doctors/</span>
+              <input type="text" className="sd-input-v3 rounded-none bg-slate-50" disabled value={entityData.customSlug || ""} />
+              <button onClick={() => setIsSlugModalOpen(true)} className="px-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-r-2xl text-sm transition-colors whitespace-nowrap shadow-sm">
+                Reserve URL
+              </button>
+            </div>
+          </div>
+          <div>
             <label className="sd-label-v3 flex justify-between">
               Medical Registration No. <span className="text-rose-500">*</span>
               {entityData.registrationNumber && <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Verified</span>}
@@ -259,8 +293,14 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
             <input type="text" className="sd-input-v3 font-mono uppercase" placeholder="e.g. 12345 (State Medical Council)" value={entityData.registrationNumber || ""} onChange={e => updateField('registrationNumber', e.target.value)} />
           </div>
           <div>
-            <label className="sd-label-v3">Languages Spoken</label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. English, Odia, Hindi" value={entityData.languages || ""} onChange={e => updateField('languages', e.target.value)} />
+            <label className="sd-label-v3">Marital Status</label>
+            <select className="sd-input-v3" value={entityData.maritalStatus || ""} onChange={e => updateField('maritalStatus', e.target.value)}>
+              <option value="">Select Status</option>
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Divorced">Divorced</option>
+              <option value="Widowed">Widowed</option>
+            </select>
           </div>
         </div>
 
@@ -381,6 +421,49 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
             </div>
           ))}
           <button onClick={() => addArrayItem('awards')} className="text-sm font-bold text-amber-600 hover:text-amber-700 bg-amber-50 px-5 py-3 rounded-xl transition-colors">+ Add Award</button>
+        </div>
+
+        <div className="pt-8 border-t border-slate-200/60">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-slate-800">Media Gallery (Up to 10 Images)</h3>
+            <label className="text-sm font-bold text-teal-600 hover:text-teal-700 bg-teal-50 px-4 py-2 rounded-xl transition-colors cursor-pointer inline-flex items-center gap-2">
+              {uploadingGallery ? (
+                <><span className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></span> Uploading...</>
+              ) : (
+                <><span>+</span> Add Gallery Images</>
+              )}
+              <input type="file" multiple accept="image/*" className="hidden" onChange={handleGalleryUpload} disabled={uploadingGallery} />
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            {gallery.map((img: string, idx: number) => (
+              <div key={idx} className="relative w-24 h-24 rounded-2xl overflow-hidden border border-slate-200 shadow-sm group">
+                <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                <button onClick={() => removeStringArrayItem('galleryImages', idx)} className="absolute top-1 right-1 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity font-bold text-xs shadow-md">×</button>
+              </div>
+            ))}
+            {gallery.length === 0 && !uploadingGallery && (
+              <p className="text-sm text-slate-400 italic">No gallery images uploaded yet.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="pt-8 border-t border-slate-200/60">
+          <h3 className="text-xl font-bold text-slate-800 mb-6">Featured YouTube Videos (Up to 10)</h3>
+          <div className="grid grid-cols-1 gap-4">
+            {youtube.map((vid: string, idx: number) => (
+              <div key={idx} className="flex gap-2">
+                <input type="text" className="sd-input-v3 font-mono text-sm py-3" placeholder="https://youtube.com/watch?v=..." value={vid} onChange={e => handleStringArrayUpdate('youtubeLinks', idx, e.target.value)} />
+                <button onClick={() => removeStringArrayItem('youtubeLinks', idx)} className="px-4 bg-rose-50 hover:bg-rose-100 text-rose-500 rounded-xl transition-colors font-bold text-xl">×</button>
+              </div>
+            ))}
+          </div>
+          {youtube.length < 10 && (
+            <button onClick={() => addStringArrayItem('youtubeLinks')} className="mt-4 text-sm font-bold text-rose-600 hover:text-rose-700 bg-rose-50 px-4 py-2 rounded-xl transition-colors inline-flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+              Add YouTube Link
+            </button>
+          )}
         </div>
       </div>
     );
