@@ -390,7 +390,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     type="text" 
                     value={entityData.ownerName || ''}
                     onChange={e => setEntityData({ ...entityData, ownerName: e.target.value })}
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
                 <div>
@@ -401,7 +401,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     type="text" 
                     value={entityData.legalEntityName || ''}
                     onChange={e => setEntityData({ ...entityData, legalEntityName: e.target.value })}
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
               </div>
@@ -604,7 +604,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     type="text" 
                     value={entityData.name || ''}
                     onChange={e => setEntityData({ ...entityData, name: e.target.value })}
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
                 <div>
@@ -615,7 +615,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     type="text" 
                     value={entityData.phone || ''}
                     onChange={e => setEntityData({ ...entityData, phone: e.target.value })}
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -642,7 +642,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   value={entityData.about || ''}
                   onChange={e => setEntityData({ ...entityData, about: e.target.value })}
                   rows={4}
-                  className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all resize-none" 
+                  className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all resize-none" 
                 />
               </div>
 
@@ -681,7 +681,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankAccountName || ''}
                     onChange={e => setEntityData({ ...entityData, bankAccountName: e.target.value })}
                     placeholder="e.g. XYZ Pvt Ltd"
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
                 <div>
@@ -693,7 +693,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankName || ''}
                     onChange={e => setEntityData({ ...entityData, bankName: e.target.value })}
                     placeholder="e.g. HDFC Bank"
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
               </div>
@@ -708,7 +708,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankAccountNumber || ''}
                     onChange={e => setEntityData({ ...entityData, bankAccountNumber: e.target.value })}
                     placeholder="14-digit Account No."
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
                 <div>
@@ -720,7 +720,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankIfscCode || ''}
                     onChange={e => setEntityData({ ...entityData, bankIfscCode: e.target.value.toUpperCase() })}
                     placeholder="e.g. HDFC0001234"
-                    className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
               </div>
@@ -805,7 +805,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                  value={entityData.mapUrl || ''}
                  onChange={e => setEntityData({ ...entityData, mapUrl: e.target.value })}
                  placeholder="<iframe src='...' /> or https://www.google.com/maps/embed?pb=..."
-                 className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                 className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                />
             </div>
             <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
@@ -882,7 +882,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                                 onChange={e => setEntityData({...entityData, [field.key]: e.target.value})} 
                                 placeholder={field.placeholder}
                                 rows={3}
-                                className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all resize-none"
+                                className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all resize-none"
                               />
                           ) : field.type === 'image_upload' ? (
                               <ImageUpload 
@@ -899,7 +899,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                               <select 
                                 value={entityData[field.key] || ''} 
                                 onChange={e => setEntityData({...entityData, [field.key]: e.target.value})}
-                                className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all"
+                                className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all"
                               >
                                 <option value="">Select option</option>
                                 {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -920,7 +920,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                                 value={entityData[field.key] || ''} 
                                 onChange={e => setEntityData({...entityData, [field.key]: e.target.value})} 
                                 placeholder={field.placeholder}
-                                className="w-full bg-white/60 backdrop-blur-md border border-white/60 hover:border-white rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all"
+                                className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all"
                               />
                           )}
                         </div>

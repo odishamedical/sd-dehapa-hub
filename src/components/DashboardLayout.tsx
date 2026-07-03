@@ -143,11 +143,11 @@ export default function DashboardLayout({
                     onClick={() => { onTabChange(tab.id); if (isMobile) setIsMobileMenuOpen(false); }} 
                     className={`w-full text-left pl-3 pr-4 py-3 rounded-r-xl transition-all flex items-center justify-between group hover:translate-x-1 duration-200 ${tintClasses}`}
                   >
-                    <div className="flex items-center gap-3 truncate">
-                      <div className={isActive ? 'text-teal-600 drop-shadow-[0_0_4px_rgba(20,184,166,0.3)]' : 'text-slate-400 group-hover:text-slate-600 transition-colors'}>
+                    <div className="flex items-center gap-3">
+                      <div className={isActive ? 'text-teal-600 drop-shadow-[0_0_4px_rgba(20,184,166,0.3)] shrink-0' : 'text-slate-400 group-hover:text-slate-600 transition-colors shrink-0'}>
                         {tab.icon}
                       </div>
-                      <span className="truncate">{tab.label}</span>
+                      <span className="whitespace-normal break-words leading-tight text-sm">{tab.label}</span>
                     </div>
                     {tab.badge !== undefined && (
                       <span className="ml-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 shadow-sm shadow-rose-200">
