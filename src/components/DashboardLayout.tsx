@@ -183,9 +183,9 @@ export default function DashboardLayout({
       
       {/* Premium Soft-Light Background Orbs */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-200/40 blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-200/30 blur-[140px] animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-indigo-200/30 blur-[100px] animate-pulse" style={{animationDelay: '4s'}}></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-300/50 blur-[100px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-300/40 blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-cyan-300/40 blur-[90px] animate-pulse" style={{animationDelay: '4s'}}></div>
       </div>
 
       {/* Main Header (Sticky) */}

@@ -34,7 +34,7 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
         <div className="md:col-span-1">
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Prefix</label>
           <select 
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" 
+            className="w-full bg-white/50 backdrop-blur-xl border border-white/60 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" 
             value={entityData.prefix || ""} 
             onChange={e => updateField('prefix', e.target.value)}
           >
@@ -70,7 +70,7 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
         
         <div>
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Biological Sex</label>
-          <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={entityData.sex || ""} onChange={e => updateField('sex', e.target.value)}>
+          <select className="w-full bg-white/50 backdrop-blur-xl border border-white/60 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={entityData.sex || ""} onChange={e => updateField('sex', e.target.value)}>
             <option value="">Select Sex</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -79,7 +79,7 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
         </div>
         <div>
           <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Blood Group</label>
-          <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={entityData.bloodGroup || ""} onChange={e => updateField('bloodGroup', e.target.value)}>
+          <select className="w-full bg-white/50 backdrop-blur-xl border border-white/60 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={entityData.bloodGroup || ""} onChange={e => updateField('bloodGroup', e.target.value)}>
             <option value="">Select Blood Group</option>
             <option value="A+">A+</option><option value="A-">A-</option>
             <option value="B+">B+</option><option value="B-">B-</option>
@@ -97,7 +97,7 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
       {/* 2. Professional Designation Checkbox (Conditional) */}
       {(portalType === 'hospital' || portalType === 'lab') && (
         <div className="my-6">
-           <label className="flex items-center gap-3 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+           <label className="flex items-center gap-3 cursor-pointer p-4 bg-white/50 backdrop-blur-xl border border-white/60 rounded-xl hover:bg-slate-100 transition-colors">
               <input type="checkbox" className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" checked={entityData.isDoctor || false} onChange={e => updateField('isDoctor', e.target.checked)} />
               <span className="font-bold text-slate-800">I am a registered medical practitioner (Doctor)</span>
            </label>
@@ -106,7 +106,7 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
 
       {portalType === 'pharmacy' && (
         <div className="my-6">
-           <label className="flex items-center gap-3 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+           <label className="flex items-center gap-3 cursor-pointer p-4 bg-white/50 backdrop-blur-xl border border-white/60 rounded-xl hover:bg-slate-100 transition-colors">
               <input type="checkbox" className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" checked={entityData.isPharmacist || false} onChange={e => updateField('isPharmacist', e.target.checked)} />
               <span className="font-bold text-slate-800">I am a registered Pharmacist</span>
            </label>

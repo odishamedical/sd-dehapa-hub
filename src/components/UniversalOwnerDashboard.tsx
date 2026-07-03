@@ -372,7 +372,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* OWNER KYC TAB */}
         {activeTab === "owner_kyc" && (
-          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Owner Verification (KYC)</h3>
             
             <div className="mb-8 bg-amber-50 border border-amber-200 p-6 rounded-2xl">
@@ -436,7 +436,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* STAFF MANAGEMENT TAB */}
         {activeTab === "staff_management" && (
-          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
               <h3 className="text-xl font-bold text-slate-900">Staff & Team Access</h3>
               <button 
@@ -450,7 +450,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               </button>
             </div>
 
-            <div className="mb-6 bg-slate-50 border border-slate-200 p-6 rounded-2xl">
+            <div className="mb-6 bg-white/50 backdrop-blur-xl border border-white/60 p-6 rounded-2xl">
               <h4 className="font-bold text-slate-800 mb-2">Delegated Access</h4>
               <p className="text-sm text-slate-600">Invite your receptionists, managers, or doctors to access this dashboard. You can revoke their access at any time.</p>
             </div>
@@ -487,7 +487,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                             newStaff[idx].name = e.target.value;
                             setEntityData({ ...entityData, staffList: newStaff });
                           }}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" 
+                          className="w-full bg-white/50 backdrop-blur-xl border border-white/60 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" 
                         />
                       </div>
                       <div>
@@ -501,7 +501,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                             newStaff[idx].email = e.target.value;
                             setEntityData({ ...entityData, staffList: newStaff });
                           }}
-                          className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" 
+                          className="w-full bg-white/50 backdrop-blur-xl border border-white/60 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" 
                         />
                       </div>
                       <div>
@@ -514,7 +514,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                               newStaff[idx].role = e.target.value;
                               setEntityData({ ...entityData, staffList: newStaff });
                             }}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                            className="w-full bg-white/50 backdrop-blur-xl border border-white/60 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
                           >
                             <option value="Admin">Full Admin</option>
                             <option value="Receptionist">Receptionist (Bookings Only)</option>
@@ -547,7 +547,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* PERSONAL INFORMATION TAB */}
         {activeTab === "personal" && (
-          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Personal Information</h3>
             <UniversalPersonalForm 
               entityData={entityData} 
@@ -560,10 +560,10 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* IDENTITY TAB */}
         {activeTab === "identity" && (
-          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Property Identity & Info</h3>
             
-            <div className="mb-8 p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
+            <div className="mb-8 p-4 bg-white/50 backdrop-blur-xl border border-white/60 rounded-2xl flex items-center justify-between">
               <div>
                 <h4 className="font-bold text-slate-800">Profile Visibility</h4>
                 <p className="text-xs text-slate-500">
@@ -662,7 +662,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* BANK DETAILS TAB */}
         {activeTab === "bank_details" && (
-          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Bank & Payout Details</h3>
             
             <div className="mb-8 bg-emerald-50 border border-emerald-200 p-6 rounded-2xl">
@@ -744,7 +744,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* DOCUMENT VAULT TAB */}
         {activeTab === "document_vault" && (
-          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Document Vault</h3>
             
             <div className="mb-8 bg-blue-50 border border-blue-200 p-6 rounded-2xl">
@@ -773,7 +773,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* LOCATION TAB */}
         {activeTab === "location" && (
-          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Location & Address</h3>
             <AddressBlock 
               data={{
@@ -818,7 +818,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         {categoryConfig?.tabs.map(tab => {
           if (activeTab === tab.id) {
             return (
-              <div key={tab.id} className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+              <div key={tab.id} className="bg-white/70 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80 animate-in fade-in slide-in-from-bottom-4">
                 <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">{tab.label}</h3>
 
                 <div className="space-y-8">
@@ -990,15 +990,15 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
           <div className="bg-white/80 backdrop-blur-xl border border-slate-200 shadow-xl rounded-3xl p-8 md:p-12 animate-in fade-in zoom-in-95 duration-500">
             <h2 className="text-3xl font-black text-slate-900 mb-6 font-serif">Frequently Asked Questions</h2>
             <div className="space-y-4">
-              <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl">
+              <div className="bg-white/50 backdrop-blur-xl border border-white/60 p-6 rounded-2xl">
                 <h3 className="font-bold text-slate-800 mb-2">Why can't I select multiple Primary Facility Types?</h3>
                 <p className="text-sm text-slate-600">To maintain directory integrity, you must choose your core identity (e.g. Nursing Home). You can then use the "Add-On Services" field to indicate additional capabilities like an In-House Pharmacy or Blood Bank.</p>
               </div>
-              <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl">
+              <div className="bg-white/50 backdrop-blur-xl border border-white/60 p-6 rounded-2xl">
                 <h3 className="font-bold text-slate-800 mb-2">Why do I need to upload my PCPNDT Certificate?</h3>
                 <p className="text-sm text-slate-600">If you claim to offer "Radiology & Imaging", Indian law mandates a valid PCPNDT registration. This document verification is required to maintain the safety and legality of the DehaPa network.</p>
               </div>
-              <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl">
+              <div className="bg-white/50 backdrop-blur-xl border border-white/60 p-6 rounded-2xl">
                 <h3 className="font-bold text-slate-800 mb-2">How do I get help?</h3>
                 <p className="text-sm text-slate-600">You can reach our dedicated support team 24/7 at support@dehapa.com or call our partner hotline.</p>
               </div>
