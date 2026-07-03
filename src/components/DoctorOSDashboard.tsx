@@ -438,54 +438,11 @@ export default function DoctorOSDashboard() {
         
         {/* TAB ROUTING */}
         
-        {/* TAB ROUTING */}
+          {/* TAB ROUTING */}
         
         <div className="relative w-full min-h-[600px]">
-          {/* Top Banner & Educational Lock Overlay */}
-          {!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" && (() => {
-            const feature = getLockedFeatureContent(activeTab);
-            return (
-              <div className="absolute inset-0 z-50 flex flex-col items-center p-6 bg-slate-900/5 backdrop-blur-[6px] rounded-[2rem] overflow-hidden">
-                {/* The Red Top Banner as requested by user */}
-                <div className="w-full bg-gradient-to-r from-rose-500 to-red-600 rounded-2xl p-4 shadow-lg shadow-rose-500/20 text-white flex flex-col md:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500 relative overflow-hidden">
-                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                   <div className="flex items-center gap-4 relative z-10">
-                     <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0 backdrop-blur-md">
-                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                     </div>
-                     <div>
-                       <h3 className="font-black text-lg md:text-xl tracking-tight">Dehapa feature: {feature.title}</h3>
-                       <p className="text-rose-100 text-sm font-medium mt-0.5">This module will be unlocked when you complete the previous step.</p>
-                     </div>
-                   </div>
-                   <button onClick={() => setActiveTab('settings')} className="shrink-0 px-6 py-2.5 bg-white text-rose-600 hover:bg-rose-50 font-black rounded-xl shadow-sm transition-colors text-sm flex items-center gap-2 relative z-10">
-                     Resume Profile Setup <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md text-xs">{progress}%</span>
-                   </button>
-                </div>
-                
-                {/* The Educational Spotlight Card (Floating in center over the blurred UI) */}
-                <div className="mt-auto mb-auto bg-white/95 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] max-w-2xl w-full border border-slate-200/60 animate-in zoom-in-95 duration-700 delay-150 relative z-10">
-                  <div className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest rounded-lg mb-4">Why use this?</div>
-                  <h2 className="text-3xl font-black text-slate-900 mb-4 font-display">How {feature.title} Works</h2>
-                  <p className="text-slate-600 text-lg leading-relaxed mb-8">{feature.description}</p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    {feature.benefits.map((benefit, i) => (
-                      <div key={i} className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center gap-3">
-                        <span className="text-sm font-bold text-slate-700 leading-tight">{benefit}</span>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <button onClick={() => setActiveTab('settings')} className="w-full py-4 bg-slate-900 text-white font-black text-lg rounded-xl shadow-xl shadow-slate-900/20 hover:scale-[1.02] transition-transform">
-                    Unlock {feature.title} Now
-                  </button>
-                </div>
-              </div>
-            );
-          })()}
           
-          <div className={`transition-all duration-500 ${!isFullySetup && activeTab !== "settings" && activeTab !== "home" && activeTab !== "faq" ? "pointer-events-none select-none opacity-50 grayscale-[0.3]" : ""}`}>
+          <div className="transition-all duration-500">
         
         {activeTab === "home" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -898,7 +855,29 @@ export default function DoctorOSDashboard() {
                ))}
              </div>
 
-             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+             <div className="bg-slate-900 border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl">
+               {activeTab === 'identity' && (
+                 <div className="mb-8 p-4 bg-black/20 backdrop-blur-3xl border border-white/10 rounded-2xl flex items-center justify-between">
+                   <div>
+                     <h4 className="font-bold text-white">Profile Visibility</h4>
+                     <p className="text-xs text-slate-500">
+                       {progress < 100 
+                         ? "Complete all mandatory fields to enable publication." 
+                         : "When turned on, your profile will be visible in the public directory."}
+                     </p>
+                   </div>
+                   <label className={`relative inline-flex items-center ${progress < 100 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
+                     <input 
+                       type="checkbox" 
+                       className="sr-only peer" 
+                       checked={entityData.isPublished === true}
+                       disabled={progress < 100}
+                       onChange={(e) => setEntityData({ ...entityData, isPublished: e.target.checked })}
+                     />
+                     <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+                   </label>
+                 </div>
+               )}
                <DoctorV2Forms activeTab={activeTab} entityData={entityData} setEntityData={setEntityData} />
              </div>
            </div>
