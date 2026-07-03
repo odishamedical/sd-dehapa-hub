@@ -438,7 +438,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         {activeTab === "staff_management" && (
           <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
             <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
-              <h3 className="text-xl font-bold text-slate-900">Staff & Team Access</h3>
+              <h3 className="text-xl font-bold text-white">Staff & Team Access</h3>
               <button 
                 onClick={() => {
                   const staff = entityData.staffList || [];
@@ -1009,7 +1009,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         {/* BOTTOM WIZARD NAVIGATION */}
         {activeTab !== "home" && (
           <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-6 mt-12 mb-20 animate-in fade-in slide-in-from-bottom-2">
-            <button onClick={() => setActiveTab("home")} className="text-slate-500 hover:text-slate-900 font-bold px-6 py-4 transition-colors">
+            <button onClick={() => setActiveTab("home")} className="text-slate-400 hover:text-white font-bold px-6 py-4 transition-colors">
               Return to Dashboard
             </button>
             

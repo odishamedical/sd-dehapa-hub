@@ -517,7 +517,7 @@ export default function DoctorOSDashboard() {
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 font-display">Live Queue</h1>
+                <h1 className="text-2xl font-bold text-white font-display">Live Queue</h1>
                 <p className="text-slate-500 text-sm mt-1">Manage your walk-ins and virtual consultations</p>
               </div>
               <div className="flex gap-2">
@@ -620,7 +620,7 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">Smart Calendar</h1>
+                 <h1 className="text-2xl font-bold text-white font-display">Smart Calendar</h1>
                  <p className="text-slate-500 text-sm mt-1">Manage your clinic hours, surgery blocks, and appointments</p>
                </div>
                <div className="flex gap-2">
@@ -687,7 +687,7 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">Patient EMR & Vault</h1>
+                 <h1 className="text-2xl font-bold text-white font-display">Patient EMR & Vault</h1>
                  <p className="text-slate-500 text-sm mt-1">Access global health records via Dehapa QR</p>
                </div>
              </div>
@@ -699,7 +699,7 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">Digital Clinic Register</h1>
+                 <h1 className="text-2xl font-bold text-white font-display">Digital Clinic Register</h1>
                  <p className="text-slate-500 text-sm mt-1">Daily patient ledger and financial summary</p>
                </div>
                <div className="flex gap-2">
@@ -799,7 +799,7 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              {!isFullySetup && (
                <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-100 p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-center">
-                 <div className="w-20 h-20 shrink-0">
+                 <div className="w-20 h-20 shrink-0 relative pointer-events-none">
                    {/* Circular Progress */}
                    <svg viewBox="0 0 36 36" className="w-full h-full text-teal-500">
                       <path className="text-teal-100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -816,7 +816,7 @@ export default function DoctorOSDashboard() {
 
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">Clinic Profile Builder</h1>
+                 <h1 className="text-2xl font-bold text-white font-display">Clinic Profile Builder</h1>
                  <p className="text-slate-500 text-sm mt-1">Configure your public page and payouts</p>
                </div>
                <div className="flex gap-4 items-center">
@@ -837,7 +837,7 @@ export default function DoctorOSDashboard() {
                </div>
              </div>
              
-             <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 custom-scrollbar">
+             <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 custom-scrollbar relative z-10">
                {[
                  { id: "identity", label: "Personal Details" },
                  { id: "professional", label: "Professional Bio" },
@@ -888,7 +888,7 @@ export default function DoctorOSDashboard() {
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
-                 <h1 className="text-2xl font-bold text-slate-900 font-display">My Network</h1>
+                 <h1 className="text-2xl font-bold text-white font-display">My Network</h1>
                  <p className="text-slate-500 text-sm mt-1">Manage and engage with your connected patient base</p>
                </div>
                <div className="flex gap-2">
