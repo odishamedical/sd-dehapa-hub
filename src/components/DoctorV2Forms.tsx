@@ -242,7 +242,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         </div>
 
         <div className="pt-8 border-t border-slate-200/60">
-          <h3 className="text-xl font-bold text-slate-800 mb-6">Qualifications & Education</h3>
+          <h3 className="text-xl font-bold text-slate-200 mb-6">Qualifications & Education</h3>
           {quals.map((q: any, idx: number) => (
             <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-slate-200 mb-4 relative">
               <button onClick={() => removeArrayItem('qualificationsList', idx)} className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 font-bold">Remove</button>
@@ -273,7 +273,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         </div>
 
         <div className="pt-8 border-t border-slate-200/60">
-          <h3 className="text-xl font-bold text-slate-800 mb-6">Work Experience</h3>
+          <h3 className="text-xl font-bold text-slate-200 mb-6">Work Experience</h3>
           {exps.map((exp: any, idx: number) => (
             <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-slate-200 mb-4 relative">
               <button onClick={() => removeArrayItem('experiences', idx)} className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 font-bold">Remove</button>
@@ -304,7 +304,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         </div>
 
         <div className="pt-8 border-t border-slate-200/60">
-          <h3 className="text-xl font-bold text-slate-800 mb-6">Research & Publications</h3>
+          <h3 className="text-xl font-bold text-slate-200 mb-6">Research & Publications</h3>
           {research.map((res: any, idx: number) => (
             <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-slate-200 mb-4 relative">
               <button onClick={() => removeArrayItem('research', idx)} className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 font-bold">Remove</button>
@@ -332,7 +332,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         </div>
 
         <div className="pt-8 border-t border-slate-200/60">
-          <h3 className="text-xl font-bold text-slate-800 mb-6">Awards & Recognitions</h3>
+          <h3 className="text-xl font-bold text-slate-200 mb-6">Awards & Recognitions</h3>
           {awards.map((aw: any, idx: number) => (
             <div key={idx} className="bg-amber-50/30 p-6 rounded-2xl border border-amber-200/50 mb-4 relative">
               <button onClick={() => removeArrayItem('awards', idx)} className="absolute top-4 right-4 text-amber-400 hover:text-rose-500 font-bold">Remove</button>
@@ -357,7 +357,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
 
         <div className="pt-8 border-t border-slate-200/60">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-slate-800">Media Gallery (Up to 10 Images)</h3>
+            <h3 className="text-xl font-bold text-slate-200">Media Gallery (Up to 10 Images)</h3>
             <label className="text-sm font-bold text-teal-600 hover:text-teal-700 bg-teal-50 px-4 py-2 rounded-xl transition-colors cursor-pointer inline-flex items-center gap-2">
               {uploadingGallery ? (
                 <><span className="w-4 h-4 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></span> Uploading...</>
@@ -381,7 +381,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         </div>
 
         <div className="pt-8 border-t border-slate-200/60">
-          <h3 className="text-xl font-bold text-slate-800 mb-6">Featured YouTube Videos (Up to 10)</h3>
+          <h3 className="text-xl font-bold text-slate-200 mb-6">Featured YouTube Videos (Up to 10)</h3>
           <div className="grid grid-cols-1 gap-4">
             {youtube.map((vid: string, idx: number) => (
               <div key={idx} className="flex gap-2">
@@ -413,7 +413,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-3"><span className="text-3xl">🏥</span> Physical In-Clinic Visit</h3>
+              <h3 className="text-xl font-bold text-slate-200 flex items-center gap-3"><span className="text-3xl">🏥</span> Physical In-Clinic Visit</h3>
               <p className="text-slate-500 text-sm mt-1">Patients book appointments to visit your physical clinic.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -433,7 +433,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
           <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-6">
             <div>
-              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-3"><span className="text-3xl">💻</span> Scheduled Video Call</h3>
+              <h3 className="text-xl font-bold text-slate-200 flex items-center gap-3"><span className="text-3xl">💻</span> Scheduled Video Call</h3>
               <p className="text-slate-500 text-sm mt-1">Standard telemedicine consultations over DehaPa Video.</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -566,7 +566,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         </div>
 
         <div className="pt-8 border-t border-slate-200/60">
-          <h3 className="text-xl font-bold text-slate-800 mb-6">Clinic Timings (Split Shifts)</h3>
+          <h3 className="text-xl font-bold text-slate-200 mb-6">Clinic Timings (Split Shifts)</h3>
           {timings.map((tm: any, idx: number) => (
             <div key={idx} className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100 mb-4 relative">
               <button onClick={() => removeArrayItem('clinicTimings', idx)} className="absolute top-4 right-4 text-indigo-400 hover:text-rose-500 font-bold">Remove</button>
@@ -647,7 +647,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
 
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
            <div className="p-6 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-             <h3 className="text-lg font-bold text-slate-800">Authorized Staff</h3>
+             <h3 className="text-lg font-bold text-slate-200">Authorized Staff</h3>
              <button onClick={() => addArrayItem('staff')} className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm shadow-teal-200">
                + Add Staff Member
              </button>
