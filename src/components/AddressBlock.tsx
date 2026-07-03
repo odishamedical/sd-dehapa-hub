@@ -81,13 +81,9 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
   const hasOdishaDistricts = isOdisha && districtsByState["Odisha"];
   const hasBlocks = isOdisha && data.district && blocksByDistrict[data.district];
 
-  const labelClass = darkTheme 
-    ? "block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2" 
-    : "block text-sm font-semibold text-slate-800 mb-2";
+  const labelClass = "sd-label-v3";
 
-  const inputClass = darkTheme
-    ? "w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors mb-2"
-    : "w-full bg-slate-900/5 backdrop-blur-md shadow-[inset_0_4px_8px_rgba(0,0,0,0.08),0_1px_1px_rgba(255,255,255,0.6)] border border-slate-900/5 rounded-xl px-5 py-3.5 text-sm text-slate-800 focus:bg-slate-900/10 focus:ring-2 focus:ring-slate-900/20 outline-none transition-all mb-2";
+  const inputClass = "sd-input-v3 mb-2";
 
   return (
     <div className="space-y-6">
@@ -139,16 +135,16 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
         )}
 
         <div className="pt-2 border-t border-sky-500/20">
-          <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between items-center">
+          <label className="sd-label-v3 flex justify-between items-center">
             <span>Or paste Google Map Pin URL</span>
-            <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="text-sky-600 hover:underline normal-case">Find Pin 📍</a>
+            <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="text-sky-400 hover:underline normal-case">Find Pin 📍</a>
           </label>
           <input 
             type="url"
             value={data.mapPin || ''}
             onChange={e => updateField('mapPin', e.target.value)}
             placeholder="https://maps.app.goo.gl/..."
-            className="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-sky-500 outline-none font-mono text-sm"
+            className="sd-input-v3 font-mono"
           />
         </div>
       </div>
