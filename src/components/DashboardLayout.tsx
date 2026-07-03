@@ -105,7 +105,7 @@ export default function DashboardLayout({
           let headerTextClass = "text-xs uppercase tracking-wider transition-all duration-300 font-bold";
           let headerColorClass = isExpanded 
             ? "text-cyan-400 font-black shadow-sm" 
-            : "text-slate-600 hover:text-slate-900";
+            : "text-slate-400 hover:text-white";
             
           let headerBgClass = isExpanded
             ? "bg-cyan-500/10 backdrop-blur-3xl border border-cyan-500/20 shadow-[0_8px_30px_rgba(20,184,166,0.2)] ring-1 ring-teal-500/30 scale-[1.02]"
@@ -129,13 +129,13 @@ export default function DashboardLayout({
               </div>
             )}
             
-            <div className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out ${isAccordion ? (isExpanded ? 'max-h-[800px] opacity-100 mt-3 p-2 bg-white/40 backdrop-blur-2xl rounded-xl border border-white/60 shadow-[inset_0_2px_10px_rgba(255,255,255,0.7)]' : 'max-h-0 opacity-0 m-0 p-0 border-transparent') : ''}`}>
+            <div className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out ${isAccordion ? (isExpanded ? 'max-h-[800px] opacity-100 mt-3 p-2 bg-black/20 backdrop-blur-3xl rounded-xl border border-white/10 shadow-inner' : 'max-h-0 opacity-0 m-0 p-0 border-transparent') : ''}`}>
               {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
                 const tintClasses = isActive 
-                  ? 'bg-gradient-to-r from-teal-500/20 to-teal-400/5 backdrop-blur-xl border-l-4 border-teal-500 text-cyan-400 font-black shadow-lg ring-1 ring-white/80 scale-[1.02] transform' 
-                  : 'text-slate-700 hover:bg-white/80 backdrop-blur-md hover:text-slate-900 border-l-4 border-transparent hover:border-teal-300 shadow-[0_2px_8px_rgba(0,0,0,0.02)] font-semibold';
+                  ? 'bg-gradient-to-r from-teal-500/20 to-teal-400/5 backdrop-blur-xl border-l-4 border-teal-500 text-cyan-400 font-black shadow-lg ring-1 ring-cyan-500/50 scale-[1.02] transform' 
+                  : 'text-slate-400 hover:bg-white/10 backdrop-blur-md hover:text-white border-l-4 border-transparent hover:border-cyan-400 shadow-[0_2px_8px_rgba(0,0,0,0.2)] font-semibold';
                 
                 return (
                   <button 
@@ -144,7 +144,7 @@ export default function DashboardLayout({
                     className={`w-full text-left pl-3 pr-4 py-3 rounded-r-xl transition-all flex items-center justify-between group hover:translate-x-1 duration-200 ${tintClasses}`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={isActive ? 'text-teal-600 drop-shadow-[0_0_4px_rgba(20,184,166,0.3)] shrink-0' : 'text-slate-400 group-hover:text-slate-600 transition-colors shrink-0'}>
+                      <div className={isActive ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] shrink-0' : 'text-slate-500 group-hover:text-white transition-colors shrink-0'}>
                         {tab.icon}
                       </div>
                       <span className="whitespace-normal break-words leading-tight text-sm">{tab.label}</span>
@@ -231,19 +231,19 @@ export default function DashboardLayout({
         <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
           <div className="sticky top-[100px] bg-white/5 backdrop-blur-3xl p-6 rounded-[2rem] shadow-2xl border border-white/10 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             {userProfile && (
-              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
+              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/10">
                 {userProfile.image ? (
-                  <img src={userProfile.image} alt={userProfile.name} className="w-12 h-12 rounded-full object-cover shrink-0 border border-white" />
+                  <img src={userProfile.image} alt={userProfile.name} className="w-12 h-12 rounded-full object-cover shrink-0 border border-white/20" />
                 ) : (
-                  <div className="w-12 h-12 bg-teal-100 border border-teal-200 text-teal-700 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
+                  <div className="w-12 h-12 bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
                     {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                 )}
                 <div className="overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-1 group" onClick={() => setShowQRModal(true)}>
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-slate-900 truncate group-hover:text-teal-600 transition-colors">{userProfile.name}</h3>
+                    <h3 className="font-bold text-white truncate group-hover:text-cyan-400 transition-colors">{userProfile.name}</h3>
                   </div>
-                  <p className="text-xs text-slate-500 truncate mt-0.5">{userProfile.subtitle}</p>
+                  <p className="text-xs text-slate-400 truncate mt-0.5">{userProfile.subtitle}</p>
                 </div>
               </div>
             )}
