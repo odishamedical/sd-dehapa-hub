@@ -80,7 +80,6 @@ export default function DoctorOSDashboard() {
   const [entityData, setEntityData] = useState<any>({});
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const [settingsTab, setSettingsTab] = useState("identity");
 
   // Live Data State
   const [queue, setQueue] = useState<any[]>([]);
@@ -270,15 +269,33 @@ export default function DoctorOSDashboard() {
 
   const doctorTabs: DashboardTab[] = [
     {
-      id: "settings",
-      label: "Clinic Profile",
-      section: "Configuration",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+      id: "identity",
+      label: "Personal Information",
+      section: "PROFILE BUILDER",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+    },
+    {
+      id: "professional",
+      label: "Professional Bio",
+      section: "PROFILE BUILDER",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "consultation_setup",
+      label: "Consultations",
+      section: "PROFILE BUILDER",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    },
+    {
+      id: "location",
+      label: "Clinic Location",
+      section: "PROFILE BUILDER",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
     },
     {
       id: "staff",
       label: "Staff & Receptionists",
-      section: "Configuration",
+      section: "BUSINESS & OWNERSHIP",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
     },
     {
@@ -815,7 +832,7 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {activeTab === "settings" && (
+        {["identity", "professional", "consultation_setup", "location"].includes(activeTab) && (
            <div className="space-y-6">
              {!isFullySetup && (
                <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-100 p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-center">
@@ -866,8 +883,8 @@ export default function DoctorOSDashboard() {
                ].map(tab => (
                  <button 
                    key={tab.id}
-                   onClick={() => setSettingsTab(tab.id)}
-                   className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-colors ${settingsTab === tab.id ? 'bg-teal-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                   onClick={() => handleTabChange(tab.id)}
+                   className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-colors ${activeTab === tab.id ? 'bg-teal-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                  >
                    {tab.label}
                  </button>
@@ -875,7 +892,7 @@ export default function DoctorOSDashboard() {
              </div>
 
              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-               <DoctorV2Forms activeTab={settingsTab} entityData={entityData} setEntityData={setEntityData} />
+               <DoctorV2Forms activeTab={activeTab} entityData={entityData} setEntityData={setEntityData} />
              </div>
            </div>
         )}

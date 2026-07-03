@@ -16,6 +16,7 @@ import { db } from '@/lib/firebase';
 import { directoryConfig } from '@/lib/directoryConfig';
 import EntitySelector from '@/components/EntitySelector';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
+import UniversalPersonalForm from '@/components/UniversalPersonalForm';
 
 interface UniversalOwnerDashboardProps {
   expectedRole: string; // e.g. "pharmacy", "lab", "ambulance", "doctor", "hospital"
@@ -250,6 +251,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       label: "Staff & Team Access",
       section: "BUSINESS & OWNERSHIP",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    },
+    {
+      id: "personal",
+      label: "Personal Information",
+      section: "PROFILE BUILDER",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
     },
     {
       id: "identity",
@@ -528,6 +535,19 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-6">
               <AutosaveIndicator status={saveStatus} />
             </div>
+          </div>
+        )}
+
+        {/* PERSONAL INFORMATION TAB */}
+        {activeTab === "personal" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Personal Information</h3>
+            <UniversalPersonalForm 
+              entityData={entityData} 
+              onChange={setEntityData} 
+              portalType={expectedRole as any} 
+              isFamilyMember={false} 
+            />
           </div>
         )}
 
