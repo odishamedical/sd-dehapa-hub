@@ -102,26 +102,14 @@ export default function DashboardLayout({
           const isAccordion = sectionObj.section !== "DEFAULT";
           const isExpanded = expandedNavSection === sectionObj.section;
           
-          let headerColorClass = "text-slate-500 hover:text-slate-900 hover:bg-slate-100/50";
-          let headerTextClass = "text-[10px] uppercase tracking-widest";
-          let headerBgClass = "";
-          
-          if (isAccordion) {
-            headerTextClass = "text-xs font-black uppercase tracking-wider";
-            if (sectionObj.section === "Personal Details") {
-              headerColorClass = "text-rose-600 hover:text-rose-800";
-              headerBgClass = "bg-rose-50 hover:bg-rose-100";
-            } else if (sectionObj.section === "Healthcare & Consults") {
-              headerColorClass = "text-red-600 hover:text-red-800";
-              headerBgClass = "bg-red-50 hover:bg-red-100";
-            } else if (sectionObj.section === "Medical Records") {
-              headerColorClass = "text-emerald-600 hover:text-emerald-800";
-              headerBgClass = "bg-emerald-50 hover:bg-emerald-100";
-            } else if (sectionObj.section === "Network & Financials") {
-              headerColorClass = "text-blue-600 hover:text-blue-800";
-              headerBgClass = "bg-blue-50 hover:bg-blue-100";
-            }
-          }
+          let headerTextClass = "text-xs font-black uppercase tracking-wider transition-colors duration-300";
+          let headerColorClass = isExpanded 
+            ? "text-teal-900" 
+            : "text-slate-600 hover:text-slate-900";
+            
+          let headerBgClass = isExpanded
+            ? "bg-white/60 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-white/50"
+            : "bg-white/30 hover:bg-white/50 backdrop-blur-sm border border-white/40 shadow-sm";
           
           return (
           <React.Fragment key={sectionObj.section}>
@@ -130,7 +118,7 @@ export default function DashboardLayout({
                 {isAccordion ? (
                   <button 
                     onClick={() => setExpandedNavSection(isExpanded ? null : sectionObj.section)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all shadow-sm ${headerColorClass} ${headerBgClass} border border-transparent hover:border-white/10`}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ${headerColorClass} ${headerBgClass}`}
                   >
                     <span className={headerTextClass}>{sectionObj.section}</span>
                     <svg className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -141,13 +129,13 @@ export default function DashboardLayout({
               </div>
             )}
             
-            <div className={`space-y-1.5 overflow-hidden transition-all duration-300 ${isAccordion ? (isExpanded ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0') : ''}`}>
+            <div className={`space-y-2 overflow-hidden transition-all duration-500 ease-in-out ${isAccordion ? (isExpanded ? 'max-h-[800px] opacity-100 mt-3 p-2 bg-white/30 backdrop-blur-xl rounded-xl border border-white/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]' : 'max-h-0 opacity-0 m-0 p-0 border-transparent') : ''}`}>
               {sectionObj.tabs.map(tab => {
                 if (tab.id === "home") return null;
                 const isActive = activeTab === tab.id;
                 const tintClasses = isActive 
-                  ? 'bg-gradient-to-r from-teal-50 to-transparent border-l-4 border-teal-500 text-teal-700 font-black shadow-sm' 
-                  : 'text-slate-500 hover:bg-slate-100/50 hover:text-slate-900 border-l-4 border-transparent hover:border-slate-200';
+                  ? 'bg-white/70 backdrop-blur-md border-l-4 border-teal-500 text-teal-900 font-black shadow-sm ring-1 ring-white/50' 
+                  : 'text-slate-700 hover:bg-white/60 backdrop-blur-sm hover:text-slate-900 border-l-4 border-transparent hover:border-teal-300 shadow-[0_2px_8px_rgba(0,0,0,0.02)] font-semibold';
                 
                 return (
                   <button 
