@@ -332,7 +332,7 @@ export default function DashboardLayout({
             MAIN CONTENT AREA
            ========================================================================= */}
         <main className="flex-1 py-8 px-4 md:px-8 w-full max-w-5xl mx-auto overflow-x-hidden min-h-[calc(100vh-80px)]">
-          {activeTab === "home" && !hideDefaultModulesList && (
+          {activeTab === "home" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out mb-8">
               {homeWidget && (
                 <div className="mb-6">
@@ -340,7 +340,9 @@ export default function DashboardLayout({
                 </div>
               )}
               
-              {/* Premium Hero Section */}
+              {!hideDefaultModulesList && (
+                <>
+                  {/* Premium Hero Section */}
               <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-900 via-slate-900 to-teal-900 p-8 md:p-12 mb-8 overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/30 rounded-full blur-[80px]"></div>
@@ -395,6 +397,8 @@ export default function DashboardLayout({
                   );
                 })}
               </div>
+                </>
+              )}
             </div>
           )}
 
