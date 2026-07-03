@@ -193,7 +193,7 @@ export default function DashboardLayout({
         <div className="flex items-center gap-3 md:gap-4">
           <button 
             onClick={() => setIsMobileMenuOpen(true)} 
-            className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-200/50 hover:text-slate-900 rounded-lg transition-colors"
+            className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-200/50 hover:text-white rounded-lg transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
           </button>
@@ -205,7 +205,7 @@ export default function DashboardLayout({
         <div className="flex items-center gap-4 md:gap-6">
           <button 
             onClick={() => { if (window.location.hash !== '#scan') window.location.hash = 'scan'; }}
-            className="hidden md:flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 border border-teal-500/20 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
+            className="hidden md:flex items-center gap-1.5 bg-teal-500/10 hover:bg-teal-500/20 text-cyan-400 border border-teal-500/20 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors shadow-sm"
           >
             Scan QR
           </button>
@@ -217,7 +217,7 @@ export default function DashboardLayout({
             Help
           </button>
           
-          <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-slate-900 transition-colors">
+          <button onClick={() => { localStorage.clear(); window.location.href = "/login"; }} className="text-xs font-bold text-slate-500 uppercase tracking-widest hover:text-white transition-colors">
             Sign Out
           </button>
         </div>
@@ -253,7 +253,7 @@ export default function DashboardLayout({
             <div className="mt-8 pt-6 border-t border-white/10">
               <button 
                 onClick={() => onTabChange('faq')}
-                className={`w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm ${activeTab === 'faq' ? 'bg-cyan-500 text-slate-900 shadow-cyan-500/30 shadow-md' : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-cyan-500 hover:text-slate-900'}`}
+                className={`w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm ${activeTab === 'faq' ? 'bg-cyan-500 text-white shadow-cyan-500/30 shadow-md' : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-cyan-500 hover:text-white'}`}
               >
                 Dashboard FAQ
               </button>
@@ -390,7 +390,7 @@ export default function DashboardLayout({
             </div>
           )}
 
-          <div className={activeTab === "home" ? "" : "animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white/70 backdrop-blur-3xl rounded-2xl shadow-xl border border-white/80 overflow-hidden p-6 md:p-8"}>
+          <div className={activeTab === "home" ? "" : "animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out bg-white/5 backdrop-blur-3xl rounded-[32px] shadow-2xl border border-white/10 overflow-hidden p-6 md:p-8"}>
             {children}
           </div>
         </main>
@@ -400,7 +400,7 @@ export default function DashboardLayout({
           MOBILE BOTTOM NAVIGATION BAR (Only for Patient Portal)
          ========================================================================= */}
       {roleName === "User Portal" && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-[90] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-3xl border-t border-white/10 z-[90] shadow-2xl pb-safe">
           <div className="flex items-center justify-around px-2 py-3">
             {[
               { id: 'home', label: 'Home', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> },
@@ -413,12 +413,12 @@ export default function DashboardLayout({
                 <button
                   key={navItem.id}
                   onClick={() => onTabChange(navItem.id)}
-                  className={`flex flex-col items-center justify-center w-16 transition-colors ${isActive ? 'text-teal-600' : 'text-slate-400 hover:text-slate-700'}`}
+                  className={`flex flex-col items-center justify-center w-16 transition-colors ${isActive ? 'text-cyan-400' : 'text-slate-500 hover:text-white'}`}
                 >
                   <div className={`mb-1 transition-transform ${isActive ? 'scale-110' : ''}`}>
                     {navItem.icon}
                   </div>
-                  <span className={`text-[10px] font-bold ${isActive ? 'text-teal-700' : ''}`}>
+                  <span className={`text-[10px] font-bold ${isActive ? 'text-cyan-400' : ''}`}>
                     {navItem.label}
                   </span>
                 </button>
@@ -436,7 +436,7 @@ export default function DashboardLayout({
             onClick={() => setShowQRModal(false)}
           ></div>
           
-          <div className="relative bg-white rounded-3xl p-10 flex flex-col items-center shadow-2xl max-w-sm w-full animate-in zoom-in-95">
+          <div className="relative bg-slate-900 border border-white/10 rounded-[32px] p-10 flex flex-col items-center shadow-2xl max-w-sm w-full animate-in zoom-in-95">
             <button 
               onClick={() => setShowQRModal(false)}
               className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors"
@@ -444,10 +444,10 @@ export default function DashboardLayout({
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
 
-            <h3 className="text-xl font-bold text-slate-900 mb-1 text-center">{userProfile.name}'s Profile</h3>
-            <p className="text-sm text-teal-600 mb-8 text-center">{roleName === "User Portal" ? "Patient QR Code" : userProfile.subtitle}</p>
+            <h3 className="text-xl font-bold text-white mb-1 text-center">{userProfile.name}'s Profile</h3>
+            <p className="text-sm text-cyan-400 mb-8 text-center">{roleName === "User Portal" ? "Patient QR Code" : userProfile.subtitle}</p>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
+            <div className="bg-black/40 p-6 rounded-[2rem] shadow-inner border border-white/10 mb-8">
               <QRCodeSVG 
                 value={
                   roleName === "User Portal" && userProfile.uid 
