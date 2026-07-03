@@ -28,6 +28,7 @@ export default function DoctorV2OwnerDashboard() {
   const [accessGranted, setAccessGranted] = useState(false);
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
+  const [userRole, setUserRole] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
@@ -53,6 +54,7 @@ export default function DoctorV2OwnerDashboard() {
       }
       setAccessGranted(true);
       setUserEmail(email);
+      if (role) setUserRole(role);
       if (hash) setActiveTab(hash);
       fetchEntity(email);
     }
@@ -121,7 +123,7 @@ export default function DoctorV2OwnerDashboard() {
   };
   
   const progress = calculateProgress();
-  const isReady = progress === 100;
+  const isReady = progress === 100 || userRole === "super_admin";
 
   const handlePublishToggle = async () => {
     if (!isReady) return;
@@ -390,7 +392,13 @@ export default function DoctorV2OwnerDashboard() {
 
                   {/* The Giant Publish Switch */}
                   <div className="shrink-0 bg-white/80 backdrop-blur-md border border-white p-6 rounded-3xl shadow-xl flex flex-col items-center gap-4 w-full lg:min-w-[280px]">
-                    <div className="text-sm font-bold text-slate-500 uppercase tracking-widest">Profile Strength</div>
+                    <div className="text-sm font-bold text-slate-500 uppercase tracking-widest">
+                      {userRole === "super_admin" ? (
+                        <span className="text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md">God Mode Active</span>
+                      ) : (
+                        "Profile Strength"
+                      )}
+                    </div>
                     
                     {/* Progress Bar */}
                     <div className="w-full bg-slate-100 rounded-full h-4 mb-2 overflow-hidden shadow-inner">
@@ -413,6 +421,11 @@ export default function DoctorV2OwnerDashboard() {
                       {entityData.isPublic ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
                     </button>
                     {!isReady && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
+                    {userRole === "super_admin" && !entityData.isPublic && progress < 100 && (
+                      <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-widest text-center mt-1">
+                        Bypassed for Super Admin
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
