@@ -230,16 +230,19 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
                city: entityData.city || "",
                pincode: entityData.pincode || "",
                localAddress: entityData.localAddress || "",
+               mapPin: entityData.mapUrl || "",
+               latitude: entityData.latitude || undefined,
+               longitude: entityData.longitude || undefined,
              }} 
-             onChange={(newData) => setEntityData({ ...entityData, ...newData })} 
+             onChange={(newData) => {
+               const updates: any = { ...newData };
+               if (newData.mapPin !== undefined) {
+                 updates.mapUrl = newData.mapPin;
+                 delete updates.mapPin;
+               }
+               setEntityData({ ...entityData, ...updates });
+             }} 
            />
-           <div className="mt-6">
-             <label className="sd-label-v3 flex justify-between">
-               Google Maps PIN URL
-               <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded uppercase tracking-wider font-bold flex items-center gap-1 hover:bg-red-200">FIND PIN 📍</a>
-             </label>
-             <input type="text" className="sd-input-v3 font-mono text-sm" placeholder="https://maps.app.goo.gl/..." value={entityData.mapUrl || ""} onChange={e => updateField('mapUrl', e.target.value)} />
-           </div>
         </div>
         
         <PremiumSlugModal 

@@ -554,22 +554,24 @@ export default function UserDashboard() {
                    city: addressData.city || "",
                    pincode: addressData.pincode || "",
                    localAddress: addressData.localAddress || "",
+                   mapPin: identityData.address?.mapPin || "",
                  }} 
-                 onChange={(newData) => setAddressData(newData)} 
+                 onChange={(newData) => {
+                   setAddressData({
+                     ...addressData,
+                     ...newData
+                   });
+                   if (newData.mapPin !== undefined) {
+                     setIdentityData({
+                       ...identityData,
+                       address: {
+                         ...identityData.address,
+                         mapPin: newData.mapPin
+                       }
+                     });
+                   }
+                 }} 
                />
-               <div className="mt-6">
-                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 flex justify-between items-center">
-                   <span>Google Map Pin URL</span>
-                   <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="text-teal-600 hover:underline normal-case">Find Pin 📍</a>
-                 </label>
-                 <input 
-                   type="url"
-                   value={identityData.address?.mapPin || ''}
-                   onChange={e => setIdentityData({...identityData, address: {...identityData.address, mapPin: e.target.value}})}
-                   placeholder="https://maps.app.goo.gl/..."
-                   className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none font-mono text-sm"
-                 />
-               </div>
             </div>
 
           </div>

@@ -13,6 +13,7 @@ export interface AddressData {
   localAddress: string;
   latitude?: number;
   longitude?: number;
+  mapPin?: string;
 }
 
 interface AddressBlockProps {
@@ -92,11 +93,14 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
     <div className="space-y-6">
       
       {/* Map and GPS Pinner (Village Friendly) */}
-      <div className="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6 mb-6">
-        <h4 className="font-bold text-white text-base mb-1">Set Home Location on Map</h4>
-        <p className="text-xs text-slate-400 mb-4">
-          This maps your residence so ambulances and doctors can find your home instantly in an emergency.
-        </p>
+      <div className="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6 mb-6 space-y-5">
+        <div>
+          <h4 className="font-bold text-sky-900 dark:text-white text-base mb-1">Set Location on Map</h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+            This maps your location so ambulances and patients can find you instantly. You can either use GPS or paste a Google Maps link.
+          </p>
+        </div>
+
         <div className="flex flex-col md:flex-row gap-4 items-center">
           <button 
             type="button"
@@ -114,13 +118,14 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
             {data.latitude ? "Update Pinned GPS Location" : "Pin My Current GPS Location"}
           </button>
           {data.latitude && (
-            <span className="text-xs text-emerald-400 font-mono">
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold bg-emerald-500/10 px-3 py-1 rounded-lg">
               📍 GPS Coordinates Pinned: {data.latitude.toFixed(5)}, {data.longitude?.toFixed(5)}
             </span>
           )}
         </div>
+        
         {data.latitude && data.longitude && (
-          <div className="mt-4 w-full h-48 rounded-xl overflow-hidden border border-slate-700/50 shadow-inner">
+          <div className="w-full h-48 rounded-xl overflow-hidden border border-slate-700/50 shadow-inner">
             <iframe 
               width="100%" 
               height="100%" 
@@ -132,6 +137,20 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
             />
           </div>
         )}
+
+        <div className="pt-2 border-t border-sky-500/20">
+          <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 flex justify-between items-center">
+            <span>Or paste Google Map Pin URL</span>
+            <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="text-sky-600 hover:underline normal-case">Find Pin 📍</a>
+          </label>
+          <input 
+            type="url"
+            value={data.mapPin || ''}
+            onChange={e => updateField('mapPin', e.target.value)}
+            placeholder="https://maps.app.goo.gl/..."
+            className="w-full bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-sky-500 outline-none font-mono text-sm"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -150,11 +169,11 @@ export default function AddressBlock({ data, onChange, darkTheme = false }: Addr
             className={inputClass}
           >
             <option value="">Select Country</option>
-            {defaultCountries.map(c => <option key={c} value={c} className={darkTheme ? "bg-slate-900" : ""}>{c}</option>)}
+            {defaultCountries.map(c => c !== "Other" ? <option key={c} value={c} className={darkTheme ? "bg-slate-900" : ""}>{c}</option> : null)}
             <option value="Other" className={darkTheme ? "bg-slate-900" : ""}>Other</option>
           </select>
           
-          {!defaultCountries.includes(data.country) && data.country !== undefined && (
+          {(!defaultCountries.includes(data.country) || data.country === "Other") && data.country !== undefined && data.country !== "" && (
             <input 
               type="text" 
               value={data.country === "Other" ? "" : data.country}
