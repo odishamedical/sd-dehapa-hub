@@ -229,7 +229,7 @@ export default function DashboardLayout({
             LEFT SIDEBAR (Glassmorphism)
            ========================================================================= */}
         <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
-          <div className="sticky top-[100px] bg-white/5 backdrop-blur-3xl p-6 rounded-[2rem] shadow-2xl border border-white/10 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
+          <div className="sticky top-[100px] bg-slate-700/80 backdrop-blur-3xl p-6 rounded-[2rem] shadow-2xl border border-white/10 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             {userProfile && (
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/10">
                 {userProfile.image ? (
@@ -279,7 +279,7 @@ export default function DashboardLayout({
               className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" 
               onClick={() => setIsMobileMenuOpen(false)}
             ></div>
-            <div className="relative w-72 max-w-sm bg-slate-950/90 backdrop-blur-3xl border-r border-white/10 h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
+            <div className="relative w-72 max-w-sm bg-slate-700/90 backdrop-blur-3xl border-r border-white/10 h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
               <div className="p-6 border-b border-white/10 flex items-center justify-between">
                 <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
