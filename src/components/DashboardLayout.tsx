@@ -250,10 +250,10 @@ export default function DashboardLayout({
 
             {renderNavLinks(false)}
 
-            <div className="mt-8 pt-6 border-t border-slate-200/50">
+            <div className="mt-8 pt-6 border-t border-white/10">
               <button 
                 onClick={() => onTabChange('faq')}
-                className={`w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm ${activeTab === 'faq' ? 'bg-blue-600 text-white shadow-blue-200 shadow-md' : 'bg-white/50 text-slate-600 border border-slate-200/50 hover:bg-blue-600 hover:text-white'}`}
+                className={`w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm ${activeTab === 'faq' ? 'bg-cyan-500 text-slate-900 shadow-cyan-500/30 shadow-md' : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-cyan-500 hover:text-slate-900'}`}
               >
                 Dashboard FAQ
               </button>
@@ -261,7 +261,7 @@ export default function DashboardLayout({
               {userRole === 'super_admin' && onToggleGodMode && (
                 <button 
                   onClick={onToggleGodMode}
-                  className={`mt-4 w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm border ${godMode ? 'bg-red-500 text-white border-red-500' : 'bg-white text-red-500 border-red-200 hover:bg-red-500 hover:text-white'}`}
+                  className={`mt-4 w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm border ${godMode ? 'bg-rose-500 text-white border-rose-500' : 'bg-white/5 text-rose-400 border-rose-500/20 hover:bg-rose-500 hover:text-white'}`}
                 >
                   {godMode ? 'Disable God Mode' : 'Enable God Mode'}
                 </button>
@@ -279,9 +279,9 @@ export default function DashboardLayout({
               className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" 
               onClick={() => setIsMobileMenuOpen(false)}
             ></div>
-            <div className="relative w-72 max-w-sm bg-white/90 backdrop-blur-3xl border-r border-white h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
-              <div className="p-6 border-b border-slate-200/50 flex items-center justify-between">
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-200 rounded-lg">
+            <div className="relative w-72 max-w-sm bg-slate-950/90 backdrop-blur-3xl border-r border-white/10 h-full shadow-2xl flex flex-col animate-in slide-in-from-left-full duration-300">
+              <div className="p-6 border-b border-white/10 flex items-center justify-between">
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
               </div>
