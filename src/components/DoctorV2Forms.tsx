@@ -19,6 +19,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [gpsLoading, setGpsLoading] = useState(false);
 
   // Generic helper to update standard fields
   const updateField = (key: string, value: any) => {
@@ -107,6 +108,31 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     const safeArray = Array.isArray(entityData[key]) ? [...entityData[key]] : [];
     safeArray.splice(index, 1);
     updateField(key, safeArray);
+  };
+
+  const handleGetGPSLocation = () => {
+    if (typeof window === 'undefined') return;
+    setGpsLoading(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setEntityData({ 
+            ...entityData, 
+            latitude: position.coords.latitude, 
+            longitude: position.coords.longitude 
+          });
+          setGpsLoading(false);
+        },
+        (error) => {
+          console.error("GPS error", error);
+          alert("Could not retrieve GPS coordinates. Please check your browser permissions.");
+          setGpsLoading(false);
+        }
+      );
+    } else {
+      alert("Location services are not supported by your browser.");
+      setGpsLoading(false);
+    }
   };
 
   if (activeTab === "identity") {
@@ -476,8 +502,66 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
             <input type="text" className="sd-input-v3" placeholder="e.g. Khordha" value={entityData.district || ""} onChange={e => updateField('district', e.target.value)} />
           </div>
           <div className="col-span-2">
-            <label className="sd-label-v3">Google Maps Embed URL</label>
-            <input type="text" className="sd-input-v3 font-mono text-sm" placeholder="https://maps.google.com/..." value={entityData.mapUrl || ""} onChange={e => updateField('mapUrl', e.target.value)} />
+            {/* Map and GPS Pinner (Village Friendly) */}
+            <div className="bg-sky-500/10 border border-sky-500/30 rounded-2xl p-6 space-y-5">
+              <div>
+                <h4 className="font-bold text-sky-900 dark:text-white text-base mb-1">Set Location on Map</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  This maps your clinic location so patients can find you instantly. Use GPS or paste a Google Maps link.
+                </p>
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-4 items-center">
+                <button 
+                  type="button"
+                  onClick={handleGetGPSLocation}
+                  className="w-full md:w-auto bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs uppercase tracking-widest px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg"
+                >
+                  {gpsLoading ? (
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  ) : (
+                    <svg className="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  )}
+                  {entityData.latitude ? "Update Pinned GPS Location" : "Pin My Current GPS Location"}
+                </button>
+                {entityData.latitude && (
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold bg-emerald-500/10 px-3 py-1 rounded-lg">
+                    📍 GPS Coordinates Pinned: {entityData.latitude.toFixed(5)}, {entityData.longitude?.toFixed(5)}
+                  </span>
+                )}
+              </div>
+              
+              {entityData.latitude && entityData.longitude && (
+                <div className="w-full h-48 rounded-xl overflow-hidden border border-slate-700/50 shadow-inner">
+                  <iframe 
+                    width="100%" 
+                    height="100%" 
+                    frameBorder="0" 
+                    scrolling="no" 
+                    marginHeight={0} 
+                    marginWidth={0} 
+                    src={`https://maps.google.com/maps?q=${entityData.latitude},${entityData.longitude}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                  />
+                </div>
+              )}
+
+              <div className="pt-2 border-t border-sky-500/20">
+                <label className="sd-label-v3 flex justify-between items-center">
+                  <span>Or paste Google Map Pin URL</span>
+                  <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="text-sky-400 hover:underline normal-case">Find Pin 📍</a>
+                </label>
+                <input 
+                  type="url"
+                  value={entityData.mapUrl || ''}
+                  onChange={e => updateField('mapUrl', e.target.value)}
+                  placeholder="https://maps.app.goo.gl/..."
+                  className="sd-input-v3 font-mono"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
