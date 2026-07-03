@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hash = window.location.hash.replace("#", "");
-      if (hash && ["home", "users", "viral-analytics", "ads", "verification", "support", "crawler", "data-crm", "slug-registry", "staff", "audit", "settings", "god-mode", "whatsapp"].includes(hash)) {
+      if (hash) {
         setActiveTab(hash);
       }
     }

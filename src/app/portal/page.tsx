@@ -164,7 +164,7 @@ export default function UserDashboard() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hash = window.location.hash.replace("#", "");
-      if (hash && ["home", "identity", "address", "family", "appointments", "billing", "vault", "telemedicine", "find_doctor"].includes(hash)) {
+      if (hash) {
         setActiveTab(hash);
       }
     }
