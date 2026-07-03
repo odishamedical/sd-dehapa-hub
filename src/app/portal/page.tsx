@@ -129,7 +129,7 @@ function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }:
 
         {/* 4. Live Health Feed (Left side desktop) */}
         <div className="order-4 md:col-span-2">
-            <LiveHealthFeed userName={userName} />
+            <LiveHealthFeed userName={userName} userEmail={userUid} />
         </div>
 
         {/* 5. Invite Widget (Right side desktop) */}
