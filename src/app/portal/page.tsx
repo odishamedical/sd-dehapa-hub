@@ -313,6 +313,10 @@ export default function UserDashboard() {
       router.push("/doctors");
       return;
     }
+    if (tabId === "add-family") {
+      addFamilyMember();
+      return;
+    }
     setActiveTab(tabId);
   };
 
@@ -330,16 +334,22 @@ export default function UserDashboard() {
   const userTabs: DashboardTab[] = [
     {
       id: "settings",
-      label: "Account Settings",
-      section: "Personal Details",
+      label: `Self - ${identityData.firstName || identityData.fullName || 'User'}`,
+      section: "Profile Builder",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
     },
-    {
-      id: "family",
-      label: "Family Members",
-      section: "Personal Details",
+    ...familyMembers.map((member, idx) => ({
+      id: `family-${idx}`,
+      label: (member.relationship && member.firstName) ? `${member.relationship} - ${member.firstName}` : `Add Family Member`,
+      section: "Profile Builder",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-    },
+    })),
+    ...(familyMembers.length < 5 ? [{
+      id: "add-family",
+      label: "+ Add Family Member",
+      section: "Profile Builder",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+    }] : []),
     {
       id: "appointments",
       label: "My Appointments",
@@ -394,9 +404,9 @@ export default function UserDashboard() {
     }]);
   };
 
-  const updateFamilyMember = (index: number, field: string, value: string) => {
+  const updateFamilyMember = (index: number, newData: any) => {
     const updated = [...familyMembers];
-    updated[index] = { ...updated[index], [field]: value };
+    updated[index] = { ...updated[index], ...newData };
     setFamilyMembers(updated);
   };
 
@@ -425,7 +435,7 @@ export default function UserDashboard() {
         {activeTab === "settings" && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-6 md:p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4 flex items-center justify-between">
-              Account Settings
+              Profile Builder - Self
               <AutosaveIndicator status={identitySaveStatus} />
             </h3>
 
@@ -465,238 +475,66 @@ export default function UserDashboard() {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Prefix</label>
-                <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={identityData.prefix || ""} onChange={e => setIdentityData({...identityData, prefix: e.target.value})}>
-                  <option value="">Select</option>
-                  <option value="Mr.">Mr.</option>
-                  <option value="Mrs.">Mrs.</option>
-                  <option value="Miss.">Miss.</option>
-                  <option value="Dr.">Dr.</option>
-                </select>
-              </div>
-              <div className="md:col-span-1">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">First Name</label>
-                <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={identityData.firstName || ""} onChange={e => setIdentityData({...identityData, firstName: e.target.value})} />
-              </div>
-              <div className="md:col-span-1">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Middle Name</label>
-                <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={identityData.middleName || ""} onChange={e => setIdentityData({...identityData, middleName: e.target.value})} />
-              </div>
-              <div className="md:col-span-1">
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Last Name</label>
-                <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={identityData.lastName || ""} onChange={e => setIdentityData({...identityData, lastName: e.target.value})} />
-              </div>
-            </div>
-
-            <div className="mt-4 mb-4">
-               <label className="flex items-center gap-3 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
-                  <input type="checkbox" className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" checked={identityData.isDoctor || false} onChange={e => setIdentityData({...identityData, isDoctor: e.target.checked})} />
-                  <span className="font-bold text-slate-800">I am a registered medical practitioner (Doctor)</span>
-               </label>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Email Address</label>
-                <input type="email" disabled value={identityData.email} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 cursor-not-allowed outline-none" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Date of Birth</label>
-                <input type="date" value={identityData.dob || ""} onChange={e => setIdentityData({...identityData, dob: e.target.value})} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Phone Number</label>
-                <input type="tel" value={identityData.phone} onChange={e => setIdentityData({...identityData, phone: e.target.value})} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 flex justify-between">
-                  WhatsApp Number
-                  <label className="flex items-center gap-2 text-[10px] text-slate-500 cursor-pointer hover:text-teal-600 font-bold normal-case tracking-normal">
-                    <input type="checkbox" checked={identityData.whatsappNumber === identityData.phone && !!identityData.phone} onChange={e => setIdentityData({...identityData, whatsappNumber: e.target.checked ? identityData.phone : ''})} />
-                    Same as Phone
-                  </label>
-                </label>
-                <input type="tel" value={identityData.whatsappNumber} onChange={e => setIdentityData({...identityData, whatsappNumber: e.target.value})} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Biological Sex</label>
-                <select value={identityData.sex} onChange={e => setIdentityData({...identityData, sex: e.target.value})} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none">
-                  <option value="">Select Sex</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Blood Group</label>
-                <select value={identityData.bloodGroup || ""} onChange={e => setIdentityData({...identityData, bloodGroup: e.target.value})} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none">
-                  <option value="">Select Blood Group</option>
-                  <option value="A+">A+</option><option value="A-">A-</option>
-                  <option value="B+">B+</option><option value="B-">B-</option>
-                  <option value="AB+">AB+</option><option value="AB-">AB-</option>
-                  <option value="O+">O+</option><option value="O-">O-</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Languages Spoken</label>
-                <input type="text" value={identityData.languages || ""} onChange={e => setIdentityData({...identityData, languages: e.target.value})} placeholder="e.g. English, Hindi, Odia" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" />
-              </div>
-            </div>
-
-            {/* Address Details Section */}
-            <div className="mt-8">
-               <h4 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4 pb-2 border-b border-slate-100">Location & Address</h4>
-               <AddressBlock 
-                 data={{
-                   country: addressData.country || "India",
-                   state: addressData.state || "",
-                   district: addressData.district || "",
-                   block: addressData.block || "",
-                   city: addressData.city || "",
-                   pincode: addressData.pincode || "",
-                   localAddress: addressData.localAddress || "",
-                   mapPin: identityData.address?.mapPin || "",
-                 }} 
-                 onChange={(newData) => {
-                   setAddressData({
-                     ...addressData,
-                     ...newData
-                   });
-                   if (newData.mapPin !== undefined) {
-                     setIdentityData({
-                       ...identityData,
-                       address: {
-                         ...identityData.address,
-                         mapPin: newData.mapPin
-                       }
-                     });
-                   }
-                 }} 
-               />
-            </div>
-
+            <UniversalPersonalForm 
+              entityData={{...identityData, ...addressData}} 
+              onChange={data => {
+                const { country, state, district, block, city, pincode, localAddress, mapUrl, mapPin, ...rest } = data;
+                setIdentityData(rest);
+                setAddressData({ country, state, district, block, city, pincode, localAddress });
+              }} 
+              portalType="patient" 
+            />
           </div>
         )}
 
-        {activeTab === "family" && (
+        {activeTab.startsWith("family-") && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-6 md:p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4 flex items-center justify-between">
-              Family Members
+              Profile Builder - Family Member
               <AutosaveIndicator status={familySaveStatus} />
             </h3>
-            <p className="text-sm text-slate-500 mb-6">Add your family members here so you can easily select them during urgent telemedicine calls without typing their details.</p>
-            
-            <div className="space-y-4 mb-6">
-              {familyMembers.map((member, idx) => (
-                <div key={idx} className="bg-white border border-slate-200 rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 relative group shadow-sm">
-                  <div className="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center text-teal-600 font-bold shrink-0 border border-teal-100">
-                    {member.name ? member.name.charAt(0).toUpperCase() : '?'}
-                  </div>
-                  <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Name</label>
-                      <input 
-                        type="text" 
-                        value={member.name || ''} 
-                        onChange={e => {
-                          const newArr = [...familyMembers];
-                          newArr[idx].name = e.target.value;
-                          setFamilyMembers(newArr);
-                        }}
-                        placeholder="Name"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-teal-500 focus:bg-white transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Relationship</label>
-                      <select 
-                        value={member.relationship || ''} 
-                        onChange={e => {
-                          const newArr = [...familyMembers];
-                          newArr[idx].relationship = e.target.value;
-                          setFamilyMembers(newArr);
-                        }}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-teal-500 focus:bg-white transition-colors"
-                      >
-                        <option value="">Select...</option>
-                        <option value="Spouse">Spouse</option>
-                        <option value="Child">Child</option>
-                        <option value="Parent">Parent</option>
-                        <option value="Sibling">Sibling</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Date of Birth / Age</label>
-                      <input 
-                        type="text" 
-                        value={member.age || member.dob || ''} 
-                        onChange={e => {
-                          const newArr = [...familyMembers];
-                          newArr[idx].age = e.target.value;
-                          setFamilyMembers(newArr);
-                        }}
-                        placeholder="Age or YYYY-MM-DD"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-teal-500 focus:bg-white transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Sex</label>
-                      <select 
-                        value={member.gender || ''} 
-                        onChange={e => {
-                          const newArr = [...familyMembers];
-                          newArr[idx].gender = e.target.value;
-                          setFamilyMembers(newArr);
-                        }}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-teal-500 focus:bg-white transition-colors"
-                      >
-                        <option value="">Select...</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => {
-                      const newArr = familyMembers.filter((_, i) => i !== idx);
-                      setFamilyMembers(newArr);
-                    }}
-                    className="absolute top-2 right-2 text-slate-300 hover:text-red-500 p-2 sm:opacity-0 group-hover:opacity-100 transition-opacity bg-white rounded-full hover:bg-red-50"
-                    title="Remove Family Member"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                  </button>
-                </div>
-              ))}
+            {(() => {
+              const idx = parseInt(activeTab.split('-')[1]);
+              const member = familyMembers[idx];
+              if (!member) return null;
               
-              {familyMembers.length === 0 && (
-                <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 bg-slate-50/50">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-slate-300">
-                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                  </div>
-                  No family members added yet.
+              return (
+                <div className="space-y-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                     <div>
+                       <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Relationship <span className="text-rose-500">*</span></label>
+                       <select 
+                          value={member.relationship || ''} 
+                          onChange={e => updateFamilyMember(idx, { relationship: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none"
+                       >
+                          <option value="">Select Relationship</option>
+                          <option value="Spouse">Spouse</option>
+                          <option value="Child">Child</option>
+                          <option value="Parent">Parent</option>
+                          <option value="Sibling">Sibling</option>
+                          <option value="Other">Other</option>
+                       </select>
+                     </div>
+                   </div>
+                   <UniversalPersonalForm 
+                     entityData={member} 
+                     onChange={(newData) => updateFamilyMember(idx, newData)} 
+                     portalType="patient" 
+                     isFamilyMember={true}
+                   />
+                   <div className="mt-8 flex justify-end">
+                      <button onClick={() => {
+                        const updated = familyMembers.filter((_, i) => i !== idx);
+                        setFamilyMembers(updated);
+                        setActiveTab("settings");
+                      }} className="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl font-bold hover:bg-rose-100 text-sm transition-colors">
+                        Remove this Member
+                      </button>
+                   </div>
                 </div>
-              )}
-            </div>
-            
-            <button 
-              onClick={() => {
-                if (familyMembers.length >= 5) {
-                  alert("You can only add up to 5 family members.");
-                  return;
-                }
-                setFamilyMembers([...familyMembers, { id: Date.now().toString(), name: '', relationship: '', age: '', gender: '' }])
-              }}
-              className="bg-white border-2 border-teal-500 text-teal-600 hover:bg-teal-50 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors flex items-center gap-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-              Add Family Member
-            </button>
-
-            <p className="text-xs text-slate-400 mt-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
-              Note: Changes here are auto-saved instantly. This information will be automatically filled for you during urgent video calls or hospital bookings to save time.
-            </p>
+              );
+            })()}
           </div>
         )}
 

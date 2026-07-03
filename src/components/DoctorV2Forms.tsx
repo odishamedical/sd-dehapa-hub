@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
 import SmartEntitySearch from '@/components/SmartEntitySearch';
 import AddressBlock from '@/components/AddressBlock';
+import UniversalPersonalForm from '@/components/UniversalPersonalForm';
 
 interface DoctorV2FormsProps {
   activeTab: string;
@@ -141,109 +142,11 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="sd-label-v3">Prefix</label>
-            <select className="sd-input-v3" value={entityData.prefix || ""} onChange={e => updateField('prefix', e.target.value)}>
-              <option value="">Select</option>
-              <option value="Mr.">Mr.</option>
-              <option value="Mrs.">Mrs.</option>
-              <option value="Miss.">Miss.</option>
-              <option value="Dr.">Dr.</option>
-            </select>
-          </div>
-          <div className="md:col-span-1">
-            <label className="sd-label-v3">First Name <span className="text-rose-500">*</span></label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. John" value={entityData.firstName || ""} onChange={e => updateField('firstName', e.target.value)} />
-          </div>
-          <div className="md:col-span-1">
-            <label className="sd-label-v3">Middle Name</label>
-            <input type="text" className="sd-input-v3" placeholder="" value={entityData.middleName || ""} onChange={e => updateField('middleName', e.target.value)} />
-          </div>
-          <div className="md:col-span-1">
-            <label className="sd-label-v3">Last Name <span className="text-rose-500">*</span></label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. Doe" value={entityData.lastName || ""} onChange={e => updateField('lastName', e.target.value)} />
-          </div>
-        </div>
-        
-        <div className="mt-2 mb-8">
-           <label className="flex items-center gap-3 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
-              <input type="checkbox" className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" checked={entityData.isDoctor || false} onChange={e => updateField('isDoctor', e.target.checked)} />
-              <span className="font-bold text-slate-800">I am a registered medical practitioner (Doctor)</span>
-           </label>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-          <div>
-            <label className="sd-label-v3">Phone Number <span className="text-rose-500">*</span></label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.phone || ""} onChange={e => updateField('phone', e.target.value)} />
-          </div>
-          <div>
-            <label className="sd-label-v3 flex justify-between items-center">
-              WhatsApp Number
-              <label className="flex items-center gap-2 text-xs text-slate-500 cursor-pointer hover:text-teal-600 font-bold normal-case tracking-normal">
-                <input type="checkbox" checked={entityData.whatsapp === entityData.phone && !!entityData.phone} onChange={e => updateField('whatsapp', e.target.checked ? entityData.phone : '')} />
-                Same as Phone
-              </label>
-            </label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.whatsapp || ""} onChange={e => updateField('whatsapp', e.target.value)} />
-          </div>
-          
-          <div>
-            <label className="sd-label-v3">Date of Birth</label>
-            <input type="date" className="sd-input-v3" value={entityData.dob || ""} onChange={e => updateField('dob', e.target.value)} />
-          </div>
-          <div>
-            <label className="sd-label-v3">Biological Sex</label>
-            <select className="sd-input-v3" value={entityData.sex || ""} onChange={e => updateField('sex', e.target.value)}>
-              <option value="">Select Sex</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="sd-label-v3">Blood Group</label>
-            <select className="sd-input-v3" value={entityData.bloodGroup || ""} onChange={e => updateField('bloodGroup', e.target.value)}>
-              <option value="">Select Blood Group</option>
-              <option value="A+">A+</option><option value="A-">A-</option>
-              <option value="B+">B+</option><option value="B-">B-</option>
-              <option value="AB+">AB+</option><option value="AB-">AB-</option>
-              <option value="O+">O+</option><option value="O-">O-</option>
-            </select>
-          </div>
-          <div>
-            <label className="sd-label-v3">Languages Spoken</label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. English, Odia, Hindi" value={entityData.languages || ""} onChange={e => updateField('languages', e.target.value)} />
-          </div>
-        </div>
-
-        <div className="pt-8 border-t border-slate-200/60 mt-8">
-           <h3 className="text-xl font-bold text-slate-800 mb-6">Address & Location</h3>
-           <AddressBlock 
-             data={{
-               country: entityData.country || "India",
-               state: entityData.state || "",
-               district: entityData.district || "",
-               block: entityData.block || "",
-               city: entityData.city || "",
-               pincode: entityData.pincode || "",
-               localAddress: entityData.localAddress || "",
-               mapPin: entityData.mapUrl || "",
-               latitude: entityData.latitude || undefined,
-               longitude: entityData.longitude || undefined,
-             }} 
-             onChange={(newData) => {
-               const updates: any = { ...newData };
-               if (newData.mapPin !== undefined) {
-                 updates.mapUrl = newData.mapPin;
-                 delete updates.mapPin;
-               }
-               setEntityData({ ...entityData, ...updates });
-             }} 
-           />
-        </div>
+        <UniversalPersonalForm 
+          entityData={entityData} 
+          onChange={setEntityData} 
+          portalType="doctor" 
+        />
         
         <PremiumSlugModal 
           isOpen={isSlugModalOpen} 
