@@ -372,8 +372,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* OWNER KYC TAB */}
         {activeTab === "owner_kyc" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Owner Verification (KYC)</h3>
+          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Owner Verification (KYC)</h3>
             
             <div className="mb-8 bg-amber-50 border border-amber-200 p-6 rounded-2xl">
               <h4 className="text-amber-800 font-bold mb-2">Legal Verification Required</h4>
@@ -383,7 +383,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Owner / Director Full Name <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
@@ -394,7 +394,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Legal Entity Name (e.g. XYZ Pvt Ltd) <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
@@ -408,7 +408,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Owner Personal ID (Aadhaar/PAN) <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <ImageUpload 
@@ -417,7 +417,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Business Registration / GST <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <ImageUpload 
@@ -436,7 +436,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* STAFF MANAGEMENT TAB */}
         {activeTab === "staff_management" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
               <h3 className="text-xl font-bold text-slate-900">Staff & Team Access</h3>
               <button 
@@ -547,8 +547,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* PERSONAL INFORMATION TAB */}
         {activeTab === "personal" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Personal Information</h3>
+          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Personal Information</h3>
             <UniversalPersonalForm 
               entityData={entityData} 
               onChange={setEntityData} 
@@ -560,8 +560,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* IDENTITY TAB */}
         {activeTab === "identity" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Property Identity & Info</h3>
+          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Property Identity & Info</h3>
             
             <div className="mb-8 p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
               <div>
@@ -586,7 +586,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
             <div className="space-y-6">
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                   Profile Photo <span className="text-rose-500 ml-1">*</span>
                 </label>
                 <ImageUpload 
@@ -597,7 +597,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Business/Provider Name <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
@@ -608,7 +608,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Phone Number <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
@@ -635,7 +635,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                   About / Description <span className="text-rose-500 ml-1">*</span>
                 </label>
                 <textarea 
@@ -662,8 +662,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* BANK DETAILS TAB */}
         {activeTab === "bank_details" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Bank & Payout Details</h3>
+          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Bank & Payout Details</h3>
             
             <div className="mb-8 bg-emerald-50 border border-emerald-200 p-6 rounded-2xl">
               <h4 className="text-emerald-800 font-bold mb-2">Payouts Information</h4>
@@ -673,7 +673,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Account Holder Name
                   </label>
                   <input 
@@ -685,7 +685,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Bank Name
                   </label>
                   <input 
@@ -700,7 +700,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     Account Number
                   </label>
                   <input 
@@ -712,7 +712,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                     IFSC Code
                   </label>
                   <input 
@@ -726,7 +726,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               </div>
               
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                   Cancelled Cheque Photo
                 </label>
                 <ImageUpload 
@@ -744,8 +744,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* DOCUMENT VAULT TAB */}
         {activeTab === "document_vault" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Document Vault</h3>
+          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Document Vault</h3>
             
             <div className="mb-8 bg-blue-50 border border-blue-200 p-6 rounded-2xl">
               <h4 className="text-blue-800 font-bold mb-2">Secure Operational Licenses</h4>
@@ -773,8 +773,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
         {/* LOCATION TAB */}
         {activeTab === "location" && (
-          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Location & Address</h3>
+          <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">Location & Address</h3>
             <AddressBlock 
               data={{
                 country: entityData.country || 'India',
@@ -799,7 +799,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               }} 
             />
             <div className="mt-6">
-               <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">Google Maps Embed URL</label>
+               <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">Google Maps Embed URL</label>
                <input 
                  type="text" 
                  value={entityData.mapUrl || ''}
@@ -818,8 +818,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         {categoryConfig?.tabs.map(tab => {
           if (activeTab === tab.id) {
             return (
-              <div key={tab.id} className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-                <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">{tab.label}</h3>
+              <div key={tab.id} className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+                <h3 className="text-2xl font-black text-slate-900 mb-6 border-b border-slate-100 pb-4 tracking-tight">{tab.label}</h3>
 
                 <div className="space-y-8">
                   {tab.fields.map(field => {
@@ -863,7 +863,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                         </>
                       ) : (
                         <div>
-                          <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                          <label className="block text-xs uppercase font-bold text-slate-700 mb-2 tracking-wider">
                             {field.label} {field.mandatory && <span className="text-rose-500 ml-1">*</span>}
                           </label>
                           {field.type === 'entity_selector' ? (

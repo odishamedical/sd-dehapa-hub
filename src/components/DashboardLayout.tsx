@@ -179,13 +179,13 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans relative overflow-x-hidden flex flex-col">
       
-      {/* Enhanced Vibrant Background Orbs for Soft Glassmorphism effect */}
+      {/* Premium Soft-Light Background Orbs */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-400/30 blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-400/20 blur-[120px] animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-indigo-400/20 blur-[90px] animate-pulse" style={{animationDelay: '4s'}}></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-200/40 blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-cyan-200/30 blur-[140px] animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-indigo-200/30 blur-[100px] animate-pulse" style={{animationDelay: '4s'}}></div>
       </div>
 
       {/* Main Header (Sticky) */}
@@ -229,7 +229,7 @@ export default function DashboardLayout({
             LEFT SIDEBAR (Glassmorphism)
            ========================================================================= */}
         <aside className="hidden lg:block w-80 shrink-0 p-6 z-20">
-          <div className="sticky top-[100px] bg-white/60 backdrop-blur-3xl p-6 rounded-[2rem] shadow-lg border border-white/80 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
+          <div className="sticky top-[100px] bg-white/90 backdrop-blur-3xl p-6 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
             {userProfile && (
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200/50">
                 {userProfile.image ? (
