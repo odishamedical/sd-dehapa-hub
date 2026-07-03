@@ -612,5 +612,72 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     );
   }
 
+  if (activeTab === "bank_details") {
+    return (
+      <div className="space-y-6">
+        <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Bank & Payout Details</h3>
+        
+        <div className="mb-8 bg-emerald-50 border border-emerald-200 p-6 rounded-2xl">
+          <h4 className="text-emerald-800 font-bold mb-2">Payouts Information</h4>
+          <p className="text-sm text-emerald-700">DehaPa will deposit all online telemedicine payments directly into this bank account. Please ensure the account name matches your registered legal entity or personal name.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+              Account Holder Name
+            </label>
+            <input 
+              type="text" 
+              value={entityData.bankAccountName || ''}
+              onChange={e => updateField('bankAccountName', e.target.value)}
+              placeholder="e.g. Dr. Rajesh Kumar"
+              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+              Bank Name
+            </label>
+            <input 
+              type="text" 
+              value={entityData.bankName || ''}
+              onChange={e => updateField('bankName', e.target.value)}
+              placeholder="e.g. HDFC Bank"
+              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+              Account Number
+            </label>
+            <input 
+              type="text" 
+              value={entityData.bankAccountNumber || ''}
+              onChange={e => updateField('bankAccountNumber', e.target.value)}
+              placeholder="14-digit Account No."
+              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+            />
+          </div>
+          <div>
+            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+              IFSC Code
+            </label>
+            <input 
+              type="text" 
+              value={entityData.bankIfscCode || ''}
+              onChange={e => updateField('bankIfscCode', e.target.value.toUpperCase())}
+              placeholder="e.g. HDFC0001234"
+              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return null;
 }
