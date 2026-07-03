@@ -114,13 +114,13 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Personal Details</h2>
+          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Personal Details</h2>
           <p className="text-slate-500 font-medium text-lg">Standard personal information for your account.</p>
         </div>
 
         {/* Avatar Upload */}
-        <div className="flex items-center gap-6 bg-slate-50 border border-slate-200 p-6 rounded-3xl">
-          <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-slate-200 relative shrink-0">
+        <div className="flex items-center gap-6 bg-black/20 backdrop-blur-xl border border-white/10 p-6 rounded-3xl">
+          <div className="w-24 h-24 rounded-full border-4 border-white/10 shadow-lg overflow-hidden bg-slate-800 relative shrink-0">
             {entityData.image ? (
               <img src={entityData.image} alt="Profile" className="w-full h-full object-cover" />
             ) : (
@@ -133,9 +133,9 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
             )}
           </div>
           <div>
-            <h4 className="font-bold text-slate-800 mb-1">Profile Photo</h4>
+            <h4 className="font-bold text-white mb-1">Profile Photo</h4>
             <p className="text-xs text-slate-500 mb-3">Professional photo. Max size 2MB.</p>
-            <label className="sd-btn-v3 bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 py-2 cursor-pointer inline-block">
+            <label className="sd-btn-v3 bg-white/10 text-white border border-white/20 hover:bg-white/20 py-2 cursor-pointer inline-block">
               {uploadingImage ? 'Uploading...' : 'Upload Image'}
               <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploadingImage} />
             </label>
@@ -169,7 +169,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Professional Biography</h2>
+          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Professional Biography</h2>
           <p className="text-slate-500 font-medium text-lg">Highlight your expertise, education, and career journey.</p>
         </div>
 
@@ -379,7 +379,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Consultation Services</h2>
+          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Consultation Services</h2>
           <p className="text-slate-500 font-medium text-lg">Configure your availability and fees for DehaPa native bookings.</p>
         </div>
 
@@ -454,7 +454,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Clinic Location & Timings</h2>
+          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Clinic Location & Timings</h2>
           <p className="text-slate-500 font-medium text-lg">Define where patients can visit you and your operating hours.</p>
         </div>
 
@@ -512,7 +512,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Bank & Payouts</h2>
+          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Bank & Payouts</h2>
           <p className="text-slate-500 font-medium text-lg">Securely enter your bank details to receive digital consultation payouts.</p>
         </div>
 
@@ -557,7 +557,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     return (
       <div className="space-y-10">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">Staff & Receptionists</h2>
+          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Staff & Receptionists</h2>
           <p className="text-slate-500 font-medium text-lg">Add your clinic staff so they can manage the Live Queue and Vitals on your behalf.</p>
         </div>
 

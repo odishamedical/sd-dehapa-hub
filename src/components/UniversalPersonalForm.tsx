@@ -32,9 +32,9 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
       {/* 1. Basic Identity */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="md:col-span-1">
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Prefix</label>
+          <label className="sd-label-v3">Prefix</label>
           <select 
-            className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" 
+            className="sd-input-v3" 
             value={entityData.prefix || ""} 
             onChange={e => updateField('prefix', e.target.value)}
           >
@@ -45,32 +45,32 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
           </select>
         </div>
         <div className="md:col-span-1">
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">First Name <span className="text-rose-500">*</span></label>
-          <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. John" value={entityData.firstName || ""} onChange={e => updateField('firstName', e.target.value)} />
+          <label className="sd-label-v3">First Name <span className="text-rose-500">*</span></label>
+          <input type="text" className="sd-input-v3" placeholder="e.g. John" value={entityData.firstName || ""} onChange={e => updateField('firstName', e.target.value)} />
         </div>
         <div className="md:col-span-1">
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Middle Name</label>
-          <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="" value={entityData.middleName || ""} onChange={e => updateField('middleName', e.target.value)} />
+          <label className="sd-label-v3">Middle Name</label>
+          <input type="text" className="sd-input-v3" placeholder="" value={entityData.middleName || ""} onChange={e => updateField('middleName', e.target.value)} />
         </div>
         <div className="md:col-span-1">
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Last Name <span className="text-rose-500">*</span></label>
-          <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. Doe" value={entityData.lastName || ""} onChange={e => updateField('lastName', e.target.value)} />
+          <label className="sd-label-v3">Last Name <span className="text-rose-500">*</span></label>
+          <input type="text" className="sd-input-v3" placeholder="e.g. Doe" value={entityData.lastName || ""} onChange={e => updateField('lastName', e.target.value)} />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Email Address</label>
-          <input type="email" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. you@example.com" value={entityData.email || ""} onChange={e => updateField('email', e.target.value)} />
+          <label className="sd-label-v3">Email Address</label>
+          <input type="email" className="sd-input-v3" placeholder="e.g. you@example.com" value={entityData.email || ""} onChange={e => updateField('email', e.target.value)} />
         </div>
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Date of Birth</label>
-          <input type="date" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={entityData.dob || ""} onChange={e => updateField('dob', e.target.value)} />
+          <label className="sd-label-v3">Date of Birth</label>
+          <input type="date" className="sd-input-v3" value={entityData.dob || ""} onChange={e => updateField('dob', e.target.value)} />
         </div>
         
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Biological Sex</label>
-          <select className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={entityData.sex || ""} onChange={e => updateField('sex', e.target.value)}>
+          <label className="sd-label-v3">Biological Sex</label>
+          <select className="sd-input-v3" value={entityData.sex || ""} onChange={e => updateField('sex', e.target.value)}>
             <option value="">Select Sex</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -78,8 +78,8 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
           </select>
         </div>
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Blood Group</label>
-          <select className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" value={entityData.bloodGroup || ""} onChange={e => updateField('bloodGroup', e.target.value)}>
+          <label className="sd-label-v3">Blood Group</label>
+          <select className="sd-input-v3" value={entityData.bloodGroup || ""} onChange={e => updateField('bloodGroup', e.target.value)}>
             <option value="">Select Blood Group</option>
             <option value="A+">A+</option><option value="A-">A-</option>
             <option value="B+">B+</option><option value="B-">B-</option>
@@ -90,8 +90,8 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Languages Spoken</label>
-        <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. English, Odia, Hindi" value={entityData.languages || ""} onChange={e => updateField('languages', e.target.value)} />
+        <label className="sd-label-v3">Languages Spoken</label>
+        <input type="text" className="sd-input-v3" placeholder="e.g. English, Odia, Hindi" value={entityData.languages || ""} onChange={e => updateField('languages', e.target.value)} />
       </div>
 
       {/* 2. Professional Designation Checkbox (Conditional) */}
@@ -130,8 +130,8 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
           <div className="space-y-8 animate-in slide-in-from-top-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">Phone Number <span className="text-rose-500">*</span></label>
-                <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. 9876543210" value={entityData.phone || ""} onChange={e => updateField('phone', e.target.value)} />
+                <label className="sd-label-v3">Phone Number <span className="text-rose-500">*</span></label>
+                <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.phone || ""} onChange={e => updateField('phone', e.target.value)} />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 flex justify-between items-center">
@@ -141,7 +141,7 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
                     Same as Phone
                   </label>
                 </label>
-                <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. 9876543210" value={entityData.whatsapp || ""} onChange={e => updateField('whatsapp', e.target.value)} />
+                <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.whatsapp || ""} onChange={e => updateField('whatsapp', e.target.value)} />
               </div>
             </div>
 
