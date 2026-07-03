@@ -284,7 +284,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
     }
   ];
 
-  const schemaTabs: DashboardTab[] = directoryConfig[expectedRole as keyof typeof directoryConfig]?.tabs.map(tab => ({
+  const capitalizedRole = expectedRole ? expectedRole.charAt(0).toUpperCase() + expectedRole.slice(1) : "";
+  const schemaTabs: DashboardTab[] = directoryConfig[capitalizedRole as keyof typeof directoryConfig]?.tabs.map(tab => ({
     id: tab.id,
     label: tab.label,
     section: "PROFILE BUILDER",
