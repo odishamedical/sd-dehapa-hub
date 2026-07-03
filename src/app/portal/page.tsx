@@ -12,6 +12,7 @@ import PatientVaultWidget from '@/components/PatientVaultWidget';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
+import UniversalPersonalForm from '@/components/UniversalPersonalForm';
 
 import InviteWidget from '@/components/InviteWidget';
 import PatientConsultWidget from '@/components/PatientConsultWidget';
