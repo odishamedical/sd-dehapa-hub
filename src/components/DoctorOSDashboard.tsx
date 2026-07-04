@@ -888,63 +888,53 @@ export default function DoctorOSDashboard() {
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                <div>
                  <h1 className="text-2xl font-bold text-white font-display">My Network</h1>
-                 <p className="text-slate-500 text-sm mt-1">Manage and engage with your connected patient base</p>
+                 <p className="text-slate-400 text-sm mt-1">Manage and engage with your connected patient base</p>
                </div>
                <div className="flex gap-2">
-                 <button className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium text-sm">Import Contacts</button>
-                 <button className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium text-sm shadow-sm">Send Broadcast</button>
+                 <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium text-sm transition-colors border border-white/10">Import Contacts</button>
+                 <button className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-medium text-sm shadow-sm transition-colors">Send Broadcast</button>
                </div>
              </div>
              
              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <div className="bg-black/20 backdrop-blur-xl p-5 rounded-2xl shadow-sm border border-white/10">
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Network</p>
-                  <h3 className="text-3xl font-black text-slate-900">2,451</h3>
+                  <h3 className="text-3xl font-black text-white">0</h3>
                 </div>
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <div className="bg-black/20 backdrop-blur-xl p-5 rounded-2xl shadow-sm border border-white/10">
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">New This Month</p>
-                  <h3 className="text-3xl font-black text-emerald-600">+128</h3>
+                  <h3 className="text-3xl font-black text-teal-400">0</h3>
                 </div>
-                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 md:col-span-2 flex items-center justify-between">
+                <div className="bg-black/20 backdrop-blur-xl p-5 rounded-2xl shadow-sm border border-white/10 md:col-span-2 flex items-center justify-between">
                   <div>
-                    <h4 className="font-bold text-slate-900 mb-1">Health Camp Broadcast</h4>
-                    <p className="text-sm text-slate-500">Reach all 2,451 patients instantly via SMS & App Notification.</p>
+                    <h4 className="font-bold text-white mb-1">Health Camp Broadcast</h4>
+                    <p className="text-sm text-slate-400">Reach your patients instantly via SMS & App Notification.</p>
                   </div>
-                  <button className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-sm">Draft Message</button>
+                  <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-sm transition-colors">Draft Message</button>
                 </div>
              </div>
              
-             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-               <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+             <div className="bg-black/20 backdrop-blur-xl rounded-2xl shadow-sm border border-white/10 overflow-hidden">
+               <div className="p-4 border-b border-white/10 flex items-center justify-between">
                  <div className="relative">
                    <svg className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                   <input type="text" placeholder="Search by name, phone, or tags..." className="pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-xl outline-none w-80" />
+                   <input type="text" placeholder="Search by name, phone, or tags..." className="pl-9 pr-4 py-2 text-sm bg-black/20 border border-white/10 text-white rounded-xl outline-none w-80 focus:border-teal-500/50 placeholder:text-slate-500" />
                  </div>
                  <div className="flex gap-2">
-                   <select className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm outline-none">
-                     <option>All Tags</option>
-                     <option>Diabetic</option>
-                     <option>Hypertension</option>
+                   <select className="px-3 py-2 bg-black/20 text-white border border-white/10 rounded-xl text-sm outline-none appearance-none">
+                     <option className="text-slate-900">All Tags</option>
+                     <option className="text-slate-900">Diabetic</option>
+                     <option className="text-slate-900">Hypertension</option>
                    </select>
                  </div>
                </div>
                
-               <div className="p-6">
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                   {[1,2,3,4,5,6,7,8].map(i => (
-                     <div key={i} className="border border-slate-100 rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-                        <div className="w-16 h-16 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-xl mb-3">
-                          {String.fromCharCode(64 + i)}
-                        </div>
-                        <h4 className="font-bold text-slate-900 text-sm">Patient Name</h4>
-                        <p className="text-xs text-slate-500 mb-3">+91 98765 43210</p>
-                        <div className="flex flex-wrap gap-1 justify-center">
-                          <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">VIP</span>
-                          <span className="text-[10px] font-bold bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full">Cardiac</span>
-                        </div>
-                     </div>
-                   ))}
+               <div className="p-12 text-center">
+                 <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
+                   <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                  </div>
+                 <h4 className="font-bold text-white text-lg mb-2">No patients in your network yet</h4>
+                 <p className="text-slate-400 text-sm max-w-md mx-auto">Patients will appear here automatically when they book an appointment, walk into your clinic, or connect via your DehaPa QR code.</p>
                </div>
              </div>
            </div>
