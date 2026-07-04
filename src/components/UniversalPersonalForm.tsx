@@ -11,8 +11,34 @@ export interface UniversalPersonalFormProps {
 }
 
 export default function UniversalPersonalForm({ entityData, onChange, portalType, isFamilyMember = false }: UniversalPersonalFormProps) {
+  const [customLang, setCustomLang] = useState('');
+  
   const updateField = (field: string, value: any) => {
     onChange({ ...entityData, [field]: value });
+  };
+
+  const PREDEFINED_LANGUAGES = ["Odia", "Hindi", "English", "Kannada", "Tamil", "Telugu", "Punjabi", "Gujarati", "Bengali", "Assamese", "Marathi"];
+  
+  const currentLanguages = Array.isArray(entityData.languages) 
+    ? entityData.languages 
+    : (entityData.languages ? entityData.languages.split(',').map((l: string) => l.trim()).filter(Boolean) : []);
+
+  const toggleLanguage = (lang: string) => {
+    if (currentLanguages.includes(lang)) {
+      updateField('languages', currentLanguages.filter((l: string) => l !== lang));
+    } else {
+      updateField('languages', [...currentLanguages, lang]);
+    }
+  };
+
+  const handleAddCustomLang = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && customLang.trim() !== '') {
+      e.preventDefault();
+      if (!currentLanguages.includes(customLang.trim())) {
+        updateField('languages', [...currentLanguages, customLang.trim()]);
+      }
+      setCustomLang('');
+    }
   };
 
   // Determine allowed prefixes based on portal type
@@ -91,7 +117,40 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
 
       <div>
         <label className="sd-label-v3">Languages Spoken</label>
-        <input type="text" className="sd-input-v3" placeholder="e.g. English, Odia, Hindi" value={entityData.languages || ""} onChange={e => updateField('languages', e.target.value)} />
+        <div className="flex flex-wrap gap-2 mb-3">
+          {PREDEFINED_LANGUAGES.map(lang => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => toggleLanguage(lang)}
+              className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                currentLanguages.includes(lang)
+                  ? 'bg-teal-600 text-white shadow-md border-transparent'
+                  : 'bg-white dark:bg-white/5 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:border-teal-400'
+              }`}
+            >
+              {lang}
+            </button>
+          ))}
+          {currentLanguages.filter((l: string) => !PREDEFINED_LANGUAGES.includes(l)).map((lang: string) => (
+            <button
+              key={lang}
+              type="button"
+              onClick={() => toggleLanguage(lang)}
+              className="px-4 py-2 rounded-full text-sm font-bold transition-all bg-teal-600 text-white shadow-md flex items-center gap-2"
+            >
+              {lang} <span className="opacity-70 hover:opacity-100">×</span>
+            </button>
+          ))}
+        </div>
+        <input 
+          type="text" 
+          className="sd-input-v3" 
+          placeholder="+ Type other language & press Enter" 
+          value={customLang} 
+          onChange={e => setCustomLang(e.target.value)}
+          onKeyDown={handleAddCustomLang}
+        />
       </div>
 
       {/* 2. Professional Designation Checkbox (Conditional) */}
