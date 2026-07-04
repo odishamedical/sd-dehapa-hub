@@ -430,32 +430,32 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Owner / Director Full Name <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
                     type="text" 
                     value={entityData.ownerName || ''}
                     onChange={e => setEntityData({ ...entityData, ownerName: e.target.value })}
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Legal Entity Name (e.g. XYZ Pvt Ltd) <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
                     type="text" 
                     value={entityData.legalEntityName || ''}
                     onChange={e => setEntityData({ ...entityData, legalEntityName: e.target.value })}
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Owner Personal ID (Aadhaar/PAN) <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <ImageUpload 
@@ -464,7 +464,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Business Registration / GST <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <ImageUpload 
@@ -633,7 +633,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
             <div className="space-y-6">
               <div>
-                <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                <label className="sd-label-v3">
                   Profile Photo <span className="text-rose-500 ml-1">*</span>
                 </label>
                 <ImageUpload 
@@ -644,25 +644,25 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Business/Provider Name <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
                     type="text" 
                     value={entityData.name || ''}
                     onChange={e => setEntityData({ ...entityData, name: e.target.value })}
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Phone Number <span className="text-rose-500 ml-1">*</span>
                   </label>
                   <input 
                     type="text" 
                     value={entityData.phone || ''}
                     onChange={e => setEntityData({ ...entityData, phone: e.target.value })}
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div className="md:col-span-2">
@@ -682,14 +682,14 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               </div>
 
               <div>
-                <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                <label className="sd-label-v3">
                   About / Description <span className="text-rose-500 ml-1">*</span>
                 </label>
                 <textarea 
                   value={entityData.about || ''}
                   onChange={e => setEntityData({ ...entityData, about: e.target.value })}
                   rows={4}
-                  className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all resize-none" 
+                  className="sd-input-v3 resize-none" 
                 />
               </div>
 
@@ -720,7 +720,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Account Holder Name
                   </label>
                   <input 
@@ -728,11 +728,11 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankAccountName || ''}
                     onChange={e => setEntityData({ ...entityData, bankAccountName: e.target.value })}
                     placeholder="e.g. XYZ Pvt Ltd"
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Bank Name
                   </label>
                   <input 
@@ -740,14 +740,14 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankName || ''}
                     onChange={e => setEntityData({ ...entityData, bankName: e.target.value })}
                     placeholder="e.g. HDFC Bank"
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Account Number
                   </label>
                   <input 
@@ -755,11 +755,11 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankAccountNumber || ''}
                     onChange={e => setEntityData({ ...entityData, bankAccountNumber: e.target.value })}
                     placeholder="14-digit Account No."
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     IFSC Code
                   </label>
                   <input 
@@ -767,11 +767,11 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankIfscCode || ''}
                     onChange={e => setEntityData({ ...entityData, bankIfscCode: e.target.value.toUpperCase() })}
                     placeholder="e.g. HDFC0001234"
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Standard UPI ID
                   </label>
                   <input 
@@ -779,11 +779,11 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.bankUpiId || ''}
                     onChange={e => setEntityData({ ...entityData, bankUpiId: e.target.value })}
                     placeholder="e.g. hospital@upi"
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     Google Pay Number
                   </label>
                   <input 
@@ -791,11 +791,11 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.gpayNumber || ''}
                     onChange={e => setEntityData({ ...entityData, gpayNumber: e.target.value })}
                     placeholder="e.g. 9876543210"
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                  <label className="sd-label-v3">
                     PhonePe Number
                   </label>
                   <input 
@@ -803,13 +803,13 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     value={entityData.phonepeNumber || ''}
                     onChange={e => setEntityData({ ...entityData, phonepeNumber: e.target.value })}
                     placeholder="e.g. 9876543210"
-                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                    className="sd-input-v3" 
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                <label className="sd-label-v3">
                   Cancelled Cheque Photo
                 </label>
                 <ImageUpload 
@@ -953,13 +953,13 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               }} 
             />
             <div className="mt-6">
-               <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">Google Maps Embed URL</label>
+               <label className="sd-label-v3">Google Maps Embed URL</label>
                <input 
                  type="text" 
                  value={entityData.mapUrl || ''}
                  onChange={e => setEntityData({ ...entityData, mapUrl: e.target.value })}
                  placeholder="<iframe src='...' /> or https://www.google.com/maps/embed?pb=..."
-                 className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                 className="sd-input-v3" 
                />
             </div>
             <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
@@ -1017,7 +1017,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                         </>
                       ) : (
                         <div>
-                          <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                          <label className="sd-label-v3">
                             {field.label} {field.mandatory && <span className="text-rose-500 ml-1">*</span>}
                           </label>
                           {field.type === 'entity_selector' ? (
@@ -1036,7 +1036,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                                 onChange={e => setEntityData({...entityData, [field.key]: e.target.value})} 
                                 placeholder={field.placeholder}
                                 rows={3}
-                                className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all resize-none"
+                                className="sd-input-v3 resize-none"
                               />
                           ) : field.type === 'image_upload' ? (
                               <ImageUpload 
@@ -1053,7 +1053,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                               <select 
                                 value={entityData[field.key] || ''} 
                                 onChange={e => setEntityData({...entityData, [field.key]: e.target.value})}
-                                className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all"
+                                className="sd-input-v3"
                               >
                                 <option value="">Select option</option>
                                 {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -1074,7 +1074,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                                 value={entityData[field.key] || ''} 
                                 onChange={e => setEntityData({...entityData, [field.key]: e.target.value})} 
                                 placeholder={field.placeholder}
-                                className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all"
+                                className="sd-input-v3"
                               />
                           )}
                         </div>
@@ -1174,3 +1174,5 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
     </DashboardLayout>
   );
 }
+
+

@@ -581,7 +581,7 @@ export default function UserDashboard() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                <label className="sd-label-v3">
                   Account Holder Name
                 </label>
                 <input 
@@ -589,11 +589,11 @@ export default function UserDashboard() {
                   value={identityData.bankAccountName || ''}
                   onChange={e => setIdentityData({...identityData, bankAccountName: e.target.value})}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                  className="sd-input-v3" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                <label className="sd-label-v3">
                   Bank Name
                 </label>
                 <input 
@@ -601,11 +601,11 @@ export default function UserDashboard() {
                   value={identityData.bankName || ''}
                   onChange={e => setIdentityData({...identityData, bankName: e.target.value})}
                   placeholder="e.g. HDFC Bank"
-                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                  className="sd-input-v3" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                <label className="sd-label-v3">
                   Account Number
                 </label>
                 <input 
@@ -613,11 +613,11 @@ export default function UserDashboard() {
                   value={identityData.bankAccountNumber || ''}
                   onChange={e => setIdentityData({...identityData, bankAccountNumber: e.target.value})}
                   placeholder="14-digit Account No."
-                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                  className="sd-input-v3" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                <label className="sd-label-v3">
                   IFSC Code
                 </label>
                 <input 
@@ -625,11 +625,11 @@ export default function UserDashboard() {
                   value={identityData.bankIfscCode || ''}
                   onChange={e => setIdentityData({...identityData, bankIfscCode: e.target.value.toUpperCase()})}
                   placeholder="e.g. HDFC0001234"
-                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                  className="sd-input-v3" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                <label className="sd-label-v3">
                   Google Pay Number
                 </label>
                 <input 
@@ -637,11 +637,11 @@ export default function UserDashboard() {
                   value={identityData.gpayNumber || ''}
                   onChange={e => setIdentityData({...identityData, gpayNumber: e.target.value})}
                   placeholder="e.g. 9876543210"
-                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                  className="sd-input-v3" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                <label className="sd-label-v3">
                   PhonePe Number
                 </label>
                 <input 
@@ -649,11 +649,11 @@ export default function UserDashboard() {
                   value={identityData.phonepeNumber || ''}
                   onChange={e => setIdentityData({...identityData, phonepeNumber: e.target.value})}
                   placeholder="e.g. 9876543210"
-                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                  className="sd-input-v3" 
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                <label className="sd-label-v3">
                   Standard UPI ID
                 </label>
                 <input 
@@ -661,7 +661,7 @@ export default function UserDashboard() {
                   value={identityData.bankUpiId || ''}
                   onChange={e => setIdentityData({...identityData, bankUpiId: e.target.value})}
                   placeholder="e.g. patient@upi"
-                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                  className="sd-input-v3" 
                 />
               </div>
             </div>
@@ -696,3 +696,4 @@ export default function UserDashboard() {
     </DashboardLayout>
   );
 }
+
