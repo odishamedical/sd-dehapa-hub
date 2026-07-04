@@ -547,10 +547,9 @@ export default function DoctorOSDashboard() {
               </div>
               
               <div className="divide-y divide-slate-200/50">
-                {(queue.length === 0 ? [
-                  { id: "demo1", name: "Sarah Jenkins", age: 34, sex: "F", phone: "+91 9876543210", mode: "Video Call", type: "online", time: "2 min", status: "In Lobby" },
-                  { id: "demo2", name: "Rahul Sharma", age: 45, sex: "M", phone: "+91 9988776655", mode: "Walk-in", type: "offline", time: "15 min", status: "Waiting" }
-                ] : queue).map((patient, idx) => (
+                {queue.length === 0 ? (
+                  <div className="p-8 text-center text-slate-500 font-medium">No patients in queue.</div>
+                ) : queue.map((patient, idx) => (
                   <div key={patient.id} className="p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-white/40 transition-colors">
                     <div className="hidden md:block col-span-1 text-slate-500 font-medium text-sm">#{idx + 1}</div>
                     
@@ -951,52 +950,125 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {/* Skeleton Temptation UIs for Unbuilt Tabs */}
-        {["telemedicine", "payouts", "staff"].includes(activeTab) && (
+        {/* Coming Soon Banners for Unbuilt Tabs */}
+        {["telemedicine", "payouts"].includes(activeTab) && (
           <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
-               <div>
-                 <div className="h-8 w-48 bg-white/20 rounded-lg animate-pulse mb-2"></div>
-                 <div className="h-4 w-64 bg-white/10 rounded-md animate-pulse"></div>
+            <div className="bg-black/20 backdrop-blur-xl p-12 rounded-2xl shadow-lg border border-white/10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+               <div className="w-20 h-20 bg-teal-500/10 border border-teal-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[inset_0_0_20px_rgba(20,184,166,0.1)]">
+                 <svg className="w-10 h-10 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                </div>
-               <div className="flex gap-3">
-                 <div className="h-10 w-24 bg-white/10 rounded-xl animate-pulse"></div>
-                 <div className="h-10 w-32 bg-teal-500/20 rounded-xl animate-pulse"></div>
-               </div>
+               <h2 className="text-3xl font-black text-white tracking-tight mb-3">Coming Soon in Phase 3</h2>
+               <p className="text-slate-400 text-lg max-w-lg mx-auto">We are building this premium feature to give you unparalleled control over your clinic's operations.</p>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-black/20 backdrop-blur-xl p-6 rounded-2xl shadow-sm border border-white/10">
-                  <div className="h-4 w-24 bg-white/10 rounded mb-4 animate-pulse"></div>
-                  <div className="h-10 w-32 bg-white/20 rounded-lg animate-pulse mb-2"></div>
-                  <div className="h-3 w-40 bg-white/5 rounded animate-pulse"></div>
+          </div>
+        )}
+
+        {/* STAFF & RECEPTIONISTS TAB */}
+        {activeTab === "staff" && (
+          <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+              <div>
+                <h3 className="text-xl font-bold text-white">Staff & Receptionists</h3>
+                <p className="text-sm text-slate-400 mt-1">Delegate access to your clinic staff</p>
+              </div>
+              <button 
+                onClick={() => {
+                  const staff = entityData.staffList || [];
+                  setEntityData({ ...entityData, staffList: [...staff, { name: "", email: "", role: "Receptionist" }] });
+                }}
+                className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition-colors"
+              >
+                + Add Staff Member
+              </button>
+            </div>
+
+            <div className="mb-8 bg-teal-500/10 border border-teal-500/20 p-6 rounded-2xl">
+              <h4 className="font-bold text-teal-300 mb-2">Role-Based Access Control</h4>
+              <p className="text-sm text-teal-400/80">Receptionists can manage your Live Queue and view the Smart Calendar, but they cannot access payouts or your personal settings. Ensure they log in with the exact Google Account you invite here.</p>
+            </div>
+
+            <div className="space-y-4">
+              {(!entityData.staffList || entityData.staffList.length === 0) ? (
+                <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/20">
+                  <p className="text-slate-400 font-medium">No staff members added yet. Click above to add your team.</p>
                 </div>
-              ))}
+              ) : (
+                entityData.staffList.map((staff: any, idx: number) => (
+                  <div key={idx} className="bg-white/5 border border-white/10 p-6 rounded-2xl shadow-sm relative group hover:bg-white/10 transition-colors">
+                    <button 
+                      onClick={() => {
+                        const newStaff = [...entityData.staffList];
+                        newStaff.splice(idx, 1);
+                        setEntityData({ ...entityData, staffList: newStaff });
+                      }}
+                      className="absolute top-4 right-4 text-slate-500 hover:text-rose-400 transition-colors"
+                      title="Remove Staff"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                    
+                    <div className="grid md:grid-cols-3 gap-6 mr-8">
+                      <div>
+                        <label className="block text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Name</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. Rahul Sharma"
+                          value={staff.name}
+                          onChange={e => {
+                            const newStaff = [...entityData.staffList];
+                            newStaff[idx].name = e.target.value;
+                            setEntityData({ ...entityData, staffList: newStaff });
+                          }}
+                          className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-teal-500/50 outline-none transition-all placeholder:text-slate-600" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Google Account Email</label>
+                        <input 
+                          type="email" 
+                          placeholder="rahul@gmail.com"
+                          value={staff.email}
+                          onChange={e => {
+                            const newStaff = [...entityData.staffList];
+                            newStaff[idx].email = e.target.value;
+                            setEntityData({ ...entityData, staffList: newStaff });
+                          }}
+                          className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-teal-500/50 outline-none transition-all placeholder:text-slate-600" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Permissions Role</label>
+                        <div className="relative">
+                          <select 
+                            value={staff.role}
+                            onChange={e => {
+                              const newStaff = [...entityData.staffList];
+                              newStaff[idx].role = e.target.value;
+                              setEntityData({ ...entityData, staffList: newStaff });
+                            }}
+                            className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-teal-500/50 outline-none transition-all appearance-none"
+                          >
+                            <option value="Receptionist" className="text-slate-900">Receptionist (Bookings Only)</option>
+                            <option value="Clinic Manager" className="text-slate-900">Clinic Manager</option>
+                            <option value="Associate Doctor" className="text-slate-900">Associate Doctor</option>
+                          </select>
+                          <div className="absolute right-3 top-3.5 pointer-events-none text-slate-400">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
             
-            <div className="bg-black/20 backdrop-blur-xl rounded-2xl shadow-sm border border-white/10 overflow-hidden">
-               <div className="p-4 border-b border-white/10 flex items-center justify-between">
-                 <div className="h-10 w-64 bg-white/5 rounded-xl animate-pulse"></div>
-                 <div className="h-10 w-32 bg-white/5 rounded-xl animate-pulse"></div>
-               </div>
-               <div className="p-0">
-                 {[1, 2, 3, 4, 5].map(i => (
-                   <div key={i} className="p-4 border-b border-white/5 flex items-center justify-between hover:bg-white/5">
-                     <div className="flex items-center gap-4">
-                       <div className="h-12 w-12 bg-white/10 rounded-full animate-pulse"></div>
-                       <div>
-                         <div className="h-5 w-32 bg-white/20 rounded mb-1 animate-pulse"></div>
-                         <div className="h-3 w-20 bg-white/10 rounded animate-pulse"></div>
-                       </div>
-                     </div>
-                     <div className="flex items-center gap-3">
-                       <div className="h-6 w-20 bg-white/10 rounded-full animate-pulse"></div>
-                       <div className="h-8 w-8 bg-white/5 rounded-lg animate-pulse"></div>
-                     </div>
-                   </div>
-                 ))}
-               </div>
+            {/* Auto-save indicator */}
+            <div className="flex justify-end mt-8 border-t border-white/10 pt-6">
+               {saveStatus === 'saving' && <div className="text-amber-400 text-sm font-bold flex items-center gap-2"><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving Changes...</div>}
+               {saveStatus === 'saved' && <div className="text-emerald-400 text-sm font-bold flex items-center gap-2"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> All changes saved to cloud</div>}
+               {saveStatus === 'error' && <div className="text-rose-400 text-sm font-bold flex items-center gap-2"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Error saving changes</div>}
+               {saveStatus === 'idle' && <div className="text-slate-500 text-sm flex items-center gap-2">Changes are saved automatically</div>}
             </div>
           </div>
         )}
