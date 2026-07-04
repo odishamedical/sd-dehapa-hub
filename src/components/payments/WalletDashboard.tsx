@@ -32,8 +32,8 @@ export default function WalletDashboard({
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">DehaPa Wallet</h2>
-        <p className="text-slate-500 font-medium text-lg">
+        <h2 className="text-3xl font-black text-white mb-2 tracking-tight">DehaPa Wallet</h2>
+        <p className="text-slate-300 font-medium text-lg">
           {userRole === 'patient' 
             ? 'Manage your funds and view refund history.'
             : 'View your digital consultation payouts and current balance.'}
