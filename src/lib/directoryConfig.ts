@@ -155,6 +155,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
       },
       {
         id: "accreditations_insurance",
+        label: "Accreditations & Insurance",
         fields: [
           { key: "clinicalEstablishmentLicense", label: "Clinical Establishment License (Mandatory)", type: "image_upload", mandatory: true },
           { key: "bloodBankLicense", label: "Blood Bank License (Mandatory)", type: "image_upload", mandatory: true, showIf: { field: "additionalServices", contains: "Blood Bank" } },

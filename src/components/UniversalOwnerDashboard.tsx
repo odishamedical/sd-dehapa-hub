@@ -825,7 +825,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                   {tab.fields.map(field => {
                     if (isFieldHidden(field, entityData)) return null;
                     return (
-                    <div key={field.key} className="bg-white/40 backdrop-blur-md p-6 rounded-2xl border border-white/60 shadow-sm hover:border-white transition-all">
+                    <div key={field.key} className="bg-black/20 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-sm hover:border-white/30 transition-all">
                       {field.type === 'object_array' && field.arrayFields ? (
                         <ObjectArrayEditor
                           title={field.label}
