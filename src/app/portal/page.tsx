@@ -19,7 +19,9 @@ import PatientConsultWidget from '@/components/PatientConsultWidget';
 import PatientAppointments from '@/components/PatientAppointments';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import CareTeamSeatingChart from '@/components/network/CareTeamSeatingChart';
+import SupportDashboard from '@/components/SupportDashboard';
 import LiveHealthFeed from '@/components/network/LiveHealthFeed';
+import WalletDashboard from '@/components/payments/WalletDashboard';
 
 function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }: { userName: string | null, userUid: string | null, userRole: string | null, userPhoto: string | null, onTabChange: (id: string) => void }) {
   return (
@@ -382,10 +384,22 @@ export default function UserDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
-      id: "billing",
-      label: "Billing & Invoices",
+      id: "wallet",
+      label: "Wallet & Refunds",
       section: "Network & Financials",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+    },
+    {
+      id: "bank_details",
+      label: "Bank Details (Refunds)",
+      section: "Network & Financials",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    },
+    {
+      id: "support",
+      label: "Help & Support",
+      section: "Network & Financials",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636a9 9 0 100 12.728M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     }
   ];
 
@@ -546,15 +560,86 @@ export default function UserDashboard() {
           </div>
         )}
 
-        {activeTab === "billing" && (
+        {activeTab === "wallet" && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Billing & Invoices</h3>
-            <div className="text-center py-16 bg-white/40 backdrop-blur-md rounded-[24px] border border-white/60 shadow-sm">
-              <div className="w-16 h-16 bg-white/80 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-400">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            <WalletDashboard 
+               entityId={userUid || ''} 
+               userRole="patient" 
+               walletBalance={identityData.walletBalance || 0} 
+            />
+          </div>
+        )}
+
+        {activeTab === "bank_details" && (
+          <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
+            <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Bank Details for Refunds</h3>
+            
+            <div className="mb-8 bg-emerald-50 border border-emerald-200 p-6 rounded-2xl">
+              <h4 className="text-emerald-800 font-bold mb-2">Refund Information</h4>
+              <p className="text-sm text-emerald-700">Add your bank details so we can process instant refunds for cancelled consultations directly to your account.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  Account Holder Name
+                </label>
+                <input 
+                  type="text" 
+                  value={identityData.bankAccountName || ''}
+                  onChange={e => setIdentityData({...identityData, bankAccountName: e.target.value})}
+                  placeholder="e.g. Rahul Sharma"
+                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                />
               </div>
-              <p className="text-slate-900 font-bold text-lg mb-1">No Transactions</p>
-              <p className="text-sm text-slate-500 max-w-sm mx-auto">Your payment history and invoices will securely appear here.</p>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  Bank Name
+                </label>
+                <input 
+                  type="text" 
+                  value={identityData.bankName || ''}
+                  onChange={e => setIdentityData({...identityData, bankName: e.target.value})}
+                  placeholder="e.g. HDFC Bank"
+                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  Account Number
+                </label>
+                <input 
+                  type="password" 
+                  value={identityData.bankAccountNumber || ''}
+                  onChange={e => setIdentityData({...identityData, bankAccountNumber: e.target.value})}
+                  placeholder="14-digit Account No."
+                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  IFSC Code
+                </label>
+                <input 
+                  type="text" 
+                  value={identityData.bankIfscCode || ''}
+                  onChange={e => setIdentityData({...identityData, bankIfscCode: e.target.value.toUpperCase()})}
+                  placeholder="e.g. HDFC0001234"
+                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                  UPI ID (Optional)
+                </label>
+                <input 
+                  type="text" 
+                  value={identityData.bankUpiId || ''}
+                  onChange={e => setIdentityData({...identityData, bankUpiId: e.target.value})}
+                  placeholder="e.g. patient@upi"
+                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                />
+              </div>
             </div>
           </div>
         )}
@@ -574,6 +659,12 @@ export default function UserDashboard() {
         {activeTab === "network" && (
           <div className="animate-in fade-in slide-in-from-bottom-4">
             <MyNetworkHub providerId={userUid} providerRole="patient" />
+          </div>
+        )}
+
+        {activeTab === "support" && (
+          <div className="animate-in fade-in slide-in-from-bottom-4">
+            <SupportDashboard userRole="patient" userName={identityData.fullName || identityData.firstName} />
           </div>
         )}
 

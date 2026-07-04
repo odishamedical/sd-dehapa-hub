@@ -9,6 +9,8 @@ import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
+import WalletDashboard from '@/components/payments/WalletDashboard';
+import SupportDashboard from '@/components/SupportDashboard';
 
 const faqData = [
   {
@@ -345,6 +347,12 @@ export default function DoctorOSDashboard() {
       label: "Payouts & Billing",
       section: "Financial & Admin",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    },
+    {
+      id: "faq",
+      label: "Help & Support",
+      section: "Financial & Admin",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636a9 9 0 100 12.728M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     }
   ];
 
@@ -822,12 +830,16 @@ export default function DoctorOSDashboard() {
                   {saveStatus === "saving" && <span className="text-sm font-bold text-teal-600 animate-pulse">Autosaving...</span>}
                   {saveStatus === "saved" && <span className="text-sm font-bold text-emerald-500">✓ Saved</span>}
                   
-                  {isFullySetup && !entityData?.verified && (
+                  {entityData?.adminLocked ? (
+                    <button onClick={() => handleTabChange('faq')} className="px-5 py-2 bg-rose-500 text-white font-bold rounded-xl text-sm transition-colors shadow-sm">
+                      Locked
+                    </button>
+                  ) : isFullySetup && !entityData?.verified && (
                     <button onClick={() => setEntityData({...entityData, verified: true})} className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm transition-colors shadow-sm">
                       Publish Profile
                     </button>
                   )}
-                  {entityData?.verified && (
+                  {entityData?.verified && !entityData?.adminLocked && (
                     <div className="px-4 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold uppercase flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                       Live / Published
@@ -865,12 +877,12 @@ export default function DoctorOSDashboard() {
                          : "When turned on, your profile will be visible in the public directory."}
                      </p>
                    </div>
-                   <label className={`relative inline-flex items-center ${progress < 100 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
+                   <label className={`relative inline-flex items-center ${(progress < 100 || entityData?.adminLocked) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
                      <input 
                        type="checkbox" 
                        className="sr-only peer" 
-                       checked={entityData.isPublished === true}
-                       disabled={progress < 100}
+                       checked={entityData.isPublished === true && !entityData?.adminLocked}
+                       disabled={progress < 100 || entityData?.adminLocked}
                        onChange={(e) => setEntityData({ ...entityData, isPublished: e.target.checked })}
                      />
                      <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
@@ -941,7 +953,7 @@ export default function DoctorOSDashboard() {
         )}
 
         {/* Coming Soon Banners for Unbuilt Tabs */}
-        {["telemedicine", "payouts"].includes(activeTab) && (
+        {["telemedicine"].includes(activeTab) && (
           <div className="space-y-6">
             <div className="bg-black/20 backdrop-blur-xl p-12 rounded-2xl shadow-lg border border-white/10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
                <div className="w-20 h-20 bg-teal-500/10 border border-teal-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[inset_0_0_20px_rgba(20,184,166,0.1)]">
@@ -950,6 +962,17 @@ export default function DoctorOSDashboard() {
                <h2 className="text-3xl font-black text-white tracking-tight mb-3">Coming Soon in Phase 3</h2>
                <p className="text-slate-400 text-lg max-w-lg mx-auto">We are building this premium feature to give you unparalleled control over your clinic's operations.</p>
             </div>
+          </div>
+        )}
+
+        {/* PAYOUTS & WALLET */}
+        {activeTab === "payouts" && (
+          <div className="bg-white/95 backdrop-blur-xl border border-white/20 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+             <WalletDashboard 
+               entityId={entityData.id} 
+               userRole="doctor" 
+               walletBalance={entityData.walletBalance || 0} 
+             />
           </div>
         )}
 
@@ -1066,28 +1089,7 @@ export default function DoctorOSDashboard() {
         {/* FAQ View */}
         {activeTab === "faq" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
-            <div className="mb-8 text-center pt-4">
-              <h2 className="text-3xl font-black text-white tracking-tight">Doctor OS Dashboard FAQ</h2>
-              <p className="text-slate-400 mt-2 text-lg">Everything you need to know about navigating your premium operating system.</p>
-            </div>
-            
-            <div className="space-y-4">
-              {faqData.map((faq, idx) => (
-                <details key={idx} className="group bg-black/20 backdrop-blur-xl rounded-2xl border border-white/5 hover:border-white/20 open:bg-black/40 open:border-white/20 transition-all shadow-lg">
-                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-white text-[15px]">
-                    {faq.question}
-                    <span className="transition-transform duration-300 group-open:rotate-180 bg-white/10 group-open:bg-white/20 p-1 rounded-full shadow-sm border border-white/10">
-                      <svg className="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </span>
-                  </summary>
-                  <div className="px-6 pb-6 text-slate-300 leading-relaxed text-sm animate-in fade-in duration-300">
-                    <div className="h-px bg-white/10 w-full mb-4"></div>
-                    <p className="font-black text-teal-300 mb-2 uppercase text-[10px] tracking-widest bg-teal-500/10 border border-teal-500/20 inline-block px-2 py-1 rounded-lg">{faq.category}</p>
-                    <p>{faq.answer}</p>
-                  </div>
-                </details>
-              ))}
-            </div>
+            <SupportDashboard userRole="doctor" userName={entityData?.name} faqData={faqData} />
           </div>
         )}
           </div>

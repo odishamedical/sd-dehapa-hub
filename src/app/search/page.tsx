@@ -47,7 +47,7 @@ function SearchResultsContent() {
         const querySnapshot = await getDocs(q);
         const docsData = querySnapshot.docs
           .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter((d: any) => d.isPublished !== false);
+          .filter((d: any) => d.isPublished !== false && d.adminLocked !== true);
 
         const mappedData = docsData.map((d: any) => ({
           id: d.id,

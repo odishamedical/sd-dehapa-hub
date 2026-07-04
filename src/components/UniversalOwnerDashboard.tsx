@@ -17,6 +17,9 @@ import { directoryConfig } from '@/lib/directoryConfig';
 import EntitySelector from '@/components/EntitySelector';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
 import UniversalPersonalForm from '@/components/UniversalPersonalForm';
+import WalletDashboard from '@/components/payments/WalletDashboard';
+import MyNetworkHub from '@/components/network/MyNetworkHub';
+import SupportDashboard from '@/components/SupportDashboard';
 
 interface UniversalOwnerDashboardProps {
   expectedRole: string; // e.g. "pharmacy", "lab", "ambulance", "doctor", "hospital"
@@ -198,13 +201,15 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center justify-between">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">
-            {entityData.isPublished ? "Your profile is Live." : "Activate Your Profile."}
-          </h1>
-          <p className="text-slate-600 text-lg max-w-xl font-medium">
-            {entityData.isPublished 
-              ? "Patients can now find you in the directory. Access your tools below." 
-              : "Complete your setup to unlock the 'Publish' switch. Auto-save is always on."}
-          </p>
+              {entityData.adminLocked ? "Locked by System Administration" : (entityData.isPublished ? "Your profile is Live." : "Activate Your Profile.")}
+            </h1>
+            <p className="text-slate-600 text-lg max-w-xl font-medium">
+              {entityData.adminLocked 
+                ? "Your profile has been locked due to an administrative action or policy violation." 
+                : (entityData.isPublished 
+                  ? "Patients can now find you in the directory. Access your tools below." 
+                  : "Complete your setup to unlock the 'Publish' switch. Auto-save is always on.")}
+            </p>
         </div>
 
         <div className="shrink-0 bg-white/80 backdrop-blur-md border border-slate-100 p-6 rounded-3xl shadow-lg flex flex-col items-center gap-4 w-full lg:min-w-[280px]">
@@ -216,23 +221,34 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
             </div>
           </div>
 
-          <button 
-            onClick={() => {
-              if (!isReady) return;
-              setEntityData({ ...entityData, isPublished: !entityData.isPublished });
-            }}
-            disabled={!isReady}
-            className={`w-full py-4 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-md ${
-              entityData.isPublished 
-                ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500" 
-                : isReady 
-                  ? "bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/30 hover:scale-105" 
-                  : "bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200"
-            }`}
-          >
-            {entityData.isPublished ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
-          </button>
-          {!isReady && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
+          <div className="flex flex-col items-center gap-2">
+            {entityData.adminLocked ? (
+              <button 
+                onClick={() => setActiveTab("help")}
+                className="w-full py-4 px-8 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-md bg-rose-50 text-rose-600 border-2 border-rose-500 hover:bg-rose-100"
+              >
+                Contact Support
+              </button>
+            ) : (
+              <button 
+                onClick={() => {
+                  if (!isReady) return;
+                  setEntityData({ ...entityData, isPublished: !entityData.isPublished });
+                }}
+                disabled={!isReady}
+                className={`w-full py-4 px-8 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-md ${
+                  entityData.isPublished 
+                    ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500" 
+                    : isReady 
+                      ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:shadow-xl hover:scale-105" 
+                      : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                }`}
+              >
+                {entityData.isPublished ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
+              </button>
+            )}
+            {!isReady && !entityData.adminLocked && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
+          </div>
         </div>
       </div>
     </div>
@@ -281,6 +297,24 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       label: "Document Vault",
       section: "BUSINESS & OWNERSHIP",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+    },
+    {
+      id: "network",
+      label: "My Network",
+      section: "PATIENT MANAGEMENT",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+    },
+    {
+      id: "wallet",
+      label: "Wallet & Payouts",
+      section: "FINANCIAL & ADMIN",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    },
+    {
+      id: "help",
+      label: "Support",
+      section: "FINANCIAL & ADMIN",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636a9 9 0 100 12.728M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
     }
   ];
 
@@ -308,10 +342,23 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
     },
     {
-      id: "guide-faqs",
-      label: "FAQs & Support",
+      id: "help",
+      label: "Help & Support",
       section: "HELP & GUIDES",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636a9 9 0 100 12.728M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    }
+  ];
+
+  const faqData = [
+    {
+      question: "Why can't I select multiple Primary Facility Types?",
+      answer: "To maintain directory integrity, you must choose your core identity (e.g. Nursing Home). You can then use the \"Add-On Services\" field to indicate additional capabilities like an In-House Pharmacy or Blood Bank.",
+      category: "Configuration"
+    },
+    {
+      question: "Why do I need to upload my PCPNDT Certificate?",
+      answer: "If you claim to offer \"Radiology & Imaging\", Indian law mandates a valid PCPNDT registration. This document verification is required to maintain the safety and legality of the DehaPa network.",
+      category: "Compliance"
     }
   ];
 
@@ -572,12 +619,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     : "When turned on, your profile will be visible in the public directory."}
                 </p>
               </div>
-              <label className={`relative inline-flex items-center ${completionPercentage < 100 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
+              <label className={`relative inline-flex items-center ${(completionPercentage < 100 || entityData.adminLocked) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}>
                 <input 
                   type="checkbox" 
                   className="sr-only peer" 
-                  checked={entityData.isPublished === true}
-                  disabled={completionPercentage < 100}
+                  checked={entityData.isPublished === true && !entityData.adminLocked}
+                  disabled={completionPercentage < 100 || entityData.adminLocked}
                   onChange={(e) => setEntityData({ ...entityData, isPublished: e.target.checked })}
                 />
                 <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
@@ -769,6 +816,77 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               </div>
             </div>
           </div>
+        )}
+
+        {/* MY NETWORK TAB */}
+        {activeTab === "network" && (
+           <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+               <div>
+                 <h1 className="text-2xl font-black text-white font-display tracking-tight">My Network</h1>
+                 <p className="text-slate-300 text-sm mt-1 font-medium">Manage and engage with your connected patient base</p>
+               </div>
+               <div className="flex gap-2">
+                 <button className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold text-sm transition-colors border border-white/10">Import Contacts</button>
+                 <button className="px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-bold text-sm shadow-sm transition-colors shadow-teal-500/20">Send Broadcast</button>
+               </div>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div className="bg-white/5 p-6 rounded-2xl shadow-sm border border-white/10">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Total Network</p>
+                  <h3 className="text-4xl font-black text-white">0</h3>
+                </div>
+                <div className="bg-white/5 p-6 rounded-2xl shadow-sm border border-white/10">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">New This Month</p>
+                  <h3 className="text-4xl font-black text-teal-400">0</h3>
+                </div>
+                <div className="bg-white/5 p-6 rounded-2xl shadow-sm border border-white/10 md:col-span-2 flex flex-col justify-center">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-white mb-1">Health Camp Broadcast</h4>
+                      <p className="text-sm text-slate-400 font-medium">Reach your patients instantly via SMS & App Notification.</p>
+                    </div>
+                    <button className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-sm transition-colors">Draft Message</button>
+                  </div>
+                </div>
+             </div>
+             
+             <div className="bg-white/5 rounded-2xl shadow-sm border border-white/10 overflow-hidden">
+               <div className="p-5 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                 <div className="relative">
+                   <svg className="w-5 h-5 absolute left-3.5 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                   <input type="text" placeholder="Search by name, phone, or tags..." className="pl-11 pr-4 py-3 text-sm bg-white/5 border border-white/10 text-white rounded-xl outline-none w-full md:w-80 focus:border-teal-500/50 placeholder:text-slate-400 transition-colors" />
+                 </div>
+                 <div className="flex gap-2">
+                   <select className="px-4 py-3 bg-white/5 text-white border border-white/10 rounded-xl text-sm outline-none font-medium">
+                     <option className="text-slate-900">All Tags</option>
+                     <option className="text-slate-900">Diabetic</option>
+                     <option className="text-slate-900">Hypertension</option>
+                   </select>
+                 </div>
+               </div>
+               
+               <div className="p-16 text-center">
+                 <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]">
+                   <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                 </div>
+                 <h4 className="font-bold text-white text-xl mb-2">No patients in your network yet</h4>
+                 <p className="text-slate-400 text-sm max-w-md mx-auto font-medium">Patients will appear here automatically when they book an appointment, walk into your facility, or connect via your DehaPa QR code.</p>
+               </div>
+             </div>
+           </div>
+        )}
+
+        {/* WALLET TAB */}
+        {activeTab === "wallet" && (
+           <div className="bg-white/95 backdrop-blur-xl border border-white/20 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+             <WalletDashboard 
+               entityId={entityData.id} 
+               userRole={expectedRole} 
+               walletBalance={entityData.walletBalance || 0} 
+             />
+           </div>
         )}
 
         {/* LOCATION TAB */}
@@ -986,23 +1104,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
           </div>
         )}
 
-        {activeTab === "guide-faqs" && (
-          <div className="bg-white/80 backdrop-blur-xl border border-slate-200 shadow-xl rounded-3xl p-8 md:p-12 animate-in fade-in zoom-in-95 duration-500">
-            <h2 className="text-3xl font-black text-slate-900 mb-6 font-serif">Frequently Asked Questions</h2>
-            <div className="space-y-4">
-              <div className="bg-black/20 backdrop-blur-3xl border border-white/10 p-6 rounded-2xl">
-                <h3 className="font-bold text-white mb-2">Why can't I select multiple Primary Facility Types?</h3>
-                <p className="text-sm text-slate-600">To maintain directory integrity, you must choose your core identity (e.g. Nursing Home). You can then use the "Add-On Services" field to indicate additional capabilities like an In-House Pharmacy or Blood Bank.</p>
-              </div>
-              <div className="bg-black/20 backdrop-blur-3xl border border-white/10 p-6 rounded-2xl">
-                <h3 className="font-bold text-white mb-2">Why do I need to upload my PCPNDT Certificate?</h3>
-                <p className="text-sm text-slate-600">If you claim to offer "Radiology & Imaging", Indian law mandates a valid PCPNDT registration. This document verification is required to maintain the safety and legality of the DehaPa network.</p>
-              </div>
-              <div className="bg-black/20 backdrop-blur-3xl border border-white/10 p-6 rounded-2xl">
-                <h3 className="font-bold text-white mb-2">How do I get help?</h3>
-                <p className="text-sm text-slate-600">You can reach our dedicated support team 24/7 at support@dehapa.com or call our partner hotline.</p>
-              </div>
-            </div>
+        {activeTab === "help" && (
+          <div className="animate-in fade-in slide-in-from-bottom-4">
+            <SupportDashboard userRole={expectedRole} userName={entityData.name} faqData={faqData} />
           </div>
         )}
 

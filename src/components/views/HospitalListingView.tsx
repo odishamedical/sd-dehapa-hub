@@ -50,7 +50,7 @@ export default function HospitalsDirectory({
         }));
         
         const mappedData = docsData
-          .filter((d: any) => d.category?.toLowerCase() === "hospital" && d.isPublished !== false)
+          .filter((d: any) => d.category?.toLowerCase() === "hospital" && d.isPublished !== false && d.adminLocked !== true)
           .map((d: any) => ({
             id: d.id,
             name: d.name || "Unknown Hospital",

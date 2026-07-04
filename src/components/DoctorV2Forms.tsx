@@ -7,6 +7,7 @@ import PremiumSlugModal from '@/components/PremiumSlugModal';
 import SmartEntitySearch from '@/components/SmartEntitySearch';
 import AddressBlock from '@/components/AddressBlock';
 import UniversalPersonalForm from '@/components/UniversalPersonalForm';
+import ImageUpload from '@/components/ImageUpload';
 
 interface DoctorV2FormsProps {
   activeTab: string;
@@ -603,7 +604,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <label className="sd-label-v3">Account Holder Name</label>
-            <input type="text" className="sd-input-v3" placeholder="As it appears on your bank account" value={entityData.accountName || ""} onChange={e => updateField('accountName', e.target.value)} />
+            <input type="text" className="sd-input-v3" placeholder="As it appears on your bank account" value={entityData.bankAccountName || ""} onChange={e => updateField('bankAccountName', e.target.value)} />
           </div>
           <div>
             <label className="sd-label-v3">Bank Name</label>
@@ -611,15 +612,24 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
           </div>
           <div>
             <label className="sd-label-v3">Account Number</label>
-            <input type="password" placeholder="••••••••••••" className="sd-input-v3 font-mono" value={entityData.accountNumber || ""} onChange={e => updateField('accountNumber', e.target.value)} />
+            <input type="password" placeholder="••••••••••••" className="sd-input-v3 font-mono" value={entityData.bankAccountNumber || ""} onChange={e => updateField('bankAccountNumber', e.target.value)} />
           </div>
           <div>
             <label className="sd-label-v3">IFSC Code</label>
-            <input type="text" className="sd-input-v3 font-mono uppercase" placeholder="e.g. HDFC0001234" value={entityData.ifscCode || ""} onChange={e => updateField('ifscCode', e.target.value.toUpperCase())} />
+            <input type="text" className="sd-input-v3 font-mono uppercase" placeholder="e.g. HDFC0001234" value={entityData.bankIfscCode || ""} onChange={e => updateField('bankIfscCode', e.target.value.toUpperCase())} />
           </div>
           <div className="col-span-1 md:col-span-2">
             <label className="sd-label-v3">UPI ID (Optional)</label>
-            <input type="text" className="sd-input-v3" placeholder="e.g. doctor@upi" value={entityData.upiId || ""} onChange={e => updateField('upiId', e.target.value)} />
+            <input type="text" className="sd-input-v3" placeholder="e.g. doctor@upi" value={entityData.bankUpiId || ""} onChange={e => updateField('bankUpiId', e.target.value)} />
+          </div>
+          <div className="col-span-1 md:col-span-2">
+            <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+              Cancelled Cheque Photo
+            </label>
+            <ImageUpload 
+              defaultImage={entityData.cancelledChequeImage}
+              onChange={(url) => updateField('cancelledChequeImage', url)}
+            />
           </div>
         </div>
         
@@ -635,133 +645,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
     );
   }
 
-  if (activeTab === "staff") {
-    const staffList = Array.isArray(entityData.staff) ? entityData.staff : [];
-    
-    return (
-      <div className="space-y-10">
-        <div>
-          <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Staff & Receptionists</h2>
-          <p className="text-slate-500 font-medium text-lg">Add your clinic staff so they can manage the Live Queue and Vitals on your behalf.</p>
-        </div>
 
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-           <div className="p-6 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-             <h3 className="text-lg font-bold text-slate-200">Authorized Staff</h3>
-             <button onClick={() => addArrayItem('staff')} className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm shadow-teal-200">
-               + Add Staff Member
-             </button>
-           </div>
-           
-           <div className="p-6 space-y-4">
-             {staffList.map((st: any, idx: number) => (
-               <div key={idx} className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col md:flex-row md:items-center gap-4 relative group">
-                 <button onClick={() => removeArrayItem('staff', idx)} className="absolute top-4 right-4 text-slate-300 hover:text-rose-500 transition-colors">
-                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                 </button>
-                 
-                 <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 pr-8">
-                   <div>
-                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Staff Name</label>
-                     <input type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-teal-500 outline-none" placeholder="e.g. Ramesh" value={st.name || ""} onChange={e => handleArrayUpdate('staff', idx, 'name', e.target.value)} />
-                   </div>
-                   <div>
-                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Phone Number (Login ID)</label>
-                     <input type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-teal-500 outline-none" placeholder="10-digit mobile" value={st.phone || ""} onChange={e => handleArrayUpdate('staff', idx, 'phone', e.target.value)} />
-                   </div>
-                   <div>
-                     <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Role</label>
-                     <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:border-teal-500 outline-none" value={st.role || ""} onChange={e => handleArrayUpdate('staff', idx, 'role', e.target.value)}>
-                       <option value="">Select Role...</option>
-                       <option value="Receptionist">Receptionist (Queue Only)</option>
-                       <option value="Nurse">Nurse (Vitals + Queue)</option>
-                       <option value="Clinic Manager">Clinic Manager (Full Access)</option>
-                     </select>
-                   </div>
-                 </div>
-               </div>
-             ))}
-             {staffList.length === 0 && (
-               <div className="text-center py-8">
-                 <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
-                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                 </div>
-                 <p className="text-slate-500 font-medium">No staff members added yet.</p>
-                 <p className="text-xs text-slate-400 mt-1">Staff will use their phone number to log in to the OS.</p>
-               </div>
-             )}
-           </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (activeTab === "bank_details") {
-    return (
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Bank & Payout Details</h3>
-        
-        <div className="mb-8 bg-emerald-50 border border-emerald-200 p-6 rounded-2xl">
-          <h4 className="text-emerald-800 font-bold mb-2">Payouts Information</h4>
-          <p className="text-sm text-emerald-700">DehaPa will deposit all online telemedicine payments directly into this bank account. Please ensure the account name matches your registered legal entity or personal name.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
-              Account Holder Name
-            </label>
-            <input 
-              type="text" 
-              value={entityData.bankAccountName || ''}
-              onChange={e => updateField('bankAccountName', e.target.value)}
-              placeholder="e.g. Dr. Rajesh Kumar"
-              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
-            />
-          </div>
-          <div>
-            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
-              Bank Name
-            </label>
-            <input 
-              type="text" 
-              value={entityData.bankName || ''}
-              onChange={e => updateField('bankName', e.target.value)}
-              placeholder="e.g. HDFC Bank"
-              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
-              Account Number
-            </label>
-            <input 
-              type="text" 
-              value={entityData.bankAccountNumber || ''}
-              onChange={e => updateField('bankAccountNumber', e.target.value)}
-              placeholder="14-digit Account No."
-              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
-            />
-          </div>
-          <div>
-            <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
-              IFSC Code
-            </label>
-            <input 
-              type="text" 
-              value={entityData.bankIfscCode || ''}
-              onChange={e => updateField('bankIfscCode', e.target.value.toUpperCase())}
-              placeholder="e.g. HDFC0001234"
-              className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return null;
 }

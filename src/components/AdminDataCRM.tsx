@@ -138,6 +138,7 @@ export default function AdminDataCRM() {
       source: "manual_entry",
       tenantId: "default",
       isPublished: true,
+      adminLocked: false,
       youtubeLinks: [],
       totalBeds: "",
       icuCapacity: "",
@@ -274,6 +275,7 @@ export default function AdminDataCRM() {
         district: selectedListing.district || "",
         verified: selectedListing.verified || false,
         isPublished: selectedListing.isPublished !== undefined ? selectedListing.isPublished : true,
+        adminLocked: selectedListing.adminLocked || false,
         customSlug: selectedListing.customSlug?.trim() || "",
         videoFee: selectedListing.videoFee || "",
         clinicName: selectedListing.clinicName || "",
@@ -962,6 +964,20 @@ export default function AdminDataCRM() {
                         <span className={`absolute cursor-pointer top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${selectedListing.isPublished !== false ? 'transform translate-x-6' : ''}`}></span>
                       </div>
                       <span className="text-sm font-bold text-slate-900">{selectedListing.isPublished !== false ? 'Public (Visible)' : 'Hidden (Draft)'}</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer ml-auto border-l border-slate-300 pl-6">
+                      <div className={`relative inline-block w-12 h-6 rounded-full transition-colors ${selectedListing.adminLocked ? 'bg-rose-500' : 'bg-slate-300'}`}>
+                        <input type="checkbox" className="absolute opacity-0 w-0 h-0" checked={selectedListing.adminLocked || false} onChange={e => {
+                          const isLocked = e.target.checked;
+                          setSelectedListing({
+                            ...selectedListing, 
+                            adminLocked: isLocked,
+                            isPublished: isLocked ? false : selectedListing.isPublished
+                          });
+                        }} />
+                        <span className={`absolute cursor-pointer top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${selectedListing.adminLocked ? 'transform translate-x-6' : ''}`}></span>
+                      </div>
+                      <span className="text-sm font-bold text-rose-600">System Lock</span>
                     </label>
                   </div>
                 </div>
