@@ -351,7 +351,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         
         {/* PROGRESS BAR WIDGET */}
         {(activeTab === "identity" || activeTab === "location" || categoryConfig?.tabs.some(t => t.id === activeTab)) && (
-          <div className="bg-white/50 backdrop-blur-[40px] rounded-[32px] p-6 mb-8 shadow-sm border border-white/60 animate-in fade-in slide-in-from-top-4">
+          <div className="bg-black/20 backdrop-blur-[40px] rounded-[32px] p-6 mb-8 shadow-sm border border-white/10 animate-in fade-in slide-in-from-top-4">
             <div className="flex justify-between items-center mb-3">
               <div>
                 <h3 className="font-bold text-white">Profile Completion</h3>

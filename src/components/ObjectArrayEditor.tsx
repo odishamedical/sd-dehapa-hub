@@ -35,7 +35,7 @@ export default function ObjectArrayEditor({
 }: ObjectArrayEditorProps) {
   return (
     <div className="w-full">
-      <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">{title}</h4>
+      <h4 className="font-bold text-slate-200 mb-4 text-sm uppercase tracking-widest">{title}</h4>
       <div className="space-y-4">
         {items.map((item, index) => (
           <div key={index} className="p-4 border border-slate-200 rounded-xl bg-white relative group shadow-sm hover:shadow-md transition-shadow">
