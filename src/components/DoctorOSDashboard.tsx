@@ -954,45 +954,45 @@ export default function DoctorOSDashboard() {
         {/* Skeleton Temptation UIs for Unbuilt Tabs */}
         {["telemedicine", "payouts", "staff"].includes(activeTab) && (
           <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
                <div>
-                 <div className="h-8 w-48 bg-slate-200 rounded-lg animate-pulse mb-2"></div>
-                 <div className="h-4 w-64 bg-slate-100 rounded-md animate-pulse"></div>
+                 <div className="h-8 w-48 bg-white/20 rounded-lg animate-pulse mb-2"></div>
+                 <div className="h-4 w-64 bg-white/10 rounded-md animate-pulse"></div>
                </div>
                <div className="flex gap-3">
-                 <div className="h-10 w-24 bg-slate-100 rounded-xl animate-pulse"></div>
-                 <div className="h-10 w-32 bg-indigo-100 rounded-xl animate-pulse"></div>
+                 <div className="h-10 w-24 bg-white/10 rounded-xl animate-pulse"></div>
+                 <div className="h-10 w-32 bg-teal-500/20 rounded-xl animate-pulse"></div>
                </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                  <div className="h-4 w-24 bg-slate-100 rounded mb-4 animate-pulse"></div>
-                  <div className="h-10 w-32 bg-slate-200 rounded-lg animate-pulse mb-2"></div>
-                  <div className="h-3 w-40 bg-slate-50 rounded animate-pulse"></div>
+                <div key={i} className="bg-black/20 backdrop-blur-xl p-6 rounded-2xl shadow-sm border border-white/10">
+                  <div className="h-4 w-24 bg-white/10 rounded mb-4 animate-pulse"></div>
+                  <div className="h-10 w-32 bg-white/20 rounded-lg animate-pulse mb-2"></div>
+                  <div className="h-3 w-40 bg-white/5 rounded animate-pulse"></div>
                 </div>
               ))}
             </div>
             
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-               <div className="p-4 border-b border-slate-50 flex items-center justify-between">
-                 <div className="h-10 w-64 bg-slate-50 rounded-xl animate-pulse"></div>
-                 <div className="h-10 w-32 bg-slate-50 rounded-xl animate-pulse"></div>
+            <div className="bg-black/20 backdrop-blur-xl rounded-2xl shadow-sm border border-white/10 overflow-hidden">
+               <div className="p-4 border-b border-white/10 flex items-center justify-between">
+                 <div className="h-10 w-64 bg-white/5 rounded-xl animate-pulse"></div>
+                 <div className="h-10 w-32 bg-white/5 rounded-xl animate-pulse"></div>
                </div>
                <div className="p-0">
                  {[1, 2, 3, 4, 5].map(i => (
-                   <div key={i} className="p-4 border-b border-slate-50 flex items-center justify-between hover:bg-slate-50/50">
+                   <div key={i} className="p-4 border-b border-white/5 flex items-center justify-between hover:bg-white/5">
                      <div className="flex items-center gap-4">
-                       <div className="h-12 w-12 bg-slate-100 rounded-full animate-pulse"></div>
+                       <div className="h-12 w-12 bg-white/10 rounded-full animate-pulse"></div>
                        <div>
-                         <div className="h-5 w-32 bg-slate-200 rounded mb-1 animate-pulse"></div>
-                         <div className="h-3 w-20 bg-slate-100 rounded animate-pulse"></div>
+                         <div className="h-5 w-32 bg-white/20 rounded mb-1 animate-pulse"></div>
+                         <div className="h-3 w-20 bg-white/10 rounded animate-pulse"></div>
                        </div>
                      </div>
                      <div className="flex items-center gap-3">
-                       <div className="h-6 w-20 bg-slate-100 rounded-full animate-pulse"></div>
-                       <div className="h-8 w-8 bg-slate-50 rounded-lg animate-pulse"></div>
+                       <div className="h-6 w-20 bg-white/10 rounded-full animate-pulse"></div>
+                       <div className="h-8 w-8 bg-white/5 rounded-lg animate-pulse"></div>
                      </div>
                    </div>
                  ))}
@@ -1005,22 +1005,22 @@ export default function DoctorOSDashboard() {
         {activeTab === "faq" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
             <div className="mb-8 text-center pt-4">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight">Doctor OS Dashboard FAQ</h2>
-              <p className="text-slate-500 mt-2 text-lg">Everything you need to know about navigating your premium operating system.</p>
+              <h2 className="text-3xl font-black text-white tracking-tight">Doctor OS Dashboard FAQ</h2>
+              <p className="text-slate-400 mt-2 text-lg">Everything you need to know about navigating your premium operating system.</p>
             </div>
             
             <div className="space-y-4">
               {faqData.map((faq, idx) => (
-                <details key={idx} className="group bg-slate-50 rounded-2xl border border-transparent hover:bg-slate-100 open:bg-white open:border-slate-200 transition-all shadow-sm">
-                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-slate-800 text-[15px]">
+                <details key={idx} className="group bg-black/20 backdrop-blur-xl rounded-2xl border border-white/5 hover:border-white/20 open:bg-black/40 open:border-white/20 transition-all shadow-lg">
+                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-white text-[15px]">
                     {faq.question}
-                    <span className="transition-transform duration-300 group-open:rotate-180 bg-white group-open:bg-slate-100 p-1 rounded-full shadow-sm">
-                      <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <span className="transition-transform duration-300 group-open:rotate-180 bg-white/10 group-open:bg-white/20 p-1 rounded-full shadow-sm border border-white/10">
+                      <svg className="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </span>
                   </summary>
-                  <div className="px-6 pb-6 text-slate-600 leading-relaxed text-sm animate-in fade-in duration-300">
-                    <div className="h-px bg-slate-100 w-full mb-4"></div>
-                    <p className="font-black text-slate-800 mb-2 uppercase text-[10px] tracking-widest text-teal-600 bg-teal-50 inline-block px-2 py-1 rounded-lg">{faq.category}</p>
+                  <div className="px-6 pb-6 text-slate-300 leading-relaxed text-sm animate-in fade-in duration-300">
+                    <div className="h-px bg-white/10 w-full mb-4"></div>
+                    <p className="font-black text-teal-300 mb-2 uppercase text-[10px] tracking-widest bg-teal-500/10 border border-teal-500/20 inline-block px-2 py-1 rounded-lg">{faq.category}</p>
                     <p>{faq.answer}</p>
                   </div>
                 </details>
