@@ -244,7 +244,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         <div className="pt-8 border-t border-slate-200/60">
           <h3 className="text-xl font-bold text-slate-200 mb-6">Qualifications & Education</h3>
           {quals.map((q: any, idx: number) => (
-            <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-slate-200 mb-4 relative">
+            <div key={idx} className="bg-black/20 backdrop-blur-xl p-6 rounded-2xl border border-white/10 mb-4 relative">
               <button onClick={() => removeArrayItem('qualificationsList', idx)} className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 font-bold">Remove</button>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -275,7 +275,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         <div className="pt-8 border-t border-slate-200/60">
           <h3 className="text-xl font-bold text-slate-200 mb-6">Work Experience</h3>
           {exps.map((exp: any, idx: number) => (
-            <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-slate-200 mb-4 relative">
+            <div key={idx} className="bg-black/20 backdrop-blur-xl p-6 rounded-2xl border border-white/10 mb-4 relative">
               <button onClick={() => removeArrayItem('experiences', idx)} className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 font-bold">Remove</button>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -306,7 +306,7 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
         <div className="pt-8 border-t border-slate-200/60">
           <h3 className="text-xl font-bold text-slate-200 mb-6">Research & Publications</h3>
           {research.map((res: any, idx: number) => (
-            <div key={idx} className="bg-white/50 p-6 rounded-2xl border border-slate-200 mb-4 relative">
+            <div key={idx} className="bg-black/20 backdrop-blur-xl p-6 rounded-2xl border border-white/10 mb-4 relative">
               <button onClick={() => removeArrayItem('research', idx)} className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 font-bold">Remove</button>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
