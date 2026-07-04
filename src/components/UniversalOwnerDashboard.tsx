@@ -770,6 +770,42 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
                   />
                 </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                    Standard UPI ID
+                  </label>
+                  <input 
+                    type="text" 
+                    value={entityData.bankUpiId || ''}
+                    onChange={e => setEntityData({ ...entityData, bankUpiId: e.target.value })}
+                    placeholder="e.g. hospital@upi"
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                    Google Pay Number
+                  </label>
+                  <input 
+                    type="text" 
+                    value={entityData.gpayNumber || ''}
+                    onChange={e => setEntityData({ ...entityData, gpayNumber: e.target.value })}
+                    placeholder="e.g. 9876543210"
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">
+                    PhonePe Number
+                  </label>
+                  <input 
+                    type="text" 
+                    value={entityData.phonepeNumber || ''}
+                    onChange={e => setEntityData({ ...entityData, phonepeNumber: e.target.value })}
+                    placeholder="e.g. 9876543210"
+                    className="w-full bg-white border border-slate-200 hover:border-teal-400 text-slate-900 focus:border-teal-500 rounded-xl px-5 py-3.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] focus:ring-4 focus:ring-cyan-500/20 outline-none transition-all" 
+                  />
+                </div>
               </div>
               
               <div>

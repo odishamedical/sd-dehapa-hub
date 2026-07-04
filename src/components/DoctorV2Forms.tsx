@@ -619,8 +619,16 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
             <input type="text" className="sd-input-v3 font-mono uppercase" placeholder="e.g. HDFC0001234" value={entityData.bankIfscCode || ""} onChange={e => updateField('bankIfscCode', e.target.value.toUpperCase())} />
           </div>
           <div className="col-span-1 md:col-span-2">
-            <label className="sd-label-v3">UPI ID (Optional)</label>
+            <label className="sd-label-v3">Standard UPI ID</label>
             <input type="text" className="sd-input-v3" placeholder="e.g. doctor@upi" value={entityData.bankUpiId || ""} onChange={e => updateField('bankUpiId', e.target.value)} />
+          </div>
+          <div>
+            <label className="sd-label-v3">Google Pay Number</label>
+            <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.gpayNumber || ""} onChange={e => updateField('gpayNumber', e.target.value)} />
+          </div>
+          <div>
+            <label className="sd-label-v3">PhonePe Number</label>
+            <input type="text" className="sd-input-v3" placeholder="e.g. 9876543210" value={entityData.phonepeNumber || ""} onChange={e => updateField('phonepeNumber', e.target.value)} />
           </div>
           <div className="col-span-1 md:col-span-2">
             <label className="block text-xs uppercase font-bold text-slate-400 mb-2 tracking-wider">

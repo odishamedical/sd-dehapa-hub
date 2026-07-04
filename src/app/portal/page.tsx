@@ -380,19 +380,19 @@ export default function UserDashboard() {
     {
       id: "network",
       label: "My Doctors",
-      section: "Network & Financials",
+      section: "My Network",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
       id: "wallet",
       label: "Wallet & Refunds",
-      section: "Network & Financials",
+      section: "Financials",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
     },
     {
       id: "bank_details",
       label: "Bank Details (Refunds)",
-      section: "Network & Financials",
+      section: "Financials",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
@@ -579,9 +579,9 @@ export default function UserDashboard() {
               <p className="text-sm text-emerald-700">Add your bank details so we can process instant refunds for cancelled consultations directly to your account.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
                   Account Holder Name
                 </label>
                 <input 
@@ -589,11 +589,11 @@ export default function UserDashboard() {
                   value={identityData.bankAccountName || ''}
                   onChange={e => setIdentityData({...identityData, bankAccountName: e.target.value})}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
                   Bank Name
                 </label>
                 <input 
@@ -601,11 +601,11 @@ export default function UserDashboard() {
                   value={identityData.bankName || ''}
                   onChange={e => setIdentityData({...identityData, bankName: e.target.value})}
                   placeholder="e.g. HDFC Bank"
-                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
                   Account Number
                 </label>
                 <input 
@@ -613,11 +613,11 @@ export default function UserDashboard() {
                   value={identityData.bankAccountNumber || ''}
                   onChange={e => setIdentityData({...identityData, bankAccountNumber: e.target.value})}
                   placeholder="14-digit Account No."
-                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
+                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
                   IFSC Code
                 </label>
                 <input 
@@ -625,19 +625,43 @@ export default function UserDashboard() {
                   value={identityData.bankIfscCode || ''}
                   onChange={e => setIdentityData({...identityData, bankIfscCode: e.target.value.toUpperCase()})}
                   placeholder="e.g. HDFC0001234"
-                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                  Google Pay Number
+                </label>
+                <input 
+                  type="text" 
+                  value={identityData.gpayNumber || ''}
+                  onChange={e => setIdentityData({...identityData, gpayNumber: e.target.value})}
+                  placeholder="e.g. 9876543210"
+                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                  PhonePe Number
+                </label>
+                <input 
+                  type="text" 
+                  value={identityData.phonepeNumber || ''}
+                  onChange={e => setIdentityData({...identityData, phonepeNumber: e.target.value})}
+                  placeholder="e.g. 9876543210"
+                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">
-                  UPI ID (Optional)
+                <label className="block text-[10px] uppercase font-bold text-slate-300 mb-2 tracking-widest">
+                  Standard UPI ID
                 </label>
                 <input 
                   type="text" 
                   value={identityData.bankUpiId || ''}
                   onChange={e => setIdentityData({...identityData, bankUpiId: e.target.value})}
                   placeholder="e.g. patient@upi"
-                  className="w-full bg-white/60 backdrop-blur-md border border-slate-200 rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all" 
+                  className="w-full bg-slate-800/80 border border-slate-700 text-white rounded-xl px-5 py-3.5 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all placeholder:text-slate-500" 
                 />
               </div>
             </div>

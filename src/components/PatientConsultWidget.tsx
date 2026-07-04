@@ -32,9 +32,9 @@ export default function PatientConsultWidget({ patientId }: { patientId: string 
   }, [localStream]);
 
   const tiers = [
-    { id: 'General Doctor', name: 'General Physician', price: 299, desc: 'Fever, cold, basic medical advice.' },
-    { id: 'Specialist Doctor', name: 'Specialist', price: 599, desc: 'Dermatologist, Pediatrician, Orthopedist, etc.' },
-    { id: 'Super-specialist Doctor', name: 'Super Specialist', price: 999, desc: 'Cardiologist, Neurologist, Oncologist, etc.' }
+    { id: 'General Doctor', name: 'General Physician', price: 299, desc: 'Platform fixed rate for general instant care.' },
+    { id: 'Specialist Doctor', name: 'Specialist', price: 599, desc: 'Platform fixed rate for urgent specialized care.' },
+    { id: 'Super-specialist Doctor', name: 'Super Specialist', price: 999, desc: 'Platform fixed rate for advanced emergency consults.' }
   ];
 
   // Listen to the request once created to see if a doctor accepted
@@ -356,11 +356,11 @@ export default function PatientConsultWidget({ patientId }: { patientId: string 
           <div 
             key={tier.id}
             onClick={() => handleSelectTier(tier)}
-            className="border-2 border-slate-200 hover:border-sky-500 rounded-2xl p-6 cursor-pointer transition-all hover:shadow-md group"
+            className="border border-white/20 hover:border-teal-400 bg-white/5 rounded-2xl p-6 cursor-pointer transition-all hover:shadow-lg hover:bg-white/10 group backdrop-blur-sm"
           >
-            <h3 className="font-bold text-lg text-slate-900 group-hover:text-sky-700">{tier.name}</h3>
-            <div className="text-2xl font-black text-slate-900 my-2">₹{tier.price}</div>
-            <p className="text-xs text-slate-500">{tier.desc}</p>
+            <h3 className="font-bold text-lg text-white group-hover:text-teal-400 transition-colors">{tier.name}</h3>
+            <div className="text-2xl font-black text-white my-2">₹{tier.price}</div>
+            <p className="text-xs text-slate-300">{tier.desc}</p>
           </div>
         ))}
       </div>
