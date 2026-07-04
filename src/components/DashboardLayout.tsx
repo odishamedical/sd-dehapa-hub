@@ -179,7 +179,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans relative overflow-x-hidden flex flex-col">
+    <div className="dark min-h-screen bg-slate-950 text-slate-200 font-sans relative overflow-x-hidden flex flex-col">
       
       {/* Premium Soft-Light Background Orbs */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
@@ -508,3 +508,4 @@ export default function DashboardLayout({
     </div>
   );
 }
+

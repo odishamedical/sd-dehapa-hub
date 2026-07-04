@@ -2,6 +2,8 @@
 
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff; /* Clean white */
   --foreground: #0f172a; /* Slate 900 for text */
@@ -192,4 +194,5 @@ html {
     left: 150%;
   }
 }
+
 
