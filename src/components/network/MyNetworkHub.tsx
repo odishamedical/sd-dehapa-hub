@@ -304,10 +304,10 @@ export default function MyNetworkHub({
           )}
         </div>
         <div>
-          <h2 className="text-2xl font-serif font-bold text-slate-800">
+          <h2 className="text-2xl font-serif font-bold text-white">
             {viewMode === 'b2c' ? 'My Patients CRM' : viewMode === 'b2b' ? 'B2B Network' : providerRole === 'patient' ? 'My Care Team' : 'My Network'}
           </h2>
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-200 text-sm">
             {viewMode === 'b2c' ? 'Manage your patient relationships and EMR access.' : viewMode === 'b2b' ? 'Collaborate with doctors, labs, and hospitals.' : 'Manage your trusted health connections.'}
           </p>
         </div>
@@ -335,16 +335,6 @@ export default function MyNetworkHub({
         {/* OVERVIEWS */}
         {(activeTab === 'overview' || activeTab === 'overview_care_team' || activeTab === 'overview_b2b') && (
           <div className="space-y-6 animate-in fade-in">
-            {connections.length === 0 ? (
-              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-3xl p-8 text-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-white/40 skew-x-12 translate-x-[-150%] animate-[shimmer_3s_infinite]"></div>
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-indigo-100 relative z-10">
-                  <svg className="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-2 relative z-10">Your Network is Empty</h3>
-                <p className="text-slate-600 max-w-md mx-auto mb-8 relative z-10">Start building your medical network today to securely share records and collaborate.</p>
-              </div>
-            ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                  <div className="bg-white/60 border border-white p-6 rounded-3xl shadow-sm flex flex-col justify-between">
                     <div>
@@ -390,8 +380,6 @@ export default function MyNetworkHub({
                    </>
                  )}
               </div>
-            )}
-            
             {activeTab !== 'overview_b2b' && (
               <SuggestedConnectionsWidget 
                 currentUserId={providerId} 

@@ -205,7 +205,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         ]
       },
       {
-        id: "b2b_network",
+        id: "network_setup",
         label: "Establish Your Network Connection",
         fields: [
           {
@@ -385,7 +385,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         ]
       },
       {
-        id: "b2b_network",
+        id: "network_setup",
         label: "Establish Your Network Connection",
         fields: [
           {
@@ -437,7 +437,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         ]
       },
       {
-        id: "b2b_network",
+        id: "network_setup",
         label: "Establish Your Network Connection",
         fields: [
           {
