@@ -13,10 +13,10 @@ export type DashboardTab = {
 };
 
 interface DashboardLayoutProps {
-  roleName: string; // e.g., "Admin", "Doctor", "Hospital"
-  tabs: DashboardTab[];
-  activeTab: string;
-  onTabChange: (tabId: string) => void;
+  roleName?: string; // e.g., "Admin", "Doctor", "Hospital"
+  tabs?: DashboardTab[];
+  activeTab?: string;
+  onTabChange?: (tabId: string) => void;
   children: ReactNode;
   headerTitle?: string;
   userProfile?: {
@@ -34,10 +34,10 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({
-  roleName,
-  tabs,
-  activeTab,
-  onTabChange,
+  roleName = "Portal",
+  tabs = [],
+  activeTab = "home",
+  onTabChange = () => {},
   children,
   headerTitle,
   userProfile,
