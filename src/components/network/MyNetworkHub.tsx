@@ -5,7 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { ConnectionService, NetworkConnection, ConnectionStatus } from '@/services/connection.service';
+import { ConnectionService, NetworkConnection } from '@/services/connection.service';
 import SuggestedConnectionsWidget from './SuggestedConnectionsWidget';
 
 export default function MyNetworkHub({ 
@@ -16,7 +16,7 @@ export default function MyNetworkHub({
   providerRole: string;
 }) {
   const [user, setUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'patients' | 'colleagues' | 'facilities' | 'requests' | 'family'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'patients' | 'partners' | 'care_team' | 'requests'>('overview');
   
   const [connections, setConnections] = useState<NetworkConnection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,14 +34,12 @@ export default function MyNetworkHub({
       return;
     }
 
-    // We fetch all connections where this provider is either initiator or receiver
     const unsubReceiver = onSnapshot(query(collection(db, 'connections'), where('receiverId', '==', providerId)), (snap) => {
       const incoming = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as NetworkConnection));
       
       const unsubInitiator = onSnapshot(query(collection(db, 'connections'), where('initiatorId', '==', providerId)), (snap2) => {
         const outgoing = snap2.docs.map(doc => ({ id: doc.id, ...doc.data() } as NetworkConnection));
         
-        // Merge and deduplicate just in case
         const allConnections = [...incoming, ...outgoing];
         const uniqueConnections = Array.from(new Map(allConnections.map(c => [c.id, c])).values());
         
@@ -72,9 +70,7 @@ export default function MyNetworkHub({
     );
   }
 
-  // Categorize connections
   const pendingRequests = connections.filter(c => c.status === 'pending' && c.receiverId === providerId);
-  
   const approvedConnections = connections.filter(c => c.status === 'approved');
   
   const patients = approvedConnections.filter(c => 
@@ -82,17 +78,11 @@ export default function MyNetworkHub({
     (c.receiverRole === 'patient' && c.receiverId !== providerId)
   );
   
-  const colleagues = approvedConnections.filter(c => 
-    (c.initiatorRole === 'doctor' && c.initiatorId !== providerId) || 
-    (c.receiverRole === 'doctor' && c.receiverId !== providerId)
+  const partners = approvedConnections.filter(c => 
+    (c.initiatorRole !== 'patient' && c.initiatorId !== providerId) || 
+    (c.receiverRole !== 'patient' && c.receiverId !== providerId)
   );
 
-  const facilities = approvedConnections.filter(c => 
-    (['hospital', 'lab', 'pharmacy'].includes(c.initiatorRole) && c.initiatorId !== providerId) || 
-    (['hospital', 'lab', 'pharmacy'].includes(c.receiverRole) && c.receiverId !== providerId)
-  );
-
-  // Helper to get the "other person" in the connection
   const getOtherParty = (conn: NetworkConnection) => {
     if (conn.initiatorId === providerId) {
       return { name: conn.receiverName, role: conn.receiverRole, id: conn.receiverId };
@@ -101,13 +91,15 @@ export default function MyNetworkHub({
     }
   };
 
-  const navItems = [
+  const navItems = providerRole === 'patient' ? [
     { id: 'overview', label: 'Overview', count: null },
+    { id: 'care_team', label: 'My Care Team', count: partners.length },
     { id: 'requests', label: 'Requests', count: pendingRequests.length },
-    ...(providerRole === 'patient' ? [{ id: 'family', label: 'Family & Dependents', count: null } as const] : []),
-    ...(providerRole !== 'patient' ? [{ id: 'patients', label: 'Patients', count: patients.length } as const] : []),
-    ...(providerRole !== 'patient' ? [{ id: 'colleagues', label: 'Colleagues', count: colleagues.length } as const] : []),
-    { id: 'facilities', label: 'Facilities', count: facilities.length },
+  ] as const : [
+    { id: 'overview', label: 'Overview', count: null },
+    { id: 'patients', label: 'My Patients (B2C)', count: patients.length },
+    { id: 'partners', label: 'My Partners (B2B)', count: partners.length },
+    { id: 'requests', label: 'Requests', count: pendingRequests.length },
   ] as const;
 
   return (
@@ -118,16 +110,15 @@ export default function MyNetworkHub({
         </div>
         <div>
           <h2 className="text-2xl font-serif font-bold text-slate-800">My Network</h2>
-          <p className="text-slate-500 text-sm">Manage your patients, colleagues, and facility connections.</p>
+          <p className="text-slate-500 text-sm">Manage your connections in the DehaPa platform.</p>
         </div>
       </div>
 
-      {/* Internal Navigation */}
       <div className="flex overflow-x-auto gap-2 pb-4 mb-6 custom-scrollbar">
         {navItems.map(item => (
           <button
             key={item.id}
-            onClick={() => setActiveTab(item.id)}
+            onClick={() => setActiveTab(item.id as any)}
             className={`whitespace-nowrap px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${activeTab === item.id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'bg-white/60 text-slate-600 hover:bg-white border border-white/60 hover:border-slate-200'}`}
           >
             {item.label}
@@ -141,7 +132,6 @@ export default function MyNetworkHub({
       </div>
 
       <div className="min-h-[400px]">
-        {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <div className="space-y-6 animate-in fade-in">
             {connections.length === 0 ? (
@@ -151,28 +141,10 @@ export default function MyNetworkHub({
                   <svg className="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-2 relative z-10">Your Network is Empty</h3>
-                <p className="text-slate-600 max-w-md mx-auto mb-8 relative z-10">Start building your medical network today to securely share records, give 2nd opinions, and route e-prescriptions.</p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 relative z-10">
-                  <div className="bg-white p-5 rounded-2xl shadow-sm text-left border border-slate-100">
-                    <div className="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3 font-bold">1</div>
-                    <h4 className="font-bold text-slate-800 text-sm mb-1">Share QR Code</h4>
-                    <p className="text-xs text-slate-500">Ask patients to scan your public profile QR code.</p>
-                  </div>
-                  <div className="bg-white p-5 rounded-2xl shadow-sm text-left border border-slate-100">
-                    <div className="w-8 h-8 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mb-3 font-bold">2</div>
-                    <h4 className="font-bold text-slate-800 text-sm mb-1">Patients Connect</h4>
-                    <p className="text-xs text-slate-500">They click "Request Connection" on your profile.</p>
-                  </div>
-                  <div className="bg-white p-5 rounded-2xl shadow-sm text-left border border-slate-100">
-                    <div className="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-3 font-bold">3</div>
-                    <h4 className="font-bold text-slate-800 text-sm mb-1">You Approve</h4>
-                    <p className="text-xs text-slate-500">Accept requests here to link their secure vault.</p>
-                  </div>
-                </div>
+                <p className="text-slate-600 max-w-md mx-auto mb-8 relative z-10">Start building your medical network today to securely share records and collaborate.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                  <div className="bg-white/60 border border-white p-6 rounded-3xl shadow-sm flex flex-col justify-between">
                     <div>
                       <p className="text-slate-500 text-sm font-bold mb-1">Total Network Size</p>
@@ -180,30 +152,24 @@ export default function MyNetworkHub({
                     </div>
                     <div className="mt-4 w-10 h-10 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></div>
                  </div>
-                 <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('patients')}>
+                 {providerRole !== 'patient' && (
+                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('patients')}>
+                      <div>
+                        <p className="text-emerald-700 text-sm font-bold mb-1">Connected Patients</p>
+                        <p className="text-4xl font-black text-emerald-900">{patients.length}</p>
+                      </div>
+                      <div className="mt-4 w-10 h-10 bg-white text-emerald-500 rounded-xl flex items-center justify-center"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>
+                   </div>
+                 )}
+                 <div className={`bg-gradient-to-br ${providerRole === 'patient' ? 'from-sky-50 to-blue-50 border-sky-100' : 'from-purple-50 to-fuchsia-50 border-purple-100'} p-6 rounded-3xl shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow`} onClick={() => setActiveTab(providerRole === 'patient' ? 'care_team' : 'partners')}>
                     <div>
-                      <p className="text-emerald-700 text-sm font-bold mb-1">Connected Patients</p>
-                      <p className="text-4xl font-black text-emerald-900">{patients.length}</p>
+                      <p className={`${providerRole === 'patient' ? 'text-sky-700' : 'text-purple-700'} text-sm font-bold mb-1`}>{providerRole === 'patient' ? 'My Care Team' : 'B2B Partners'}</p>
+                      <p className={`text-4xl font-black ${providerRole === 'patient' ? 'text-sky-900' : 'text-purple-900'}`}>{partners.length}</p>
                     </div>
-                    <div className="mt-4 w-10 h-10 bg-white text-emerald-500 rounded-xl flex items-center justify-center"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>
-                 </div>
-                 <div className="bg-gradient-to-br from-sky-50 to-blue-50 border border-sky-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('colleagues')}>
-                    <div>
-                      <p className="text-sky-700 text-sm font-bold mb-1">Colleagues</p>
-                      <p className="text-4xl font-black text-sky-900">{colleagues.length}</p>
-                    </div>
-                    <div className="mt-4 w-10 h-10 bg-white text-sky-500 rounded-xl flex items-center justify-center"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
-                 </div>
-                 <div className="bg-gradient-to-br from-purple-50 to-fuchsia-50 border border-purple-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow" onClick={() => setActiveTab('facilities')}>
-                    <div>
-                      <p className="text-purple-700 text-sm font-bold mb-1">Facilities</p>
-                      <p className="text-4xl font-black text-purple-900">{facilities.length}</p>
-                    </div>
-                    <div className="mt-4 w-10 h-10 bg-white text-purple-500 rounded-xl flex items-center justify-center"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>
+                    <div className={`mt-4 w-10 h-10 bg-white ${providerRole === 'patient' ? 'text-sky-500' : 'text-purple-500'} rounded-xl flex items-center justify-center`}><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>
                  </div>
               </div>
             )}
-            
             <SuggestedConnectionsWidget 
               currentUserId={providerId} 
               currentUserRole={providerRole} 
@@ -212,7 +178,6 @@ export default function MyNetworkHub({
           </div>
         )}
 
-        {/* REQUESTS TAB */}
         {activeTab === 'requests' && (
           <div className="animate-in fade-in">
             {pendingRequests.length === 0 ? (
@@ -233,9 +198,6 @@ export default function MyNetworkHub({
                           <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest">{req.initiatorRole}</p>
                         </div>
                       </div>
-                      <span className="text-[10px] text-slate-400 font-medium bg-slate-50 px-2 py-1 rounded-md">
-                        {new Date(req.createdAt).toLocaleDateString()}
-                      </span>
                     </div>
                     <div className="flex gap-2 pt-4 border-t border-slate-50">
                       <button 
@@ -258,30 +220,14 @@ export default function MyNetworkHub({
           </div>
         )}
 
-        {/* FAMILY / CARE CIRCLE TAB */}
-        {activeTab === 'family' && providerRole === 'patient' && (
-          <div className="animate-in fade-in">
-            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-3xl p-8 text-center relative overflow-hidden">
-              <h3 className="text-xl font-bold text-slate-800 mb-2 relative z-10">Your Care Circle</h3>
-              <p className="text-slate-600 max-w-md mx-auto mb-8 relative z-10">Add family members to securely share health records and book appointments on their behalf.</p>
-              
-              <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-900/20 transition-all flex items-center justify-center gap-2 mx-auto">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                Invite Family Member
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* LIST TABS (PATIENTS, COLLEAGUES, FACILITIES) */}
-        {['patients', 'colleagues', 'facilities'].includes(activeTab) && (
+        {['patients', 'partners', 'care_team'].includes(activeTab) && (
           <div className="animate-in fade-in">
             {(() => {
-              const list = activeTab === 'patients' ? patients : activeTab === 'colleagues' ? colleagues : facilities;
+              const list = activeTab === 'patients' ? patients : partners;
               if (list.length === 0) {
                  return (
                    <div className="text-center py-16 bg-white/40 rounded-3xl border border-white/60 border-dashed">
-                     <p className="text-slate-500 font-bold">No connected {activeTab} yet.</p>
+                     <p className="text-slate-500 font-bold">No connections here yet.</p>
                    </div>
                  );
               }
@@ -292,7 +238,6 @@ export default function MyNetworkHub({
                       <tr className="bg-slate-50 border-b border-slate-100">
                         <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500">Name</th>
                         <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500">Role</th>
-                        <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500">Connected Since</th>
                         <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-500 text-right">Actions</th>
                       </tr>
                     </thead>
@@ -303,7 +248,7 @@ export default function MyNetworkHub({
                           <tr key={conn.id} className="hover:bg-slate-50/50 transition-colors group">
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${activeTab === 'patients' ? 'bg-emerald-100 text-emerald-700' : activeTab === 'colleagues' ? 'bg-sky-100 text-sky-700' : 'bg-purple-100 text-purple-700'}`}>
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-slate-100 text-slate-700">
                                   {other.name.charAt(0).toUpperCase()}
                                 </div>
                                 <span className="font-bold text-slate-800">{other.name}</span>
@@ -312,23 +257,15 @@ export default function MyNetworkHub({
                             <td className="px-6 py-4">
                               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{other.role}</span>
                             </td>
-                            <td className="px-6 py-4">
-                              <span className="text-sm text-slate-500">{new Date(conn.updatedAt || conn.createdAt).toLocaleDateString()}</span>
-                            </td>
                             <td className="px-6 py-4 text-right">
                               {activeTab === 'patients' && (
-                                <button className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
-                                  View Vault
+                                <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                                  Message
                                 </button>
                               )}
-                              {activeTab === 'colleagues' && (
-                                <button className="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
-                                  Refer Patient
-                                </button>
-                              )}
-                              {activeTab === 'facilities' && (
-                                <button className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
-                                  Route Order
+                              {(activeTab === 'partners' || activeTab === 'care_team') && (
+                                <button className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+                                  View Profile
                                 </button>
                               )}
                             </td>
@@ -342,7 +279,6 @@ export default function MyNetworkHub({
             })()}
           </div>
         )}
-
       </div>
     </div>
   );
