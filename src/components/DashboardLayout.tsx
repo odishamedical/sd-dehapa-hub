@@ -2,6 +2,7 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import ContextHelpDrawer from './ContextHelpDrawer';
+import FloatingChat from '@/components/chat/FloatingChat';
 
 export type DashboardTab = {
   id: string;
@@ -496,6 +497,9 @@ export default function DashboardLayout({
           </div>
         </div>
       )}
+
+      {/* Global Chat Widget */}
+      <FloatingChat />
 
       {/* Context-Aware Help Drawer */}
       <ContextHelpDrawer 

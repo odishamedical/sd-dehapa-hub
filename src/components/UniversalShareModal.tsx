@@ -85,7 +85,8 @@ export default function UniversalShareModal({ isOpen, onClose, documentData, sen
       };
 
       // Add to the 'records' subcollection of the target user's vault
-      await addDoc(collection(db, "records"), vaultRecord);
+      const targetVaultPath = `medicalVault/${targetUser?.targetId || targetUser?.id}/records`;
+      await addDoc(collection(db, targetVaultPath), vaultRecord);
       
       setSuccess(true);
       setTimeout(() => {

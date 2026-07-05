@@ -205,5 +205,40 @@ export const ConnectionService = {
       console.error('Failed to check connection status:', err);
       return null;
     }
+  },
+
+  async getConnectionDetails(userA: string, userB: string): Promise<any | null> {
+    try {
+      // Check forward direction
+      const forwardSnap = await getDocs(
+        query(
+          collection(db, 'connections'),
+          where('initiatorId', '==', userA),
+          where('receiverId', '==', userB)
+        )
+      );
+
+      if (!forwardSnap.empty) {
+        return { id: forwardSnap.docs[0].id, ...forwardSnap.docs[0].data() };
+      }
+
+      // Check reverse direction
+      const reverseSnap = await getDocs(
+        query(
+          collection(db, 'connections'),
+          where('initiatorId', '==', userB),
+          where('receiverId', '==', userA)
+        )
+      );
+
+      if (!reverseSnap.empty) {
+        return { id: reverseSnap.docs[0].id, ...reverseSnap.docs[0].data() };
+      }
+
+      return null;
+    } catch (e) {
+      console.error("Error fetching connection details", e);
+      return null;
+    }
   }
 };

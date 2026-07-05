@@ -234,19 +234,31 @@ export default function MyNetworkHub({
                     </td>
                   )}
                   <td className="px-6 py-4 text-right flex justify-end gap-2">
-                    <button className="px-4 py-2 bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-600 text-xs font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2">
+                    <button 
+                      onClick={() => {
+                        // We will dispatch a custom event or use context for the global chat widget later
+                        window.dispatchEvent(new CustomEvent('open-chat', { detail: other.id }));
+                      }}
+                      className="px-4 py-2 bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-600 text-xs font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2"
+                    >
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                       Message
                     </button>
                     {isPatientList && (
-                      <button className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-colors shadow-sm">
+                      <a 
+                        href={`/portal/vault/${other.id}`}
+                        className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-colors shadow-sm inline-block"
+                      >
                         View Vault
-                      </button>
+                      </a>
                     )}
                     {!isPatientList && (
-                       <button className="px-4 py-2 bg-slate-50 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors shadow-sm">
+                       <a 
+                         href={`/profile/${other.role}/${other.id}`}
+                         className="px-4 py-2 bg-slate-50 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors shadow-sm inline-block"
+                       >
                          View Profile
-                       </button>
+                       </a>
                     )}
                   </td>
                 </tr>
