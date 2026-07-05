@@ -5,6 +5,7 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import { useAutosave } from '@/hooks/useAutosave';
+import ChatInboxWidget from '@/components/chat/ChatInboxWidget';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
 import ImageUpload from '@/components/ImageUpload';
 import ObjectArrayEditor from '@/components/ObjectArrayEditor';
@@ -57,6 +58,18 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       window.history.replaceState(null, "", "#" + activeTab);
     }
   }, [activeTab]);
+
+  const [chatTargetId, setChatTargetId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleOpenChat = (e: any) => {
+      setChatTargetId(e.detail);
+      setActiveTab('inbox');
+    };
+    window.addEventListener('open-chat', handleOpenChat);
+    return () => window.removeEventListener('open-chat', handleOpenChat);
+  }, []);
+
   // Dynamic State for the Entity
   const [entityData, setEntityData] = useState<any>({});
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -309,6 +322,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       label: "B2B Network",
       section: "CONNECTIONS & NETWORK",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "inbox",
+      label: "Inbox",
+      section: "CONNECTIONS & NETWORK",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
     },
     {
       id: "medical_vault",
@@ -615,6 +634,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               isFamilyMember={false} 
             />
           </div>
+        )}
+
+        {activeTab === "inbox" && (
+           <div className="animate-in fade-in slide-in-from-bottom-4 pt-4">
+             <ChatInboxWidget initialTargetId={chatTargetId} />
+           </div>
         )}
 
         {/* IDENTITY TAB */}

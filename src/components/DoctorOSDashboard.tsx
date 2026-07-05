@@ -10,6 +10,7 @@ import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
 import IncomingPingWidget from '@/components/IncomingPingWidget';
+import ChatInboxWidget from '@/components/chat/ChatInboxWidget';
 import WalletDashboard from '@/components/payments/WalletDashboard';
 import SupportDashboard from '@/components/SupportDashboard';
 
@@ -249,6 +250,25 @@ export default function DoctorOSDashboard() {
     window.history.pushState(null, "", `#${id}`);
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", "#" + activeTab);
+    }
+  }, [activeTab]);
+
+  const [chatTargetId, setChatTargetId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleOpenChat = (e: any) => {
+      setChatTargetId(e.detail);
+      setActiveTab('inbox');
+    };
+    window.addEventListener('open-chat', handleOpenChat);
+    return () => window.removeEventListener('open-chat', handleOpenChat);
+  }, []);
+
+  const [userUid, setUserUid] = useState<string | null>(null);
+
   // Calculate Profile Completion
   const getProfileProgress = () => {
     if (!entityData || !entityData.id) return 0;
@@ -342,6 +362,12 @@ export default function DoctorOSDashboard() {
       label: "B2B Network",
       section: "CONNECTIONS & NETWORK",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "inbox",
+      label: "Inbox",
+      section: "CONNECTIONS & NETWORK",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
     },
     {
       id: "medical_vault",
@@ -703,17 +729,7 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {activeTab === "patients" && (
-           <div className="space-y-6">
-             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-               <div>
-                 <h1 className="text-2xl font-bold text-white font-display">Patient EMR & Vault</h1>
-                 <p className="text-slate-500 text-sm mt-1">Access global health records via Dehapa QR</p>
-               </div>
-             </div>
-             <SecureMedicalVault providerId={entityData?.id || ""} providerName={entityData?.name || userName} />
-           </div>
-        )}
+
         
         {activeTab === "register" && (
            <div className="space-y-6">
@@ -917,6 +933,12 @@ export default function DoctorOSDashboard() {
         {activeTab === "b2b_network" && (
            <div className="animate-in fade-in slide-in-from-bottom-4">
              <MyNetworkHub providerId={entityData?.id || null} providerRole="doctor" viewMode="b2b" />
+           </div>
+        )}
+
+        {activeTab === "inbox" && (
+           <div className="animate-in fade-in slide-in-from-bottom-4 pt-4">
+             <ChatInboxWidget initialTargetId={chatTargetId} />
            </div>
         )}
 

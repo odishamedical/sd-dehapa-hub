@@ -22,6 +22,7 @@ import CareTeamSeatingChart from '@/components/network/CareTeamSeatingChart';
 import SupportDashboard from '@/components/SupportDashboard';
 import LiveHealthFeed from '@/components/network/LiveHealthFeed';
 import WalletDashboard from '@/components/payments/WalletDashboard';
+import ChatInboxWidget from '@/components/chat/ChatInboxWidget';
 
 function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }: { userName: string | null, userUid: string | null, userRole: string | null, userPhoto: string | null, onTabChange: (id: string) => void }) {
   return (
@@ -178,6 +179,17 @@ export default function UserDashboard() {
       window.history.replaceState(null, "", "#" + activeTab);
     }
   }, [activeTab]);
+
+  const [chatTargetId, setChatTargetId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleOpenChat = (e: any) => {
+      setChatTargetId(e.detail);
+      setActiveTab('inbox');
+    };
+    window.addEventListener('open-chat', handleOpenChat);
+    return () => window.removeEventListener('open-chat', handleOpenChat);
+  }, []);
 
   const [userUid, setUserUid] = useState<string | null>(null);
 
@@ -384,6 +396,12 @@ export default function UserDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
+      id: "inbox",
+      label: "Inbox",
+      section: "CONNECTIONS & NETWORK",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+    },
+    {
       id: "wallet",
       label: "Wallet & Refunds",
       section: "FINANCE",
@@ -447,6 +465,12 @@ export default function UserDashboard() {
     >
       <div className="max-w-4xl mx-auto pb-24">
         
+        {activeTab === "inbox" && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 pt-4">
+            <ChatInboxWidget initialTargetId={chatTargetId} />
+          </div>
+        )}
+
         {activeTab === "settings" && (
           <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-6 md:p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4 flex items-center justify-between">
