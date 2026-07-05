@@ -27,8 +27,11 @@ export default function LabDashboard() {
   ];
 
   const renderCustomTab = (tabId: string, entityData: any) => {
-    if (tabId === "network") {
-      return <MyNetworkHub providerId={entityData.id || null} providerRole="lab" />;
+    if (tabId === "patients") {
+      return <MyNetworkHub providerId={entityData.id || null} providerRole="lab" viewMode="b2c" />;
+    }
+    if (tabId === "b2b_network") {
+      return <MyNetworkHub providerId={entityData.id || null} providerRole="lab" viewMode="b2b" />;
     }
 
     if (tabId === "inquiries") {

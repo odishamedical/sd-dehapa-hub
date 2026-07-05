@@ -26,8 +26,11 @@ export default function PharmacyDashboard() {
   ];
 
   const renderCustomTab = (tabId: string, entityData: any) => {
-    if (tabId === "network") {
-      return <MyNetworkHub providerId={entityData.id || null} providerRole="pharmacy" />;
+    if (tabId === "patients") {
+      return <MyNetworkHub providerId={entityData.id || null} providerRole="pharmacy" viewMode="b2c" />;
+    }
+    if (tabId === "b2b_network") {
+      return <MyNetworkHub providerId={entityData.id || null} providerRole="pharmacy" viewMode="b2b" />;
     }
     if (tabId === "inquiries") {
       return (

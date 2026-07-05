@@ -5,6 +5,7 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDocs, updateDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import MyNetworkHub from './network/MyNetworkHub';
 import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import DoctorV2Forms from '@/components/DoctorV2Forms';
@@ -331,15 +332,21 @@ export default function DoctorOSDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
     },
     {
-      id: "network",
-      label: "My Network",
-      section: "CONNECTIONS & RECORDS",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+      id: "patients",
+      label: "My Patients",
+      section: "CONNECTIONS & NETWORK",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
-      id: "patients",
+      id: "b2b_network",
+      label: "B2B Network",
+      section: "CONNECTIONS & NETWORK",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "patient_emr",
       label: "Patient EMR",
-      section: "CONNECTIONS & RECORDS",
+      section: "CONNECTIONS & NETWORK",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
     },
     {
@@ -900,61 +907,16 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {/* My Network View (UI Only) */}
-        {activeTab === "network" && (
-           <div className="space-y-6">
-             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-               <div>
-                 <h1 className="text-2xl font-bold text-white font-display">My Network</h1>
-                 <p className="text-slate-400 text-sm mt-1">Manage and engage with your connected patient base</p>
-               </div>
-               <div className="flex gap-2">
-                 <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium text-sm transition-colors border border-white/10">Import Contacts</button>
-                 <button className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-medium text-sm shadow-sm transition-colors">Send Broadcast</button>
-               </div>
-             </div>
-             
-             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-black/20 backdrop-blur-xl p-5 rounded-2xl shadow-sm border border-white/10">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Network</p>
-                  <h3 className="text-3xl font-black text-white">0</h3>
-                </div>
-                <div className="bg-black/20 backdrop-blur-xl p-5 rounded-2xl shadow-sm border border-white/10">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">New This Month</p>
-                  <h3 className="text-3xl font-black text-teal-400">0</h3>
-                </div>
-                <div className="bg-black/20 backdrop-blur-xl p-5 rounded-2xl shadow-sm border border-white/10 md:col-span-2 flex items-center justify-between">
-                  <div>
-                    <h4 className="font-bold text-white mb-1">Health Camp Broadcast</h4>
-                    <p className="text-sm text-slate-400">Reach your patients instantly via SMS & App Notification.</p>
-                  </div>
-                  <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-sm transition-colors">Draft Message</button>
-                </div>
-             </div>
-             
-             <div className="bg-black/20 backdrop-blur-xl rounded-2xl shadow-sm border border-white/10 overflow-hidden">
-               <div className="p-4 border-b border-white/10 flex items-center justify-between">
-                 <div className="relative">
-                   <svg className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                   <input type="text" placeholder="Search by name, phone, or tags..." className="pl-9 pr-4 py-2 text-sm bg-black/20 border border-white/10 text-white rounded-xl outline-none w-80 focus:border-teal-500/50 placeholder:text-slate-500" />
-                 </div>
-                 <div className="flex gap-2">
-                   <select className="px-3 py-2 bg-black/20 text-white border border-white/10 rounded-xl text-sm outline-none appearance-none">
-                     <option className="text-slate-900">All Tags</option>
-                     <option className="text-slate-900">Diabetic</option>
-                     <option className="text-slate-900">Hypertension</option>
-                   </select>
-                 </div>
-               </div>
-               
-               <div className="p-12 text-center">
-                 <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
-                   <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                 </div>
-                 <h4 className="font-bold text-white text-lg mb-2">No patients in your network yet</h4>
-                 <p className="text-slate-400 text-sm max-w-md mx-auto">Patients will appear here automatically when they book an appointment, walk into your clinic, or connect via your DehaPa QR code.</p>
-               </div>
-             </div>
+        {/* PATIENTS AND B2B TABS */}
+        {activeTab === "patients" && (
+           <div className="animate-in fade-in slide-in-from-bottom-4">
+             <MyNetworkHub providerId={entityData?.id || null} providerRole="doctor" viewMode="b2c" />
+           </div>
+        )}
+        
+        {activeTab === "b2b_network" && (
+           <div className="animate-in fade-in slide-in-from-bottom-4">
+             <MyNetworkHub providerId={entityData?.id || null} providerRole="doctor" viewMode="b2b" />
            </div>
         )}
 
