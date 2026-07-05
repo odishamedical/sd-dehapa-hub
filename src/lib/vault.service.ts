@@ -109,6 +109,84 @@ export class VaultService {
   }
 
   /**
+   * Direct Send: Upload a file and send it directly to a recipient's inbox, while keeping a copy in the sender's sent folder.
+   */
+  static async directSendDocument(
+    senderId: string,
+    senderName: string,
+    recipientId: string,
+    file: File,
+    metadata: Omit<VaultDocument, 'id' | 'fileUrl' | 'fileSize' | 'uploadDate' | 'folder' | 'senderId' | 'senderName'>,
+    onProgress?: (progress: number) => void
+  ): Promise<VaultDocument> {
+    
+    if (file.size > 15 * 1024 * 1024) {
+      throw new Error("File too large. Maximum size is 15MB. Upgrade to Premium for larger files.");
+    }
+
+    const safeFileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+    // Store in recipient's storage path since they are the primary owner of the received file, or sender's path.
+    // We'll use sender's path for quota management.
+    const storageRef = ref(storage, `medical-vault/${senderId}/sent/${recipientId}/${safeFileName}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    return new Promise((resolve, reject) => {
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          if (onProgress) {
+            onProgress(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100));
+          }
+        },
+        (error) => reject(error),
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            
+            const expiresAt = metadata.accessLevel === 'temporary' ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
+            
+            const baseDocData = {
+              ...metadata,
+              fileUrl: downloadURL,
+              fileSize: file.size,
+              uploadDate: serverTimestamp(),
+              creatorId: senderId,
+              consultationId: metadata.consultationId || `episode_${Date.now()}`,
+              accessLevel: metadata.accessLevel || 'permanent',
+              expiresAt: expiresAt
+            };
+
+            // 1. Save to Recipient's Inbox
+            const inboxRef = collection(db, `medicalVault/${recipientId}/records`);
+            await addDoc(inboxRef, {
+              ...baseDocData,
+              folder: 'inbox',
+              isRead: false,
+              senderId: senderId,
+              senderName: senderName
+            });
+
+            // 2. Save to Sender's Sent folder
+            const sentRef = collection(db, `medicalVault/${senderId}/records`);
+            const sentDoc = await addDoc(sentRef, {
+              ...baseDocData,
+              folder: 'sent',
+              recipientId: recipientId,
+            });
+            
+            // Usage Tracking
+            await this.incrementUsageCounter(senderId, 'vaultFilesStored', 1);
+            await this.incrementUsageCounter(senderId, 'vaultFilesSent', 1);
+
+            resolve({ id: sentDoc.id, ...baseDocData, folder: 'sent', recipientId } as VaultDocument);
+          } catch (e) {
+            reject(e);
+          }
+        }
+      );
+    });
+  }
+
+  /**
    * Move documents between folders (e.g. Inbox -> Archive)
    */
   static async moveDocuments(providerId: string, documentIds: string[], targetFolder: VaultFolder) {
