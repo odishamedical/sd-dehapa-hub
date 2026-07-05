@@ -64,7 +64,11 @@ export default function SecureMedicalVault({ providerId, providerName }: { provi
   }, [providerId]);
 
   const fetchDocuments = async () => {
-    if (!providerId) return;
+    if (!providerId) {
+      setDocuments([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const docs = await VaultService.getDocuments(providerId, activeFolder);
     setDocuments(docs);
