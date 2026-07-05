@@ -44,11 +44,19 @@ export class VaultService {
     try {
       const q = query(
         collection(db, `medicalVault/${providerId}/records`),
-        where("folder", "==", folder),
-        orderBy('uploadDate', 'desc')
+        where("folder", "==", folder)
       );
       const snap = await getDocs(q);
-      return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as VaultDocument));
+      const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as VaultDocument));
+      
+      // Sort by uploadDate descending in the client to avoid composite index requirements
+      docs.sort((a, b) => {
+        const dateA = a.uploadDate?.toMillis ? a.uploadDate.toMillis() : 0;
+        const dateB = b.uploadDate?.toMillis ? b.uploadDate.toMillis() : 0;
+        return dateB - dateA;
+      });
+      
+      return docs;
     } catch (error) {
       console.error("Error fetching vault documents:", error);
       return [];
