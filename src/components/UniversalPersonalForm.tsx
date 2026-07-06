@@ -153,24 +153,6 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
         />
       </div>
 
-      {/* 2. Professional Designation Checkbox (Conditional) */}
-      {(portalType === 'hospital' || portalType === 'lab') && (
-        <div className="my-6">
-           <label className="flex items-center gap-3 cursor-pointer p-4 bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl hover:bg-slate-100 transition-colors">
-              <input type="checkbox" className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" checked={entityData.isDoctor || false} onChange={e => updateField('isDoctor', e.target.checked)} />
-              <span className="font-bold text-white">I am a registered medical practitioner (Doctor)</span>
-           </label>
-        </div>
-      )}
-
-      {portalType === 'pharmacy' && (
-        <div className="my-6">
-           <label className="flex items-center gap-3 cursor-pointer p-4 bg-black/20 backdrop-blur-3xl border border-white/10 rounded-xl hover:bg-slate-100 transition-colors">
-              <input type="checkbox" className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" checked={entityData.isPharmacist || false} onChange={e => updateField('isPharmacist', e.target.checked)} />
-              <span className="font-bold text-white">I am a registered Pharmacist</span>
-           </label>
-        </div>
-      )}
 
       {/* 3. Address & Phone Segment */}
       <div className="pt-8 border-t border-slate-200 mt-8">
