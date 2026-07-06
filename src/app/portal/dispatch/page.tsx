@@ -21,10 +21,13 @@ function DispatchEngineForm() {
   const [emergencyType, setEmergencyType] = useState("Medical Emergency");
   const [pickupAddress, setPickupAddress] = useState("");
   const [coordinates, setCoordinates] = useState("");
+  const [dropAddress, setDropAddress] = useState("");
+  const [estimatedDistance, setEstimatedDistance] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pingSuccess, setPingSuccess] = useState(false);
   const [pingId, setPingId] = useState("");
   const [pingStatus, setPingStatus] = useState("Pending Confirmation");
+  const [rideCode, setRideCode] = useState<string | null>(null);
 
   useEffect(() => {
     const email = localStorage.getItem("sd_current_user_email");
@@ -94,6 +97,21 @@ function DispatchEngineForm() {
     }
   };
 
+  useEffect(() => {
+    if (dropAddress.length > 5 && coordinates) {
+      // Mocking a distance calculation since we don't have Google Maps API key
+      // Generates a realistic mock distance (5 to 35 km) based on address string
+      const mockDistance = (dropAddress.length * 1.5) % 30 + 5;
+      setEstimatedDistance(Math.round(mockDistance * 10) / 10);
+    } else {
+      setEstimatedDistance(null);
+    }
+  }, [dropAddress, coordinates]);
+
+  const baseFare = Number(ambulance?.baseFare || 500);
+  const perKmRate = Number(ambulance?.perKmRate || 50);
+  const estimatedPrice = estimatedDistance ? Math.round(baseFare + (estimatedDistance * perKmRate)) : null;
+
   const handleDispatch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ambulance || !userEmail) return;
@@ -106,6 +124,8 @@ function DispatchEngineForm() {
     
     setIsSubmitting(true);
     try {
+      const generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
+      
       const dispatchData = {
         patientId: userUid,
         patientName: userName,
@@ -114,13 +134,18 @@ function DispatchEngineForm() {
         ambulanceName: ambulance.name,
         emergencyType: emergencyType,
         pickupAddress: pickupAddress,
+        dropAddress: dropAddress,
         coordinates: coordinates,
+        estimatedDistance: estimatedDistance,
+        estimatedPrice: estimatedPrice,
+        rideCode: generatedCode,
         status: "Pending Confirmation",
         timestamp: serverTimestamp(),
       };
 
       const docRef = await addDoc(collection(db, "emergencies"), dispatchData);
       setPingId(docRef.id);
+      setRideCode(generatedCode);
       setPingSuccess(true);
     } catch (error) {
       console.error("Error sending emergency ping", error);
@@ -244,6 +269,31 @@ function DispatchEngineForm() {
                 )}
               </div>
 
+              <div className="space-y-3">
+                <label className="block text-[10px] uppercase font-bold text-slate-500 mb-2 tracking-widest">Drop Location / Destination</label>
+                <textarea 
+                  rows={2}
+                  value={dropAddress}
+                  onChange={(e) => setDropAddress(e.target.value)}
+                  placeholder="Enter destination hospital or address..."
+                  required
+                  className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm focus:border-red-500 outline-none transition-all focus:ring-4 focus:ring-red-500/10 resize-none"
+                />
+              </div>
+
+              {estimatedDistance && estimatedPrice && (
+                <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-100 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h4 className="text-red-800 font-bold text-lg">Estimated Fare</h4>
+                    <p className="text-red-600/80 text-sm font-medium">Distance: {estimatedDistance} km</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-3xl font-black text-red-600">₹{estimatedPrice}</span>
+                    <p className="text-[10px] uppercase font-bold text-red-400 mt-1 tracking-widest">Pay via Cash / UPI</p>
+                  </div>
+                </div>
+              )}
+
               <div className="pt-6 border-t border-slate-100">
                 <button 
                   type="submit" 
@@ -300,6 +350,14 @@ function DispatchEngineForm() {
                 <div className="bg-emerald-50 text-emerald-700 p-4 rounded-xl text-sm font-bold border border-emerald-200">
                   Status: En Route
                 </div>
+                
+                {rideCode && (
+                  <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mt-6 w-full max-w-sm mx-auto shadow-inner">
+                    <p className="text-xs font-bold text-red-600 mb-2 uppercase tracking-widest">Share this Ride Code</p>
+                    <div className="text-5xl font-black text-red-700 tracking-[0.2em] font-mono">{rideCode}</div>
+                    <p className="text-xs text-red-500 mt-2 font-medium">Provide this code to your driver upon arrival.</p>
+                  </div>
+                )}
               </>
             )}
 

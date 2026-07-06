@@ -437,6 +437,14 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         ]
       },
       {
+        id: "pricing_billing",
+        label: "Pricing & Billing",
+        fields: [
+          { key: "baseFare", label: "Base Fare (₹)", type: "number", mandatory: true, placeholder: "e.g., 500" },
+          { key: "perKmRate", label: "Per Km Rate (₹)", type: "number", mandatory: true, placeholder: "e.g., 50" }
+        ]
+      },
+      {
         id: "network_setup",
         label: "Establish Your Network Connection",
         fields: [

@@ -7,6 +7,14 @@ import { collection, query, where, onSnapshot, updateDoc, doc, orderBy } from 'f
 export default function LiveDispatchWidget({ providerId }: { providerId: string }) {
   const [emergencies, setEmergencies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [currentUserName, setCurrentUserName] = useState<string | null>(null);
+  const [codeInputs, setCodeInputs] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setCurrentUserEmail(localStorage.getItem("sd_current_user_email"));
+    setCurrentUserName(localStorage.getItem("sd_current_user_name") || "Ambulance Driver");
+  }, []);
 
   useEffect(() => {
     if (!providerId) return;
@@ -26,13 +34,42 @@ export default function LiveDispatchWidget({ providerId }: { providerId: string 
     return () => unsubscribe();
   }, [providerId]);
 
+  // Timeout for missed pings
+  useEffect(() => {
+    const interval = setInterval(() => {
+      emergencies.forEach(emg => {
+        if (emg.status === "Pending Confirmation" && emg.timestamp) {
+          const age = Date.now() - emg.timestamp.toMillis();
+          if (age > 60000) {
+            updateDoc(doc(db, "emergencies", emg.id), { status: "Missed" }).catch(console.error);
+          }
+        }
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [emergencies]);
+
   const handleAccept = async (id: string) => {
     try {
       await updateDoc(doc(db, "emergencies", id), {
-        status: "Accepted & En Route"
+        status: "Accepted & En Route",
+        acceptedByDriverEmail: currentUserEmail,
+        acceptedByDriverName: currentUserName
       });
     } catch (err) {
       console.error("Error accepting dispatch", err);
+    }
+  };
+
+  const handleVerifyCode = async (emg: any) => {
+    if (codeInputs[emg.id] === emg.rideCode) {
+      try {
+        await updateDoc(doc(db, "emergencies", emg.id), { status: "Completed" });
+      } catch (err) {
+        console.error("Error completing dispatch", err);
+      }
+    } else {
+      alert("Invalid Ride Code. Please check with the patient.");
     }
   };
 
@@ -78,7 +115,12 @@ export default function LiveDispatchWidget({ providerId }: { providerId: string 
               <div className="flex flex-col md:flex-row justify-between gap-4">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <span className={`px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-widest ${emg.status === 'Pending Confirmation' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`}>
+                    <span className={`px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-widest ${
+                      emg.status === 'Pending Confirmation' ? 'bg-red-100 text-red-700 border border-red-200' : 
+                      emg.status === 'Accepted & En Route' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                      emg.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' :
+                      'bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}>
                       {emg.status}
                     </span>
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{emg.emergencyType}</span>
@@ -92,10 +134,15 @@ export default function LiveDispatchWidget({ providerId }: { providerId: string 
                         View Coordinates on Maps: {emg.coordinates}
                       </a>
                     )}
+                    {emg.status === "Accepted & En Route" && (
+                      <div className="mt-2 text-xs font-bold text-amber-600 bg-amber-50 inline-block px-3 py-1 rounded border border-amber-200">
+                        Accepted By: {emg.acceptedByDriverName || emg.acceptedByDriverEmail}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 shrink-0">
+                <div className="flex flex-col gap-2 shrink-0 min-w-[200px]">
                   {emg.status === "Pending Confirmation" ? (
                     <button 
                       onClick={() => handleAccept(emg.id)}
@@ -103,9 +150,29 @@ export default function LiveDispatchWidget({ providerId }: { providerId: string 
                     >
                       Accept & Dispatch
                     </button>
+                  ) : emg.status === "Accepted & En Route" ? (
+                    <div className="flex flex-col gap-2 bg-amber-50 p-2 rounded-xl border border-amber-200">
+                      <div className="text-[10px] font-bold text-amber-800 uppercase tracking-widest text-center">Verify Ride Code</div>
+                      <div className="flex gap-2">
+                        <input 
+                          type="text" 
+                          maxLength={4}
+                          placeholder="0000"
+                          value={codeInputs[emg.id] || ''}
+                          onChange={(e) => setCodeInputs({...codeInputs, [emg.id]: e.target.value})}
+                          className="w-16 text-center font-mono font-bold border-2 border-amber-300 rounded-lg text-amber-900 focus:outline-none focus:border-amber-500"
+                        />
+                        <button 
+                          onClick={() => handleVerifyCode(emg)}
+                          className="flex-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-black uppercase tracking-widest transition-colors"
+                        >
+                          Verify
+                        </button>
+                      </div>
+                    </div>
                   ) : (
-                    <button disabled className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest">
-                      En Route
+                    <button disabled className="bg-slate-50 text-slate-400 border border-slate-200 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest">
+                      {emg.status}
                     </button>
                   )}
                   <a 

@@ -53,6 +53,8 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
     }
   }, []);
 
+
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.history.replaceState(null, "", "#" + activeTab);
@@ -72,6 +74,13 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
   // Dynamic State for the Entity
   const [entityData, setEntityData] = useState<any>({});
+  const [currentUserRole, setCurrentUserRole] = useState<string>('Owner');
+
+  useEffect(() => {
+    if (currentUserRole === "Driver" && activeTab === "home") {
+      setActiveTab("dispatch");
+    }
+  }, [currentUserRole, activeTab]);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [isSlugModalOpen, setIsSlugModalOpen] = useState(false);
   const isInitialMount = React.useRef(true);
@@ -88,7 +97,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
     const timeout = setTimeout(async () => {
       try {
         const docRef = doc(db, 'directory', entityDocId);
-        await updateDoc(docRef, entityData);
+        const staffEmails = (entityData.staffList || []).map((s: any) => s.email).filter(Boolean);
+        const dataToSave = { ...entityData, staffEmails };
+        await updateDoc(docRef, dataToSave);
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 3000);
       } catch (err) {
@@ -107,7 +118,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       const role = localStorage.getItem("sd_current_user_role");
       const email = localStorage.getItem("sd_current_user_email");
       
-      if ((role === expectedRole || role === "super_admin") && email) {
+      if ((role === expectedRole || role === "super_admin" || (expectedRole === "ambulance" && role === "ambulance_driver") || role === "staff") && email) {
         setAccessGranted(true);
         setUserEmail(email);
         fetchEntity(email);
@@ -121,12 +132,31 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   const fetchEntity = async (email: string) => {
     setLoading(true);
     try {
-      const q = query(collection(db, "directory"), where("ownerEmail", "==", email));
-      const snap = await getDocs(q);
+      let q = query(collection(db, "directory"), where("ownerEmail", "==", email));
+      let snap = await getDocs(q);
+      
+      if (snap.empty) {
+        // Fallback to checking if the user is a staff member
+        q = query(collection(db, "directory"), where("staffEmails", "array-contains", email));
+        snap = await getDocs(q);
+      }
+
       if (!snap.empty) {
         const docSnap = snap.docs[0];
         setEntityDocId(docSnap.id);
-        setEntityData({ id: docSnap.id, ...docSnap.data() });
+        const data = docSnap.data();
+        
+        // Find the specific staff member's role if they are staff
+        if (data.ownerEmail !== email && data.staffList) {
+          const staffMember = data.staffList.find((s: any) => s.email === email);
+          if (staffMember) {
+             setCurrentUserRole(staffMember.role);
+          }
+        } else {
+             setCurrentUserRole('Owner');
+        }
+
+        setEntityData({ id: docSnap.id, ...data });
       }
     } catch (err) {
       console.error("Error fetching entity for dashboard:", err);
@@ -397,7 +427,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   const rearBaseTabs = baseTabs.filter(t => t.id === "location" || t.id === "bank_details");
   const otherBaseTabs = baseTabs.filter(t => !["personal", "identity", "location", "bank_details"].includes(t.id));
 
-  const allTabs = [...frontBaseTabs, ...schemaTabs, ...rearBaseTabs, ...otherBaseTabs, ...customTabs, ...guideTabs];
+  let allTabs = [...frontBaseTabs, ...schemaTabs, ...rearBaseTabs, ...otherBaseTabs, ...customTabs, ...guideTabs];
+
+  // ROLE-BASED ACCESS CONTROL (RBAC)
+  if (currentUserRole === "Driver") {
+    allTabs = allTabs.filter(t => ["dispatch", "medical_vault", "help"].includes(t.id));
+  }
 
   return (
     <DashboardLayout 
@@ -596,6 +631,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                           >
                             <option value="Admin">Full Admin</option>
                             <option value="Receptionist">Receptionist (Bookings Only)</option>
+                            {expectedRole === "ambulance" && <option value="Driver">Ambulance Driver</option>}
                           </select>
                           
                           <button 
@@ -612,6 +648,41 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                         </div>
                       </div>
                     </div>
+                    {staff.role === "Driver" && expectedRole === "ambulance" && (
+                      <div className="grid md:grid-cols-2 gap-4 mt-4 bg-black/5 p-4 rounded-xl border border-white/10">
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Vehicle Reg No.</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. OD-02-AB-1234"
+                            value={staff.vehicleRegNo || ""}
+                            onChange={e => {
+                              const newStaff = [...entityData.staffList];
+                              newStaff[idx].vehicleRegNo = e.target.value;
+                              setEntityData({ ...entityData, staffList: newStaff });
+                            }}
+                            className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1 tracking-widest">Vehicle Type</label>
+                          <select
+                            value={staff.vehicleType || ""}
+                            onChange={e => {
+                              const newStaff = [...entityData.staffList];
+                              newStaff[idx].vehicleType = e.target.value;
+                              setEntityData({ ...entityData, staffList: newStaff });
+                            }}
+                            className="w-full bg-black/20 backdrop-blur-3xl border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                          >
+                            <option value="">Select Type</option>
+                            <option value="Basic Life Support">Basic Life Support</option>
+                            <option value="Advanced Life Support (ICU)">Advanced Life Support (ICU)</option>
+                            <option value="Patient Transport">Patient Transport</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))
               )}
