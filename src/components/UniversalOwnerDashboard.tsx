@@ -565,13 +565,13 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
 
             <div className="mb-6 bg-black/20 backdrop-blur-3xl border border-white/10 p-6 rounded-2xl">
               <h4 className="font-bold text-white mb-2">Delegated Access</h4>
-              <p className="text-sm text-slate-600">Invite your receptionists, managers, or doctors to access this dashboard. You can revoke their access at any time.</p>
+              <p className="text-sm text-slate-300">Invite your receptionists, managers, or doctors to access this dashboard. You can revoke their access at any time.</p>
             </div>
 
             <div className="space-y-4">
               {(!entityData.staffList || entityData.staffList.length === 0) ? (
-                <div className="text-center py-12 bg-white/50 rounded-2xl border border-dashed border-slate-300">
-                  <p className="text-slate-500 font-medium">No staff members added yet. Click above to add your team.</p>
+                <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/20">
+                  <p className="text-slate-400 font-medium">No staff members added yet. Click above to add your team.</p>
                 </div>
               ) : (
                 entityData.staffList.map((staff: any, idx: number) => (
