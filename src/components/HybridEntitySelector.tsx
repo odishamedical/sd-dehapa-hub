@@ -165,13 +165,13 @@ export default function HybridEntitySelector({
   return (
     <div className="w-full relative space-y-4">
       
-      <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl relative z-20 shadow-sm max-w-2xl">
+      <div className="bg-slate-800/50 border border-white/10 p-6 rounded-2xl relative z-20 shadow-sm max-w-2xl backdrop-blur-md">
         <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
           {isDoctor ? <Icons.UserPlus className="w-4 h-4 text-emerald-500" /> : <Icons.Network className="w-4 h-4 text-emerald-500" />}
           Add {targetEntity} to {isDoctor ? 'Roster' : 'Network'}
         </label>
         
-        <div className="bg-white border border-slate-200 p-5 rounded-xl shadow-sm space-y-5 relative mt-4">
+        <div className="bg-slate-900/50 border border-white/10 p-5 rounded-xl shadow-sm space-y-5 relative mt-4">
           
           {isDoctor ? (
             /* DOCTOR SPECIFIC FORM */
@@ -182,7 +182,7 @@ export default function HybridEntitySelector({
                   <select 
                     value={ghostData.prefix}
                     onChange={e => setGhostData({...ghostData, prefix: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all"
+                    className="w-full bg-slate-800/50 border border-white/20 rounded-lg px-2 py-2.5 text-sm outline-none focus:border-indigo-500 text-slate-200 transition-all"
                   >
                     <option>Dr.</option>
                     <option>Prof.</option>
@@ -201,19 +201,19 @@ export default function HybridEntitySelector({
                     value={ghostData.firstName}
                     onChange={e => setGhostData({...ghostData, firstName: e.target.value})}
                     placeholder="e.g. John"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 focus:bg-white transition-all shadow-inner"
+                    className="sd-input-v3"
                   />
                   {/* Doctor Search Dropdown */}
                   {results.length > 0 && ghostData.firstName.length >= 2 && (
-                    <div className="absolute top-full left-0 right-[-120%] mt-2 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-cyan-200 max-h-60 overflow-y-auto z-[100] animate-in slide-in-from-top-2">
-                      <div className="px-4 py-2 bg-cyan-50/50 border-b border-cyan-100 text-xs font-bold text-cyan-700 uppercase tracking-widest flex items-center gap-2 sticky top-0 backdrop-blur-md">
+                    <div className="absolute top-full left-0 right-[-120%] mt-2 bg-slate-800 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border border-indigo-500/30 max-h-60 overflow-y-auto z-[100] animate-in slide-in-from-top-2">
+                      <div className="px-4 py-2 bg-indigo-500/20 border-b border-indigo-500/30 text-xs font-bold text-indigo-300 uppercase tracking-widest flex items-center gap-2 sticky top-0 backdrop-blur-md">
                         <Icons.CheckCircle2 className="w-4 h-4 text-emerald-500" /> Verified Matches Found!
                       </div>
                       {results.map((res, idx) => (
-                        <button key={idx} onClick={(e) => { e.preventDefault(); handleSelectVerified(res); setGhostData({...ghostData, firstName: '', middleName: '', lastName: ''}); }} className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group focus:outline-none">
+                        <button key={idx} onClick={(e) => { e.preventDefault(); handleSelectVerified(res); setGhostData({...ghostData, firstName: '', middleName: '', lastName: ''}); }} className="w-full text-left px-4 py-3 hover:bg-slate-700 border-b border-slate-700 last:border-0 flex items-center justify-between group focus:outline-none">
                           <div>
-                            <div className="font-bold text-slate-800">{res.name}</div>
-                            <div className="text-xs text-slate-500">{res.city || `Verified DehaPa ${targetEntity}`}</div>
+                            <div className="font-bold text-slate-200">{res.name}</div>
+                            <div className="text-xs text-slate-400">{res.city || `Verified DehaPa ${targetEntity}`}</div>
                           </div>
                           <div className="text-xs font-bold text-white bg-cyan-600 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 shadow-sm">
                             Connect <Icons.Link className="w-3 h-3" />
@@ -226,32 +226,32 @@ export default function HybridEntitySelector({
 
                 <div className="col-span-3">
                   <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Middle</label>
-                  <input type="text" value={ghostData.middleName} onChange={e => setGhostData({...ghostData, middleName: e.target.value})} placeholder="Optional" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all" />
+                  <input type="text" value={ghostData.middleName} onChange={e => setGhostData({...ghostData, middleName: e.target.value})} placeholder="Optional" className="sd-input-v3" />
                 </div>
 
                 <div className="col-span-3">
                   <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest block mb-1">Last Name</label>
-                  <input type="text" value={ghostData.lastName} onChange={e => setGhostData({...ghostData, lastName: e.target.value})} placeholder="e.g. Doe" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all" />
+                  <input type="text" value={ghostData.lastName} onChange={e => setGhostData({...ghostData, lastName: e.target.value})} placeholder="e.g. Doe" className="sd-input-v3" />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Qualifications</label>
-                  <input type="text" value={ghostData.qualification} onChange={e => setGhostData({...ghostData, qualification: e.target.value})} placeholder="e.g. MBBS, MD" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all" />
+                  <input type="text" value={ghostData.qualification} onChange={e => setGhostData({...ghostData, qualification: e.target.value})} placeholder="e.g. MBBS, MD" className="sd-input-v3" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Experience (Yrs)</label>
-                  <input type="number" value={ghostData.experience} onChange={e => setGhostData({...ghostData, experience: e.target.value})} placeholder="e.g. 10" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-cyan-500 transition-all" />
+                  <input type="number" value={ghostData.experience} onChange={e => setGhostData({...ghostData, experience: e.target.value})} placeholder="e.g. 10" className="sd-input-v3" />
                 </div>
               </div>
 
-              <div className="space-y-1 bg-slate-50/80 p-4 rounded-xl border border-slate-200 relative overflow-hidden">
+              <div className="space-y-1 bg-slate-800/80 p-4 rounded-xl border border-slate-700 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-full bg-emerald-400"></div>
-                <label className="text-[10px] uppercase font-bold text-slate-700 tracking-widest flex items-center gap-1.5 mb-2">
+                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-widest flex items-center gap-1.5 mb-2">
                   <Icons.Phone className="w-3.5 h-3.5 text-emerald-500" /> Phone Number <span className="text-rose-500">*</span>
                 </label>
-                <input type="tel" value={ghostData.phone} onChange={e => setGhostData({...ghostData, phone: e.target.value})} placeholder="Required to send WhatsApp invite" className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition-all shadow-sm" />
+                <input type="tel" value={ghostData.phone} onChange={e => setGhostData({...ghostData, phone: e.target.value})} placeholder="Required to send WhatsApp invite" className="sd-input-v3" />
                 <p className="text-[10px] text-slate-500 italic mt-2 flex items-start gap-1.5 leading-tight">
                   <Icons.Shield className="w-3.5 h-3.5 text-slate-400 shrink-0" /> 
                   Phone number is NOT visible to the public. It is securely stored and used exclusively to send an automated WhatsApp invite to the doctor.
@@ -271,20 +271,20 @@ export default function HybridEntitySelector({
                   value={ghostData.firstName}
                   onChange={e => setGhostData({...ghostData, firstName: e.target.value})}
                   placeholder={placeholder || `Type ${targetEntity} Name...`}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-cyan-500 focus:bg-white transition-all shadow-inner"
+                  className="sd-input-v3"
                 />
                 
                 {/* Generic Search Dropdown */}
                 {results.length > 0 && ghostData.firstName.length >= 2 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-cyan-200 max-h-60 overflow-y-auto z-[100] animate-in slide-in-from-top-2">
-                    <div className="px-4 py-2 bg-cyan-50/50 border-b border-cyan-100 text-xs font-bold text-cyan-700 uppercase tracking-widest flex items-center gap-2 sticky top-0 backdrop-blur-md">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800 rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border border-indigo-500/30 max-h-60 overflow-y-auto z-[100] animate-in slide-in-from-top-2">
+                    <div className="px-4 py-2 bg-indigo-500/20 border-b border-indigo-500/30 text-xs font-bold text-indigo-300 uppercase tracking-widest flex items-center gap-2 sticky top-0 backdrop-blur-md">
                       <Icons.CheckCircle2 className="w-4 h-4 text-emerald-500" /> Matches Found in DehaPa
                     </div>
                     {results.map((res, idx) => (
-                      <button key={idx} onClick={(e) => { e.preventDefault(); handleSelectVerified(res); setGhostData({...ghostData, firstName: ''}); }} className="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group focus:outline-none">
+                      <button key={idx} onClick={(e) => { e.preventDefault(); handleSelectVerified(res); setGhostData({...ghostData, firstName: ''}); }} className="w-full text-left px-4 py-3 hover:bg-slate-700 border-b border-slate-700 last:border-0 flex items-center justify-between group focus:outline-none">
                         <div>
-                          <div className="font-bold text-slate-800">{res.name}</div>
-                          <div className="text-xs text-slate-500">{res.city || `Verified ${targetEntity}`}</div>
+                          <div className="font-bold text-slate-200">{res.name}</div>
+                          <div className="text-xs text-slate-400">{res.city || `Verified ${targetEntity}`}</div>
                         </div>
                         <div className="text-xs font-bold text-white bg-cyan-600 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 shadow-sm">
                           Connect <Icons.Link className="w-3 h-3" />
@@ -309,28 +309,32 @@ export default function HybridEntitySelector({
 
       {/* Selected Items List */}
       {selectedItems.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-          <h4 className="font-bold text-slate-800 text-sm mb-4 border-b border-slate-100 pb-2">
+        <div className="bg-slate-900/50 border border-white/10 rounded-2xl p-4 shadow-sm">
+          <h4 className="font-bold text-slate-200 text-sm mb-4 border-b border-white/10 pb-2">
             {isDoctor ? `Current Roster` : `Network Connections`} ({selectedItems.length})
           </h4>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {selectedItems.map((item) => (
-              <div key={item.id} className={`flex flex-col p-3 rounded-xl border ${item.type === 'verified' ? 'bg-cyan-50/50 border-cyan-100' : 'bg-slate-50 border-slate-200'}`}>
+              <div key={item.id} className={`flex flex-col p-3 rounded-xl border ${item.type === 'verified' ? 'bg-indigo-900/20 border-indigo-500/50' : 'bg-slate-800/50 border-slate-700'}`}>
                 
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="font-bold text-slate-800">{item.name}</span>
+                    <span className="font-bold text-slate-200">{item.name}</span>
                     {item.type === 'verified' ? (
-                      <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
+                      <span className="inline-flex items-center gap-1 bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
                         <Icons.CheckCircle2 className="w-3 h-3" /> Connected
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
-                        <Icons.Clock className="w-3 h-3" /> Pending Registration
+                      <span className="inline-flex items-center gap-1 bg-slate-700/50 text-slate-400 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest">
+                        <Icons.Clock className="w-3 h-3" /> Pending
                       </span>
                     )}
                   </div>
-                  <button onClick={(e) => { e.preventDefault(); handleRemove(item.id); }} className="text-rose-400 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 p-1.5 rounded-lg transition-colors">
+                  <button 
+                    onClick={(e) => { e.preventDefault(); handleRemove(item.id); }}
+                    className="p-1.5 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 rounded-md transition-colors"
+                    title="Remove"
+                  >
                     <Icons.Trash2 className="w-4 h-4" />
                   </button>
                 </div>

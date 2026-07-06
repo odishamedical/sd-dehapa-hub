@@ -13,7 +13,7 @@ export default function InlineEditArray({
   items,
   onSave,
   isEditMode,
-  itemClassName = "bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1.5 rounded-lg text-xs font-semibold",
+  itemClassName = "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm",
   placeholder = "Add an item...",
   suggestions
 }: InlineEditArrayProps) {
@@ -48,7 +48,7 @@ export default function InlineEditArray({
   if (!isEditMode) {
     return (
       <div className="flex flex-wrap gap-2">
-        {items.length === 0 && <span className="text-slate-400 text-sm italic">None added</span>}
+        {items.length === 0 && <span className="text-slate-500 text-sm italic">None added</span>}
         {items.map((item, idx) => (
           <span key={idx} className={itemClassName}>
             {item}
@@ -66,7 +66,7 @@ export default function InlineEditArray({
             <span>{item}</span>
             <button 
               onClick={() => handleRemove(idx)}
-              className="absolute right-1 w-5 h-5 flex items-center justify-center bg-rose-100 text-rose-600 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-1 w-5 h-5 flex items-center justify-center bg-rose-500/20 text-rose-400 hover:bg-rose-500/40 rounded-md opacity-0 group-hover:opacity-100 transition-all"
               title="Remove item"
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -82,7 +82,7 @@ export default function InlineEditArray({
           onChange={(e) => setNewItemText(e.target.value)}
           onKeyDown={handleKeyDown}
           list={suggestions ? datalistId : undefined}
-          className="flex-1 bg-white border-2 border-slate-200 focus:border-teal-500 rounded-lg px-3 py-1.5 text-sm outline-none shadow-inner"
+          className="sd-input-v3 flex-1 px-3 py-2 text-sm"
           placeholder={placeholder}
         />
         {suggestions && (
@@ -95,7 +95,7 @@ export default function InlineEditArray({
         <button 
           onClick={handleAdd}
           disabled={!newItemText.trim()}
-          className="bg-teal-600 disabled:bg-slate-300 hover:bg-teal-700 text-white font-bold px-3 py-1.5 rounded-lg text-sm transition-colors shadow-sm"
+          className="bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 hover:bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors shadow-sm"
         >
           Add
         </button>
