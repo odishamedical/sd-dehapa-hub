@@ -124,6 +124,11 @@ export default function LiveDispatchWidget({ providerId }: { providerId: string 
                       {emg.status}
                     </span>
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{emg.emergencyType}</span>
+                    {emg.vehicleNumber && (
+                      <span className="text-[10px] font-black text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded border border-indigo-200 uppercase tracking-widest">
+                        Vehicle: {emg.vehicleNumber}
+                      </span>
+                    )}
                   </div>
                   
                   <div>

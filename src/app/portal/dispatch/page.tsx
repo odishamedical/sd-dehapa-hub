@@ -10,6 +10,7 @@ function DispatchEngineForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ambId = searchParams?.get("id") || "";
+  const vid = searchParams?.get("vid") || "";
   
   const [loading, setLoading] = useState(true);
   const [ambulance, setAmbulance] = useState<any>(null);
@@ -108,8 +109,9 @@ function DispatchEngineForm() {
     }
   }, [dropAddress, coordinates]);
 
-  const baseFare = Number(ambulance?.baseFare || 500);
-  const perKmRate = Number(ambulance?.perKmRate || 50);
+  const vehicle = ambulance?.vehicles?.find((v: any) => (v.registrationNumber || "") === vid) || {};
+  const baseFare = Number(vehicle.baseFare || ambulance?.baseFare || 500);
+  const perKmRate = Number(vehicle.perKmRate || ambulance?.perKmRate || 50);
   const estimatedPrice = estimatedDistance ? Math.round(baseFare + (estimatedDistance * perKmRate)) : null;
 
   const handleDispatch = async (e: React.FormEvent) => {
@@ -132,6 +134,7 @@ function DispatchEngineForm() {
         patientEmail: userEmail,
         ambulanceId: ambulance.id,
         ambulanceName: ambulance.name,
+        vehicleNumber: vid,
         emergencyType: emergencyType,
         pickupAddress: pickupAddress,
         dropAddress: dropAddress,

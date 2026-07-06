@@ -51,24 +51,56 @@ export default function AmbulancesDirectory({
         
         const mappedData = docsData
           .filter((d: any) => d.category?.toLowerCase() === "ambulance" && d.isPublished !== false && d.adminLocked !== true)
-          .map((d: any) => ({
-            id: d.id,
-            name: d.name || "Unknown Ambulance",
-            specialty: d.subCategory || d.category || "Ambulance",
-            experience: d.experience || "Google Verified", 
-            rating: d.rating || 0,
-            reviews: d.reviews || 0,
-            hospital: d.clinicName || d.city || d.district || "Odisha",
-            address: d.address || "No Address Provided",
-            fee: d.fee || "Contact Admin", 
-            img: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Ambu")}&background=fef2f2&color=b91c1c&size=150`,
-            verified: d.verified || false,
-            available: true,
-            phone: d.phone,
-            district: d.district || "Unknown",
-            state: d.state || "Odisha",
-            country: d.country || "India"
-        }));
+          .flatMap((d: any) => {
+            if (d.vehicles && d.vehicles.length > 0) {
+              return d.vehicles.map((v: any, index: number) => {
+                const driverMap = d.driverMapping?.find((dm: any) => dm.registrationNumber === v.registrationNumber) || {};
+                return {
+                  id: `${d.id}:::${v.registrationNumber || index}`,
+                  agencyId: d.id,
+                  name: `${d.name || "Agency"} - ${v.registrationNumber || `Unit ${index+1}`}`,
+                  specialty: v.classification || d.subCategory || "Ambulance",
+                  experience: v.lifeSupportLevel || "General Support",
+                  rating: d.rating || 0,
+                  reviews: d.reviews || 0,
+                  hospital: d.name || "Odisha",
+                  address: d.address || "No Address Provided",
+                  fee: v.baseFare ? `₹${v.baseFare} Base + ₹${v.perKmRate || 0}/km` : (d.fee || "Contact Admin"),
+                  img: v.outsideImage || d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Ambu")}&background=fef2f2&color=b91c1c&size=150`,
+                  verified: d.verified || false,
+                  available: true,
+                  phone: driverMap.driverPhone || d.phone,
+                  district: d.district || "Unknown",
+                  state: d.state || "Odisha",
+                  country: d.country || "India",
+                  driverName: driverMap.driverName || "Assigned Driver",
+                  features: v.medicalEquipment || []
+                };
+              });
+            } else {
+              return [{
+                  id: d.id,
+                  agencyId: d.id,
+                  name: d.name || "Unknown Ambulance",
+                  specialty: d.subCategory || d.category || "Ambulance",
+                  experience: d.experience || "Google Verified", 
+                  rating: d.rating || 0,
+                  reviews: d.reviews || 0,
+                  hospital: d.clinicName || d.city || d.district || "Odisha",
+                  address: d.address || "No Address Provided",
+                  fee: d.fee || "Contact Admin", 
+                  img: d.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Ambu")}&background=fef2f2&color=b91c1c&size=150`,
+                  verified: d.verified || false,
+                  available: true,
+                  phone: d.phone,
+                  district: d.district || "Unknown",
+                  state: d.state || "Odisha",
+                  country: d.country || "India",
+                  driverName: "Agency Driver",
+                  features: []
+              }];
+            }
+          });
 
         setAmbulances(mappedData);
       } catch (err: any) {
@@ -100,7 +132,10 @@ export default function AmbulancesDirectory({
       return;
     }
 
-    router.push(`/portal/book?doctor=${docId}`);
+    const parts = docId.split(':::');
+    const aid = parts[0];
+    const vid = parts[1] || "";
+    router.push(`/portal/dispatch?id=${aid}&vid=${encodeURIComponent(vid)}`);
   };
 
   const filteredAmbulances = ambulances.filter(doc => {

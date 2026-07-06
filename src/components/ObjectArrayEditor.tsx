@@ -1,13 +1,15 @@
 import React from 'react';
 import HybridEntitySelector from './HybridEntitySelector';
 import ImageUpload from './ImageUpload';
+import InlineEditArray from './InlineEditArray';
 
 interface FieldDef {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'hybrid_entity_selector' | 'image_upload';
+  type: 'text' | 'textarea' | 'hybrid_entity_selector' | 'image_upload' | 'string_array';
   targetEntity?: string;
   placeholder?: string;
+  options?: string[];
 }
 
 interface ObjectArrayEditorProps {
@@ -74,6 +76,16 @@ export default function ObjectArrayEditor({
                       <ImageUpload 
                         defaultImage={item[field.key] || ""}
                         onChange={(url) => onUpdate(index, field.key, url)}
+                      />
+                    </div>
+                  ) : field.type === 'string_array' ? (
+                    <div className="mt-2">
+                      <InlineEditArray 
+                        items={item[field.key] || []}
+                        onSave={(newItems) => onUpdate(index, field.key, newItems)}
+                        isEditMode={true}
+                        placeholder={field.placeholder || "Add item..."}
+                        suggestions={field.options}
                       />
                     </div>
                   ) : (

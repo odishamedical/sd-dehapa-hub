@@ -419,29 +419,46 @@ export const directoryConfig: Record<string, CategoryConfig> = {
         ]
       },
       {
-        id: "fleet_operations",
-        label: "Fleet Details & Capabilities",
+        id: "fleet_registration",
+        label: "Fleet Registration & Drivers",
         fields: [
-          { key: "ambulanceTypes", label: "Types of Ambulances Operated", type: "string_array", mandatory: true, placeholder: "Type (e.g. ALS, BLS) and press enter", options: ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Patient Transport Vehicle", "Mortuary Van"] },
           { key: "fleetSize", label: "Total Fleet Size", type: "number", mandatory: true, placeholder: "e.g. 5" },
           {
-            key: "vehicles",
-            label: "Detailed Vehicle Roster",
+            key: "driverMapping",
+            label: "Driver Mapping List",
             type: "object_array",
             arrayFields: [
-              { key: "vehicleNumber", label: "Vehicle Number Plate", type: "text" },
-              { key: "type", label: "Vehicle Type", type: "text", placeholder: "ALS / BLS" },
-              { key: "specialEquipment", label: "Special Equipment (Ventilator, ECMO, etc)", type: "textarea" }
+              { key: "registrationNumber", label: "Ambulance Registration Number", type: "text", placeholder: "e.g., OD-02-1234" },
+              { key: "driverName", label: "Assigned Driver Name", type: "text" },
+              { key: "driverEmail", label: "Driver Gmail", type: "text" },
+              { key: "driverPhone", label: "Driver Phone", type: "text" },
+              { key: "driverWhatsApp", label: "Driver WhatsApp Number", type: "text" }
             ]
           }
         ]
       },
       {
-        id: "pricing_billing",
-        label: "Pricing & Billing",
+        id: "vehicle_profiles",
+        label: "Vehicle Profiles",
         fields: [
-          { key: "baseFare", label: "Base Fare (₹)", type: "number", mandatory: true, placeholder: "e.g., 500" },
-          { key: "perKmRate", label: "Per Km Rate (₹)", type: "number", mandatory: true, placeholder: "e.g., 50" }
+          {
+            key: "vehicles",
+            label: "Detailed Vehicle Roster",
+            type: "object_array",
+            arrayFields: [
+              { key: "registrationNumber", label: "Vehicle Number Plate", type: "text", placeholder: "Must match mapping above" },
+              { key: "classification", label: "Vehicle Classification", type: "text", placeholder: "AC / Non-AC" },
+              { key: "lifeSupportLevel", label: "Life Support Level", type: "text", placeholder: "BLS / ALS / Patient Transport" },
+              { key: "medicalEquipment", label: "Medical Equipment", type: "string_array", placeholder: "e.g., Oxygen, Ventilator, Defibrillator" },
+              { key: "attendantSeats", label: "Attendant Seats", type: "number", placeholder: "e.g., 2" },
+              { key: "baseFare", label: "Base Fare (₹)", type: "number", placeholder: "e.g., 500" },
+              { key: "perKmRate", label: "Per Km Rate (₹)", type: "number", placeholder: "e.g., 50" },
+              { key: "outsideImage", label: "Outside Ambulance Image", type: "image_upload" },
+              { key: "insideImage", label: "Inner Side Ambulance Image", type: "image_upload" },
+              { key: "oxygenImage", label: "Oxygen Setup Image", type: "image_upload" },
+              { key: "lifeSupportImage", label: "Life Support Setup Image", type: "image_upload" }
+            ]
+          }
         ]
       },
       {
