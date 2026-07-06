@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, updateDoc, doc, orderBy } from 'firebase/firestore';
 
-export default function LiveDispatchWidget({ providerId }: { providerId: string }) {
+export default function LiveDispatchWidget({ providerId, entityData }: { providerId: string, entityData?: any }) {
   const [emergencies, setEmergencies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
@@ -19,11 +19,22 @@ export default function LiveDispatchWidget({ providerId }: { providerId: string 
   useEffect(() => {
     if (!providerId) return;
 
-    const q = query(
-      collection(db, "emergencies"),
-      where("ambulanceId", "==", providerId),
-      orderBy("timestamp", "desc")
-    );
+    const role = localStorage.getItem("sd_current_user_role");
+    
+    let baseQuery = collection(db, "emergencies");
+    let q = query(baseQuery, where("ambulanceId", "==", providerId), orderBy("timestamp", "desc"));
+    
+    if (role === "ambulance_driver" && currentUserEmail && entityData?.driverMapping) {
+      const driverObj = entityData.driverMapping.find((d: any) => d.driverEmail === currentUserEmail);
+      if (driverObj && driverObj.registrationNumber) {
+        q = query(
+          baseQuery, 
+          where("ambulanceId", "==", providerId), 
+          where("vehicleNumber", "==", driverObj.registrationNumber),
+          orderBy("timestamp", "desc")
+        );
+      }
+    }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));

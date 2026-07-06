@@ -98,7 +98,9 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       try {
         const docRef = doc(db, 'directory', entityDocId);
         const staffEmails = (entityData.staffList || []).map((s: any) => s.email).filter(Boolean);
-        const dataToSave = { ...entityData, staffEmails };
+        const driverEmails = (entityData.driverMapping || []).map((d: any) => d.driverEmail).filter(Boolean);
+        const allStaffEmails = Array.from(new Set([...staffEmails, ...driverEmails]));
+        const dataToSave = { ...entityData, staffEmails: allStaffEmails };
         await updateDoc(docRef, dataToSave);
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 3000);
@@ -147,11 +149,23 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         const data = docSnap.data();
         
         // Find the specific staff member's role if they are staff
-        if (data.ownerEmail !== email && data.staffList) {
-          const staffMember = data.staffList.find((s: any) => s.email === email);
-          if (staffMember) {
-             setCurrentUserRole(staffMember.role);
+        if (data.ownerEmail !== email) {
+          let roleAssigned = false;
+          if (data.staffList) {
+            const staffMember = data.staffList.find((s: any) => s.email === email);
+            if (staffMember) {
+               setCurrentUserRole(staffMember.role);
+               roleAssigned = true;
+            }
           }
+          if (!roleAssigned && data.driverMapping) {
+            const driver = data.driverMapping.find((d: any) => d.driverEmail === email);
+            if (driver) {
+               setCurrentUserRole('ambulance_driver');
+               roleAssigned = true;
+            }
+          }
+          if (!roleAssigned) setCurrentUserRole('Owner');
         } else {
              setCurrentUserRole('Owner');
         }
@@ -430,8 +444,10 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   let allTabs = [...frontBaseTabs, ...schemaTabs, ...rearBaseTabs, ...otherBaseTabs, ...customTabs, ...guideTabs];
 
   // ROLE-BASED ACCESS CONTROL (RBAC)
-  if (currentUserRole === "Driver") {
-    allTabs = allTabs.filter(t => ["dispatch", "medical_vault", "help"].includes(t.id));
+  if (currentUserRole === "Driver" || currentUserRole === "ambulance_driver") {
+    allTabs = allTabs.filter(t => ["dispatch", "medical_vault", "driver_wallet", "help"].includes(t.id));
+  } else {
+    allTabs = allTabs.filter(t => t.id !== "driver_wallet");
   }
 
   return (
