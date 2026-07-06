@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import { useAutosave } from '@/hooks/useAutosave';
 import ChatInboxWidget from '@/components/chat/ChatInboxWidget';
+import OrderInboxWidget from '@/components/chat/OrderInboxWidget';
 import AutosaveIndicator from '@/components/AutosaveIndicator';
 import ImageUpload from '@/components/ImageUpload';
 import ObjectArrayEditor from '@/components/ObjectArrayEditor';
@@ -719,9 +720,23 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
         )}
 
         {activeTab === "inbox" && (
-           <div className="animate-in fade-in slide-in-from-bottom-4 pt-4">
-             <ChatInboxWidget initialTargetId={chatTargetId} />
-           </div>
+          <div className="space-y-6">
+            <h2 className="text-3xl font-black text-[#0A1128] mb-8">Inbox & Live Orders</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Patient Chat Inbox */}
+              <div>
+                 <h3 className="text-xl font-bold text-[#0A1128] mb-4">Patient Chats</h3>
+                 <ChatInboxWidget initialTargetId={chatTargetId} />
+              </div>
+              
+              {/* Live Booking Orders */}
+              <div>
+                 <h3 className="text-xl font-bold text-[#0A1128] mb-4">Live Service Requests</h3>
+                 <OrderInboxWidget ownerEmail={user?.email || ''} />
+              </div>
+            </div>
+          </div>
         )}
 
         {/* IDENTITY TAB */}

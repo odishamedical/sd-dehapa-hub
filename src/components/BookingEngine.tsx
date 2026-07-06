@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import { Video, Calendar, MapPin, Upload, Ambulance, FileText, CheckCircle2, Phone, X, CreditCard, Activity } from 'lucide-react';
 import Link from 'next/link';
 
+import { db, auth } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
 interface BookingEngineProps {
   entityType: 'doctor' | 'hospital' | 'lab' | 'pharmacy' | 'ambulance';
   entityId: string;
@@ -15,6 +18,57 @@ interface BookingEngineProps {
 export default function BookingEngine({ entityType, entityId, entityName, isLoggedIn, onDispatchAction }: BookingEngineProps) {
   const [showModal, setShowModal] = useState(false);
   const [bookingMode, setBookingMode] = useState<string | null>(null);
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  
+  // Form fields
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [deliveryInstructions, setDeliveryInstructions] = useState('');
+  const [patientCondition, setPatientCondition] = useState('Emergency (Critical)');
+  const [requestedBed, setRequestedBed] = useState('General Ward');
+
+  const handleBookingSubmit = async () => {
+    if (!auth.currentUser) return alert("Please log in first.");
+    
+    setIsSubmitting(true);
+    try {
+      const bookingData: any = {
+        patientId: auth.currentUser.uid,
+        patientEmail: auth.currentUser.email || localStorage.getItem('sd_current_user_email') || 'unknown@user.com',
+        providerId: entityId, // This is the ID of the hospital/pharmacy document
+        providerName: entityName,
+        entityType,
+        bookingMode,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      };
+
+      if (bookingMode === 'offline' || bookingMode === 'schedule_video') {
+        bookingData.date = selectedDate || 'Today';
+        bookingData.time = selectedTime || 'As Soon As Possible';
+      } else if (bookingMode === 'upload_rx') {
+        bookingData.instructions = deliveryInstructions;
+      } else if (bookingMode === 'request_bed') {
+        bookingData.condition = patientCondition;
+        bookingData.requestedBed = requestedBed;
+      }
+
+      await addDoc(collection(db, 'bookings'), bookingData);
+      
+      setSubmitSuccess(true);
+      setTimeout(() => {
+        setShowModal(false);
+        setSubmitSuccess(false);
+      }, 3000);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to submit request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (!isLoggedIn) {
     return (
@@ -112,12 +166,25 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
               
               {/* Doctor: Schedule View */}
               {(bookingMode === 'offline' || bookingMode === 'schedule_video') && (
-                <div className="space-y-6">
+                <div className="space-y-6 relative">
+                  {submitSuccess && (
+                    <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-2xl">
+                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                        <CheckCircle2 className="w-8 h-8" />
+                      </div>
+                      <h4 className="text-xl font-black text-[#0A1128] mb-2">Booking Confirmed!</h4>
+                      <p className="text-sm text-slate-500 text-center px-4">Your request has been sent to the provider. They will contact you shortly.</p>
+                    </div>
+                  )}
                   <div>
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-3">Select Date</label>
                     <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
                       {['Today', 'Tomorrow', 'Wed', 'Thu', 'Fri'].map((day, i) => (
-                        <button key={i} className={`shrink-0 w-16 h-20 rounded-2xl border flex flex-col items-center justify-center transition-colors ${i === 0 ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-200 text-slate-600 hover:border-cyan-400 hover:bg-cyan-50'}`}>
+                        <button 
+                          key={i} 
+                          onClick={() => setSelectedDate(day)}
+                          className={`shrink-0 w-16 h-20 rounded-2xl border flex flex-col items-center justify-center transition-colors ${selectedDate === day || (!selectedDate && i === 0) ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-200 text-slate-600 hover:border-cyan-400 hover:bg-cyan-50'}`}
+                        >
                           <span className="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">{day}</span>
                           <span className="text-lg font-black">{new Date().getDate() + i}</span>
                         </button>
@@ -128,14 +195,18 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-3">Available Slots</label>
                     <div className="grid grid-cols-3 gap-2">
                       {['09:00 AM', '10:30 AM', '11:45 AM', '02:00 PM', '04:15 PM', '06:30 PM'].map((time, i) => (
-                        <button key={i} className="bg-slate-50 hover:bg-cyan-50 border border-slate-200 hover:border-cyan-400 text-slate-700 py-3 rounded-xl text-sm font-bold transition-colors">
+                        <button 
+                          key={i} 
+                          onClick={() => setSelectedTime(time)}
+                          className={`border py-3 rounded-xl text-sm font-bold transition-colors ${selectedTime === time ? 'bg-cyan-50 border-cyan-500 text-cyan-700' : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-cyan-400 hover:bg-cyan-50'}`}
+                        >
                           {time}
                         </button>
                       ))}
                     </div>
                   </div>
-                  <button className="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest mt-4 shadow-lg shadow-cyan-600/30">
-                    Confirm & Pay
+                  <button onClick={handleBookingSubmit} disabled={isSubmitting} className="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest mt-4 shadow-lg shadow-cyan-600/30 disabled:opacity-50">
+                    {isSubmitting ? "Processing..." : "Confirm & Pay"}
                   </button>
                 </div>
               )}
@@ -156,7 +227,16 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
 
               {/* Upload Prescription */}
               {bookingMode === 'upload_rx' && (
-                <div className="space-y-6">
+                <div className="space-y-6 relative">
+                  {submitSuccess && (
+                    <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-2xl">
+                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                        <CheckCircle2 className="w-8 h-8" />
+                      </div>
+                      <h4 className="text-xl font-black text-[#0A1128] mb-2">Request Sent!</h4>
+                      <p className="text-sm text-slate-500 text-center px-4">The pharmacy will review and contact you with a quote.</p>
+                    </div>
+                  )}
                   <div className="border-2 border-dashed border-slate-300 rounded-3xl p-8 flex flex-col items-center justify-center text-center bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-colors cursor-pointer">
                     <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center mb-4 text-blue-500">
                       <Upload className="w-6 h-6" />
@@ -166,20 +246,38 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
                   </div>
                   <div>
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Delivery Details</label>
-                    <textarea placeholder="Any specific instructions..." className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all min-h-[100px]"></textarea>
+                    <textarea 
+                      placeholder="Any specific instructions..." 
+                      value={deliveryInstructions}
+                      onChange={(e) => setDeliveryInstructions(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm outline-none focus:border-blue-400 focus:bg-white transition-all min-h-[100px]"
+                    ></textarea>
                   </div>
-                  <button className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg shadow-blue-600/30">
-                    Send to Pharmacy
+                  <button onClick={handleBookingSubmit} disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg shadow-blue-600/30 disabled:opacity-50">
+                    {isSubmitting ? "Processing..." : "Send to Pharmacy"}
                   </button>
                 </div>
               )}
 
               {/* Hospital Admission */}
               {bookingMode === 'request_bed' && (
-                <div className="space-y-4">
+                <div className="space-y-4 relative">
+                  {submitSuccess && (
+                    <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-2xl">
+                      <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                        <CheckCircle2 className="w-8 h-8" />
+                      </div>
+                      <h4 className="text-xl font-black text-[#0A1128] mb-2">Request Submitted!</h4>
+                      <p className="text-sm text-slate-500 text-center px-4">The hospital admissions desk has been notified.</p>
+                    </div>
+                  )}
                   <div>
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Patient Condition</label>
-                    <select className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm outline-none focus:border-amber-400 focus:bg-white transition-all font-medium text-slate-700">
+                    <select 
+                      value={patientCondition}
+                      onChange={(e) => setPatientCondition(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm outline-none focus:border-amber-400 focus:bg-white transition-all font-medium text-slate-700"
+                    >
                       <option>Emergency (Critical)</option>
                       <option>Planned Surgery / Admission</option>
                       <option>Maternity</option>
@@ -188,15 +286,19 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
                   </div>
                   <div>
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Requested Ward/Bed Type</label>
-                    <select className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm outline-none focus:border-amber-400 focus:bg-white transition-all font-medium text-slate-700">
+                    <select 
+                      value={requestedBed}
+                      onChange={(e) => setRequestedBed(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm outline-none focus:border-amber-400 focus:bg-white transition-all font-medium text-slate-700"
+                    >
                       <option>General Ward</option>
                       <option>Private Room</option>
                       <option>ICU (Intensive Care Unit)</option>
                       <option>NICU (Neonatal ICU)</option>
                     </select>
                   </div>
-                  <button className="w-full bg-amber-500 hover:bg-amber-400 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest mt-4 shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2">
-                    <Activity className="w-4 h-4" /> Send Request
+                  <button onClick={handleBookingSubmit} disabled={isSubmitting} className="w-full bg-amber-500 hover:bg-amber-400 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest mt-4 shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2 disabled:opacity-50">
+                    <Activity className="w-4 h-4" /> {isSubmitting ? "Sending..." : "Send Request"}
                   </button>
                   <p className="text-xs text-center text-slate-500 mt-2 font-medium">The hospital admissions desk will contact you immediately.</p>
                 </div>
