@@ -19,6 +19,7 @@ import CategoryNav from '@/components/CategoryNav';
 import InlineEditField from '@/components/InlineEditField';
 import EmergencyIntakeModal from '@/components/EmergencyIntakeModal';
 import ClaimProfileModal from '@/components/ClaimProfileModal';
+import BookingEngine from '@/components/BookingEngine';
 
 interface UnifiedProfileProps {
   profile: any;
@@ -694,20 +695,56 @@ export default function UnifiedProfileLayout({
               )}
 
               {/* Departments / Specialized Centers - Hospital / Lab Only */}
-              {(isHospital || isLab) && hasValidData(profile.roster) && (
+              {(isHospital || isLab) && hasValidData(profile.departmentsArray || profile.roster) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
                   <h2 className="text-3xl font-black text-[#0A1128] mb-8">{isLab ? "Specialized Departments" : "Centers of Excellence"}</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {profile.roster.map((dept: string, i: number) => (
-                      <div key={i} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer">
-                        <div className="w-12 h-12 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center mb-4 text-cyan-600 group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-colors">
-                          <Activity className="w-6 h-6" />
+                    {(profile.departmentsArray || profile.roster).map((dept: any, i: number) => {
+                      const deptName = typeof dept === 'string' ? dept : dept.name;
+                      const deptDesc = typeof dept === 'string' ? "View Specialists &rarr;" : dept.description || "View Specialists &rarr;";
+                      return (
+                        <div key={i} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer flex flex-col justify-between h-full">
+                          <div>
+                            <div className="w-12 h-12 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center mb-4 text-cyan-600 group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-colors">
+                              <Activity className="w-6 h-6" />
+                            </div>
+                            <h4 className="font-bold text-[#0A1128] text-lg group-hover:text-cyan-600 transition-colors mb-2">{deptName}</h4>
+                            {typeof dept !== 'string' && dept.head && <p className="text-sm font-medium text-slate-600 mb-2">HOD: Dr. {dept.head}</p>}
+                          </div>
+                          <p className="text-xs text-slate-400 mt-3 font-bold uppercase tracking-widest group-hover:text-cyan-500 line-clamp-2">{deptDesc}</p>
                         </div>
-                        <h4 className="font-bold text-[#0A1128] text-lg group-hover:text-cyan-600 transition-colors">{dept}</h4>
-                        <p className="text-xs text-slate-400 mt-3 font-bold uppercase tracking-widest group-hover:text-cyan-500">View Specialists &rarr;</p>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {/* Hospital Facilities / Accreditations */}
+              {(isHospital || isLab) && hasValidData(profile.facilities) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Facilities & Accreditations</h2>
+                  <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                    <div className="flex flex-wrap gap-4 mb-8">
+                      {profile.facilities.map((fac: string, i: number) => (
+                        <span key={i} className="bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500" /> {fac}
+                        </span>
+                      ))}
+                    </div>
+                    {hasValidData(profile.accreditations) && (
+                      <div>
+                        <p className="text-xs text-slate-400 font-bold tracking-widest uppercase mb-4">Certified & Accredited By</p>
+                        <div className="flex flex-wrap gap-3">
+                           {profile.accreditations.map((acc: string, i: number) => (
+                             <span key={i} className="bg-slate-100 text-slate-600 border border-slate-200 font-black px-3 py-1.5 rounded-lg text-xs uppercase tracking-wide flex items-center gap-2">
+                               <Shield className="w-3.5 h-3.5 text-blue-500" /> {acc}
+                             </span>
+                           ))}
+                        </div>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </section>
               )}
@@ -905,21 +942,19 @@ export default function UnifiedProfileLayout({
                 </div>
               </div>
 
-              {!user ? (
-                <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-rose-700 font-bold mb-3">To protect our doctors from spam, please log in to view contact details.</p>
-                  <Link href={`/login?redirect=${encodeURIComponent(window.location.pathname)}`} className="w-full inline-block bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl text-sm font-black transition-colors">
-                    Login / Register
-                  </Link>
-                </div>
-              ) : (
-                <button 
-                  onClick={() => alert("Care Connect modal will open here.")} 
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5"
-                >
-                  Request Callback
-                </button>
-              )}
+              <BookingEngine 
+                entityType={type} 
+                entityId={profile.id} 
+                entityName={profile.name} 
+                isLoggedIn={!!user} 
+                onDispatchAction={() => {
+                  if (isAmbulance) {
+                    alert("Trigger Live Dispatch System. Redirecting to dispatch hub...");
+                  } else if (isHospital) {
+                    setShowEmergencyModal(true);
+                  }
+                }} 
+              />
             </div>
 
             {/* Ad Space */}
