@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, type User } from 'firebase/auth';
 import { ConnectionService, ConnectionStatus } from '@/services/connection.service';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
@@ -13,7 +13,7 @@ import {
   Stethoscope, Clock, FileText, Activity, Lock,
   HeartPulse, Navigation, GraduationCap, Globe, Fingerprint,
   Briefcase, Medal, Video, Image as ImageIcon, Banknote,
-  Share2, QrCode, UserPlus, X, Facebook, MessageCircle, Settings
+  Share2, QrCode, UserPlus, X, Facebook, MessageCircle, Settings, User
 } from 'lucide-react';
 import CategoryNav from '@/components/CategoryNav';
 import InlineEditField from '@/components/InlineEditField';
@@ -693,11 +693,11 @@ export default function UnifiedProfileLayout({
                 </section>
               )}
 
-              {/* Departments / Fleet - Hospital / Lab / Ambulance Only */}
-              {(isHospital || isLab || isAmbulance) && hasValidData(profile.roster) && (
+              {/* Departments / Specialized Centers - Hospital / Lab Only */}
+              {(isHospital || isLab) && hasValidData(profile.roster) && (
                 <section className="relative pl-0 md:pl-16">
                   <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">{isAmbulance ? "Fleet & Vehicles" : isLab ? "Specialized Departments" : "Centers of Excellence"}</h2>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">{isLab ? "Specialized Departments" : "Centers of Excellence"}</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {profile.roster.map((dept: string, i: number) => (
                       <div key={i} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer">
@@ -708,6 +708,85 @@ export default function UnifiedProfileLayout({
                         <p className="text-xs text-slate-400 mt-3 font-bold uppercase tracking-widest group-hover:text-cyan-500">View Specialists &rarr;</p>
                       </div>
                     ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Ambulance Fleet Details */}
+              {isAmbulance && hasValidData(profile.vehicles) && (
+                <section className="relative pl-0 md:pl-16">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
+                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Ambulance Fleet & Vehicles</h2>
+                  <div className="grid grid-cols-1 gap-6">
+                    {profile.vehicles.map((v: any, i: number) => {
+                      const driver = profile.driverMapping?.find((d: any) => d.registrationNumber === v.registrationNumber);
+                      return (
+                        <div key={i} className="bg-white rounded-[2rem] p-6 shadow-md border border-slate-200 flex flex-col md:flex-row gap-8">
+                          {v.vehicleImage && (
+                            <div className="w-full md:w-48 h-48 rounded-2xl overflow-hidden shrink-0 bg-slate-100 border border-slate-200">
+                              <img src={v.vehicleImage} alt={v.registrationNumber} className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="text-2xl font-black text-[#0A1128] uppercase tracking-tight">{v.registrationNumber}</h3>
+                              {v.baseLocation && (
+                                <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">📍 {v.baseLocation}</span>
+                              )}
+                            </div>
+                            
+                            <div className="flex flex-wrap gap-2 mb-6">
+                              {v.classification && <span className="bg-slate-100 text-slate-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.classification}</span>}
+                              {v.lifeSupportLevel && <span className="bg-blue-100 text-blue-800 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.lifeSupportLevel}</span>}
+                              {v.acType && <span className="bg-slate-100 text-slate-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.acType}</span>}
+                            </div>
+                            
+                            {hasValidData(v.medicalEquipment) && (
+                              <div className="mb-6">
+                                <p className="text-xs text-slate-400 font-bold tracking-widest uppercase mb-2">Onboard Equipment</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {v.medicalEquipment.map((eq: string, j: number) => (
+                                    <span key={j} className="text-sm font-medium text-slate-600 flex items-center gap-1">
+                                      <CheckCircle2 className="w-3 h-3 text-emerald-500" /> {eq}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {driver && (
+                              <div className="border-t border-slate-100 pt-4 flex items-center gap-4">
+                                {driver.driverPhoto ? (
+                                  <img src={driver.driverPhoto} alt={driver.driverName} className="w-10 h-10 rounded-full border border-slate-200 object-cover" />
+                                ) : (
+                                  <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+                                    <User className="w-5 h-5 text-slate-400" />
+                                  </div>
+                                )}
+                                <div>
+                                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Assigned Driver</p>
+                                  <p className="text-sm font-black text-[#0A1128]">{driver.driverName}</p>
+                                </div>
+                                {driver.licenseNumber && (
+                                  <div className="ml-auto text-right">
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Licence</p>
+                                    <p className="text-xs font-mono text-slate-600 font-medium">{driver.licenseNumber}</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="w-full md:w-56 bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col justify-center shrink-0">
+                             <p className="text-xs text-slate-400 font-bold tracking-widest uppercase text-center mb-2">Base Fare (Per Km)</p>
+                             <p className="text-3xl font-black text-cyan-600 text-center mb-6">₹{v.baseFarePerKm || "N/A"}</p>
+                             <button className="w-full bg-rose-600 hover:bg-rose-500 text-white font-black tracking-widest uppercase text-xs py-4 rounded-xl transition-all shadow-[0_8px_20px_rgba(225,29,72,0.3)] hover:-translate-y-0.5">
+                               Dispatch Now
+                             </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </section>
               )}

@@ -100,7 +100,11 @@ export default function AmbulanceProfileView({ id, customSlug }: { id?: string, 
             // Auth Check
             ownerEmail: rawData.ownerEmail || null,
             galleryImages: rawData.galleryImages || [],
-            rawImages: rawData.rawImages || []
+            rawImages: rawData.rawImages || [],
+            
+            // Ambulance Fleet specific data
+            vehicles: rawData.vehicles || [],
+            driverMapping: rawData.driverMapping || []
           };
           setAmbulance(docData);
 
