@@ -1049,6 +1049,7 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                           title={field.label}
                           items={entityData[field.key] || []}
                           fields={field.arrayFields}
+                          contextData={entityData}
                           onUpdate={(idx, k, val) => {
                             const newArr = [...(entityData[field.key] || [])];
                             newArr[idx] = { ...newArr[idx], [k]: val };

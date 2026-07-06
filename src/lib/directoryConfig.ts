@@ -446,7 +446,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
             label: "Detailed Vehicle Roster",
             type: "object_array",
             arrayFields: [
-              { key: "registrationNumber", label: "Vehicle Number Plate", type: "text", placeholder: "Must match mapping above" },
+              { key: "registrationNumber", label: "Vehicle Number Plate", type: "dynamic_select", sourceField: "driverMapping", sourceKey: "registrationNumber", placeholder: "Select from Fleet Registration" },
               { key: "classification", label: "Vehicle Classification", type: "text", placeholder: "AC / Non-AC" },
               { key: "lifeSupportLevel", label: "Life Support Level", type: "text", placeholder: "BLS / ALS / Patient Transport" },
               { key: "medicalEquipment", label: "Medical Equipment", type: "string_array", placeholder: "e.g., Oxygen, Ventilator, Defibrillator" },

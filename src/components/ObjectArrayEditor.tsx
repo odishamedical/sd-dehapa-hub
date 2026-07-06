@@ -6,10 +6,12 @@ import InlineEditArray from './InlineEditArray';
 interface FieldDef {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'hybrid_entity_selector' | 'image_upload' | 'string_array';
+  type: 'text' | 'textarea' | 'hybrid_entity_selector' | 'image_upload' | 'string_array' | 'dynamic_select' | 'select' | 'number' | 'boolean';
   targetEntity?: string;
   placeholder?: string;
   options?: string[];
+  sourceField?: string;
+  sourceKey?: string;
 }
 
 interface ObjectArrayEditorProps {
@@ -22,6 +24,7 @@ interface ObjectArrayEditorProps {
   currentUserId?: string;
   currentUserRole?: string;
   currentUserName?: string;
+  contextData?: any;
 }
 
 export default function ObjectArrayEditor({
@@ -33,7 +36,8 @@ export default function ObjectArrayEditor({
   onRemove,
   currentUserId,
   currentUserRole,
-  currentUserName
+  currentUserName,
+  contextData
 }: ObjectArrayEditorProps) {
   return (
     <div className="w-full">
@@ -88,12 +92,37 @@ export default function ObjectArrayEditor({
                         suggestions={field.options}
                       />
                     </div>
+                  ) : field.type === 'dynamic_select' && field.sourceField && field.sourceKey ? (
+                    <select
+                      value={item[field.key] || ""}
+                      onChange={(e) => onUpdate(index, field.key, e.target.value)}
+                      className="sd-input-v3 text-slate-800"
+                    >
+                      <option value="">Select an option...</option>
+                      {(contextData?.[field.sourceField] || []).map((sourceObj: any, i: number) => {
+                        const val = sourceObj[field.sourceKey!];
+                        if (!val) return null;
+                        return <option key={i} value={val}>{val}</option>;
+                      })}
+                    </select>
+                  ) : field.type === 'select' ? (
+                    <select
+                      value={item[field.key] || ""}
+                      onChange={(e) => onUpdate(index, field.key, e.target.value)}
+                      className="sd-input-v3 text-slate-800"
+                    >
+                      <option value="">Select an option...</option>
+                      {field.options?.map((opt: string, i: number) => (
+                        <option key={i} value={opt}>{opt}</option>
+                      ))}
+                    </select>
                   ) : (
                     <input 
-                      type="text" 
+                      type={field.type === 'number' ? 'number' : 'text'} 
                       value={item[field.key] || ""} 
                       onChange={(e) => onUpdate(index, field.key, e.target.value)}
                       className="sd-input-v3"
+                      placeholder={field.placeholder}
                     />
                   )}
                 </div>
