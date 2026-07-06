@@ -380,13 +380,6 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       label: "Wallet & Payouts",
       section: "FINANCE",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-    },
-    {
-      id: "help",
-      label: "Support",
-      section: "SUPPORT & UTILITIES",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636a9 9 0 100 12.728M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-    }
   ];
 
   const capitalizedRole = expectedRole ? expectedRole.charAt(0).toUpperCase() + expectedRole.slice(1) : "";
