@@ -432,7 +432,10 @@ export const directoryConfig: Record<string, CategoryConfig> = {
               { key: "driverName", label: "Assigned Driver Name", type: "text" },
               { key: "driverEmail", label: "Driver Gmail", type: "text" },
               { key: "driverPhone", label: "Driver Phone", type: "text" },
-              { key: "driverWhatsApp", label: "Driver WhatsApp Number", type: "text" }
+              { key: "driverWhatsApp", label: "Driver WhatsApp Number", type: "text" },
+              { key: "driverPhoto", label: "Driver Profile Photo", type: "image_upload" },
+              { key: "licenseNumber", label: "Driver License Number", type: "text", placeholder: "e.g. DL-XXXX-XXXX" },
+              { key: "licenseExpiry", label: "License Expiry Date", type: "text", placeholder: "e.g. 2030-12-31" }
             ]
           }
         ]
@@ -447,6 +450,7 @@ export const directoryConfig: Record<string, CategoryConfig> = {
             type: "object_array",
             arrayFields: [
               { key: "registrationNumber", label: "Vehicle Number Plate", type: "dynamic_select", sourceField: "driverMapping", sourceKey: "registrationNumber", placeholder: "Select from Fleet Registration" },
+              { key: "baseLocation", label: "Station / Stand Location", type: "text", placeholder: "e.g. AIIMS Hospital Main Gate" },
               { key: "classification", label: "Vehicle Classification", type: "text", placeholder: "AC / Non-AC" },
               { key: "lifeSupportLevel", label: "Life Support Level", type: "text", placeholder: "BLS / ALS / Patient Transport" },
               { key: "medicalEquipment", label: "Medical Equipment", type: "string_array", placeholder: "e.g., Oxygen, Ventilator, Defibrillator" },

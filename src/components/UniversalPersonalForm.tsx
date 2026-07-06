@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import AddressBlock from '@/components/AddressBlock';
+import ImageUpload from '@/components/ImageUpload';
 
 export interface UniversalPersonalFormProps {
   entityData: any;
@@ -55,6 +56,15 @@ export default function UniversalPersonalForm({ entityData, onChange, portalType
   return (
     <div className="space-y-8 animate-in fade-in">
       
+      {/* Personal Photo */}
+      <div className="mb-6">
+        <label className="sd-label-v3 mb-3 block">Owner / Personal Photo</label>
+        <ImageUpload 
+          defaultImage={entityData.ownerImage || entityData.personalImage || ""}
+          onChange={(url) => updateField('ownerImage', url)}
+        />
+      </div>
+
       {/* 1. Basic Identity */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="md:col-span-1">
