@@ -50,6 +50,7 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
         window.location.href = "/login";
         return;
       }
+      setUserEmail(email);
       if (hash) {
         setActiveTab(hash);
       }
@@ -748,7 +749,7 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
               {/* Live Booking Orders */}
               <div>
                  <h3 className="text-xl font-bold text-[#0A1128] mb-4">Live Service Requests</h3>
-                 <OrderInboxWidget ownerEmail={user?.email || ''} />
+                 <OrderInboxWidget ownerEmail={userEmail || ''} />
               </div>
             </div>
           </div>
