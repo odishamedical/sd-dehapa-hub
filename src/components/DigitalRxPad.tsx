@@ -51,48 +51,44 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
     }
   }, [patient]);
 
-  // 2. Create Call Object Early
-  useEffect(() => {
-    if (!callObject) {
-      const co = DailyIframe.createCallObject();
+  // Call object will be created lazily on user interaction to prevent Android WebView AudioContext crash
+
+  // 3. Manual Start Video Handler
+  const handleStartVideo = async () => {
+    if (!patient?.id || videoCall) return;
+    
+    let co = callObject;
+    if (!co) {
+      co = DailyIframe.createCallObject();
       setCallObject(co);
     }
-  }, [callObject]);
-
-  // 3. Generate Room & Join when Rx Pad opens for an Online Patient
-  useEffect(() => {
-    const startVideo = async () => {
-      if (patient?.id && (patient.type === 'online' || patient.mode === 'Video Call') && !videoCall && callObject) {
-        try {
-          // Generate room URL first to avoid stranding the patient
-          const res = await fetch('/api/video/create-room', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ appointmentId: patient.id })
-          });
-          const data = await res.json();
-          
-          if (data.url) {
-            // Save URL to Firebase
-            await setDoc(doc(db, "appointments", patient.id), { 
-              status: 'Active',
-              dailyUrl: data.url
-            }, { merge: true });
-            
-            setDailyUrl(data.url);
-            
-            // Join the Daily Room
-            await callObject.join({ url: data.url });
-            setVideoCall(true);
-          }
-        } catch (err) {
-          console.error('Failed to start room', err);
-        }
-      }
-    };
     
-    startVideo();
-  }, [patient, callObject, videoCall]);
+    try {
+      // Generate room URL first to avoid stranding the patient
+      const res = await fetch('/api/video/create-room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appointmentId: patient.id })
+      });
+      const data = await res.json();
+      
+      if (data.url) {
+        // Save URL to Firebase
+        await setDoc(doc(db, "appointments", patient.id), { 
+          status: 'Active',
+          dailyUrl: data.url
+        }, { merge: true });
+        
+        setDailyUrl(data.url);
+        
+        // Join the Daily Room
+        await co.join({ url: data.url });
+        setVideoCall(true);
+      }
+    } catch (err) {
+      console.error('Failed to start room', err);
+    }
+  };
 
   // 4. Handle End Call / Close
   const handleEndConsult = async () => {
@@ -158,10 +154,19 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
                   )}
                 </DailyProvider>
               ) : (
-                <div className="flex flex-col items-center justify-center w-full h-full bg-black/40">
-                  <div className="w-12 h-12 border-4 border-slate-700 border-t-teal-500 rounded-full animate-spin mb-4"></div>
-                  <p className="text-slate-400 font-bold animate-pulse text-sm tracking-widest uppercase">Connecting...</p>
-                </div>
+                <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
+                        <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                          <svg className="w-10 h-10 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 className="text-white font-bold text-lg mb-2">Ready to connect</h3>
+                        <p className="text-slate-400 text-sm mb-6 max-w-xs">Click below to start the secure video session with {patient.name}</p>
+                        <button 
+                          onClick={handleStartVideo}
+                          className="bg-emerald-500 hover:bg-emerald-400 text-white font-black uppercase tracking-widest text-sm px-8 py-4 rounded-xl transition-all shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:scale-105 active:scale-95"
+                        >
+                          START VIDEO CALL
+                        </button>
+                      </div>
               )}
             </div>
           </div>
