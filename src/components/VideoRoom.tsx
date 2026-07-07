@@ -154,9 +154,9 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
       
       // Smooth SPA routing instead of hard browser navigation
       if (patientId) {
-        router.push(`/doctor/prescription-pad?patient=${patientId}&request=${roomId}`);
+        router.push(`/portal/doctor?rx=${roomId}#queue`);
       } else {
-        router.push("/portal/doctor");
+        router.push("/portal/doctor#queue");
       }
     } else {
       // Patient initiated end call. Just go home.

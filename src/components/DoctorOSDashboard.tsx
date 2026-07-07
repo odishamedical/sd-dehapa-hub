@@ -13,6 +13,7 @@ import IncomingPingWidget from '@/components/IncomingPingWidget';
 import ChatInboxWidget from '@/components/chat/ChatInboxWidget';
 import WalletDashboard from '@/components/payments/WalletDashboard';
 import SupportDashboard from '@/components/SupportDashboard';
+import { VaultService } from '@/lib/vault.service';
 
 const faqData = [
   {
@@ -219,7 +220,7 @@ export default function DoctorOSDashboard() {
     }
   };
 
-  const handleSaveRx = async (patient: any) => {
+  const handleSaveRx = async (patient: any, pdfBlob?: Blob) => {
     if (!entityData?.id) return;
     try {
       const fee = patient.type === "online" ? (entityData.videoFee || 500) : (entityData.walkInFee || 500);
@@ -235,6 +236,30 @@ export default function DoctorOSDashboard() {
         date: new Date().toISOString().split('T')[0],
         createdAt: serverTimestamp()
       });
+
+      // Upload PDF to Vault
+      if (pdfBlob) {
+        // If walk-in, save to doctor's own vault. If online, send to patient.
+        const recipientId = patient.type === 'online' ? patient.id : entityData.id;
+        
+        await VaultService.directSendDocument(
+          entityData.id,
+          entityData.name || "Dehapa Doctor",
+          recipientId,
+          pdfBlob,
+          {
+            patientName: patient.name || "Walk-in Patient",
+            patientId: patient.id || "walk-in",
+            recordType: 'prescription',
+            fileName: `Rx_${patient.name}_${new Date().toISOString().split('T')[0]}.pdf`,
+            accessLevel: 'permanent'
+          }
+        );
+        
+        // After upload, trigger the B2B Forward Modal via a custom event
+        const event = new CustomEvent('open-vault-forward', { detail: patient });
+        window.dispatchEvent(event);
+      }
 
       if (patient.id && !patient.id.startsWith("demo")) {
         await deleteDoc(doc(db, "queue", patient.id));
@@ -253,8 +278,25 @@ export default function DoctorOSDashboard() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.history.replaceState(null, "", "#" + activeTab);
+      
+      // Auto-open Rx Pad if redirected from Video Room
+      const urlParams = new URLSearchParams(window.location.search);
+      const rxPatientId = urlParams.get('rx');
+      if (rxPatientId && entityData?.id) {
+         // Auto create a dummy consult object for the Rx Pad
+         setActiveConsult({
+           id: rxPatientId,
+           name: "Telemedicine Patient",
+           age: "--",
+           sex: "--",
+           mode: "Video Call",
+           type: "online"
+         });
+         // Clean URL
+         window.history.replaceState(null, "", window.location.pathname + "#" + activeTab);
+      }
     }
-  }, [activeTab]);
+  }, [activeTab, entityData?.id]);
 
   const [chatTargetId, setChatTargetId] = useState<string | null>(null);
 
@@ -1145,7 +1187,12 @@ export default function DoctorOSDashboard() {
       )}
       {/* Digital Rx Pad Overlay */}
       {activeConsult && (
-        <DigitalRxPad patient={activeConsult} onClose={() => setActiveConsult(null)} onSave={handleSaveRx} />
+        <DigitalRxPad 
+          patient={activeConsult} 
+          provider={entityData}
+          onClose={() => setActiveConsult(null)} 
+          onSave={handleSaveRx} 
+        />
       )}
     </DashboardLayout>
   );
