@@ -478,7 +478,6 @@ export default function DoctorOSDashboard() {
       <IncomingPingWidget 
         doctorId={entityData?.id || ""} 
         doctorSpecialty={entityData?.primarySpecialty || ""} 
-        onAcceptPing={handleAcceptPing} 
       />
 
       <div className="max-w-7xl space-y-6 pb-20 md:pb-8">
