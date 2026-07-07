@@ -1,7 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import DailyIframe, { DailyCall } from '@daily-co/daily-js';
+import { DailyProvider, useParticipantIds, useVideoTrack, useAudioTrack, useLocalSessionId } from '@daily-co/daily-react';
+import { db } from "@/lib/firebase";
+import { doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
 
 interface DigitalRxPadProps {
   patient: any;
@@ -13,6 +17,12 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
   const [step, setStep] = useState(1);
   const totalSteps = 4;
   const [mounted, setMounted] = useState(false);
+  
+  // Video Integration States
+  const [callObject, setCallObject] = useState<DailyCall | null>(null);
+  const [dailyUrl, setDailyUrl] = useState<string | null>(null);
+  const [videoCall, setVideoCall] = useState(false);
+  const [patientHasVideo, setPatientHasVideo] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -21,6 +31,89 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
       document.body.style.overflow = 'unset';
     };
   }, []);
+
+  // 1. Fetch patient camera capability
+  useEffect(() => {
+    if (patient?.id) {
+      const getReqDetails = async () => {
+        try {
+          const snap = await getDoc(doc(db, 'consultation_requests', patient.id));
+          if (snap.exists()) {
+            const data = snap.data();
+            setPatientHasVideo(data.hasVideo !== false);
+          }
+        } catch (e) {
+          console.warn("Failed to fetch consultation request info:", e);
+        }
+      };
+      getReqDetails();
+    }
+  }, [patient]);
+
+  // 2. Create Call Object Early
+  useEffect(() => {
+    if (!callObject) {
+      const co = DailyIframe.createCallObject();
+      setCallObject(co);
+    }
+  }, [callObject]);
+
+  // 3. Generate Room & Join when Rx Pad opens for an Online Patient
+  useEffect(() => {
+    const startVideo = async () => {
+      if (patient?.id && (patient.type === 'online' || patient.mode === 'Video Call') && !videoCall && callObject) {
+        try {
+          // Pre-emptively start doctor camera
+          try {
+            await callObject.startCamera();
+          } catch (camErr) {
+            console.warn("Doctor camera block during startCamera:", camErr);
+          }
+          
+          // Generate room URL
+          const res = await fetch('/api/video/create-room', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ appointmentId: patient.id })
+          });
+          const data = await res.json();
+          
+          if (data.url) {
+            // Save URL to Firebase
+            await setDoc(doc(db, "appointments", patient.id), { 
+              status: 'Active',
+              dailyUrl: data.url
+            }, { merge: true });
+            
+            setDailyUrl(data.url);
+            
+            // Join the Daily Room
+            await callObject.join({ url: data.url });
+            setVideoCall(true);
+          }
+        } catch (err) {
+          console.error('Failed to start room', err);
+        }
+      }
+    };
+    
+    startVideo();
+  }, [patient, callObject, videoCall]);
+
+  // 4. Handle End Call / Close
+  const handleEndConsult = async () => {
+    if (callObject) {
+      callObject.leave();
+      callObject.destroy();
+      setCallObject(null);
+    }
+    if (patient?.id) {
+       try {
+         await updateDoc(doc(db, "appointments", patient.id), { status: 'Completed' });
+       } catch (e) {}
+    }
+    onClose();
+  };
 
   const handleNext = () => {
     if (step < totalSteps) setStep(step + 1);
@@ -38,7 +131,7 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
       {/* HEADER (Glass) */}
       <div className="bg-white/10 backdrop-blur-2xl border-b border-white/20 px-4 py-3 flex items-center justify-between shadow-lg z-30 shrink-0 relative">
         <div className="flex items-center gap-3">
-          <button onClick={onClose} className="p-2 -ml-2 text-white/70 hover:text-white rounded-full hover:bg-white/10 transition-colors">
+          <button onClick={handleEndConsult} className="p-2 -ml-2 text-white/70 hover:text-white rounded-full hover:bg-white/10 transition-colors">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           </button>
           <div>
@@ -50,7 +143,7 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
            <span className={`px-2.5 py-1 text-[10px] uppercase font-bold rounded-full border ${patient.type === 'online' || patient.mode === 'Video Call' ? 'bg-teal-500/20 text-teal-300 border-teal-500/30' : 'bg-white/10 text-white/70 border-white/20'}`}>
              {patient.mode}
            </span>
-           <button onClick={onClose} className="px-4 py-1.5 bg-rose-500/80 hover:bg-rose-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-rose-500/20 transition-all backdrop-blur-md border border-rose-400/30">
+           <button onClick={handleEndConsult} className="px-4 py-1.5 bg-rose-500/80 hover:bg-rose-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-rose-500/20 transition-all backdrop-blur-md border border-rose-400/30">
              End Consult
            </button>
         </div>
@@ -62,39 +155,17 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
         {/* TELEMEDICINE VIDEO (Top on Mobile, Left on Desktop) */}
         {(patient.type === 'online' || patient.mode === 'Video Call') && (
           <div className="w-full lg:w-1/2 h-[40vh] lg:h-full relative shrink-0 flex flex-col">
-            <div className="relative w-full h-full flex flex-col overflow-hidden">
-                {/* Fake Video Stream (Patient) */}
-                <div className="flex-1 bg-black/40 relative flex items-center justify-center">
-                  <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
-                  {/* Subtle pulsing background effect */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/10 to-indigo-500/10 animate-pulse"></div>
-                  
-                  <div className="w-24 h-24 lg:w-32 lg:h-32 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center font-bold text-white/80 text-4xl lg:text-5xl shadow-2xl relative z-10 border border-white/20">
-                    {patient.name.charAt(0)}
-                  </div>
-                  <div className="absolute top-4 left-4 bg-black/40 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-bold border border-white/10 flex items-center gap-2 shadow-lg">
-                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                    {patient.name} • 04:23
-                  </div>
+            <div className="relative w-full h-full flex flex-col overflow-hidden bg-slate-900">
+              {callObject && videoCall ? (
+                <DailyProvider callObject={callObject}>
+                  <InlineVideoGrid patientName={patient.name} patientHasVideo={patientHasVideo} />
+                </DailyProvider>
+              ) : (
+                <div className="flex flex-col items-center justify-center w-full h-full bg-black/40">
+                  <div className="w-12 h-12 border-4 border-slate-700 border-t-teal-500 rounded-full animate-spin mb-4"></div>
+                  <p className="text-slate-400 font-bold animate-pulse text-sm tracking-widest uppercase">Connecting...</p>
                 </div>
-                
-                {/* Fake Video Stream (Doctor/Self) - Smaller overlay in corner */}
-                <div className="absolute bottom-24 lg:bottom-28 right-4 lg:right-6 w-24 h-36 lg:w-32 lg:h-48 bg-black/60 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden shadow-2xl flex items-center justify-center text-xs text-white/50 font-bold z-10">
-                  You
-                </div>
-                
-                {/* Glassmorphic Call Controls */}
-                <div className="absolute bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2 bg-black/30 backdrop-blur-2xl border border-white/10 rounded-full px-4 lg:px-6 py-2.5 flex items-center justify-center gap-3 lg:gap-4 shadow-2xl z-20">
-                  <button className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
-                    <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                  </button>
-                  <button className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
-                    <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                  </button>
-                  <button onClick={onClose} className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-rose-500/90 hover:bg-rose-500 text-white flex items-center justify-center shadow-[0_0_20px_rgba(244,63,94,0.4)] border border-rose-400/50 transition-colors">
-                    <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z"></path></svg>
-                  </button>
-                </div>
+              )}
             </div>
           </div>
         )}
@@ -303,7 +374,7 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
               </div>
 
               <button 
-                onClick={step === totalSteps ? () => onSave ? onSave(patient) : onClose() : handleNext}
+                onClick={step === totalSteps ? () => { if(onSave) onSave(patient); handleEndConsult(); } : handleNext}
                 className="px-6 py-3 bg-teal-500/90 hover:bg-teal-500 backdrop-blur-md border border-teal-400/50 text-white rounded-xl font-bold text-sm shadow-[0_4px_20px_rgba(20,184,166,0.3)] transition-all flex items-center gap-2"
               >
                 {step === totalSteps ? (
@@ -320,4 +391,110 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
   );
 
   return createPortal(content, document.body);
+}
+
+// ----------------------------------------------------------------------------------
+// Inline Video Grid Component
+// ----------------------------------------------------------------------------------
+
+function InlineVideoGrid({ patientName, patientHasVideo }: { patientName: string, patientHasVideo: boolean }) {
+  const localSessionId = useLocalSessionId();
+  const remoteParticipantIds = useParticipantIds({ filter: 'remote' });
+  
+  const [micActive, setMicActive] = useState(true);
+  const [camActive, setCamActive] = useState(true);
+  const callObject = DailyIframe.getCallInstance();
+
+  const toggleMic = () => {
+    if (callObject) {
+      const next = !micActive;
+      callObject.setLocalAudio(next);
+      setMicActive(next);
+    }
+  };
+
+  const toggleCam = () => {
+    if (callObject) {
+      const next = !camActive;
+      callObject.setLocalVideo(next);
+      setCamActive(next);
+    }
+  };
+
+  return (
+    <div className="absolute inset-0 w-full h-full bg-slate-900 flex flex-col z-10 overflow-hidden">
+      {/* Remote Video (Full Size) */}
+      {remoteParticipantIds.length > 0 ? (
+        <InlineVideoPlayer id={remoteParticipantIds[0]} isLocal={false} />
+      ) : (
+        <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 bg-black/40">
+           <div className="w-12 h-12 border-4 border-slate-700 border-t-slate-400 rounded-full animate-spin mb-3"></div>
+           <p className="text-xs tracking-widest uppercase text-slate-400 animate-pulse">Waiting for Patient...</p>
+        </div>
+      )}
+
+      {/* Patient Name Overlay */}
+      <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-bold border border-white/10 flex items-center gap-2 shadow-lg z-30">
+        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+        {patientName}
+      </div>
+
+      {/* Local Video (PiP) */}
+      {camActive && localSessionId && (
+        <div className="absolute bottom-24 lg:bottom-28 right-4 lg:right-6 w-24 h-36 lg:w-32 lg:h-48 bg-slate-800 rounded-2xl border border-white/20 overflow-hidden shadow-2xl z-20">
+          <InlineVideoPlayer id={localSessionId} isLocal={true} />
+        </div>
+      )}
+
+      {/* Controls */}
+      <div className="absolute bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl border border-white/10 rounded-full px-4 lg:px-6 py-2.5 flex items-center justify-center gap-3 lg:gap-4 shadow-2xl z-30">
+        <button onClick={toggleMic} className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-colors ${micActive ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-red-500 text-white'}`}>
+          {micActive ? (
+            <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+          ) : (
+            <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+          )}
+        </button>
+        <button onClick={toggleCam} className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-colors ${camActive ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-red-500 text-white'}`}>
+          {camActive ? (
+            <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          ) : (
+             <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function InlineVideoPlayer({ id, isLocal }: { id: string, isLocal: boolean }) {
+  const videoState = useVideoTrack(id);
+  const audioState = useAudioTrack(id);
+  const videoElement = useRef<HTMLVideoElement>(null);
+  const audioElement = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (videoElement.current && videoState?.track) {
+      videoElement.current.srcObject = new MediaStream([videoState.track]);
+    }
+  }, [videoState?.track]);
+
+  useEffect(() => {
+    if (audioElement.current && audioState?.track && !isLocal) {
+      audioElement.current.srcObject = new MediaStream([audioState.track]);
+    }
+  }, [audioState?.track, isLocal]);
+
+  return (
+    <>
+      <video 
+        autoPlay 
+        muted={isLocal} 
+        playsInline 
+        ref={videoElement} 
+        className={`w-full h-full object-cover ${isLocal ? 'scale-x-[-1]' : ''}`} 
+      />
+      {!isLocal && <audio autoPlay playsInline ref={audioElement} />}
+    </>
+  );
 }
