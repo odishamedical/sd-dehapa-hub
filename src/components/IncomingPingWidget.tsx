@@ -157,10 +157,7 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty, onAccept
       isPlaying = false;
       if (osc1) { try { osc1.stop(); } catch(e){} }
       if (osc2) { try { osc2.stop(); } catch(e){} }
-      // Only close if it's not the globally shared context
-      if (audioCtx && audioCtx !== (window as any).sd_shared_audio_ctx) { 
-        audioCtx.close().catch(() => {}); 
-      }
+      // Removed audioCtx.close() to prevent native Android Media Server crashes on unmount
     };
   }, [incomingRequest]);
 

@@ -446,7 +446,8 @@ export default function GlobalTelemedicineFAB() {
         if (data && data.status === "accepted") {
           unsubscribe();
           setIsOpen(false); // Close the red banner modal immediately
-          router.push(`/consultation/${docRef.id}`);
+          // Force a hard navigation to bypass Next.js SPA cache and guarantee fresh code for WebRTC
+          window.location.href = `/consultation/${docRef.id}`;
         }
       });
 
