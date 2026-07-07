@@ -64,14 +64,7 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
     const startVideo = async () => {
       if (patient?.id && (patient.type === 'online' || patient.mode === 'Video Call') && !videoCall && callObject) {
         try {
-          // Pre-emptively start doctor camera
-          try {
-            await callObject.startCamera();
-          } catch (camErr) {
-            console.warn("Doctor camera block during startCamera:", camErr);
-          }
-          
-          // Generate room URL
+          // Generate room URL first to avoid stranding the patient
           const res = await fetch('/api/video/create-room', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
