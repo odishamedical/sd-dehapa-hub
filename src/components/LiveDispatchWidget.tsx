@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot, updateDoc, doc, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, updateDoc, doc, orderBy, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function LiveDispatchWidget({ providerId, entityData }: { providerId: string, entityData?: any }) {
   const [emergencies, setEmergencies] = useState<any[]>([]);
@@ -10,11 +10,76 @@ export default function LiveDispatchWidget({ providerId, entityData }: { provide
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [currentUserName, setCurrentUserName] = useState<string | null>(null);
   const [codeInputs, setCodeInputs] = useState<Record<string, string>>({});
+  const [isBroadcastingGps, setIsBroadcastingGps] = useState(false);
+  const [gpsError, setGpsError] = useState<string | null>(null);
 
   useEffect(() => {
     setCurrentUserEmail(localStorage.getItem("sd_current_user_email"));
     setCurrentUserName(localStorage.getItem("sd_current_user_name") || "Ambulance Driver");
   }, []);
+
+  useEffect(() => {
+    let watchId: number;
+    let intervalId: NodeJS.Timeout;
+    let lastLat: number | null = null;
+    let lastLng: number | null = null;
+
+    if (isBroadcastingGps && providerId && currentUserEmail) {
+      if (!navigator.geolocation) {
+        setGpsError("Geolocation is not supported by your browser");
+        return;
+      }
+      
+      const updatePosition = async (lat: number, lng: number, heading: number | null) => {
+        try {
+          const docId = `${providerId}_${currentUserEmail.replace(/[@.]/g, '_')}`;
+          await setDoc(doc(db, "fleet_tracking", docId), {
+            ambulanceId: providerId,
+            driverEmail: currentUserEmail,
+            driverName: currentUserName,
+            lat,
+            lng,
+            heading: heading || 0,
+            status: "active",
+            lastUpdated: serverTimestamp()
+          }, { merge: true });
+          setGpsError(null);
+        } catch (err) {
+          console.error("GPS broadcast failed", err);
+          setGpsError("Failed to broadcast location to server");
+        }
+      };
+
+      // Watch position for continuous local updates
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          lastLat = position.coords.latitude;
+          lastLng = position.coords.longitude;
+        },
+        (error) => {
+          setGpsError(`GPS Error: ${error.message}`);
+        },
+        { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+      );
+
+      // Throttle server updates to every 15 seconds to save cost/battery
+      intervalId = setInterval(() => {
+        if (lastLat !== null && lastLng !== null) {
+          updatePosition(lastLat, lastLng, 0); // navigator.geolocation heading is unreliable on some devices, just pass 0 for MVP
+        }
+      }, 15000);
+
+    } else if (!isBroadcastingGps && providerId && currentUserEmail) {
+      // Mark as offline when toggle is turned off
+      const docId = `${providerId}_${currentUserEmail.replace(/[@.]/g, '_')}`;
+      setDoc(doc(db, "fleet_tracking", docId), { status: "offline", lastUpdated: serverTimestamp() }, { merge: true }).catch(console.error);
+    }
+
+    return () => {
+      if (watchId) navigator.geolocation.clearWatch(watchId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isBroadcastingGps, providerId, currentUserEmail, currentUserName]);
 
   useEffect(() => {
     if (!providerId) { setLoading(false); return; }
@@ -99,8 +164,22 @@ export default function LiveDispatchWidget({ providerId, entityData }: { provide
           <h3 className="text-xl font-bold text-slate-900">Emergency Dispatch Queue</h3>
           <p className="text-sm text-slate-600">Manage incoming ambulance requests in real-time.</p>
         </div>
-        <div className="bg-red-50/80 backdrop-blur-md text-red-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-red-200/50 animate-pulse">
-          Live Feed Active
+        <div className="flex flex-col items-end gap-2">
+          <div className="bg-red-50/80 backdrop-blur-md text-red-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-red-200/50 animate-pulse">
+            Live Feed Active
+          </div>
+          <button 
+            onClick={() => setIsBroadcastingGps(!isBroadcastingGps)}
+            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-widest border flex items-center gap-1.5 transition-colors ${
+              isBroadcastingGps 
+                ? 'bg-blue-100 text-blue-700 border-blue-200 shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
+                : 'bg-slate-100 text-slate-600 border-slate-200'
+            }`}
+          >
+            <svg className={`w-3 h-3 ${isBroadcastingGps ? 'animate-pulse text-blue-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            {isBroadcastingGps ? 'Broadcasting GPS...' : 'Start GPS Broadcast'}
+          </button>
+          {gpsError && <p className="text-[10px] text-red-500 max-w-[150px] text-right">{gpsError}</p>}
         </div>
       </div>
       
