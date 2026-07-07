@@ -8,7 +8,7 @@ export default function PatientLeadsWidget({ providerId }: { providerId: string 
 
   useEffect(() => {
     const fetchLeads = async () => {
-      if (!providerId) return;
+      if (!providerId) { setLoading(false); return; }
       try {
         const q = query(
           collection(db, "contact_leads"),

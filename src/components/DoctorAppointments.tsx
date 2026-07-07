@@ -26,7 +26,7 @@ export default function DoctorAppointments({ providerId }: { providerId: string 
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      if (!providerId) return;
+      if (!providerId) { setLoading(false); return; }
       try {
         const q = query(
           collection(db, "appointments"),

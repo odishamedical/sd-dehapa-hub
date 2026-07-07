@@ -20,7 +20,7 @@ export default function PatientRecordsCRM({ providerId }: { providerId: string }
 
   useEffect(() => {
     const fetchPatients = async () => {
-      if (!providerId) return;
+      if (!providerId) { setLoading(false); return; }
       try {
         // Fetch from appointments to build CRM list dynamically
         const q = query(collection(db, "appointments"), where("providerId", "==", providerId));

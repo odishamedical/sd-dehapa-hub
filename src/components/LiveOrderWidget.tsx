@@ -9,7 +9,7 @@ export default function LiveOrderWidget({ providerId, providerType }: { provider
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!providerId) return;
+    if (!providerId) { setLoading(false); return; }
 
     const q = query(
       collection(db, "orders"),

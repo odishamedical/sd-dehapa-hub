@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { onAuthStateChanged, type User } from 'firebase/auth';
+import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { ConnectionService, ConnectionStatus } from '@/services/connection.service';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
@@ -75,7 +75,7 @@ export default function UnifiedProfileLayout({
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus | null>(null);
   const [isRequestingConnection, setIsRequestingConnection] = useState(false);
 

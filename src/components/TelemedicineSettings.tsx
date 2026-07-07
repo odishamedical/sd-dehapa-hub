@@ -17,7 +17,7 @@ export default function TelemedicineSettings({ providerId }: { providerId: strin
 
   useEffect(() => {
     const fetchSettings = async () => {
-      if (!providerId) return;
+      if (!providerId) { setLoading(false); return; }
       try {
         const docRef = doc(db, 'directory', providerId);
         const docSnap = await getDoc(docRef);

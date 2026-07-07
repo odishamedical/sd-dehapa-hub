@@ -17,7 +17,7 @@ export default function LiveDispatchWidget({ providerId, entityData }: { provide
   }, []);
 
   useEffect(() => {
-    if (!providerId) return;
+    if (!providerId) { setLoading(false); return; }
 
     const role = localStorage.getItem("sd_current_user_role");
     

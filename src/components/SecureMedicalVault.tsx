@@ -41,7 +41,7 @@ export default function SecureMedicalVault({ providerId, providerName }: { provi
   }, [providerId, activeFolder]);
 
   useEffect(() => {
-    if (!providerId) return;
+    if (!providerId) { setLoading(false); return; }
     const fetchConnections = async () => {
       try {
         const q1 = query(collection(db, 'connections'), where('receiverId', '==', providerId), where('status', '==', 'approved'));
