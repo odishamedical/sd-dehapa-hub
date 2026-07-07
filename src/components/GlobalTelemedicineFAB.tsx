@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, collection, query, where, getDocs, addDoc, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -19,6 +19,7 @@ type FlowStep = "urgency" | "triage_tier" | "triage_dept" | "doctor_list" | "dat
 
 export default function GlobalTelemedicineFAB() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<FlowStep>("urgency");
   
@@ -444,8 +445,7 @@ export default function GlobalTelemedicineFAB() {
         const data = snapshot.data();
         if (data && data.status === "accepted") {
           unsubscribe();
-          setStep("connecting_success"); // Show instant feedback
-          // Let Next.js handle the route transition while showing the success UI
+          setIsOpen(false); // Close the red banner modal immediately
           router.push(`/consultation/${docRef.id}`);
         }
       });
@@ -456,6 +456,8 @@ export default function GlobalTelemedicineFAB() {
       setStep("doctor_list");
     }
   };
+
+  if (pathname?.startsWith('/consultation')) return null;
 
   return (
     <>

@@ -14,8 +14,6 @@ interface DigitalRxPadProps {
 }
 
 export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadProps) {
-  const [step, setStep] = useState(1);
-  const totalSteps = 4;
   const [mounted, setMounted] = useState(false);
   
   // Video Integration States
@@ -118,14 +116,6 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
     onClose();
   };
 
-  const handleNext = () => {
-    if (step < totalSteps) setStep(step + 1);
-  };
-  
-  const handlePrev = () => {
-    if (step > 1) setStep(step - 1);
-  };
-
   if (!patient || !mounted) return null;
 
   const content = (
@@ -209,11 +199,10 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
           
           {/* CONTENT AREA - Mobile Wizard Style */}
           <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-            <div className="max-w-4xl mx-auto bg-white/40 backdrop-blur-md rounded-3xl shadow-sm border border-white/50 p-6 md:p-8 min-h-[60vh] relative">
+            <div className="max-w-4xl mx-auto space-y-8 pb-32">
               
               {/* STEP 1: VITALS */}
-              {step === 1 && (
-                <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
+              <div className="bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/60 p-6 md:p-8 space-y-6 animate-in slide-in-from-bottom-4 duration-500">
                   <div>
                     <h3 className="text-xl font-bold text-slate-800">Vitals & Measurements</h3>
                     <p className="text-sm text-slate-500">Collected by receptionist or inputted manually.</p>
@@ -249,11 +238,8 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
                     </div>
                   </div>
                 </div>
-              )}
-
               {/* STEP 2: CLINICAL NOTES & AI */}
-              {step === 2 && (
-                <div className="space-y-6 animate-in slide-in-from-right-4 duration-300 relative">
+              <div className="bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/60 p-6 md:p-8 space-y-6 animate-in slide-in-from-bottom-4 duration-500 relative">
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-xl font-bold text-slate-800">Clinical Notes</h3>
@@ -292,11 +278,8 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
                     </div>
                   </div>
                 </div>
-              )}
-
               {/* STEP 3: RX GRID */}
-              {step === 3 && (
-                <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
+              <div className="bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/60 p-6 md:p-8 space-y-6 animate-in slide-in-from-bottom-4 duration-500">
                   <div>
                     <h3 className="text-xl font-bold text-slate-800">Medication</h3>
                     <p className="text-sm text-slate-500">Search and add drugs to the prescription.</p>
@@ -338,11 +321,8 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
                      </div>
                   </div>
                 </div>
-              )}
-
               {/* STEP 4: LABS & ADVICE */}
-              {step === 4 && (
-                <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
+              <div className="bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/60 p-6 md:p-8 space-y-6 animate-in slide-in-from-bottom-4 duration-500">
                   <div>
                     <h3 className="text-xl font-bold text-slate-800">Investigations & Advice</h3>
                     <p className="text-sm text-slate-500">Order lab tests and provide lifestyle advice.</p>
@@ -375,41 +355,19 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
                     </div>
                   </div>
                 </div>
-              )}
-
             </div>
           </div>
 
-          {/* FOOTER WIZARD CONTROLS (Glass) */}
-          <div className="bg-white/40 backdrop-blur-2xl border-t border-white/40 p-4 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-30">
-            <div className="max-w-4xl mx-auto flex items-center justify-between">
-              <button 
-                onClick={handlePrev}
-                disabled={step === 1}
-                className={`px-5 py-3 rounded-xl font-bold text-sm transition-all shadow-sm ${step === 1 ? 'text-slate-400 bg-white/30 border border-white/20 cursor-not-allowed' : 'text-slate-700 bg-white/80 border border-white/60 hover:bg-white'}`}
-              >
-                ← Back
-              </button>
-              
-              <div className="flex gap-2">
-                {[1, 2, 3, 4].map(s => (
-                   <div key={s} className={`w-2.5 h-2.5 rounded-full transition-colors shadow-inner ${step === s ? 'bg-teal-500 shadow-teal-500/50' : 'bg-white/50 border border-white/40'}`}></div>
-                ))}
-              </div>
-
-              <button 
-                onClick={step === totalSteps ? () => { if(onSave) onSave(patient); handleEndConsult(); } : handleNext}
-                className="px-6 py-3 bg-teal-500/90 hover:bg-teal-500 backdrop-blur-md border border-teal-400/50 text-white rounded-xl font-bold text-sm shadow-[0_4px_20px_rgba(20,184,166,0.3)] transition-all flex items-center gap-2"
-              >
-                {step === totalSteps ? (
-                  <>Save Rx <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg></>
-                ) : (
-                  <>Next →</>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+          {/* FLOATING SAVE BUTTON */}
+          <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 z-50 pointer-events-auto">
+            <button 
+              onClick={() => { if(onSave) onSave(patient); handleEndConsult(); }}
+              className="px-6 py-4 md:px-8 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white rounded-full font-black text-sm shadow-[0_10px_30px_rgba(20,184,166,0.4)] transition-all flex items-center gap-3 hover:-translate-y-1 active:scale-95 border border-teal-400/50"
+            >
+              SAVE & GENERATE Rx
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+            </button>
+          </div></div>
       </div>
     </div>
   );

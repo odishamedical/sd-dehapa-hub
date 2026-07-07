@@ -12,6 +12,7 @@ import {
   useAudioTrack,
   useLocalSessionId
 } from '@daily-co/daily-react';
+import { useRouter } from 'next/navigation';
 
 interface VideoRoomProps {
   roomId: string; // appointmentId
@@ -129,28 +130,33 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     setVideoCall(true); 
   };
 
+  const router = useRouter();
+
   const handleEndCall = async () => {
     setIsEndingCall(true);
     setVideoCall(false);
+    
+    // Gracefully leave the call instead of aggressively destroying it immediately
     if (callObject) {
-      callObject.leave();
-      callObject.destroy();
-      setCallObject(null);
+      callObject.leave().catch(e => console.warn(e));
+      // No callObject.destroy() here to prevent Android WebView crash
     }
+    
     if (userRole === 'doctor' || userRole === 'super_admin') {
       try {
         await updateDoc(doc(db, "appointments", roomId), { status: 'Completed' });
       } catch (e) {
         console.error("Failed to mark as completed", e);
       }
+      
+      // Smooth SPA routing instead of hard browser navigation
       if (patientId) {
-        window.location.href = `/doctor/prescription-pad?patient=${patientId}&request=${roomId}`;
+        router.push(`/doctor/prescription-pad?patient=${patientId}&request=${roomId}`);
       } else {
-        window.location.href = "/portal/doctor";
+        router.push("/portal/doctor");
       }
     } else {
-      // Safely do nothing. The appointmentStatus will become 'Completed' via onSnapshot,
-      // showing the Consultation Ended screen.
+      // Patient simply waits for onSnapshot to show "Consultation Ended"
     }
   };
 
@@ -181,7 +187,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 max-w-md w-full">
           <h1 className="text-2xl font-black text-slate-900 mb-4">Consultation Ended</h1>
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={() => router.push('/')}
             className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors"
           >
             Return Home
@@ -208,22 +214,29 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 
   // 4. PATIENT WAITING
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-center px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-center px-4 relative overflow-hidden">
        {appointmentStatus === 'Active' && dailyUrl ? (
-         <div className="bg-emerald-900/40 p-8 rounded-3xl shadow-2xl border border-emerald-500/50 max-w-md w-full">
-           <h2 className="text-3xl font-bold text-white mb-4">Doctor is Ready!</h2>
-           <p className="text-emerald-200 mb-8">Your secure connection is ready. Tap to connect securely.</p>
-           <button onClick={handlePatientJoin} className="w-full bg-emerald-500 text-white font-black uppercase tracking-widest py-5 rounded-2xl hover:bg-emerald-400 transition-colors shadow-lg">
-             JOIN SECURE CALL
-           </button>
-         </div>
+         <>
+           <div className="absolute inset-0 bg-emerald-500/5 animate-pulse"></div>
+           <div className="bg-slate-900 p-8 md:p-12 rounded-[2rem] shadow-[0_0_80px_rgba(16,185,129,0.15)] border border-emerald-500/20 max-w-md w-full relative z-10 animate-in zoom-in-95 duration-500">
+             <div className="w-20 h-20 mx-auto bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+               <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+             </div>
+             <h2 className="text-3xl font-black text-white mb-3 tracking-wide drop-shadow-md">Doctor is Ready</h2>
+             <p className="text-slate-400 mb-10 text-sm font-medium">Your secure, encrypted connection has been established.</p>
+             <button onClick={handlePatientJoin} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black uppercase tracking-widest py-5 rounded-2xl hover:opacity-90 transition-all shadow-[0_10px_30px_rgba(16,185,129,0.3)] active:scale-95 flex items-center justify-center gap-3 border border-emerald-400/50">
+               <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+               START VIDEO CALL
+             </button>
+           </div>
+         </>
        ) : (
          <>
            <div className="relative mb-8">
-             <div className="w-24 h-24 border-4 border-slate-700 border-t-teal-500 rounded-full animate-spin"></div>
+             <div className="w-24 h-24 border-4 border-slate-700 border-t-teal-500 rounded-full animate-spin shadow-lg"></div>
            </div>
-           <h2 className="text-3xl font-bold text-white mb-4">Waiting Room</h2>
-           <p className="text-slate-400 text-lg max-w-sm">Please wait while the doctor reviews your file.</p>
+           <h2 className="text-3xl font-black text-white mb-4 drop-shadow-md">Waiting Room</h2>
+           <p className="text-slate-400 text-lg max-w-sm font-medium">Please wait while the doctor reviews your request.</p>
          </>
        )}
     </div>

@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { doc, onSnapshot, setDoc, collection, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase"; // Use the shared instance to avoid init issues
+import { usePathname } from "next/navigation";
 
 export default function DoctorCommandDock() {
+  const pathname = usePathname();
   const [isOnline, setIsOnline] = useState(false);
   const [userUid, setUserUid] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -87,6 +89,7 @@ export default function DoctorCommandDock() {
   };
 
   if (userRole !== "doctor" && userRole !== "super_admin") return null;
+  if (pathname?.startsWith('/consultation')) return null;
 
   return (
     <div className="fixed bottom-24 left-4 z-[100] md:bottom-10 md:left-6 md:right-auto animate-in slide-in-from-bottom-10 fade-in duration-500">

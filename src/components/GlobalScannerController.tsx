@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import ScannerModal from './ScannerModal';
 import MobileStickyFooter from './MobileStickyFooter';
+import { usePathname } from 'next/navigation';
 
 export default function GlobalScannerController() {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
@@ -39,6 +40,9 @@ export default function GlobalScannerController() {
       window.location.hash = 'scan';
     }
   };
+
+  const pathname = usePathname();
+  if (pathname?.startsWith('/consultation')) return null;
 
   return (
     <>
