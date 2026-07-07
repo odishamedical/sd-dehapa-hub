@@ -159,12 +159,38 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
         router.push("/portal/doctor");
       }
     } else {
-      // Patient simply waits for onSnapshot to show "Consultation Ended"
+      // Patient initiated end call. Just go home.
+      router.push('/portal');
     }
   };
 
   // Ensure all administrative and provider roles are treated as doctors so they can admit patients
   const isDoctor = userRole === 'doctor' || userRole === 'super_admin' || userRole === 'admin' || userRole === 'hospital' || userRole === 'owner';
+
+  // Cleanup WebRTC if doctor marks appointment as completed remotely
+  useEffect(() => {
+    if (appointmentStatus === 'Completed' && videoCall && callObject) {
+      setVideoCall(false);
+      callObject.leave().catch(e => console.warn(e));
+    }
+  }, [appointmentStatus, videoCall, callObject]);
+
+  // 1. COMPLETED (Highest Priority: if it's over, show the end screen immediately)
+  if (appointmentStatus === 'Completed') {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-center px-4">
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 max-w-md w-full">
+          <h1 className="text-2xl font-black text-slate-900 mb-4">Consultation Ended</h1>
+          <button 
+            onClick={() => router.push('/portal')}
+            className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors"
+          >
+            Return Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading || isEndingCall) {
      return (
@@ -175,29 +201,12 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
      );
   }
 
-  // 1. LIVE VIDEO CALL (Custom Daily UI)
+  // 2. LIVE VIDEO CALL (Custom Daily UI)
   if (videoCall && callObject) {
     return (
       <DailyProvider callObject={callObject}>
         <CustomVideoGrid isDoctor={isDoctor} onEndCall={handleEndCall} dailyUrl={dailyUrl} patientHasVideo={patientHasVideo} />
       </DailyProvider>
-    );
-  }
-
-  // 2. COMPLETED
-  if (appointmentStatus === 'Completed') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-center px-4">
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 max-w-md w-full">
-          <h1 className="text-2xl font-black text-slate-900 mb-4">Consultation Ended</h1>
-          <button 
-            onClick={() => router.push('/')}
-            className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors"
-          >
-            Return Home
-          </button>
-        </div>
-      </div>
     );
   }
 
