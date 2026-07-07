@@ -67,13 +67,7 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     }
   }, [roomId]);
 
-  // Create Daily.co call object early so it's ready for synchronous camera start
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !callObject) {
-      const co = DailyIframe.createCallObject();
-      setCallObject(co);
-    }
-  }, [callObject]);
+  // Removed pre-emptive createCallObject to prevent Android WebView audio context crashes
 
   // Join the room
   useEffect(() => {
@@ -88,13 +82,18 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
 
   const handleDoctorAdmit = async () => {
     try {
+      // Create call object only on user gesture
+      let co = callObject;
+      if (!co) {
+        co = DailyIframe.createCallObject();
+        setCallObject(co);
+      }
+      
       // Synchronously request camera access immediately on button click to bypass Safari restrictions
-      if (callObject) {
-         try {
-           await callObject.startCamera();
-         } catch (camErr) {
-           console.warn("Doctor camera block during startCamera:", camErr);
-         }
+      try {
+        await co.startCamera();
+      } catch (camErr) {
+        console.warn("Doctor camera block during startCamera:", camErr);
       }
 
       // 1. Generate Daily Room via secure Next.js API
@@ -120,12 +119,16 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
   };
   
   const handlePatientJoin = async () => {
-    if (callObject) {
-       try {
-         await callObject.startCamera();
-       } catch (camErr) {
-         console.warn("Patient camera block during startCamera:", camErr);
-       }
+    let co = callObject;
+    if (!co) {
+      co = DailyIframe.createCallObject();
+      setCallObject(co);
+    }
+    
+    try {
+      await co.startCamera();
+    } catch (camErr) {
+      console.warn("Patient camera block during startCamera:", camErr);
     }
     setVideoCall(true); 
   };
@@ -160,7 +163,8 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
     }
   };
 
-  const isDoctor = userRole === 'doctor' || userRole === 'super_admin';
+  // Ensure all administrative and provider roles are treated as doctors so they can admit patients
+  const isDoctor = userRole === 'doctor' || userRole === 'super_admin' || userRole === 'admin' || userRole === 'hospital' || userRole === 'owner';
 
   if (loading || isEndingCall) {
      return (
