@@ -30,7 +30,7 @@ interface UniversalOwnerDashboardProps {
   renderHomeWidget?: (entityData: any) => React.ReactNode;
 }
 
-export default function UniversalOwnerDashboard({ expectedRole, customTabs = [], renderCustomTab, renderHomeWidget }: UniversalOwnerDashboardProps) {
+function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderCustomTab, renderHomeWidget }: UniversalOwnerDashboardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const adminViewId = searchParams?.get('adminViewId') || null;
@@ -1232,4 +1232,11 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
   );
 }
 
+export default function UniversalOwnerDashboard(props: UniversalOwnerDashboardProps) {
+  return (
+    <React.Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div></div>}>
+      <UniversalOwnerDashboardContent {...props} />
+    </React.Suspense>
+  );
+}
 
