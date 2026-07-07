@@ -149,7 +149,8 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
         window.location.href = "/portal/doctor";
       }
     } else {
-      window.location.href = "/portal";
+      // Safely do nothing. The appointmentStatus will become 'Completed' via onSnapshot,
+      // showing the Consultation Ended screen.
     }
   };
 
@@ -180,10 +181,10 @@ export default function VideoRoom({ roomId }: VideoRoomProps) {
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 max-w-md w-full">
           <h1 className="text-2xl font-black text-slate-900 mb-4">Consultation Ended</h1>
           <button 
-            onClick={() => window.location.href = '/portal'}
+            onClick={() => window.location.href = '/'}
             className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors"
           >
-            Return to Dashboard
+            Return Home
           </button>
         </div>
       </div>

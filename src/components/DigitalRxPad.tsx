@@ -24,6 +24,9 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
   const [videoCall, setVideoCall] = useState(false);
   const [patientHasVideo, setPatientHasVideo] = useState(true);
 
+  // Mobile View State
+  const [mobileView, setMobileView] = useState<'video' | 'rx'>('video');
+
   useEffect(() => {
     setMounted(true);
     document.body.style.overflow = 'hidden';
@@ -154,11 +157,22 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
         
         {/* TELEMEDICINE VIDEO (Top on Mobile, Left on Desktop) */}
         {(patient.type === 'online' || patient.mode === 'Video Call') && (
-          <div className="w-full lg:w-1/2 h-[40vh] lg:h-full relative shrink-0 flex flex-col">
-            <div className="relative w-full h-full flex flex-col overflow-hidden bg-slate-900">
+          <div 
+             className={`
+                ${mobileView === 'video' ? 'w-full h-full relative flex flex-col' : 'fixed top-[72px] right-4 w-28 h-40 z-[60] rounded-2xl overflow-hidden shadow-2xl border border-white/20 cursor-pointer'}
+                lg:!static lg:!w-1/2 lg:!h-full lg:!relative lg:!flex lg:!flex-col lg:!shrink-0 lg:!rounded-none lg:!border-none lg:!shadow-none lg:!z-0 lg:!cursor-default
+             `}
+             onClick={() => { if(mobileView === 'rx' && window.innerWidth < 1024) setMobileView('video'); }}
+          >
+            <div className="relative w-full h-full flex flex-col overflow-hidden bg-slate-900 pointer-events-auto">
               {callObject && videoCall ? (
                 <DailyProvider callObject={callObject}>
-                  <InlineVideoGrid patientName={patient.name} patientHasVideo={patientHasVideo} />
+                  <InlineVideoGrid patientName={patient.name} patientHasVideo={patientHasVideo} isMini={mobileView === 'rx'} />
+                  {mobileView === 'rx' && (
+                    <div className="absolute inset-0 z-40 bg-black/10 hover:bg-black/20 flex items-center justify-center lg:hidden transition-colors">
+                       <svg className="w-8 h-8 text-white/70 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                    </div>
+                  )}
                 </DailyProvider>
               ) : (
                 <div className="flex flex-col items-center justify-center w-full h-full bg-black/40">
@@ -170,11 +184,21 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
           </div>
         )}
 
+        {/* WRITE PRESCRIPTION FAB (Mobile only when in Video mode) */}
+        {(patient.type === 'online' || patient.mode === 'Video Call') && mobileView === 'video' && (
+           <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-[60] lg:hidden pointer-events-auto">
+              <button onClick={() => setMobileView('rx')} className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-4 px-8 rounded-full shadow-xl shadow-teal-500/30 flex items-center gap-2 tracking-widest uppercase text-xs transition-transform active:scale-95">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                Write Prescription
+              </button>
+           </div>
+        )}
+
         {/* RX PAD SIDE (Glass Card overlapping on mobile) */}
         <div className={`flex-1 flex flex-col relative transition-all duration-500
            ${(patient.type === 'online' || patient.mode === 'Video Call') 
-              ? 'lg:w-1/2 -mt-6 lg:mt-0 rounded-t-3xl lg:rounded-none z-20' 
-              : 'w-full'
+              ? `${mobileView === 'video' ? 'hidden lg:flex' : 'flex w-full'} lg:w-1/2 lg:rounded-none z-20` 
+              : 'w-full flex'
            }
            bg-white/85 backdrop-blur-3xl lg:border-l border-white/50 shadow-[-10px_0_30px_rgba(0,0,0,0.1)]
         `}>
@@ -397,7 +421,7 @@ export default function DigitalRxPad({ patient, onClose, onSave }: DigitalRxPadP
 // Inline Video Grid Component
 // ----------------------------------------------------------------------------------
 
-function InlineVideoGrid({ patientName, patientHasVideo }: { patientName: string, patientHasVideo: boolean }) {
+function InlineVideoGrid({ patientName, patientHasVideo, isMini = false }: { patientName: string, patientHasVideo: boolean, isMini?: boolean }) {
   const localSessionId = useLocalSessionId();
   const remoteParticipantIds = useParticipantIds({ filter: 'remote' });
   
@@ -422,32 +446,35 @@ function InlineVideoGrid({ patientName, patientHasVideo }: { patientName: string
   };
 
   return (
-    <div className="absolute inset-0 w-full h-full bg-slate-900 flex flex-col z-10 overflow-hidden">
+    <div className="absolute inset-0 w-full h-full bg-slate-900 flex flex-col z-10 overflow-hidden pointer-events-auto">
       {/* Remote Video (Full Size) */}
       {remoteParticipantIds.length > 0 ? (
         <InlineVideoPlayer id={remoteParticipantIds[0]} isLocal={false} />
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 bg-black/40">
-           <div className="w-12 h-12 border-4 border-slate-700 border-t-slate-400 rounded-full animate-spin mb-3"></div>
-           <p className="text-xs tracking-widest uppercase text-slate-400 animate-pulse">Waiting for Patient...</p>
+           <div className={`border-4 border-slate-700 border-t-slate-400 rounded-full animate-spin ${isMini ? 'w-6 h-6 mb-1' : 'w-12 h-12 mb-3'}`}></div>
+           {!isMini && <p className="text-xs tracking-widest uppercase text-slate-400 animate-pulse">Waiting for Patient...</p>}
         </div>
       )}
 
       {/* Patient Name Overlay */}
-      <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-bold border border-white/10 flex items-center gap-2 shadow-lg z-30">
-        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-        {patientName}
-      </div>
+      {!isMini && (
+        <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-bold border border-white/10 flex items-center gap-2 shadow-lg z-30 pointer-events-auto">
+          <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+          {patientName}
+        </div>
+      )}
 
       {/* Local Video (PiP) */}
-      {camActive && localSessionId && (
-        <div className="absolute bottom-24 lg:bottom-28 right-4 lg:right-6 w-24 h-36 lg:w-32 lg:h-48 bg-slate-800 rounded-2xl border border-white/20 overflow-hidden shadow-2xl z-20">
+      {!isMini && camActive && localSessionId && (
+        <div className="absolute bottom-24 lg:bottom-28 right-4 lg:right-6 w-24 h-36 lg:w-32 lg:h-48 bg-slate-800 rounded-2xl border border-white/20 overflow-hidden shadow-2xl z-20 pointer-events-auto">
           <InlineVideoPlayer id={localSessionId} isLocal={true} />
         </div>
       )}
 
       {/* Controls */}
-      <div className="absolute bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl border border-white/10 rounded-full px-4 lg:px-6 py-2.5 flex items-center justify-center gap-3 lg:gap-4 shadow-2xl z-30">
+      {!isMini && (
+        <div className="absolute bottom-4 lg:bottom-8 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl border border-white/10 rounded-full px-4 lg:px-6 py-2.5 flex items-center justify-center gap-3 lg:gap-4 shadow-2xl z-30 pointer-events-auto">
         <button onClick={toggleMic} className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-colors ${micActive ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-red-500 text-white'}`}>
           {micActive ? (
             <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
@@ -463,6 +490,7 @@ function InlineVideoGrid({ patientName, patientHasVideo }: { patientName: string
           )}
         </button>
       </div>
+      )}
     </div>
   );
 }
