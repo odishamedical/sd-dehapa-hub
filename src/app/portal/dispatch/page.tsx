@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, collection, addDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
+import AmbulanceTrackerMap from "@/components/AmbulanceTrackerMap";
 
 function DispatchEngineForm() {
   const router = useRouter();
@@ -28,6 +29,7 @@ function DispatchEngineForm() {
   const [pingSuccess, setPingSuccess] = useState(false);
   const [pingId, setPingId] = useState("");
   const [pingStatus, setPingStatus] = useState("Pending Confirmation");
+  const [assignedDriverEmail, setAssignedDriverEmail] = useState<string | null>(null);
   const [rideCode, setRideCode] = useState<string | null>(null);
 
   useEffect(() => {
@@ -69,7 +71,9 @@ function DispatchEngineForm() {
     if (!pingId) return;
     const unsub = onSnapshot(doc(db, "emergencies", pingId), (docSnap) => {
       if (docSnap.exists()) {
-        setPingStatus(docSnap.data().status);
+        const data = docSnap.data();
+        setPingStatus(data.status);
+        if (data.acceptedByDriverEmail) setAssignedDriverEmail(data.acceptedByDriverEmail);
       }
     });
     return () => unsub();
@@ -352,6 +356,15 @@ function DispatchEngineForm() {
 
                 <div className="bg-emerald-50 text-emerald-700 p-4 rounded-xl text-sm font-bold border border-emerald-200">
                   Status: En Route
+                </div>
+                
+                <div className="mt-8 text-left">
+                  <AmbulanceTrackerMap 
+                    ambulanceId={ambId} 
+                    assignedDriverEmail={assignedDriverEmail || undefined} 
+                    patientLat={coordinates ? parseFloat(coordinates.split(',')[0]) : undefined}
+                    patientLng={coordinates ? parseFloat(coordinates.split(',')[1]) : undefined}
+                  />
                 </div>
                 
                 {rideCode && (
