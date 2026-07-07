@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import { useAutosave } from '@/hooks/useAutosave';
 import ChatInboxWidget from '@/components/chat/ChatInboxWidget';
@@ -13,7 +13,7 @@ import ObjectArrayEditor from '@/components/ObjectArrayEditor';
 import InlineEditArray from '@/components/InlineEditArray';
 import HybridEntitySelector from '@/components/HybridEntitySelector';
 import HybridTestMenuEditor from '@/components/HybridTestMenuEditor';
-import { doc, getDocs, updateDoc, collection, query, where } from 'firebase/firestore';
+import { doc, getDocs, updateDoc, collection, query, where, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { directoryConfig } from '@/lib/directoryConfig';
 import EntitySelector from '@/components/EntitySelector';
@@ -32,6 +32,8 @@ interface UniversalOwnerDashboardProps {
 
 export default function UniversalOwnerDashboard({ expectedRole, customTabs = [], renderCustomTab, renderHomeWidget }: UniversalOwnerDashboardProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const adminViewId = searchParams?.get('adminViewId') || null;
   const [loading, setLoading] = useState(true);
   const [accessGranted, setAccessGranted] = useState(false);
   const [entityDocId, setEntityDocId] = useState<string | null>(null);
@@ -124,24 +126,35 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       if ((role === expectedRole || role === "super_admin" || (expectedRole === "ambulance" && role === "ambulance_driver") || role === "staff") && email) {
         setAccessGranted(true);
         setUserEmail(email);
-        fetchEntity(email);
+        fetchEntity(email, role === "super_admin" ? adminViewId : null);
       } else {
         setAccessGranted(false);
         router.push("/portal");
       }
     }
-  }, [router, expectedRole]);
+  }, [router, expectedRole, adminViewId]);
 
-  const fetchEntity = async (email: string) => {
+  const fetchEntity = async (email: string, impersonateId: string | null = null) => {
     setLoading(true);
     try {
-      let q = query(collection(db, "directory"), where("ownerEmail", "==", email));
-      let snap = await getDocs(q);
-      
-      if (snap.empty) {
-        // Fallback to checking if the user is a staff member
-        q = query(collection(db, "directory"), where("staffEmails", "array-contains", email));
+      let snap: any;
+      if (impersonateId) {
+        const docRef = doc(db, "directory", impersonateId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          snap = { empty: false, docs: [docSnap] };
+        } else {
+          snap = { empty: true };
+        }
+      } else {
+        let q = query(collection(db, "directory"), where("ownerEmail", "==", email));
         snap = await getDocs(q);
+        
+        if (snap.empty) {
+          // Fallback to checking if the user is a staff member
+          q = query(collection(db, "directory"), where("staffEmails", "array-contains", email));
+          snap = await getDocs(q);
+        }
       }
 
       if (!snap.empty) {
@@ -259,14 +272,16 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
       <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center justify-between">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">
-              {entityData.adminLocked ? "Locked by System Administration" : (entityData.isPublished ? "Your profile is Live." : "Activate Your Profile.")}
+              {entityData.adminLocked ? "Locked by System Administration" : (entityData.isPublished ? "Your profile is Live." : entityData.status === 'pending_approval' ? "Under Review" : "Activate Your Profile.")}
             </h1>
             <p className="text-slate-600 text-lg max-w-xl font-medium">
               {entityData.adminLocked 
                 ? "Your profile has been locked due to an administrative action or policy violation." 
                 : (entityData.isPublished 
                   ? "Patients can now find you in the directory. Access your tools below." 
-                  : "Complete your setup to unlock the 'Publish' switch. Auto-save is always on.")}
+                  : entityData.status === 'pending_approval'
+                  ? "Your profile has been submitted and is currently being reviewed by our verification team."
+                  : "Complete your setup to unlock the 'Submit' switch. Auto-save is always on.")}
             </p>
         </div>
 
@@ -291,18 +306,24 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
               <button 
                 onClick={() => {
                   if (!isReady) return;
-                  setEntityData({ ...entityData, isPublished: !entityData.isPublished });
+                  if (entityData.status === 'draft' || !entityData.status) {
+                    setEntityData({ ...entityData, status: 'pending_approval' });
+                  } else if (entityData.isPublished) {
+                    setEntityData({ ...entityData, isPublished: false, status: 'draft' });
+                  }
                 }}
                 disabled={!isReady}
                 className={`w-full py-4 px-8 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-md ${
                   entityData.isPublished 
                     ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500" 
-                    : isReady 
-                      ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:shadow-xl hover:scale-105" 
-                      : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                    : entityData.status === 'pending_approval'
+                      ? "bg-amber-50 text-amber-600 border-2 border-amber-500 cursor-not-allowed opacity-90"
+                      : isReady 
+                        ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:shadow-xl hover:scale-105" 
+                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
                 }`}
               >
-                {entityData.isPublished ? "✓ Public & Live" : isReady ? "Publish Now" : "Locked"}
+                {entityData.isPublished ? "✓ Public & Live" : entityData.status === 'pending_approval' ? "Pending Admin Approval" : isReady ? "Submit for Approval" : "Locked"}
               </button>
             )}
             {!isReady && !entityData.adminLocked && <p className="text-xs text-rose-500 font-bold">Reach 100% to unlock</p>}
@@ -821,8 +842,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-100 mt-8">
                 <AutosaveIndicator status={saveStatus} />
+                <button onClick={() => setActiveTab("help")} className="flex items-center gap-2 text-sm font-bold text-amber-600 hover:text-amber-700 bg-amber-50 px-4 py-2.5 rounded-xl transition-colors border border-amber-200 shadow-sm">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Need help filling up this form?
+                </button>
               </div>
             </div>
 
@@ -1110,8 +1135,12 @@ export default function UniversalOwnerDashboard({ expectedRole, customTabs = [],
                     </div>
                   )})}
                 </div>
-                <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-100 mt-8">
                   <AutosaveIndicator status={saveStatus} />
+                  <button onClick={() => setActiveTab("help")} className="flex items-center gap-2 text-sm font-bold text-amber-600 hover:text-amber-700 bg-amber-50 px-4 py-2.5 rounded-xl transition-colors border border-amber-200 shadow-sm">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Need help filling up this form?
+                  </button>
                 </div>
               </div>
             );

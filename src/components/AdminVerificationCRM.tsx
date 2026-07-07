@@ -43,14 +43,68 @@ export default function AdminVerificationCRM() {
         }));
       });
 
-      const results = await Promise.all(promises);
+      // Fetch new directory drafts and pending approvals
+      const dirDraftsQ = query(collection(db, 'directory'), where('status', '==', 'draft'));
+      const dirPendingQ = query(collection(db, 'directory'), where('status', '==', 'pending_approval'));
+      const profileClaimsQ = query(collection(db, 'profile_claims'));
+      
+      const dirPromises = [getDocs(dirDraftsQ), getDocs(dirPendingQ), getDocs(profileClaimsQ)];
+      
+      const results = await Promise.all([...promises, ...dirPromises]);
       let allApps: any[] = [];
-      results.forEach(res => { allApps = [...allApps, ...res] });
+      
+      // Combine legacy results
+      results.slice(0, collectionsToFetch.length).forEach(res => { allApps = [...allApps, ...res] });
+      
+      // Combine directory results and map to application schema
+      const dirDraftSnap = results[collectionsToFetch.length];
+      const dirPendingSnap = results[collectionsToFetch.length + 1];
+      
+      const dirApps = [...dirDraftSnap.docs, ...dirPendingSnap.docs].map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          collectionName: 'directory',
+          appType: data.category || 'Unknown',
+          status: data.status,
+          userEmail: data.ownerEmail,
+          officialName: { full: data.name },
+          clinic: { name: data.clinicName, address: data.address },
+          legalIdentity: { name: data.name, orgType: data.orgType },
+          fleetIdentity: { agencyName: data.name },
+          facility: { address: data.address },
+          operations: { address: data.address },
+          credentials: { ceaNumber: data.registrationNumber, mciNumber: data.registrationNumber, drugLicenseNumber: data.registrationNumber },
+          phone: data.phone,
+          timestamp: data.createdAt,
+          lastUpdated: data.updatedAt,
+          ...data
+        };
+      });
+      
+      const profileClaimsSnap = results[collectionsToFetch.length + 2];
+      const claimApps = profileClaimsSnap.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          collectionName: 'profile_claims',
+          appType: 'Ownership Claim',
+          status: data.status === 'pending_review' ? 'pending' : data.status,
+          userEmail: data.email,
+          officialName: { full: data.entityName },
+          legalIdentity: { name: data.entityName },
+          phone: data.phone,
+          timestamp: data.timestamp,
+          ...data
+        };
+      });
+      
+      allApps = [...allApps, ...dirApps, ...claimApps];
 
       // Sort globally by timestamp descending
       allApps.sort((a, b) => {
-        const timeA = a.lastUpdated?.toMillis ? a.lastUpdated.toMillis() : 0;
-        const timeB = b.lastUpdated?.toMillis ? b.lastUpdated.toMillis() : 0;
+        const timeA = a.lastUpdated?.toMillis ? a.lastUpdated.toMillis() : (a.timestamp?.toMillis ? a.timestamp.toMillis() : 0);
+        const timeB = b.lastUpdated?.toMillis ? b.lastUpdated.toMillis() : (b.timestamp?.toMillis ? b.timestamp.toMillis() : 0);
         return timeB - timeA;
       });
 
@@ -69,10 +123,26 @@ export default function AdminVerificationCRM() {
       const batch = writeBatch(db);
       
       // 1. Update Application Status
-      batch.update(doc(db, app.collectionName, app.id), { status: 'approved' });
+      if (app.collectionName === 'directory') {
+         batch.update(doc(db, 'directory', app.id), {
+           status: 'active',
+           isPublished: true,
+           verified: true,
+           updatedAt: serverTimestamp()
+         });
+      } else if (app.collectionName === 'profile_claims') {
+         batch.update(doc(db, 'directory', app.entityId), {
+           ownerEmail: app.email,
+           verified: true,
+           updatedAt: serverTimestamp()
+         });
+         batch.update(doc(db, 'profile_claims', app.id), { status: 'approved' });
+      } else {
+        batch.update(doc(db, app.collectionName, app.id), { status: 'approved' });
+      }
 
       // 2. Map data to generic directory schema based on type
-      if (app.collectionName !== 'listing_claims') {
+      if (app.collectionName !== 'listing_claims' && app.collectionName !== 'directory' && app.collectionName !== 'profile_claims') {
         const newListingRef = doc(collection(db, 'directory'));
         
         let directoryData: any = {
@@ -290,7 +360,7 @@ export default function AdminVerificationCRM() {
 
       {/* Type Pills */}
       <div className="relative z-10 flex overflow-x-auto snap-x pb-3 custom-scrollbar gap-2 mb-4 w-full">
-        {['All', 'Doctor', 'Hospital', 'Pharmacy', 'Lab', 'Ambulance', 'Legacy Claim'].map(type => (
+        {['All', 'Doctor', 'Hospital', 'Pharmacy', 'Lab', 'Ambulance', 'Ownership Claim', 'Legacy Claim'].map(type => (
           <button
             key={type}
             onClick={() => setFilterType(type)}
@@ -554,6 +624,18 @@ export default function AdminVerificationCRM() {
                   </>
                 )}
                 
+                {/* Ownership Claim */}
+                {selectedApp.appType === 'Ownership Claim' && (
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Ownership Claim</h4>
+                    <div className="space-y-4">
+                      <div><p className="text-xs text-slate-500">Claimant</p><p className="font-bold text-slate-900">{selectedApp.claimantName} ({selectedApp.claimantRole})</p></div>
+                      <div><p className="text-xs text-slate-500">Target Profile ID</p><p className="font-mono text-sm bg-slate-100 p-2 rounded border inline-block mt-1">{selectedApp.entityId}</p></div>
+                      <div><p className="text-xs text-slate-500">Email to Bind</p><p className="text-sm font-medium text-emerald-600">{selectedApp.email}</p></div>
+                    </div>
+                  </div>
+                )}
+                
                 {/* Legacy Claim */}
                 {selectedApp.appType === 'Legacy Claim' && (
                   <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -571,8 +653,8 @@ export default function AdminVerificationCRM() {
               <div className="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[600px] lg:h-auto">
                 <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center shrink-0">
                   <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Document Viewer</h4>
-                  {(selectedApp.credentials?.proofUrl || selectedApp.proofUrl) && (
-                    <a href={selectedApp.credentials?.proofUrl || selectedApp.proofUrl} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline text-xs font-bold flex items-center gap-1">
+                  {(selectedApp.credentials?.proofUrl || selectedApp.proofUrl || selectedApp.fileName) && (
+                    <a href={selectedApp.credentials?.proofUrl || selectedApp.proofUrl || "#"} target="_blank" rel="noreferrer" className="text-teal-600 hover:underline text-xs font-bold flex items-center gap-1">
                       Open in New Tab <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </a>
                   )}
@@ -596,8 +678,16 @@ export default function AdminVerificationCRM() {
             </div>
 
             {/* Drawer Footer Actions */}
-            {selectedApp.status === 'pending' && (
+            {(selectedApp.status === 'pending' || selectedApp.status === 'pending_approval' || selectedApp.status === 'draft') && (
               <div className="p-6 border-t border-slate-200 bg-white flex justify-end gap-4 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                {selectedApp.collectionName === 'directory' && (
+                  <button 
+                    onClick={() => window.open(`/portal/${selectedApp.appType.toLowerCase()}?adminViewId=${selectedApp.id}`, '_blank')}
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest shadow-[0_4px_15px_rgba(79,70,229,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                  >
+                    View / Edit Dashboard
+                  </button>
+                )}
                 <button 
                   onClick={() => handleReject(selectedApp)}
                   className="px-6 py-3 rounded-xl font-bold text-rose-600 hover:bg-rose-50 transition-colors"

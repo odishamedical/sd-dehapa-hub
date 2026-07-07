@@ -88,24 +88,40 @@ export default function RegisterProviderPage() {
       const uploadResult = await uploadBytes(storageRef, file);
       const downloadUrl = await getDownloadURL(uploadResult.ref);
 
-      // 2. Save Verification Request to Firestore (listing_claims with NEW_PROFILE)
-      await addDoc(collection(db, 'listing_claims'), {
-        listingId: 'NEW_PROFILE', // Flag for admin to create a new directory listing
-        legalName: legalName,
-        entityType: providerType,
-        specialty: specialty || 'General',
+      // 2. Save Draft Profile directly to Directory instead of listing_claims
+      await addDoc(collection(db, 'directory'), {
+        name: legalName,
+        category: providerType,
+        subCategory: specialty || 'General',
         city: addressData.city,
         address: `${addressData.localAddress}, ${addressData.city}, ${addressData.district}, ${addressData.state}, ${addressData.pincode}`,
         addressData: addressData,
-        userEmail: auth.currentUser.email || auth.currentUser.phoneNumber || localStorage.getItem("sd_current_user_email") || "Unknown",
+        ownerEmail: auth.currentUser.email || auth.currentUser.phoneNumber || localStorage.getItem("sd_current_user_email") || "Unknown",
         userUid: auth.currentUser.uid,
         whatsapp: whatsapp,
         phone: phone,
-        licenseNumber: licenseNumber,
+        registrationNumber: licenseNumber,
         proofUrl: downloadUrl,
-        status: 'pending',
-        timestamp: serverTimestamp()
+        
+        status: 'draft',
+        verified: false,
+        isPublished: false,
+        source: 'application',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
       });
+
+      // 3. Upgrade user role in Firestore so they can access the dashboard immediately
+      try {
+        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+          role: providerType.toLowerCase(),
+          updatedAt: serverTimestamp()
+        });
+        // Update local storage so redirect works seamlessly
+        localStorage.setItem("sd_current_user_role", providerType.toLowerCase());
+      } catch (roleErr) {
+        console.warn("Could not auto-upgrade role in Firestore. Might need admin sync.", roleErr);
+      }
 
       setStep(4); // Success step
     } catch (err: any) {
@@ -343,16 +359,16 @@ export default function RegisterProviderPage() {
                 <svg className="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               </div>
               
-              <h2 className="text-3xl font-black text-white mb-4 font-serif">Application Submitted!</h2>
+              <h2 className="text-3xl font-black text-white mb-4 font-serif">Welcome to DehaPa!</h2>
               <p className="text-slate-400 mb-8 leading-relaxed max-w-md mx-auto">
-                We have securely received your details for <strong className="text-cyan-400">{legalName}</strong>. Our medical verification team will review your application and generate your profile within 24-48 hours.
+                Your draft profile for <strong className="text-cyan-400">{legalName}</strong> has been created. You can now access your dashboard immediately to complete your setup and submit it for final verification.
               </p>
 
               <button 
                 onClick={() => router.push('/portal')}
-                className="bg-slate-800 hover:bg-slate-700 text-white font-bold px-8 py-4 rounded-xl transition-colors border border-slate-700 shadow-lg"
+                className="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-900 font-black uppercase tracking-widest px-8 py-4 rounded-xl transition-all shadow-lg shadow-teal-500/20"
               >
-                Go to Dashboard
+                Enter Dashboard Now
               </button>
             </div>
           )}

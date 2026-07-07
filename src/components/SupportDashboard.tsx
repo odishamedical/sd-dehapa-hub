@@ -3,13 +3,18 @@
 import React, { useState } from 'react';
 import { Card, Input, Label, Select, Textarea, Button } from '@/components/ui';
 
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
 export default function SupportDashboard({ 
   userRole, 
   userName,
+  providerId,
   faqData 
 }: { 
   userRole?: string; 
   userName?: string;
+  providerId?: string;
   faqData?: { question: string; answer: string; category?: string }[];
 }) {
   const [message, setMessage] = useState('');
@@ -17,21 +22,36 @@ export default function SupportDashboard({
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message || !subject) return;
 
     setIsSending(true);
-    // Simulate network request
-    setTimeout(() => {
-      setIsSending(false);
+    try {
+      await addDoc(collection(db, "admin_support_tickets"), {
+        name: userName || "Unknown Provider",
+        phone: "N/A", // From profile if available
+        email: "N/A", // Add later or fetch from context
+        providerId: providerId || null,
+        role: userRole || "provider",
+        subject: subject,
+        message: message,
+        status: "pending",
+        source: "onboarding_dashboard",
+        timestamp: serverTimestamp()
+      });
       setIsSent(true);
       setMessage('');
       setSubject('');
       
       // Reset success state after 5 seconds
       setTimeout(() => setIsSent(false), 5000);
-    }, 1500);
+    } catch (err) {
+      console.error("Failed to submit support ticket", err);
+      alert("Failed to submit ticket. Please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
