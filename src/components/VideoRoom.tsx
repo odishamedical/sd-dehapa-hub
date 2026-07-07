@@ -315,7 +315,7 @@ function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl, patientHasVideo }: { i
 
       {/* Top Bar */}
       <div className="absolute top-0 left-0 w-full p-6 z-50 flex items-center justify-between pointer-events-none">
-        <div className="bg-slate-900/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 flex items-center gap-2 pointer-events-auto">
+        <div className="bg-slate-900/60  px-4 py-2 rounded-full border border-white/10 flex items-center gap-2 pointer-events-auto">
           <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
           <span className="text-white text-xs font-bold tracking-widest uppercase">Live Session</span>
         </div>
@@ -349,7 +349,7 @@ function CustomVideoGrid({ isDoctor, onEndCall, dailyUrl, patientHasVideo }: { i
 
       {/* Bottom Control Bar (Village-Friendly, Massive Buttons) */}
       <div className="absolute bottom-6 left-0 right-0 z-50 flex justify-center items-center gap-6 px-4">
-        <div className="bg-slate-900/90 backdrop-blur-2xl px-6 py-4 rounded-3xl border border-white/10 flex items-center gap-6 shadow-2xl">
+        <div className="bg-slate-900/90  px-6 py-4 rounded-3xl border border-white/10 flex items-center gap-6 shadow-2xl">
           {/* Mute Button */}
           <button 
             onClick={toggleMic}
