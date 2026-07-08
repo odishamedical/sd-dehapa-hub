@@ -2,41 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import QRCode from "react-qr-code";
-import { Search, MapPin, Activity, Stethoscope, Building2, TestTube2, Pill, Ambulance, QrCode, PhoneCall, ChevronRight, UserCircle, X, HeartPulse, Shield, Network, Globe, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Search, MapPin, Activity, PhoneCall, X, ArrowRight, Video, Calendar, ShieldCheck, Stethoscope, Building2, TestTube2, Pill, Ambulance, Globe, Network, QrCode } from "lucide-react";
 import dynamic from 'next/dynamic';
+import { useRouter } from "next/navigation";
+import GlassSelect from "@/components/GlassSelect";
 
 const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
   ssr: false
 });
 
-import { useRouter } from "next/navigation";
-import GlassSelect from "@/components/GlassSelect";
-
 export default function DehapaHome() {
   const router = useRouter();
-  const [searchType, setSearchType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchCountry, setSearchCountry] = useState('India');
-  const [searchState, setSearchState] = useState('');
-  const [searchDistrict, setSearchDistrict] = useState('');
-
-  // Cascading Logic Handlers
-  const handleCountryChange = (val: string) => {
-    setSearchCountry(val);
-    if (val !== 'India') {
-      setSearchState('');
-      setSearchDistrict('');
-    }
-  };
-
-  const handleStateChange = (val: string) => {
-    setSearchState(val);
-    if (val !== 'Odisha') {
-      setSearchDistrict('');
-    }
-  };
-
+  
   const [isPinging, setIsPinging] = useState(false);
   const [ambulanceETA, setAmbulanceETA] = useState<string | null>(null);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
@@ -57,397 +37,294 @@ export default function DehapaHome() {
     setTimeout(() => {
       setIsPinging(false);
       setAmbulanceETA("3 mins away");
-    }, 3500);
+      router.push('/ambulance'); // Redirect to full ambulance tracking page
+    }, 1500);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
     const params = new URLSearchParams();
-    if (searchType && searchType !== 'all') params.append('type', searchType);
     if (searchQuery) params.append('q', searchQuery);
-    if (searchCountry) params.append('country', searchCountry);
-    if (searchState) params.append('state', searchState);
-    if (searchDistrict) params.append('district', searchDistrict);
-    
     router.push(`/search?${params.toString()}`);
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 font-sans selection:bg-teal-500/30 text-slate-800 pb-24 overflow-hidden">
+    <main className="min-h-screen bg-[#050B14] font-sans text-white overflow-x-hidden selection:bg-teal-500/30">
       
-      {/* 1. HERO SECTION: Split Layout with Abstract Pictorial */}
-      <section className="relative pt-12 pb-16 lg:pt-24 lg:pb-32 overflow-hidden bg-white border-b border-slate-200">
-        {/* Deep Abstract Backgrounds */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-        <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-teal-400/10 rounded-full blur-[150px] pointer-events-none" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[120px] pointer-events-none" />
+      {/* MESH GRADIENT BACKGROUND */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-60 mix-blend-screen">
+        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-teal-600/30 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-600/30 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] bg-cyan-600/20 rounded-full blur-[100px]"></div>
+      </div>
+      
+      {/* GRID OVERLAY */}
+      <div className="fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          
-          {/* Left: Copy & Search Console */}
-          <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
-            
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-100 text-teal-700 font-bold text-xs uppercase tracking-widest mb-6">
-              <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-              Sovereign Health Network
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-slate-900 mb-6 leading-tight tracking-tight">
-              Healthcare <br className="hidden lg:block"/> 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-500">Reimagined.</span>
-            </h1>
-            
-            <p className="text-lg text-slate-500 font-medium mb-10 max-w-xl">
-              Dehapa is the next-generation sovereign directory. Discover verified doctors, hospitals, and clinics powered by advanced transparency.
-            </p>
-
-            {/* Premium Search Console */}
-            <div id="search-console" className="w-full bg-white/80 backdrop-blur-xl border border-white shadow-[0_20px_50px_rgba(20,184,166,0.1)] p-4 sm:p-5 rounded-3xl flex flex-col gap-4 relative z-40 scroll-mt-24">
-              
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <div className="w-full sm:w-48 shrink-0 h-14">
-                  <GlassSelect 
-                    value={searchType}
-                    onChange={setSearchType}
-                    icon={<Activity className="w-5 h-5 text-teal-500" />}
-                    options={[
-                      { value: 'all', label: 'All Services' },
-                      { value: 'doctor', label: 'Doctors' },
-                      { value: 'hospital', label: 'Hospitals' },
-                      { value: 'ambulance', label: 'Ambulances' },
-                      { value: 'pharmacy', label: 'Pharmacies' },
-                      { value: 'lab', label: 'Pathology Labs' },
-                    ]}
-                  />
-                </div>
-
-                <div className="flex-1 flex items-center gap-3 px-4 h-14 bg-slate-50/50 rounded-2xl border border-slate-200 focus-within:bg-white focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10 transition-all">
-                  <Search className="w-5 h-5 text-slate-400 shrink-0" />
-                  <input 
-                    type="text" 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search specialists, facilities..." 
-                    className="w-full bg-transparent border-none outline-none text-slate-800 text-base font-medium placeholder:text-slate-400 focus:ring-0" 
-                  />
-                  <button onClick={() => setIsScannerOpen(true)} className="shrink-0 bg-teal-50 text-teal-600 p-2 rounded-xl hover:bg-teal-100 transition-colors" title="Scan QR">
-                    <QrCode className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <div className="flex flex-col sm:grid sm:grid-cols-3 gap-3 flex-1">
-                  <div className="h-14">
-                    <GlassSelect value={searchCountry} onChange={handleCountryChange} icon={<MapPin className="w-5 h-5 text-slate-400" />} options={[{ value: 'India', label: 'India' }, { value: 'Other', label: 'Other' }]} />
-                  </div>
-                  {searchCountry === 'India' ? (
-                  <div className="h-14">
-                    <GlassSelect value={searchState} onChange={handleStateChange} placeholder="State" options={[
-                      { value: '', label: 'State' },
-                      { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
-                      { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
-                      { value: 'Assam', label: 'Assam' },
-                      { value: 'Bihar', label: 'Bihar' },
-                      { value: 'Chhattisgarh', label: 'Chhattisgarh' },
-                      { value: 'Goa', label: 'Goa' },
-                      { value: 'Gujarat', label: 'Gujarat' },
-                      { value: 'Haryana', label: 'Haryana' },
-                      { value: 'Himachal Pradesh', label: 'Himachal Pradesh' },
-                      { value: 'Jharkhand', label: 'Jharkhand' },
-                      { value: 'Karnataka', label: 'Karnataka' },
-                      { value: 'Kerala', label: 'Kerala' },
-                      { value: 'Madhya Pradesh', label: 'Madhya Pradesh' },
-                      { value: 'Maharashtra', label: 'Maharashtra' },
-                      { value: 'Manipur', label: 'Manipur' },
-                      { value: 'Meghalaya', label: 'Meghalaya' },
-                      { value: 'Mizoram', label: 'Mizoram' },
-                      { value: 'Nagaland', label: 'Nagaland' },
-                      { value: 'Odisha', label: 'Odisha' },
-                      { value: 'Punjab', label: 'Punjab' },
-                      { value: 'Rajasthan', label: 'Rajasthan' },
-                      { value: 'Sikkim', label: 'Sikkim' },
-                      { value: 'Tamil Nadu', label: 'Tamil Nadu' },
-                      { value: 'Telangana', label: 'Telangana' },
-                      { value: 'Tripura', label: 'Tripura' },
-                      { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
-                      { value: 'Uttarakhand', label: 'Uttarakhand' },
-                      { value: 'West Bengal', label: 'West Bengal' }
-                    ]} />
-                  </div>
-                ) : (
-                    <div className="w-full flex items-center px-4 h-14 bg-slate-50/50 rounded-2xl border border-slate-200"><input type="text" value={searchState} onChange={(e) => setSearchState(e.target.value)} placeholder="State" className="w-full bg-transparent border-none outline-none focus:ring-0" /></div>
-                  )}
-                  {searchCountry === 'India' && searchState === 'Odisha' ? (
-                  <div className="h-14">
-                    <GlassSelect value={searchDistrict} onChange={setSearchDistrict} placeholder="District" options={[
-                      { value: '', label: 'District' },
-                      { value: 'Angul', label: 'Angul' }, { value: 'Balangir', label: 'Balangir' }, { value: 'Balasore', label: 'Balasore' },
-                      { value: 'Bargarh', label: 'Bargarh' }, { value: 'Bhadrak', label: 'Bhadrak' }, { value: 'Boudh', label: 'Boudh' },
-                      { value: 'Cuttack', label: 'Cuttack' }, { value: 'Deogarh', label: 'Deogarh' }, { value: 'Dhenkanal', label: 'Dhenkanal' },
-                      { value: 'Gajapati', label: 'Gajapati' }, { value: 'Ganjam', label: 'Ganjam' }, { value: 'Jagatsinghpur', label: 'Jagatsinghpur' },
-                      { value: 'Jajpur', label: 'Jajpur' }, { value: 'Jharsuguda', label: 'Jharsuguda' }, { value: 'Kalahandi', label: 'Kalahandi' },
-                      { value: 'Kandhamal', label: 'Kandhamal' }, { value: 'Kendrapara', label: 'Kendrapara' }, { value: 'Kendujhar', label: 'Kendujhar' },
-                      { value: 'Khordha', label: 'Khordha (Bhubaneswar)' }, { value: 'Koraput', label: 'Koraput' }, { value: 'Malkangiri', label: 'Malkangiri' },
-                      { value: 'Mayurbhanj', label: 'Mayurbhanj' }, { value: 'Nabarangpur', label: 'Nabarangpur' }, { value: 'Nayagarh', label: 'Nayagarh' },
-                      { value: 'Nuapada', label: 'Nuapada' }, { value: 'Puri', label: 'Puri' }, { value: 'Rayagada', label: 'Rayagada' },
-                      { value: 'Sambalpur', label: 'Sambalpur' }, { value: 'Subarnapur', label: 'Subarnapur' }, { value: 'Sundargarh', label: 'Sundargarh' }
-                    ]} />
-                  </div>
-                ) : (
-                    <div className="w-full flex items-center px-4 h-14 bg-slate-50/50 rounded-2xl border border-slate-200"><input type="text" value={searchDistrict} onChange={(e) => setSearchDistrict(e.target.value)} placeholder="District" className="w-full bg-transparent border-none outline-none focus:ring-0" /></div>
-                  )}
-                </div>
-                <button onClick={handleSearch} className="sm:w-36 shrink-0 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white h-14 rounded-2xl font-bold text-base transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                  Search <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: The Pictorial Representation */}
-          <div className="w-full lg:w-1/2 flex justify-center relative mt-12 lg:mt-0">
-            <div className="relative w-full max-w-lg aspect-square">
-              {/* Central Glowing Shield Base */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-teal-100 to-blue-50 rounded-full blur-3xl opacity-60 mix-blend-multiply animate-pulse"></div>
-              
-              {/* Floating UI Elements (Glassmorphic) */}
-              <div className="absolute top-[5%] left-0 sm:left-[5%] bg-white/70 backdrop-blur-xl border border-white shadow-xl rounded-3xl p-4 sm:p-5 flex items-center gap-3 sm:gap-4 z-20">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-teal-500 text-white flex items-center justify-center"><CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6"/></div>
-                <div><p className="text-xs sm:text-sm font-bold text-slate-800">Verified Identity</p><p className="text-[10px] sm:text-xs text-slate-500">Sovereign standard</p></div>
-              </div>
-
-              <div className="absolute bottom-[10%] left-0 sm:left-[-5%] bg-white/70 backdrop-blur-xl border border-white shadow-xl rounded-3xl p-4 sm:p-5 flex items-center gap-3 sm:gap-4 z-20">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-cyan-500 text-white flex items-center justify-center"><Network className="w-5 h-5 sm:w-6 sm:h-6"/></div>
-                <div><p className="text-xs sm:text-sm font-bold text-slate-800">Decentralized</p><p className="text-[10px] sm:text-xs text-slate-500">Immutable records</p></div>
-              </div>
-
-              <div className="absolute top-[40%] right-[-5%] sm:right-[-10%] bg-white/70 backdrop-blur-xl border border-white shadow-xl rounded-3xl p-4 sm:p-5 flex items-center gap-3 sm:gap-4 z-20">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center"><Globe className="w-5 h-5 sm:w-6 sm:h-6"/></div>
-                <div><p className="text-xs sm:text-sm font-bold text-slate-800">Global Reach</p><p className="text-[10px] sm:text-xs text-slate-500">Local expertise</p></div>
-              </div>
-
-              {/* Central Abstract Medical Graphic */}
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="w-48 h-48 sm:w-64 sm:h-64 bg-gradient-to-br from-teal-400 to-blue-600 rounded-[3rem] rotate-12 flex items-center justify-center shadow-[0_20px_50px_rgba(13,148,136,0.3)] transition-transform duration-700 hover:rotate-0 hover:scale-105">
-                  <HeartPulse className="w-24 h-24 sm:w-32 sm:h-32 text-white opacity-90" strokeWidth={1} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full mt-12 space-y-16">
+      <div className="relative z-10">
         
-        {/* 2. CORE SERVICES: Premium Visual Cards */}
-        <section>
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-black font-serif text-slate-900 tracking-tight">Explore the Network</h2>
-              <p className="text-slate-500 mt-2">Discover high-quality, verified healthcare services.</p>
+        {/* 1. HERO & COMMAND CENTER */}
+        <section className="pt-24 pb-12 px-4 sm:px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-teal-300 font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-md">
+            <Activity className="w-4 h-4" /> Sovereign Health Network
+          </div>
+          
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black mb-6 tracking-tight drop-shadow-lg">
+            Healthcare <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-300">Reimagined.</span>
+          </h1>
+          
+          <p className="text-lg sm:text-xl text-slate-300 font-medium mb-12 max-w-2xl">
+            The next-generation sovereign directory. Discover verified doctors, hospitals, and clinics powered by advanced transparency.
+          </p>
+
+          {/* Master Search Console (Glass) */}
+          <div className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] rounded-[2rem] p-3 flex flex-col sm:flex-row items-center gap-3 relative transition-all focus-within:bg-white/15 focus-within:border-teal-400/50 focus-within:shadow-[0_0_50px_rgba(45,212,191,0.25)]">
+            <form onSubmit={handleSearch} className="flex-1 flex items-center w-full px-4 h-14 sm:h-16">
+              <Search className="w-6 h-6 text-teal-400 shrink-0 mr-3" />
+              <input 
+                type="text" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="What kind of care do you need today?" 
+                className="w-full bg-transparent border-none outline-none text-white text-lg placeholder:text-slate-400 focus:ring-0" 
+              />
+            </form>
+            
+            <div className="w-full sm:w-auto flex gap-2">
+              <button onClick={() => setIsScannerOpen(true)} className="h-14 sm:h-16 px-4 bg-white/5 border border-white/10 text-white rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center backdrop-blur-md" title="Scan QR">
+                <QrCode className="w-6 h-6" />
+              </button>
+              
+              <button 
+                onClick={handlePingAmbulance}
+                disabled={isPinging}
+                className="flex-1 sm:flex-none h-14 sm:h-16 px-6 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(225,29,72,0.4)] hover:shadow-[0_0_30px_rgba(225,29,72,0.6)] flex items-center justify-center gap-2"
+              >
+                {isPinging ? <span className="animate-pulse">Pinging...</span> : <><PhoneCall className="w-5 h-5" /> SOS</>}
+              </button>
             </div>
           </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {[
-              { title: "Doctors", subtitle: "Specialized care", icon: <Stethoscope />, href: "/doctors", bg: "from-cyan-500 to-blue-600" },
-              { title: "Hospitals", subtitle: "World-class facilities", icon: <Building2 />, href: "/hospitals", bg: "from-emerald-400 to-teal-600" },
-              { title: "Labs", subtitle: "Accurate testing", icon: <TestTube2 />, href: "/labs", bg: "from-purple-500 to-indigo-600" },
-              { title: "Pharmacies", subtitle: "Verified medicines", icon: <Pill />, href: "/pharmacies", bg: "from-amber-400 to-orange-500" },
-            ].map((item, i) => (
-              <Link 
-                key={i} 
-                href={item.href}
-                className="group relative h-48 sm:h-56 rounded-[2rem] overflow-hidden flex flex-col justify-end p-6 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
-              >
-                {/* Background Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.bg} opacity-90 group-hover:opacity-100 transition-opacity z-0`}></div>
-                
-                {/* Glass Pattern Overlay */}
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay z-0"></div>
-                
-                {/* Massive Watermark Icon */}
-                <div className="absolute -right-8 -top-8 text-white opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-500 z-0">
-                  {React.cloneElement(item.icon as React.ReactElement, { className: "w-48 h-48" })}
-                </div>
-
-                <div className="relative z-10">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white mb-4 border border-white/30">
-                    {React.cloneElement(item.icon as React.ReactElement, { className: "w-6 h-6" })}
-                  </div>
-                  <h3 className="text-xl font-black text-white">{item.title}</h3>
-                  <p className="text-white/80 text-sm font-medium">{item.subtitle}</p>
-                </div>
-              </Link>
+          
+          {/* Smart Suggestions */}
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
+            {['General Physician', 'Cardiologist', 'Urgent Video Call', 'Book Ambulance', 'Order Medicines'].map((term) => (
+              <button key={term} onClick={() => { setSearchQuery(term); }} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 hover:text-white transition-colors backdrop-blur-md">
+                {term}
+              </button>
             ))}
           </div>
         </section>
 
-        {/* 3. PLATFORM CAPABILITIES (Abstract Network Scale - Futuristic Blue Edition) */}
-        <section className="bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 rounded-[3rem] p-8 sm:p-12 relative overflow-hidden shadow-[0_20px_50px_rgba(30,58,138,0.5)] border border-blue-900/50">
-          {/* Grid Background */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(56,189,248,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-          
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-800/50 text-cyan-400 font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-md shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-                <Activity className="w-4 h-4" /> Sovereign Trust
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-6 leading-tight drop-shadow-md">
-                A highly secure, verifiable healthcare ecosystem.
-              </h2>
-              <p className="text-blue-200/80 text-lg mb-8 max-w-lg">
-                We are mapping the future of medical identity. Every entity on Dehapa undergoes strict verification to ensure you receive authentic and trusted care.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-6">
-                <div className="bg-blue-900/20 border border-blue-700/30 rounded-2xl p-6 backdrop-blur-xl shadow-lg hover:shadow-[0_0_25px_rgba(56,189,248,0.15)] hover:border-cyan-500/50 transition-all group">
-                  <Shield className="w-8 h-8 text-cyan-400 mb-4 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                  <h4 className="text-white font-bold text-lg">Anti-Fraud</h4>
-                  <p className="text-blue-200/70 text-sm mt-2">Zero tolerance for fake degrees or unverified clinics.</p>
-                </div>
-                <div className="bg-blue-900/20 border border-blue-700/30 rounded-2xl p-6 backdrop-blur-xl shadow-lg hover:shadow-[0_0_25px_rgba(56,189,248,0.15)] hover:border-cyan-500/50 transition-all group">
-                  <UserCircle className="w-8 h-8 text-blue-400 mb-4 group-hover:scale-110 transition-transform drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
-                  <h4 className="text-white font-bold text-lg">Your Identity</h4>
-                  <p className="text-blue-200/70 text-sm mt-2">Own your health records with your Dehapa UID.</p>
-                </div>
-              </div>
-            </div>
+        {/* 2. FOR PATIENTS: NETFLIX-STYLE GRID */}
+        <section className="py-12 pl-4 sm:pl-6 max-w-7xl mx-auto w-full overflow-hidden">
+          <div className="flex items-end justify-between mb-6 pr-4 sm:pr-6">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-3">
+              For Patients <ChevronRightIcon className="w-6 h-6 text-teal-400" />
+            </h2>
+          </div>
+
+          <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-8 snap-x snap-mandatory hide-scrollbar">
             
-            {/* Visual Network Map */}
-            <div className="relative aspect-video lg:aspect-square flex justify-center items-center">
-               <div className="w-full max-w-md h-full max-h-md rounded-full border border-cyan-800/40 relative animate-[spin_60s_linear_infinite] shadow-[inset_0_0_50px_rgba(34,211,238,0.05)]">
-                 {/* Inner orbits */}
-                 <div className="absolute inset-4 rounded-full border border-blue-700/40 animate-[spin_40s_linear_infinite_reverse]"></div>
-                 <div className="absolute inset-12 rounded-full border border-indigo-700/40 animate-[spin_20s_linear_infinite]"></div>
-                 
-                 {/* Glowing Nodes */}
-                 <div className="absolute top-0 left-1/2 w-4 h-4 bg-cyan-400 rounded-full blur-[1px] shadow-[0_0_20px_rgba(34,211,238,1)] -translate-x-1/2 -translate-y-1/2"></div>
-                 <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-blue-400 rounded-full blur-[1px] shadow-[0_0_15px_rgba(96,165,250,1)] -translate-x-1/2 translate-y-1/2"></div>
-                 <div className="absolute top-1/2 left-4 w-2 h-2 bg-indigo-400 rounded-full blur-[1px] shadow-[0_0_15px_rgba(129,140,248,1)] -translate-y-1/2"></div>
-                 <div className="absolute top-1/4 right-8 w-5 h-5 bg-teal-400 rounded-full blur-[2px] shadow-[0_0_25px_rgba(45,212,191,1)]"></div>
-                 
-                 <div className="absolute inset-0 flex items-center justify-center">
-                    <QrCode className="w-24 h-24 text-cyan-500/20 animate-pulse drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]" />
-                 </div>
-               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 4. SLEEK EMERGENCY BANNER */}
-        <section id="ambulance-ping" className="w-full bg-gradient-to-r from-red-600 to-rose-600 rounded-[2.5rem] p-6 sm:p-10 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden scroll-mt-24">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/connected.png')] opacity-10 pointer-events-none"></div>
-          
-          <div className="flex items-center gap-6 relative z-10 text-white">
-            <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-inner shrink-0">
-              <Ambulance className="w-8 h-8" />
-            </div>
-            <div>
-              <h3 className="font-black text-2xl sm:text-3xl">Emergency Ambulance</h3>
-              <p className="text-red-100 text-sm sm:text-base font-medium mt-1">Ping the nearest life-support unit instantly.</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 relative z-10 w-full md:w-auto">
-            {ambulanceETA ? (
-              <div className="bg-white text-emerald-600 px-8 py-4 rounded-2xl font-bold text-lg w-full md:w-auto text-center shadow-xl animate-pulse">
-                ETA: {ambulanceETA}
-              </div>
-            ) : (
-              <button 
-                onClick={handlePingAmbulance}
-                disabled={isPinging}
-                className="bg-white hover:bg-slate-50 text-red-600 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all w-full md:w-auto flex items-center justify-center gap-3 shadow-xl hover:scale-105"
-              >
-                {isPinging ? <span className="animate-pulse">Pinging...</span> : <><PhoneCall className="w-5 h-5" /> Send SOS</>}
-              </button>
-            )}
-          </div>
-        </section>
-
-        {/* 5. PORTALS: Premium Bright/Glassmorphic Cards */}
-        <section className="pt-4">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-black font-serif text-slate-900 mb-3">Sovereign Portals</h2>
-            <p className="text-slate-500 font-medium">Secure, encrypted gateways for verified healthcare entities.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Link href="/portal" className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-teal-300 hover:shadow-lg transition-all group overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-              <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 group-hover:bg-teal-100 transition-all">
-                  <UserCircle className="w-7 h-7" />
+            {/* Card 1: Search Directory */}
+            <Link href="/search" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
+              <div className="absolute inset-0 bg-slate-800"></div> {/* Fallback bg */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/80 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-teal-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-teal-400 mb-4 backdrop-blur-md">
+                  <Search className="w-6 h-6" />
                 </div>
-                <h4 className="font-black text-slate-900 text-xl mb-2">Patient Portal</h4>
-                <p className="text-slate-500 text-sm">Access your secure vault and digital health records.</p>
-              </div>
-              <div className="mt-8 flex items-center justify-between text-teal-600 font-bold text-sm relative z-10">
-                <span>Access Vault</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
-            
-            <Link href="/login?redirect=/portal/verify?role=doctor" className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-lg transition-all group overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-              <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 group-hover:bg-blue-100 transition-all">
-                  <Stethoscope className="w-7 h-7" />
-                </div>
-                <h4 className="font-black text-slate-900 text-xl mb-2">Doctor Portal</h4>
-                <p className="text-slate-500 text-sm">Manage your verified profile, clinic, and appointments.</p>
-              </div>
-              <div className="mt-8 flex items-center justify-between text-blue-600 font-bold text-sm relative z-10">
-                <span>Manage Clinic</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <h3 className="text-2xl font-black text-white mb-2 leading-tight">Search<br/>Directory</h3>
+                <p className="text-slate-300 text-sm">Find verified doctors, hospitals, and clinics instantly.</p>
               </div>
             </Link>
 
-            <Link href="/login?redirect=/portal/verify?role=hospital" className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-              <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-110 group-hover:bg-indigo-100 transition-all">
-                  <Building2 className="w-7 h-7" />
+            {/* Card 2: Instant Video Consult */}
+            <Link href="/urgent-care" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
+              <Image src="/images/cards/card_video_consult.jpg" alt="Video Consult" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-cyan-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-4 backdrop-blur-md">
+                  <Video className="w-6 h-6" />
                 </div>
-                <h4 className="font-black text-slate-900 text-xl mb-2">Hospital Admin</h4>
-                <p className="text-slate-500 text-sm">Verify your facility, roster doctors, and capabilities.</p>
+                <h3 className="text-2xl font-black text-white mb-2 leading-tight">Instant Video<br/>Consult</h3>
+                <p className="text-slate-300 text-sm">Connect with online doctors right now via Live Queue.</p>
               </div>
-              <div className="mt-8 flex items-center justify-between text-indigo-600 font-bold text-sm relative z-10">
-                <span>Access Dashboard</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+
+            {/* Card 3: Schedule Clinic Visit */}
+            <Link href="/search?type=doctor" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
+              <Image src="/images/cards/card_clinic_visit.jpg" alt="Clinic Visit" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-emerald-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 mb-4 backdrop-blur-md">
+                  <Calendar className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2 leading-tight">Schedule<br/>Clinic Visit</h3>
+                <p className="text-slate-300 text-sm">Book physical appointments with smart calendar tokens.</p>
               </div>
+            </Link>
+
+            {/* Card 4: Live Ambulance */}
+            <Link href="/ambulance" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
+              <Image src="/images/cards/card_ambulance.jpg" alt="Ambulance" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-rose-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/30 flex items-center justify-center text-rose-400 mb-4 backdrop-blur-md">
+                  <Ambulance className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2 leading-tight">Live<br/>Ambulance</h3>
+                <p className="text-slate-300 text-sm">Ping SOS and track emergency units in real-time.</p>
+              </div>
+            </Link>
+
+            {/* Card 5: Order Medicines */}
+            <Link href="/pharmacies" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
+              <Image src="/images/cards/card_medicines.jpg" alt="Medicines" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-amber-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-400 mb-4 backdrop-blur-md">
+                  <Pill className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2 leading-tight">Order<br/>Medicines</h3>
+                <p className="text-slate-300 text-sm">Forward your digital Rx to verified local pharmacies.</p>
+              </div>
+            </Link>
+
+            {/* Card 6: My Health Vault */}
+            <Link href="/portal" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group pr-4 sm:pr-0">
+              <Image src="/images/cards/card_health_vault.jpg" alt="Health Vault" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-purple-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-400 mb-4 backdrop-blur-md">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2 leading-tight">My Health<br/>Vault</h3>
+                <p className="text-slate-300 text-sm">Access your secure ID, scan QR, and view records.</p>
+              </div>
+            </Link>
+
+          </div>
+        </section>
+
+
+        {/* 3. FOR PROVIDERS: NETFLIX-STYLE GRID */}
+        <section className="py-12 pl-4 sm:pl-6 max-w-7xl mx-auto w-full overflow-hidden">
+          <div className="flex items-end justify-between mb-6 pr-4 sm:pr-6">
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-3">
+              For Healthcare Providers <ChevronRightIcon className="w-6 h-6 text-indigo-400" />
+            </h2>
+          </div>
+
+          <div className="flex overflow-x-auto gap-4 sm:gap-6 pb-8 snap-x snap-mandatory hide-scrollbar">
+            
+            {/* Card 1: Doctor OS */}
+            <Link href="/login?redirect=/portal/doctor" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group">
+              <Image src="/images/cards/card_doctor_os.jpg" alt="Doctor OS" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-indigo-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-400 shrink-0 backdrop-blur-md">
+                  <Stethoscope className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white mb-1">Doctor OS</h3>
+                  <p className="text-slate-300 text-xs line-clamp-1">Manage Live Queue & AI Rx Pad</p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 2: Hospital Admin */}
+            <Link href="/login?redirect=/portal/hospital" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group">
+              <Image src="/images/cards/card_hospital_admin.jpg" alt="Hospital Admin" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-blue-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 shrink-0 backdrop-blur-md">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white mb-1">Hospital Admin</h3>
+                  <p className="text-slate-300 text-xs line-clamp-1">Manage Beds & Ambulances</p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 3: Pharmacy Fulfillment */}
+            <Link href="/login?redirect=/portal/pharmacy" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group">
+              <Image src="/images/cards/card_pharmacy_network.jpg" alt="Pharmacy Network" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-fuchsia-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-fuchsia-500/20 border border-fuchsia-400/30 flex items-center justify-center text-fuchsia-400 shrink-0 backdrop-blur-md">
+                  <Pill className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white mb-1">Pharmacy Network</h3>
+                  <p className="text-slate-300 text-xs line-clamp-1">Fulfill Digital Prescriptions</p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Card 4: Pathology Labs */}
+            <Link href="/login?redirect=/portal/lab" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group pr-4 sm:pr-0">
+              <Image src="/images/cards/card_pathology_lab.jpg" alt="Pathology Labs" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
+              <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-violet-400/50 transition-colors"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-violet-500/20 border border-violet-400/30 flex items-center justify-center text-violet-400 shrink-0 backdrop-blur-md">
+                  <TestTube2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white mb-1">Pathology Labs</h3>
+                  <p className="text-slate-300 text-xs line-clamp-1">Upload Digital Test Reports</p>
+                </div>
+              </div>
+            </Link>
+
+          </div>
+          
+          <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register" className="px-8 py-3 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold transition-colors text-center backdrop-blur-md">
+              Join the Network
+            </Link>
+            <Link href="/login" className="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors text-center shadow-[0_0_20px_rgba(79,70,229,0.4)]">
+              Partner Login
             </Link>
           </div>
         </section>
 
       </div>
 
-      {/* QR Code Modal (Preserved & Styled) */}
+      {/* QR Code Modal */}
       {isQrModalOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="relative bg-white border border-slate-200 shadow-2xl rounded-3xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-fuchsia-500 to-purple-500" />
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="relative bg-[#050B14] border border-white/20 shadow-2xl rounded-3xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-500 to-cyan-500" />
             
             <button 
               onClick={() => setIsQrModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors bg-slate-100 hover:bg-slate-200 rounded-full p-1 z-10"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full p-1 z-10"
             >
               <X className="w-5 h-5" />
             </button>
             
             <div className="p-8 text-center flex flex-col items-center">
-              <div className="w-12 h-12 bg-fuchsia-50 rounded-full flex items-center justify-center mb-4 border border-fuchsia-100 relative z-10">
-                <QrCode className="w-6 h-6 text-fuchsia-600" />
+              <div className="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center mb-4 border border-cyan-400/30 relative z-10 backdrop-blur-md">
+                <QrCode className="w-6 h-6 text-cyan-400" />
               </div>
               
-              <h2 className="text-xl font-black text-slate-900 mb-1">My Health QR</h2>
-              <p className="text-xs text-slate-600 mb-8 max-w-[250px] font-medium">
+              <h2 className="text-xl font-black text-white mb-1">My Health QR</h2>
+              <p className="text-xs text-slate-400 mb-8 max-w-[250px] font-medium">
                 Show this code at any Sovereign Network facility for identity verification.
               </p>
               
-              <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 ring-4 ring-slate-50 relative z-10">
+              <div className="bg-white p-4 rounded-2xl shadow-[0_0_30px_rgba(45,212,191,0.2)] border border-teal-200 mb-6 relative z-10">
                 <QRCode 
                   value={`dehapa-auth://scan?uid=${encodeURIComponent(userUid || "guest")}`}
                   size={200}
@@ -455,37 +332,11 @@ export default function DehapaHome() {
                 />
               </div>
               
-              <div className="inline-block bg-slate-100 px-4 py-2 rounded-full border border-slate-200 relative z-10 mb-4">
-                <p className="text-[10px] uppercase tracking-widest text-slate-600 font-bold font-mono">
+              <div className="inline-block bg-white/10 px-4 py-2 rounded-full border border-white/20 relative z-10 mb-4 backdrop-blur-md">
+                <p className="text-[10px] uppercase tracking-widest text-slate-300 font-bold font-mono">
                   ID: {userUid ? userUid.split('@')[0] : "UNVERIFIED"}
                 </p>
               </div>
-
-              <div className="w-full flex flex-col gap-2 relative z-10">
-                <button 
-                  onClick={() => {
-                    const link = `dehapa-auth://scan?uid=${encodeURIComponent(userUid || "guest")}`;
-                    navigator.clipboard.writeText(link);
-                    alert("Patient QR Data Copied!");
-                  }}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-xl py-3 font-bold text-sm transition-colors flex items-center justify-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                  Copy ID Link
-                </button>
-                <button 
-                  onClick={() => {
-                    const link = `dehapa-auth://scan?uid=${encodeURIComponent(userUid || "guest")}`;
-                    const message = `Add me to your patient roster on DehaPa: ${link}`;
-                    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-                  }}
-                  className="w-full bg-[#25D366] hover:bg-[#1ebd5a] text-white rounded-xl py-3 font-bold text-sm transition-colors flex items-center justify-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  Share via WhatsApp
-                </button>
-              </div>
-
             </div>
           </div>
         </div>
@@ -498,5 +349,24 @@ export default function DehapaHome() {
       />
 
     </main>
+  );
+}
+
+function ChevronRightIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m9 18 6-6-6-6" />
+    </svg>
   );
 }
