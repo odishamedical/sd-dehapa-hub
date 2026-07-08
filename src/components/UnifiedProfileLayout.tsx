@@ -315,7 +315,7 @@ export default function UnifiedProfileLayout({
                     if (!verified) {
                       setShowUnverifiedModal(true);
                     } else {
-                      window.location.href = `tel:${profile.phone || '9999999999'}`;
+                      router.push(`/portal/book?doctor=${profile.id}`);
                     }
                   }} 
                   className="bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 border border-emerald-400/50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-[inset_0_0_20px_rgba(16,185,129,0.2),0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[inset_0_0_20px_rgba(16,185,129,0.4),0_0_25px_rgba(16,185,129,0.5)] backdrop-blur-xl group flex items-center justify-between px-5"
