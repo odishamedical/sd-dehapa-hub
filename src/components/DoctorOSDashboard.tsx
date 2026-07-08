@@ -5,6 +5,13 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDocs, updateDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
+import { useRouter } from 'next/navigation';
+import { db } from '@/lib/firebase';
+import { doc, getDocs, updateDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import MyNetworkHub from './network/MyNetworkHub';
 import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
@@ -14,6 +21,7 @@ import ChatInboxWidget from '@/components/chat/ChatInboxWidget';
 import WalletDashboard from '@/components/payments/WalletDashboard';
 import SupportDashboard from '@/components/SupportDashboard';
 import { VaultService } from '@/lib/vault.service';
+import BillingInvoice from '@/components/BillingInvoice';
 
 const faqData = [
   {
@@ -90,6 +98,7 @@ export default function DoctorOSDashboard() {
   const [queue, setQueue] = useState<any[]>([]);
   const [appointments, setAppointments] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [billingPatient, setBillingPatient] = useState<any>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -329,9 +338,6 @@ export default function DoctorOSDashboard() {
   const progress = getProfileProgress();
   const isFullySetup = godMode || progress >= 100 || (entityData && entityData.verified);
 
-  // Let users freely navigate the sidebar to see the locked features as teasers.
-  // We handle the lockout in the main render block.
-
   const doctorTabs: DashboardTab[] = [
     {
       id: "identity",
@@ -437,69 +443,9 @@ export default function DoctorOSDashboard() {
     }
   ];
 
-  // Show all tabs so the user knows what features exist!
   const availableTabs = doctorTabs;
 
   if (!isMounted) return null;
-
-  const getLockedFeatureContent = (tabId: string) => {
-    switch (tabId) {
-      case 'queue':
-        return {
-          title: "Live Queue",
-          description: "Manage walk-ins and active consultations in real time. Track waiting times, issue digital tokens, and streamline your clinic flow.",
-          benefits: ["✓ Real-time patient tracking", "✓ Digital token generation", "✓ Walk-in management"]
-        };
-      case 'calendar':
-        return {
-          title: "Smart Calendar",
-          description: "Never miss a booking. Manage your time, block out surgery hours, and let patients book you directly.",
-          benefits: ["✓ Automated patient bookings", "✓ Surgery & vacation blocks", "✓ Daily schedule overview"]
-        };
-      case 'patients':
-        return {
-          title: "Patient EMR",
-          description: "Access complete medical histories. View past prescriptions, lab reports, and consultation notes securely.",
-          benefits: ["✓ Global health records", "✓ Secure data storage", "✓ Instant patient history"]
-        };
-      case 'register':
-        return {
-          title: "Digital Register",
-          description: "Automate your daily accounting. Track every consultation, offline payment, and generate instant reports.",
-          benefits: ["✓ Daily financial ledger", "✓ Exportable CSV reports", "✓ Cash & online tracking"]
-        };
-      case 'network':
-        return {
-          title: "My Network",
-          description: "Grow your patient base. Send bulk health updates, SMS broadcasts, and manage your connected patients.",
-          benefits: ["✓ Bulk SMS broadcasts", "✓ Patient CRM & tagging", "✓ Campaign management"]
-        };
-      case 'telemedicine':
-        return {
-          title: "Telemedicine Hub",
-          description: "Conduct secure video and audio consultations directly from your dashboard.",
-          benefits: ["✓ HD Video consultations", "✓ Secure chat & file sharing", "✓ Integrated billing"]
-        };
-      case 'payouts':
-        return {
-          title: "Payouts & Billing",
-          description: "Track your earnings. View pending settlements, platform revenue, and download tax reports easily.",
-          benefits: ["✓ Earnings dashboard", "✓ Automated bank settlements", "✓ Tax report generation"]
-        };
-      case 'staff':
-        return {
-          title: "Staff & Receptionists",
-          description: "Delegate tasks securely. Let your receptionist manage the queue and calendar while you focus on care.",
-          benefits: ["✓ Role-based access control", "✓ Receptionist accounts", "✓ Activity logging"]
-        };
-      default:
-        return {
-          title: "Premium Module",
-          description: "This powerful module is part of the DehaPa Premium Suite.",
-          benefits: ["✓ Premium features", "✓ Advanced analytics", "✓ Priority support"]
-        };
-    }
-  };
 
   return (
     <DashboardLayout 
@@ -524,17 +470,12 @@ export default function DoctorOSDashboard() {
 
       <div className="max-w-7xl space-y-6 pb-20 md:pb-8">
         
-        {/* TAB ROUTING */}
-        
-          {/* TAB ROUTING */}
-        
         <div className="relative w-full min-h-[600px]">
           
           <div className="transition-all duration-500">
         
         {activeTab === "home" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Premium Welcome Banner */}
             <div className="relative rounded-[2rem] bg-gradient-to-br from-indigo-900 via-slate-900 to-teal-900 p-8 md:p-12 overflow-hidden shadow-2xl">
               <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
               <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/30 rounded-full blur-[80px]"></div>
@@ -546,10 +487,8 @@ export default function DoctorOSDashboard() {
               </div>
             </div>
 
-            {/* Quick Actions Bento Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            {/* Live Queue Card */}
             <div 
               onClick={() => setActiveTab("queue")}
               className="bg-white/70 backdrop-blur-xl border border-white/80 p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all duration-300 group shadow-lg"
@@ -561,19 +500,17 @@ export default function DoctorOSDashboard() {
               <p className="text-slate-500 text-sm">Manage walk-ins and active consultations in real time.</p>
             </div>
 
-            {/* Smart Calendar Card */}
             <div 
               onClick={() => setActiveTab("calendar")}
               className="bg-white/70 backdrop-blur-xl border border-white/80 p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all duration-300 group shadow-lg"
             >
               <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-indigo-100 group-hover:scale-110 transition-transform">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Smart Calendar</h3>
               <p className="text-slate-500 text-sm">Schedule appointments, block surgery time, and sync.</p>
             </div>
 
-            {/* Patient EMR Card */}
             <div 
               onClick={() => setActiveTab("patients")}
               className="bg-white/70 backdrop-blur-xl border border-white/80 p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all duration-300 group shadow-lg"
@@ -585,7 +522,6 @@ export default function DoctorOSDashboard() {
               <p className="text-slate-500 text-sm">Securely access medical histories and patient notes.</p>
             </div>
 
-            {/* Digital Register Card */}
             <div 
               onClick={() => setActiveTab("register")}
               className="bg-white/70 backdrop-blur-xl border border-white/80 p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all duration-300 group shadow-lg"
@@ -623,7 +559,6 @@ export default function DoctorOSDashboard() {
               </div>
             </div>
 
-            {/* QUEUE CONTENT */}
             <div className="bg-white/70 border border-white/80 rounded-2xl shadow-lg overflow-hidden backdrop-blur-xl">
               <div className="hidden md:grid grid-cols-12 gap-4 p-4 bg-white/40 border-b border-slate-200/50 text-xs font-bold text-slate-500 uppercase tracking-widest">
                 <div className="col-span-1">No.</div>
@@ -722,7 +657,6 @@ export default function DoctorOSDashboard() {
              </div>
 
              <div className="bg-white/70 border border-white/80 rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row min-h-[500px] backdrop-blur-xl">
-               {/* Mini Calendar Sidebar */}
                <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200/50 p-6 bg-white/40">
                  <div className="font-bold text-slate-900 mb-4">July 2026</div>
                  <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-slate-500 mb-2">
@@ -737,7 +671,6 @@ export default function DoctorOSDashboard() {
                  </div>
                </div>
 
-               {/* Day View */}
                <div className="flex-1 p-6">
                  <div className="text-lg font-bold text-slate-900 mb-6">Thursday, July 2, 2026</div>
                  <div className="space-y-4 relative">
@@ -770,8 +703,6 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-
-        
         {activeTab === "register" && (
            <div className="space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -791,7 +722,6 @@ export default function DoctorOSDashboard() {
                </div>
              </div>
 
-             {/* Financial Summary Widgets */}
              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                <div className="bg-white/70 p-6 rounded-2xl shadow-sm border border-white/80 flex items-center justify-between backdrop-blur-xl">
                   <div>
@@ -840,12 +770,13 @@ export default function DoctorOSDashboard() {
                        <th className="p-4 whitespace-nowrap">Mode</th>
                        <th className="p-4 whitespace-nowrap">Status</th>
                        <th className="p-4 whitespace-nowrap text-right">Fee</th>
+                       <th className="p-4 whitespace-nowrap text-right">Action</th>
                      </tr>
                    </thead>
                    <tbody className="divide-y divide-slate-200/50">
                       {transactions.filter(t => t.date === dateFilter || !t.date).length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="p-8 text-center text-slate-500 font-medium">No transactions recorded yet.</td>
+                          <td colSpan={7} className="p-8 text-center text-slate-500 font-medium">No transactions recorded yet.</td>
                         </tr>
                       ) : transactions.filter(t => t.date === dateFilter || !t.date).map((row, i) => (
                         <tr key={i} className="hover:bg-white/40 transition-colors">
@@ -863,6 +794,14 @@ export default function DoctorOSDashboard() {
                             </span>
                           </td>
                           <td className="p-4 text-sm font-bold text-slate-900 text-right">₹{row.amount || "0"}</td>
+                          <td className="p-4 text-right">
+                            <button 
+                              onClick={() => setBillingPatient(row)}
+                              className="px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-slate-800 transition-colors"
+                            >
+                              Generate Bill
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -877,7 +816,6 @@ export default function DoctorOSDashboard() {
              {!isFullySetup && (
                <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-100 p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-center">
                  <div className="w-20 h-20 shrink-0 relative pointer-events-none">
-                   {/* Circular Progress */}
                    <svg viewBox="0 0 36 36" className="w-full h-full text-teal-500">
                       <path className="text-teal-100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                       <path className="text-teal-500 transition-all duration-1000 ease-out" strokeDasharray={`${progress}, 100`} strokeWidth="3" strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -964,7 +902,6 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {/* PATIENTS AND B2B TABS */}
         {activeTab === "patients" && (
            <div className="animate-in fade-in slide-in-from-bottom-4">
              <MyNetworkHub providerId={entityData?.id || null} providerRole="doctor" viewMode="b2c" />
@@ -983,14 +920,12 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {/* MEDICAL VAULT */}
         {activeTab === "medical_vault" && (
            <div className="animate-in fade-in slide-in-from-bottom-4">
              <SecureMedicalVault providerId={entityData?.id || null} providerName={entityData?.name} />
            </div>
         )}
 
-        {/* Coming Soon Banners for Unbuilt Tabs */}
         {["telemedicine"].includes(activeTab) && (
           <div className="space-y-6">
             <div className="bg-black/20 backdrop-blur-xl p-12 rounded-2xl shadow-lg border border-white/10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -1003,7 +938,6 @@ export default function DoctorOSDashboard() {
           </div>
         )}
 
-        {/* PAYOUTS & WALLET */}
         {activeTab === "payouts" && (
           <div className="bg-white/95 backdrop-blur-xl border border-white/20 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
              <WalletDashboard 
@@ -1014,7 +948,6 @@ export default function DoctorOSDashboard() {
           </div>
         )}
 
-        {/* STAFF & RECEPTIONISTS TAB */}
         {activeTab === "staff" && (
           <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
@@ -1114,7 +1047,6 @@ export default function DoctorOSDashboard() {
               )}
             </div>
             
-            {/* Auto-save indicator */}
             <div className="flex justify-end mt-8 border-t border-white/10 pt-6">
                {saveStatus === 'saving' && <div className="text-amber-400 text-sm font-bold flex items-center gap-2"><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving Changes...</div>}
                {saveStatus === 'saved' && <div className="text-emerald-400 text-sm font-bold flex items-center gap-2"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> All changes saved to cloud</div>}
@@ -1124,7 +1056,6 @@ export default function DoctorOSDashboard() {
           </div>
         )}
 
-        {/* FAQ View */}
         {activeTab === "faq" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
             <SupportDashboard userRole="doctor" userName={entityData?.name} faqData={faqData} />
@@ -1135,7 +1066,6 @@ export default function DoctorOSDashboard() {
 
       </div>
 
-      {/* Add Walk-in Modal */}
       {showAddWalkIn && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -1185,13 +1115,19 @@ export default function DoctorOSDashboard() {
           </div>
         </div>
       )}
-      {/* Digital Rx Pad Overlay */}
       {activeConsult && (
         <DigitalRxPad 
           patient={activeConsult} 
           provider={entityData}
           onClose={() => setActiveConsult(null)} 
           onSave={handleSaveRx} 
+        />
+      )}
+      {billingPatient && (
+        <BillingInvoice 
+          patient={billingPatient}
+          provider={entityData}
+          onClose={() => setBillingPatient(null)}
         />
       )}
     </DashboardLayout>
