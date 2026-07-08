@@ -47,10 +47,10 @@ function SearchResultsContent() {
         const querySnapshot = await getDocs(q);
         const docsData = querySnapshot.docs
           .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter((d: any) => d.isPublished !== false && d.adminLocked !== true);
+          .filter((d: any) => d.adminLocked !== true);
 
         const mappedData = docsData.map((d: any) => {
-          const name = d.name || d.basicInfo?.fullName || d.firstName || "Unknown Entity";
+          const name = d.name || d.legalName || d.basicInfo?.fullName || d.firstName || "Unknown Entity";
           const subtitle = d.subCategory || d.specialty || d.category || d.basicInfo?.specialityName || "Service Provider";
           const city = d.city || d.district || "Unknown";
           const state = d.state || "Odisha";
