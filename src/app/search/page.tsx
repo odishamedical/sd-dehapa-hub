@@ -49,23 +49,40 @@ function SearchResultsContent() {
           .map(doc => ({ id: doc.id, ...doc.data() }))
           .filter((d: any) => d.isPublished !== false && d.adminLocked !== true);
 
-        const mappedData = docsData.map((d: any) => ({
-          id: d.id,
-          type: d.category ? d.category.toLowerCase() : 'unknown',
-          name: d.name || "Unknown Entity",
-          subtitle: d.subCategory || d.specialty || d.category || "Service Provider",
-          location: `${d.city || d.district || "Unknown"}, ${d.state || "Odisha"}`,
-          rating: d.rating || 0,
-          verified: d.verified || false,
-          experience: d.experience,
-          beds: d.beds,
-          tests: d.tests,
-          delivery: d.delivery,
-          response: d.response,
-          country: d.country || "India",
-          state: d.state || "Odisha",
-          district: d.district || "Unknown",
-        }));
+        const mappedData = docsData.map((d: any) => {
+          const name = d.name || d.basicInfo?.fullName || d.firstName || "Unknown Entity";
+          const subtitle = d.subCategory || d.specialty || d.category || d.basicInfo?.specialityName || "Service Provider";
+          const city = d.city || d.district || "Unknown";
+          const state = d.state || "Odisha";
+          const country = d.country || "India";
+          
+          const tags = Array.isArray(d.tags) ? d.tags.join(' ') : '';
+          const services = Array.isArray(d.services) ? d.services.join(' ') : '';
+          const beds = Array.isArray(d.beds) ? d.beds.join(' ') : '';
+          const tests = Array.isArray(d.tests) ? d.tests.join(' ') : '';
+          const about = d.about || d.description || '';
+
+          const searchableString = `${name} ${subtitle} ${city} ${state} ${country} ${tags} ${services} ${beds} ${tests} ${about} ${d.category || ''}`.toLowerCase();
+
+          return {
+            id: d.id,
+            type: d.category ? d.category.toLowerCase() : 'unknown',
+            name: name,
+            subtitle: subtitle,
+            location: `${city}, ${state}`,
+            rating: d.rating || 0,
+            verified: d.verified || false,
+            experience: d.experience,
+            beds: d.beds,
+            tests: d.tests,
+            delivery: d.delivery,
+            response: d.response,
+            country: country,
+            state: state,
+            district: d.district || "Unknown",
+            searchableString: searchableString
+          };
+        });
 
         setResults(mappedData);
       } catch (err: any) {
@@ -109,10 +126,7 @@ function SearchResultsContent() {
     if (type !== "all" && item.type !== type) return false;
     if (searchQuery) {
       const queryTerms = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
-      const name = item.name.toLowerCase();
-      const subtitle = item.subtitle.toLowerCase();
-      
-      const matches = queryTerms.every(term => name.includes(term) || subtitle.includes(term));
+      const matches = queryTerms.every(term => item.searchableString.includes(term));
       if (!matches) return false;
     }
     
