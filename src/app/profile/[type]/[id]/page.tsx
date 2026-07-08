@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import UniversalProfileLayout from '@/components/UniversalProfileLayout';
+import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 
 
 
@@ -116,6 +116,6 @@ export default function PublicProfile({ params }: { params: Promise<{ type: stri
   }
 
   // Use the exact same layout for ALL profiles (Hospitals, Doctors, Clinics, Labs)
-  return <UniversalProfileLayout profile={profile} unwrappedParams={unwrappedParams} platformAds={platformAds} similarEntities={similarEntities} />;
+  return <UnifiedProfileLayout profile={profile} unwrappedParams={unwrappedParams} platformAds={platformAds} similarEntities={similarEntities} />;
 }
 

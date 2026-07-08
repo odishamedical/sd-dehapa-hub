@@ -192,7 +192,15 @@ export default function UnifiedProfileLayout({
   const heroRightAd = getAdSlot('hero_right');
 
   return (
-    <div className="min-h-screen bg-[#FAFAFC] font-sans pb-[160px] selection:bg-teal-900 selection:text-white">
+    <div className="min-h-screen bg-[#050B14] font-sans pb-[160px] selection:bg-teal-500/30">
+      {/* MESH GRADIENT BACKGROUND */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-60 mix-blend-screen">
+        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-teal-600/30 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-600/30 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] bg-cyan-600/20 rounded-full blur-[100px]"></div>
+      </div>
+      {/* GRID OVERLAY */}
+      <div className="fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
       
       {/* Owner Edit Banner */}
       {canEdit && (
@@ -216,10 +224,10 @@ export default function UnifiedProfileLayout({
       )}
 
       {/* Editorial Navigation */}
-      <div className="bg-white/90 backdrop-blur-2xl border-b border-slate-200/50 sticky top-0 z-50 transition-all shadow-sm">
+      <div className="bg-white/5 backdrop-blur-xl/90 backdrop-blur-2xl border-b border-white/10/50 sticky top-0 z-50 transition-all shadow-sm">
         <div className="h-1 w-full bg-gradient-to-r from-teal-500 to-cyan-500" />
         <CategoryNav />
-        <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center gap-2 text-xs font-semibold tracking-widest text-slate-500 uppercase">
+        <div className="max-w-[1200px] mx-auto px-6 py-4 flex items-center gap-2 text-xs font-semibold tracking-widest text-slate-400 uppercase">
           <Link href="/" className="hover:text-teal-600 transition-colors">Home</Link>
           <span>/</span>
           <Link href={`/${type}s`} className="hover:text-teal-600 transition-colors">{type}s</Link>
@@ -234,29 +242,29 @@ export default function UnifiedProfileLayout({
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
         
         {/* HERO CARD - FULL WIDTH (Mockup Style) */}
-        <div id="overview" className="bg-gradient-to-r from-cyan-50/80 via-white to-teal-50/80 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] border-t-[#D32F2F] rounded-t-3xl shadow-sm">
+        <div id="overview" className="bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] border-t-[#D32F2F] rounded-t-3xl shadow-sm">
           
           {/* SVG Waves Background embedded inside the Hero Card */}
           <div className="absolute inset-0 pointer-events-none z-0">
            {/* Background Wave - Tall, Faint Cyan */}
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#80DEEA] fill-current opacity-10 translate-y-16">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/10 fill-current opacity-10 translate-y-16">
              <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
            </svg>
            {/* Middle Wave - Sweeping Teal */}
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#4DB6AC] fill-current opacity-[0.15] translate-y-8">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/5 fill-current opacity-[0.15] translate-y-8">
              <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
            </svg>
            {/* Foreground Wave - Deep, Rich Teal Mix */}
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-[#009688] fill-current opacity-5">
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-400/10 fill-current opacity-5">
              <path d="M0,192L48,192C96,192,192,192,288,208C384,224,480,256,576,245.3C672,235,768,181,864,170.7C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
            </svg>
-           <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-emerald-50/40 to-transparent"></div>
-           <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-100/30 rounded-tr-full blur-3xl"></div>
+           <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
+           <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-500/10 rounded-tr-full blur-3xl"></div>
           </div>
               
               {/* Left: The Prestige Portrait */}
               <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 z-10">
-                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[5px] border-white bg-slate-100">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[5px] border-white bg-white/10">
                   <img 
                     src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
                     alt={profile.name}
@@ -267,11 +275,11 @@ export default function UnifiedProfileLayout({
 
               {/* Center: Details */}
               <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col justify-center py-2 md:py-4">
-                <h1 className="text-3xl md:text-4xl lg:text-[42px] font-black text-[#0A1128] tracking-tight leading-tight mb-1">
+                <h1 className="text-3xl md:text-4xl lg:text-[42px] font-black text-white tracking-tight leading-tight mb-1">
                   {profile.name}
                 </h1>
                 
-                <div className="text-slate-600 text-lg md:text-xl font-medium mb-4">
+                <div className="text-slate-300 text-lg md:text-xl font-medium mb-4">
                   {profile.specialties && profile.specialties.length > 0 ? (
                     <span>{profile.specialties.join(", ")}</span>
                   ) : profile.category ? (
@@ -288,7 +296,7 @@ export default function UnifiedProfileLayout({
                     <div className="flex gap-0.5">
                       {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
                     </div>
-                    <span className="text-sm font-medium text-slate-600 ml-2">{profile.reviews || "4,325"} Reviews)</span>
+                    <span className="text-sm font-medium text-slate-300 ml-2">{profile.reviews || "4,325"} Reviews)</span>
                   </div>
                   
                   {verified && (
@@ -337,7 +345,7 @@ export default function UnifiedProfileLayout({
                       window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
                     }
                   }} 
-                  className="bg-white border-[1.5px] border-slate-200 text-[#5856D6] hover:bg-slate-50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                  className="bg-white/10 backdrop-blur-xl border-[1.5px] border-white/20 text-indigo-300 hover:bg-white/5 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
                   <span className="opacity-50 text-[10px]">▼</span>
@@ -353,7 +361,7 @@ export default function UnifiedProfileLayout({
             </div>
 
             {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) - Flush with Hero Banner */}
-            <div className="sticky top-[73px] z-40 bg-white/95 backdrop-blur-md shadow-[0_4px_10px_rgba(0,0,0,0.02)] border-b border-slate-200 px-4 rounded-b-3xl">
+            <div className="sticky top-[73px] z-40 bg-white/5 backdrop-blur-xl/95 backdrop-blur-md shadow-[0_4px_10px_rgba(0,0,0,0.02)] border-b border-white/10 px-4 rounded-b-3xl">
               <div className="flex overflow-x-auto hide-scrollbar gap-1 items-end pt-3 max-w-[1000px] mx-auto">
                 {[
                   { id: 'overview', label: 'Profile' },
@@ -372,7 +380,7 @@ export default function UnifiedProfileLayout({
                         window.scrollTo({ top: y, behavior: 'smooth' });
                       }
                     }}
-                    className={`px-8 py-3 text-[14px] font-bold tracking-wide transition-all shrink-0 rounded-t-lg ${activeSection === tab.id ? 'bg-[#00897B] text-white' : 'bg-transparent text-[#2c3e50] hover:bg-slate-50'}`}
+                    className={`px-8 py-3 text-[14px] font-bold tracking-wide transition-all shrink-0 rounded-t-lg ${activeSection === tab.id ? 'bg-[#00897B] text-white' : 'bg-transparent text-slate-300 hover:bg-white/5'}`}
                   >
                     {tab.label}
                   </button>
@@ -387,18 +395,18 @@ export default function UnifiedProfileLayout({
 
             {/* The Prestige Trust Bar (Data as Art) */}
             <div className="w-full relative z-30 group">
-              <div className="bg-white/90 backdrop-blur-md rounded-[2rem] shadow-sm border border-slate-200 hover:border-teal-300/50 p-8 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
+              <div className="bg-white/5 backdrop-blur-xl/90 backdrop-blur-md rounded-[2rem] shadow-sm border border-white/10 hover:border-teal-300/50 p-8 hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] transition-all duration-500">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-slate-100">
                   
                   {/* Metric 1 */}
                   <div className="flex flex-col items-center justify-center text-center px-4">
                     {verified ? (
-                      <p className="text-4xl font-black text-[#0A1128] tracking-tighter">
+                      <p className="text-4xl font-black text-white tracking-tighter">
                         {isDoctor ? profile.experience?.replace(/\D/g,'') : profile.totalBeds?.replace(/\D/g,'')}
                         <span className="text-2xl text-teal-600 font-serif italic">+</span>
                       </p>
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-2 border border-slate-200">
+                      <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-2 border border-white/10">
                          <Lock className="w-5 h-5 text-slate-300" />
                       </div>
                     )}
@@ -411,11 +419,11 @@ export default function UnifiedProfileLayout({
                   <div className="flex flex-col items-center justify-center text-center px-4">
                     {verified ? (
                       <div className="flex items-center justify-center gap-1">
-                        <p className="text-4xl font-black text-[#0A1128] tracking-tighter">{profile.rating || '4.0'}</p>
+                        <p className="text-4xl font-black text-white tracking-tighter">{profile.rating || '4.0'}</p>
                         <Star className="w-6 h-6 text-amber-400 fill-current -mt-3" />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-2 border border-slate-200">
+                      <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-2 border border-white/10">
                          <Lock className="w-5 h-5 text-slate-300" />
                       </div>
                     )}
@@ -426,7 +434,7 @@ export default function UnifiedProfileLayout({
 
                   {/* Metric 3 */}
                   <div className="flex flex-col items-center justify-center text-center px-4">
-                    <p className="text-2xl md:text-3xl font-black text-[#0A1128] tracking-tight line-clamp-1">
+                    <p className="text-2xl md:text-3xl font-black text-white tracking-tight line-clamp-1">
                       {profile.qualification || profile.category || 'Specialist'}
                     </p>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
@@ -438,7 +446,7 @@ export default function UnifiedProfileLayout({
                   <div className="flex flex-col items-center justify-center text-center px-4">
                     {profile.registrationNumber && profile.registrationNumber !== "Not available (Not verified)" ? (
                       <>
-                        <p className="text-xl md:text-2xl font-black text-[#0A1128] tracking-tight line-clamp-1 font-mono">
+                        <p className="text-xl md:text-2xl font-black text-white tracking-tight line-clamp-1 font-mono">
                           {profile.registrationNumber}
                         </p>
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
@@ -465,7 +473,7 @@ export default function UnifiedProfileLayout({
               {/* Location & Map (Horizontal Banner Mockup Style) */}
               <section id="location" className="relative w-full pt-2">
                 {/* Wide Map Banner */}
-                <div className="w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-sm border border-slate-200 relative mb-6">
+                <div className="w-full h-48 md:h-64 rounded-3xl overflow-hidden shadow-sm border border-white/10 relative mb-6">
                   <iframe 
                     src={profile.clinic?.mapUrl || `https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.name || 'Odisha')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                     className="absolute inset-0 w-full h-full border-0"
@@ -476,15 +484,15 @@ export default function UnifiedProfileLayout({
                 </div>
                 
                 {/* Clinic Cards */}
-                <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden mb-12">
+                <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-sm overflow-hidden mb-12">
                    <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6">
                       <div className="flex items-start gap-4 w-full">
                          <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center shrink-0">
                            <MapPin className="w-5 h-5 text-teal-600" />
                          </div>
                          <div>
-                            <h3 className="font-black text-[#0A1128] text-xl mb-1">{profile.clinicName || profile.name}</h3>
-                            <p className="text-slate-500 font-medium mb-3">{profile.address || profile.clinic?.address || "Address not provided"}</p>
+                            <h3 className="font-black text-white text-xl mb-1">{profile.clinicName || profile.name}</h3>
+                            <p className="text-slate-400 font-medium mb-3">{profile.address || profile.clinic?.address || "Address not provided"}</p>
                             <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
                                <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> {profile.timings || "Mon-Sat: 10AM-8PM"}</span>
                                <span className="flex items-center gap-1"><Phone className="w-3 h-3"/> {profile.phone || "+91 98765 *****"}</span>
@@ -495,7 +503,7 @@ export default function UnifiedProfileLayout({
                         <a href={`https://maps.google.com/?q=${encodeURIComponent(profile.address || profile.clinic?.address || profile.name)}`} target="_blank" rel="noreferrer" className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-black text-sm text-center shadow-md transition-colors">
                            Get Directions
                         </a>
-                        <button onClick={() => setShowPhone(!showPhone)} className="bg-white border-2 border-slate-200 text-slate-700 px-8 py-3 rounded-xl font-bold text-sm text-center hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                        <button onClick={() => setShowPhone(!showPhone)} className="bg-white/5 backdrop-blur-xl border-2 border-white/10 text-slate-200 px-8 py-3 rounded-xl font-bold text-sm text-center hover:bg-white/5 hover:border-slate-300 transition-colors">
                            {showPhone ? (profile.phone || "Not available") : "Call Clinic"}
                         </button>
                       </div>
@@ -504,9 +512,9 @@ export default function UnifiedProfileLayout({
               </section>
 
               {/* About / Bio Narrative */}
-              <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
-                <h2 className="text-2xl font-black text-[#0A1128] mb-6">The Profile</h2>
-                <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-loose font-serif">
+              <section className="bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-sm p-6 md:p-8 mb-6">
+                <h2 className="text-2xl font-black text-white mb-6">The Profile</h2>
+                <div className="prose prose-lg prose-slate max-w-none text-slate-300 leading-loose font-serif">
                   {isEditMode ? (
                     <InlineEditField 
                       value={profile.about || profile.bio || ''} 
@@ -514,7 +522,7 @@ export default function UnifiedProfileLayout({
                       isEditMode={true}
                       type="textarea"
                       placeholder="Enter your professional biography here..."
-                      className="w-full bg-white border border-cyan-500/30 p-4 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      className="w-full bg-white/5 backdrop-blur-xl border border-cyan-500/30 p-4 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     />
                   ) : (
                     <p>{profile.about || profile.bio || `Eminent detailed information about ${profile.name} is currently being curated. Recognized for their dedication to advancing healthcare and patient outcomes.`}</p>
@@ -524,17 +532,17 @@ export default function UnifiedProfileLayout({
 
               {/* Specializations (Elegant Pills) */}
               {isDoctor && (!verified || hasValidData(profile.specialties)) && (
-                <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
-                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Areas of Excellence</h2>
+                <section className="bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-white mb-6">Areas of Excellence</h2>
                   
                   {!hasValidData(profile.specialties) ? (
-                    <div className="relative bg-gradient-to-br from-teal-50/80 via-white to-cyan-50/80 border border-teal-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                    <div className="relative bg-white/5 backdrop-blur-xl border border-teal-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
                        <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-teal-500/5 rotate-12 pointer-events-none" />
-                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                       <div className="w-16 h-16 rounded-2xl bg-white/5 backdrop-blur-xl shadow-sm flex items-center justify-center mb-4 relative z-10">
                           <Lock className="w-8 h-8 text-teal-400 group-hover:scale-110 transition-transform duration-300" />
                        </div>
-                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Specialties</h3>
-                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Areas of excellence are currently unavailable as this profile is unverified. Claim your profile to display your specialties.</p>
+                       <h3 className="text-lg font-black text-slate-100 mb-2 relative z-10">Unverified Specialties</h3>
+                       <p className="text-slate-400 text-sm max-w-sm mb-6 relative z-10">Areas of excellence are currently unavailable as this profile is unverified. Claim your profile to display your specialties.</p>
                        <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
@@ -543,7 +551,7 @@ export default function UnifiedProfileLayout({
                         <Link 
                           key={index} 
                           href={`/doctors?specialty=${encodeURIComponent(spec)}`}
-                          className="bg-slate-50 border border-slate-200 text-slate-700 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 hover:shadow-[0_10px_20px_rgba(20,184,166,0.15)] hover:-translate-y-0.5 transition-all group"
+                          className="bg-white/5 border border-white/10 text-slate-200 px-6 py-3 rounded-full text-sm font-bold tracking-wide shadow-sm hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 hover:shadow-[0_10px_20px_rgba(20,184,166,0.15)] hover:-translate-y-0.5 transition-all group"
                         >
                           <span className="border-b border-transparent group-hover:border-teal-700 pb-0.5">{spec}</span>
                         </Link>
@@ -555,33 +563,33 @@ export default function UnifiedProfileLayout({
 
               {/* Education Timeline */}
               {isDoctor && (!verified || hasValidData(profile.education)) && (
-                <section id="education" className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
-                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Academic Pedigree</h2>
+                <section id="education" className="bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-white mb-6">Academic Pedigree</h2>
                   
                   {!hasValidData(profile.education) ? (
-                    <div className="relative bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/80 border border-emerald-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                    <div className="relative bg-white/5 backdrop-blur-xl border border-emerald-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
                        <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-emerald-500/5 rotate-12 pointer-events-none" />
-                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                       <div className="w-16 h-16 rounded-2xl bg-white/5 backdrop-blur-xl shadow-sm flex items-center justify-center mb-4 relative z-10">
                           <GraduationCap className="w-8 h-8 text-emerald-500 group-hover:scale-110 transition-transform duration-300" />
                        </div>
-                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Education</h3>
-                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Educational history is currently unavailable as this profile is unverified. Claim your profile to showcase your academic background.</p>
+                       <h3 className="text-lg font-black text-slate-100 mb-2 relative z-10">Unverified Education</h3>
+                       <p className="text-slate-400 text-sm max-w-sm mb-6 relative z-10">Educational history is currently unavailable as this profile is unverified. Claim your profile to showcase your academic background.</p>
                        <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="space-y-8">
                       {profile.education.map((edu: any, index: number) => (
                         <div key={index} className="flex gap-6 group">
-                          <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                          <div className="w-12 h-12 shrink-0 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
                             <GraduationCap className="w-5 h-5" />
                           </div>
                           <div className="pt-2">
-                            <h3 className="font-black text-[#0A1128] text-xl">{edu.degree}</h3>
+                            <h3 className="font-black text-white text-xl">{edu.degree}</h3>
                             <Link 
                               href={`/directory?query=${encodeURIComponent(edu.institution || edu.college || '')}`}
                               className="inline-block mt-2 hover:opacity-80 transition-opacity"
                             >
-                              <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                              <p className="text-slate-400 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
                                 {edu.institution || edu.college || 'Institution not specified'}
                               </p>
                             </Link>
@@ -596,33 +604,33 @@ export default function UnifiedProfileLayout({
 
               {/* Past Experience Timeline */}
               {isDoctor && (!verified || hasValidData(profile.experiences)) && (
-                <section id="experience" className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
-                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Professional Trajectory</h2>
+                <section id="experience" className="bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-white mb-6">Professional Trajectory</h2>
                   
                   {!hasValidData(profile.experiences) ? (
-                    <div className="relative bg-gradient-to-br from-blue-50/80 via-white to-cyan-50/80 border border-blue-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                    <div className="relative bg-white/5 backdrop-blur-xl border border-blue-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
                        <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-blue-500/5 rotate-12 pointer-events-none" />
-                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                       <div className="w-16 h-16 rounded-2xl bg-white/5 backdrop-blur-xl shadow-sm flex items-center justify-center mb-4 relative z-10">
                           <Briefcase className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform duration-300" />
                        </div>
-                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Experience</h3>
-                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Professional experience is currently unavailable as this profile is unverified. Claim your profile to showcase your career trajectory.</p>
+                       <h3 className="text-lg font-black text-slate-100 mb-2 relative z-10">Unverified Experience</h3>
+                       <p className="text-slate-400 text-sm max-w-sm mb-6 relative z-10">Professional experience is currently unavailable as this profile is unverified. Claim your profile to showcase your career trajectory.</p>
                        <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="space-y-8">
                       {profile.experiences.map((exp: any, index: number) => (
                         <div key={index} className="flex gap-6 group">
-                          <div className="w-12 h-12 shrink-0 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                          <div className="w-12 h-12 shrink-0 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-sm group-hover:bg-slate-900 group-hover:text-white transition-colors">
                             <Briefcase className="w-5 h-5" />
                           </div>
                           <div className="pt-2">
-                            <h3 className="font-black text-[#0A1128] text-xl">{exp.role || exp.title}</h3>
+                            <h3 className="font-black text-white text-xl">{exp.role || exp.title}</h3>
                             <Link 
                               href={`/hospitals?query=${encodeURIComponent(exp.hospital || exp.organization || '')}`}
                               className="inline-block mt-2 hover:opacity-80 transition-opacity"
                             >
-                              <p className="text-slate-500 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
+                              <p className="text-slate-400 text-lg font-serif italic border-b border-transparent hover:border-slate-400 pb-0.5">
                                 {exp.hospital || exp.organization}
                               </p>
                             </Link>
@@ -637,26 +645,26 @@ export default function UnifiedProfileLayout({
 
               {/* Awards (Art Gallery Style) */}
               {isDoctor && (!verified || hasValidData(profile.awards)) && (
-                <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
-                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Accolades & Honors</h2>
+                <section className="bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-white mb-6">Accolades & Honors</h2>
                   
                   {!hasValidData(profile.awards) ? (
-                    <div className="relative bg-gradient-to-br from-amber-50/80 via-white to-orange-50/80 border border-amber-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                    <div className="relative bg-white/5 backdrop-blur-xl border border-amber-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
                        <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-amber-500/5 rotate-12 pointer-events-none" />
-                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                       <div className="w-16 h-16 rounded-2xl bg-white/5 backdrop-blur-xl shadow-sm flex items-center justify-center mb-4 relative z-10">
                           <Medal className="w-8 h-8 text-amber-500 group-hover:scale-110 transition-transform duration-300" />
                        </div>
-                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Awards</h3>
-                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Accolades and honors are currently unavailable as this profile is unverified. Claim your profile to showcase your achievements.</p>
+                       <h3 className="text-lg font-black text-slate-100 mb-2 relative z-10">Unverified Awards</h3>
+                       <p className="text-slate-400 text-sm max-w-sm mb-6 relative z-10">Accolades and honors are currently unavailable as this profile is unverified. Claim your profile to showcase your achievements.</p>
                        <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {profile.awards.map((award: any, index: number) => (
-                        <div key={index} className="bg-white border border-slate-200 p-8 rounded-[2rem] flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-shadow">
+                        <div key={index} className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-[2rem] flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-shadow">
                           <Medal className="w-8 h-8 text-[#D4AF37] mb-6" />
                           <div>
-                            <p className="font-black text-[#0A1128] text-lg leading-snug">{award.title || award.name}</p>
+                            <p className="font-black text-white text-lg leading-snug">{award.title || award.name}</p>
                             <p className="text-sm text-slate-400 mt-2 font-bold tracking-widest">{award.year}</p>
                           </div>
                         </div>
@@ -668,25 +676,25 @@ export default function UnifiedProfileLayout({
 
               {/* Languages */}
               {isDoctor && (!verified || hasValidData(profile.languages)) && (
-                <section className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-6">
-                  <h2 className="text-2xl font-black text-[#0A1128] mb-6">Languages Spoken</h2>
+                <section className="bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-sm p-6 md:p-8 mb-6">
+                  <h2 className="text-2xl font-black text-white mb-6">Languages Spoken</h2>
                   
                   {!hasValidData(profile.languages) ? (
-                    <div className="relative bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 border border-indigo-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
+                    <div className="relative bg-white/5 backdrop-blur-xl border border-indigo-100 rounded-3xl p-10 flex flex-col items-center justify-center text-center overflow-hidden shadow-sm group">
                        <Lock className="absolute -right-4 -bottom-4 w-40 h-40 text-indigo-500/5 rotate-12 pointer-events-none" />
-                       <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 relative z-10">
+                       <div className="w-16 h-16 rounded-2xl bg-white/5 backdrop-blur-xl shadow-sm flex items-center justify-center mb-4 relative z-10">
                           <Globe className="w-8 h-8 text-indigo-500 group-hover:scale-110 transition-transform duration-300" />
                        </div>
-                       <h3 className="text-lg font-black text-slate-800 mb-2 relative z-10">Unverified Languages</h3>
-                       <p className="text-slate-500 text-sm max-w-sm mb-6 relative z-10">Language data is currently unavailable as this profile is unverified. Claim your profile to list the languages you speak.</p>
+                       <h3 className="text-lg font-black text-slate-100 mb-2 relative z-10">Unverified Languages</h3>
+                       <p className="text-slate-400 text-sm max-w-sm mb-6 relative z-10">Language data is currently unavailable as this profile is unverified. Claim your profile to list the languages you speak.</p>
                        <button onClick={() => setShowClaimModal(true)} className="relative z-10 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">Verify to Unlock</button>
                     </div>
                   ) : (
                     <div className="flex flex-wrap gap-4">
                       {profile.languages.map((lang: string, index: number) => (
-                        <div key={index} className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                        <div key={index} className="bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-default">
                           <Globe className="w-4 h-4 text-emerald-600" />
-                          <span className="font-bold text-[#0A1128] text-sm">{lang}</span>
+                          <span className="font-bold text-white text-sm">{lang}</span>
                         </div>
                       ))}
                     </div>
@@ -697,20 +705,20 @@ export default function UnifiedProfileLayout({
               {/* Departments / Specialized Centers - Hospital / Lab Only */}
               {(isHospital || isLab) && hasValidData(profile.departmentsArray || profile.roster) && (
                 <section className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">{isLab ? "Specialized Departments" : "Centers of Excellence"}</h2>
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-white/15"></div>
+                  <h2 className="text-3xl font-black text-white mb-8">{isLab ? "Specialized Departments" : "Centers of Excellence"}</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {(profile.departmentsArray || profile.roster).map((dept: any, i: number) => {
                       const deptName = typeof dept === 'string' ? dept : dept.name;
                       const deptDesc = typeof dept === 'string' ? "View Specialists &rarr;" : dept.description || "View Specialists &rarr;";
                       return (
-                        <div key={i} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer flex flex-col justify-between h-full">
+                        <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer flex flex-col justify-between h-full">
                           <div>
-                            <div className="w-12 h-12 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center mb-4 text-cyan-600 group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-colors">
+                            <div className="w-12 h-12 bg-white/5 rounded-xl border border-white/5 flex items-center justify-center mb-4 text-cyan-600 group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-colors">
                               <Activity className="w-6 h-6" />
                             </div>
-                            <h4 className="font-bold text-[#0A1128] text-lg group-hover:text-cyan-600 transition-colors mb-2">{deptName}</h4>
-                            {typeof dept !== 'string' && dept.head && <p className="text-sm font-medium text-slate-600 mb-2">HOD: Dr. {dept.head}</p>}
+                            <h4 className="font-bold text-white text-lg group-hover:text-cyan-600 transition-colors mb-2">{deptName}</h4>
+                            {typeof dept !== 'string' && dept.head && <p className="text-sm font-medium text-slate-300 mb-2">HOD: Dr. {dept.head}</p>}
                           </div>
                           <p className="text-xs text-slate-400 mt-3 font-bold uppercase tracking-widest group-hover:text-cyan-500 line-clamp-2">{deptDesc}</p>
                         </div>
@@ -723,9 +731,9 @@ export default function UnifiedProfileLayout({
               {/* Hospital Facilities / Accreditations */}
               {(isHospital || isLab) && hasValidData(profile.facilities) && (
                 <section className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Facilities & Accreditations</h2>
-                  <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-white/15"></div>
+                  <h2 className="text-3xl font-black text-white mb-8">Facilities & Accreditations</h2>
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-sm">
                     <div className="flex flex-wrap gap-4 mb-8">
                       {profile.facilities.map((fac: string, i: number) => (
                         <span key={i} className="bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2">
@@ -738,7 +746,7 @@ export default function UnifiedProfileLayout({
                         <p className="text-xs text-slate-400 font-bold tracking-widest uppercase mb-4">Certified & Accredited By</p>
                         <div className="flex flex-wrap gap-3">
                            {profile.accreditations.map((acc: string, i: number) => (
-                             <span key={i} className="bg-slate-100 text-slate-600 border border-slate-200 font-black px-3 py-1.5 rounded-lg text-xs uppercase tracking-wide flex items-center gap-2">
+                             <span key={i} className="bg-white/10 text-slate-300 border border-white/10 font-black px-3 py-1.5 rounded-lg text-xs uppercase tracking-wide flex items-center gap-2">
                                <Shield className="w-3.5 h-3.5 text-blue-500" /> {acc}
                              </span>
                            ))}
@@ -752,30 +760,30 @@ export default function UnifiedProfileLayout({
               {/* Ambulance Fleet Details */}
               {isAmbulance && hasValidData(profile.vehicles) && (
                 <section className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Ambulance Fleet & Vehicles</h2>
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-white/15"></div>
+                  <h2 className="text-3xl font-black text-white mb-8">Ambulance Fleet & Vehicles</h2>
                   <div className="grid grid-cols-1 gap-6">
                     {profile.vehicles.map((v: any, i: number) => {
                       const driver = profile.driverMapping?.find((d: any) => d.registrationNumber === v.registrationNumber);
                       return (
-                        <div key={i} className="bg-white rounded-[2rem] p-6 shadow-md border border-slate-200 flex flex-col md:flex-row gap-8">
+                        <div key={i} className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-6 shadow-md border border-white/10 flex flex-col md:flex-row gap-8">
                           {v.vehicleImage && (
-                            <div className="w-full md:w-48 h-48 rounded-2xl overflow-hidden shrink-0 bg-slate-100 border border-slate-200">
+                            <div className="w-full md:w-48 h-48 rounded-2xl overflow-hidden shrink-0 bg-white/10 border border-white/10">
                               <img src={v.vehicleImage} alt={v.registrationNumber} className="w-full h-full object-cover" />
                             </div>
                           )}
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
-                              <h3 className="text-2xl font-black text-[#0A1128] uppercase tracking-tight">{v.registrationNumber}</h3>
+                              <h3 className="text-2xl font-black text-white uppercase tracking-tight">{v.registrationNumber}</h3>
                               {v.baseLocation && (
                                 <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">📍 {v.baseLocation}</span>
                               )}
                             </div>
                             
                             <div className="flex flex-wrap gap-2 mb-6">
-                              {v.classification && <span className="bg-slate-100 text-slate-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.classification}</span>}
+                              {v.classification && <span className="bg-white/10 text-slate-200 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.classification}</span>}
                               {v.lifeSupportLevel && <span className="bg-blue-100 text-blue-800 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.lifeSupportLevel}</span>}
-                              {v.acType && <span className="bg-slate-100 text-slate-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.acType}</span>}
+                              {v.acType && <span className="bg-white/10 text-slate-200 text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">{v.acType}</span>}
                             </div>
                             
                             {hasValidData(v.medicalEquipment) && (
@@ -783,7 +791,7 @@ export default function UnifiedProfileLayout({
                                 <p className="text-xs text-slate-400 font-bold tracking-widest uppercase mb-2">Onboard Equipment</p>
                                 <div className="flex flex-wrap gap-2">
                                   {v.medicalEquipment.map((eq: string, j: number) => (
-                                    <span key={j} className="text-sm font-medium text-slate-600 flex items-center gap-1">
+                                    <span key={j} className="text-sm font-medium text-slate-300 flex items-center gap-1">
                                       <CheckCircle2 className="w-3 h-3 text-emerald-500" /> {eq}
                                     </span>
                                   ))}
@@ -792,29 +800,29 @@ export default function UnifiedProfileLayout({
                             )}
                             
                             {driver && (
-                              <div className="border-t border-slate-100 pt-4 flex items-center gap-4">
+                              <div className="border-t border-white/5 pt-4 flex items-center gap-4">
                                 {driver.driverPhoto ? (
-                                  <img src={driver.driverPhoto} alt={driver.driverName} className="w-10 h-10 rounded-full border border-slate-200 object-cover" />
+                                  <img src={driver.driverPhoto} alt={driver.driverName} className="w-10 h-10 rounded-full border border-white/10 object-cover" />
                                 ) : (
-                                  <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+                                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
                                     <User className="w-5 h-5 text-slate-400" />
                                   </div>
                                 )}
                                 <div>
                                   <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Assigned Driver</p>
-                                  <p className="text-sm font-black text-[#0A1128]">{driver.driverName}</p>
+                                  <p className="text-sm font-black text-white">{driver.driverName}</p>
                                 </div>
                                 {driver.licenseNumber && (
                                   <div className="ml-auto text-right">
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Licence</p>
-                                    <p className="text-xs font-mono text-slate-600 font-medium">{driver.licenseNumber}</p>
+                                    <p className="text-xs font-mono text-slate-300 font-medium">{driver.licenseNumber}</p>
                                   </div>
                                 )}
                               </div>
                             )}
                           </div>
                           
-                          <div className="w-full md:w-56 bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col justify-center shrink-0">
+                          <div className="w-full md:w-56 bg-white/5 p-6 rounded-2xl border border-white/5 flex flex-col justify-center shrink-0">
                              <p className="text-xs text-slate-400 font-bold tracking-widest uppercase text-center mb-2">Base Fare (Per Km)</p>
                              <p className="text-3xl font-black text-cyan-600 text-center mb-6">₹{v.baseFarePerKm || "N/A"}</p>
                              <button className="w-full bg-rose-600 hover:bg-rose-500 text-white font-black tracking-widest uppercase text-xs py-4 rounded-xl transition-all shadow-[0_8px_20px_rgba(225,29,72,0.3)] hover:-translate-y-0.5">
@@ -831,24 +839,24 @@ export default function UnifiedProfileLayout({
               {/* Health Packages / Top Products / Tests */}
               {(isHospital || isPharmacy || isLab) && hasValidData(profile.healthPackages) && (
                 <section className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">{isPharmacy ? "Top Products & Medicines" : isLab ? "Popular Diagnostic Tests" : "Preventive Health Packages"}</h2>
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-white/15"></div>
+                  <h2 className="text-3xl font-black text-white mb-8">{isPharmacy ? "Top Products & Medicines" : isLab ? "Popular Diagnostic Tests" : "Preventive Health Packages"}</h2>
                   <div className="grid grid-cols-1 gap-6">
                     {profile.healthPackages.map((pkg: any, i: number) => (
-                      <div key={i} className="bg-white rounded-[2rem] p-6 md:p-8 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
+                      <div key={i} className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-6 md:p-8 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1)] border border-white/5 flex flex-col md:flex-row gap-6 items-center">
                         <div className="flex-1 w-full">
-                          <h4 className="text-xl font-bold text-[#0A1128] mb-2">{pkg.name}</h4>
+                          <h4 className="text-xl font-bold text-white mb-2">{pkg.name}</h4>
                           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Includes</p>
                           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                             {pkg.included?.split(',').map((test: string, j: number) => (
-                              <li key={j} className="flex items-start gap-2 text-slate-600 text-sm font-medium">
+                              <li key={j} className="flex items-start gap-2 text-slate-300 text-sm font-medium">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                 <span>{test.trim()}</span>
                               </li>
                             ))}
                           </ul>
                         </div>
-                        <div className="w-full md:w-64 bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center shrink-0 flex flex-col justify-center">
+                        <div className="w-full md:w-64 bg-white/5 p-6 rounded-2xl border border-white/5 text-center shrink-0 flex flex-col justify-center">
                            <p className="text-3xl font-black text-cyan-600 mb-4">{pkg.price}</p>
                            {verified && (
                             <button 
@@ -869,13 +877,13 @@ export default function UnifiedProfileLayout({
               {/* Media / Gallery (Editorial Strip) */}
               {((profile.galleryImages && profile.galleryImages.length > 0) || (profile.rawImages && profile.rawImages.length > 0) || (profile.youtubeLinks && profile.youtubeLinks.length > 0)) && (
                 <section id="media" className="relative pl-0 md:pl-16">
-                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-slate-200"></div>
-                  <h2 className="text-3xl font-black text-[#0A1128] mb-8">Visual Narrative</h2>
+                  <div className="hidden md:block absolute left-0 top-2 w-[1px] h-full bg-white/15"></div>
+                  <h2 className="text-3xl font-black text-white mb-8">Visual Narrative</h2>
                   
                   {/* Images */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
                     {[...(profile.galleryImages || []), ...(profile.rawImages || [])].slice(0, 6).map((img: string, idx: number) => (
-                      <div key={idx} className="aspect-square rounded-[2rem] overflow-hidden bg-slate-100 shadow-sm">
+                      <div key={idx} className="aspect-square rounded-[2rem] overflow-hidden bg-white/10 shadow-sm">
                         <img src={img} alt="Gallery" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0" />
                       </div>
                     ))}
@@ -890,7 +898,7 @@ export default function UnifiedProfileLayout({
                           <div key={idx} className="w-[320px] shrink-0 snap-center rounded-[2rem] overflow-hidden bg-slate-900 aspect-video relative group shadow-lg">
                             <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity" alt="Video thumbnail" />
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform">
+                              <div className="w-16 h-16 bg-white/5 backdrop-blur-xl/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform">
                                 <Video className="w-6 h-6 text-white" />
                               </div>
                             </div>
@@ -907,13 +915,13 @@ export default function UnifiedProfileLayout({
               {!verified && (
                 <div className="bg-[#00897B] rounded-[2rem] p-8 md:p-12 mb-8 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-xl relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors"></div>
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 backdrop-blur-xl/5 rounded-full blur-3xl group-hover:bg-white/5 backdrop-blur-xl/10 transition-colors"></div>
                   
                   <div className="relative z-10 text-center sm:text-left">
                     <h4 className="font-black text-white text-2xl md:text-3xl">Are you {profile.name}?</h4>
                     <p className="text-teal-50 mt-2 max-w-lg text-lg">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
                   </div>
-                  <button onClick={() => setShowClaimModal(true)} className="relative z-10 shrink-0 bg-white text-[#00897B] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-slate-50 transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+                  <button onClick={() => setShowClaimModal(true)} className="relative z-10 shrink-0 bg-white/5 backdrop-blur-xl text-[#00897B] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-white/5 transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
                     Claim Exclusivity
                   </button>
                 </div>
@@ -927,18 +935,18 @@ export default function UnifiedProfileLayout({
           <div className="lg:col-span-1 space-y-8 lg:sticky lg:top-[120px] lg:self-start">
             
             {/* Care Connect Booking Hub */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl overflow-hidden relative group">
+            <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-xl overflow-hidden relative group">
               {/* Decorative top border */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
               
-              <h3 className="font-black text-xl text-[#0A1128] mb-1">Care Connect</h3>
-              <p className="text-xs text-slate-500 font-bold mb-6">Secure Priority Booking</p>
+              <h3 className="font-black text-xl text-white mb-1">Care Connect</h3>
+              <p className="text-xs text-slate-400 font-bold mb-6">Secure Priority Booking</p>
               
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-4 text-center">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-center">
                 <p className="text-[10px] uppercase tracking-widest font-bold text-slate-400 mb-1">Clinic Direct Line</p>
                 <div className="flex items-center justify-center gap-2">
                   <Phone className="w-4 h-4 text-emerald-600" />
-                  <p className="text-lg font-black text-[#0A1128] font-mono">+91 98765 <span className="opacity-40">*****</span></p>
+                  <p className="text-lg font-black text-white font-mono">+91 98765 <span className="opacity-40">*****</span></p>
                 </div>
               </div>
 
@@ -959,13 +967,13 @@ export default function UnifiedProfileLayout({
 
             {/* Ad Space */}
             {heroRightAd && (
-              <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white aspect-square md:aspect-[4/3] lg:aspect-[3/4]">
+              <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-xl aspect-square md:aspect-[4/3] lg:aspect-[3/4]">
                 {heroRightAd.imageUrl ? (
                   <a href={heroRightAd.linkUrl} target="_blank" rel="noreferrer">
                     <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
                   </a>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode }} />
+                  <div className="w-full h-full flex items-center justify-center bg-white/5" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode }} />
                 )}
               </div>
             )}
@@ -973,8 +981,8 @@ export default function UnifiedProfileLayout({
 
             {/* Similar Entities */}
             {similarEntities && similarEntities.length > 0 && (
-              <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl flex flex-col">
-                <h3 className="font-black text-lg text-[#0A1128] mb-4 shrink-0">Explore Network</h3>
+              <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-xl flex flex-col">
+                <h3 className="font-black text-lg text-white mb-4 shrink-0">Explore Network</h3>
                 <div className="flex flex-col gap-4 pr-2">
                   {similarEntities.map((sim, idx) => {
                     const isHospitalOrLab = sim.category === "Hospital" || sim.category === "Diagnostic Center" || sim.category === "Pharmacy";
@@ -985,14 +993,14 @@ export default function UnifiedProfileLayout({
                     else if (sim.category === "Ambulance") routePath = `/ambulances`;
                     
                     return (
-                      <Link key={idx} href={`${routePath}/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md shrink-0">
-                        <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Provider")}&background=0f766e&color=fff`} alt={sim.name} className={`w-14 h-14 object-cover border border-slate-200 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'}`} />
+                      <Link key={idx} href={`${routePath}/${sim.id}`} className="group flex items-center gap-4 bg-white/5 hover:bg-white/5 backdrop-blur-xl rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md shrink-0">
+                        <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Provider")}&background=0f766e&color=fff`} alt={sim.name} className={`w-14 h-14 object-cover border border-white/10 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'}`} />
                         <div className="min-w-0 flex-1">
-                          <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
+                          <h4 className="font-bold text-sm text-white truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
                           <div className="flex items-center gap-1 mt-1">
                             <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                            <span className="text-[10px] font-bold text-slate-700">{sim.stats?.rating || 4.5}</span>
-                            <span className="text-[10px] text-slate-500 truncate ml-1 px-2 border-l border-slate-300">{sim.subtitle || sim.category}</span>
+                            <span className="text-[10px] font-bold text-slate-200">{sim.stats?.rating || 4.5}</span>
+                            <span className="text-[10px] text-slate-400 truncate ml-1 px-2 border-l border-slate-300">{sim.subtitle || sim.category}</span>
                           </div>
                         </div>
                       </Link>
@@ -1017,17 +1025,17 @@ export default function UnifiedProfileLayout({
       {/* QR Code & Share Unified Modal */}
       {(showQRModal || showShareModal) && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
-            <button onClick={() => { setShowQRModal(false); setShowShareModal(false); }} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onClick={() => { setShowQRModal(false); setShowShareModal(false); }} className="absolute top-4 right-4 text-slate-400 hover:text-slate-300 bg-white/10 hover:bg-white/15 p-2 rounded-full transition-colors">
               <X className="w-5 h-5" />
             </button>
             
             <div className="text-center mb-6">
-              <h3 className="text-2xl font-black text-[#0A1128]">Share & Connect</h3>
-              <p className="text-slate-500 text-sm mt-1">Share this profile or scan to connect instantly.</p>
+              <h3 className="text-2xl font-black text-white">Share & Connect</h3>
+              <p className="text-slate-400 text-sm mt-1">Share this profile or scan to connect instantly.</p>
             </div>
             
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center shadow-inner mb-6">
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/5 flex flex-col items-center shadow-inner mb-6">
               <QRCodeSVG 
                 value={typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}?action=connect` : `https://dehapa.com/${type}s/${profile.id}?action=connect`}
                 size={180}
@@ -1080,15 +1088,15 @@ export default function UnifiedProfileLayout({
       {/* Unverified Modal */}
       {showUnverifiedModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
-            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-300 bg-white/10 hover:bg-white/15 p-2 rounded-full transition-colors">
               <X className="w-5 h-5" />
             </button>
             <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6 border border-orange-200 shadow-sm mx-auto">
               <Shield className="w-8 h-8 text-orange-500" />
             </div>
-            <h3 className="text-2xl font-black text-slate-800 text-center mb-2">Unverified Profile</h3>
-            <p className="text-slate-500 text-center mb-8 font-medium">This profile is unverified, so the booking system is disabled. Are you the authorized representative for this institution?</p>
+            <h3 className="text-2xl font-black text-slate-100 text-center mb-2">Unverified Profile</h3>
+            <p className="text-slate-400 text-center mb-8 font-medium">This profile is unverified, so the booking system is disabled. Are you the authorized representative for this institution?</p>
             <button onClick={() => { setShowUnverifiedModal(false); setShowClaimModal(true); }} className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-sm py-4 rounded-xl transition-all shadow-lg shadow-orange-500/30 flex justify-center items-center gap-2">
               Claim Profile to Unlock Features
             </button>
@@ -1108,9 +1116,9 @@ export default function UnifiedProfileLayout({
       {/* Invite Modal */}
       {showInviteModal && (
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95 border border-cyan-500/20">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95 border border-cyan-500/20">
             <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-3xl"></div>
-            <button onClick={() => setShowInviteModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+            <button onClick={() => setShowInviteModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-300 transition-colors">
               <X className="w-6 h-6" />
             </button>
             
@@ -1118,8 +1126,8 @@ export default function UnifiedProfileLayout({
               <UserPlus className="w-8 h-8 text-cyan-600" />
             </div>
             
-            <h3 className="font-black text-2xl text-[#0A1128] mb-2">Connect with {profile.name}</h3>
-            <p className="text-sm text-slate-500 mb-8 leading-relaxed">By connecting, you allow this provider to access your medical records securely through the Dehapa Network.</p>
+            <h3 className="font-black text-2xl text-white mb-2">Connect with {profile.name}</h3>
+            <p className="text-sm text-slate-400 mb-8 leading-relaxed">By connecting, you allow this provider to access your medical records securely through the Dehapa Network.</p>
             
             <button 
               onClick={() => handleRequestConnection(false)}
@@ -1128,7 +1136,7 @@ export default function UnifiedProfileLayout({
             >
               {isRequestingConnection ? "Sending Request..." : "Send Connection Request"}
             </button>
-            <button onClick={() => setShowInviteModal(false)} className="mt-4 text-sm text-slate-500 font-bold hover:text-slate-800">
+            <button onClick={() => setShowInviteModal(false)} className="mt-4 text-sm text-slate-400 font-bold hover:text-slate-100">
               Maybe Later
             </button>
           </div>
@@ -1138,9 +1146,9 @@ export default function UnifiedProfileLayout({
       {/* Unverified Modal */}
       {showUnverifiedModal && (
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95 border border-amber-500/20">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95 border border-amber-500/20">
             <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-400 to-orange-500 rounded-t-3xl"></div>
-            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-300 transition-colors">
               <X className="w-6 h-6" />
             </button>
             
@@ -1148,8 +1156,8 @@ export default function UnifiedProfileLayout({
               <Shield className="w-8 h-8 text-amber-500" />
             </div>
             
-            <h3 className="font-black text-2xl text-[#0A1128] mb-2">Profile Not Verified</h3>
-            <p className="text-sm text-slate-500 mb-8 leading-relaxed">This profile is currently unverified. We are unable to facilitate bookings or connections until the provider completes the Dehapa verification process.</p>
+            <h3 className="font-black text-2xl text-white mb-2">Profile Not Verified</h3>
+            <p className="text-sm text-slate-400 mb-8 leading-relaxed">This profile is currently unverified. We are unable to facilitate bookings or connections until the provider completes the Dehapa verification process.</p>
             
             <button 
               onClick={() => setShowUnverifiedModal(false)}
