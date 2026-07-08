@@ -5,7 +5,7 @@ import UniversalOwnerDashboard from '@/components/UniversalOwnerDashboard';
 import { DashboardTab } from '@/components/DashboardLayout';
 import DashboardHomeGrid from '@/components/DashboardHomeGrid';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
-import LiveOrderWidget from '@/components/LiveOrderWidget';
+import PharmacyFulfillmentWidget from '@/components/PharmacyFulfillmentWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 
@@ -48,7 +48,7 @@ export default function PharmacyDashboard() {
     }
     if (tabId === "inbox") {
       return (
-        <LiveOrderWidget providerId={entityData.id || ''} providerType="pharmacy" />
+        <PharmacyFulfillmentWidget providerId={entityData.id || ''} />
       );
     }
     return null;

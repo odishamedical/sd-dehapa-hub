@@ -6,7 +6,7 @@ import { DashboardTab } from '@/components/DashboardLayout';
 import DashboardHomeGrid from '@/components/DashboardHomeGrid';
 import PatientLeadsWidget from '@/components/PatientLeadsWidget';
 import InviteWidget from '@/components/InviteWidget';
-import LiveOrderWidget from '@/components/LiveOrderWidget';
+import PharmacyFulfillmentWidget from '@/components/PharmacyFulfillmentWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 
@@ -52,7 +52,7 @@ export default function LabDashboard() {
 
     if (tabId === "inbox") {
       return (
-        <LiveOrderWidget providerId={entityData.id || ''} providerType="lab" />
+        <PharmacyFulfillmentWidget providerId={entityData.id || ''} />
       );
     }
     return null;

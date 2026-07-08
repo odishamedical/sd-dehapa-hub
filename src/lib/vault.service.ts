@@ -33,6 +33,9 @@ export type VaultDocument = {
   expiresAt?: any;
   creatorId?: string;
   consultationId?: string;
+  // B2B Fulfillment fields
+  fulfillmentStatus?: 'New' | 'Quoted' | 'Paid' | 'Dispatched';
+  quoteAmount?: number;
 };
 
 export class VaultService {
