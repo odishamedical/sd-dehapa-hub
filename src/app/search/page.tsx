@@ -329,7 +329,7 @@ function SearchResultsContent() {
                       )}
                     </div>
 
-                    <Link href={result.type === 'doctor' ? `/portal/book?doctor=${result.id}` : "#"} className="w-full py-3 bg-teal-50 text-teal-700 hover:bg-teal-600 hover:text-white text-center font-bold text-sm uppercase tracking-widest rounded-xl transition-all block shadow-sm hover:shadow-md">
+                    <Link href={`/profile/${result.type}/${result.id}`} className="w-full py-3 bg-teal-50 text-teal-700 hover:bg-teal-600 hover:text-white text-center font-bold text-sm uppercase tracking-widest rounded-xl transition-all block shadow-sm hover:shadow-md">
                       View Profile
                     </Link>
                   </div>

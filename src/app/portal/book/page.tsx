@@ -198,9 +198,9 @@ function BookAppointmentForm() {
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 150%, #14b8a6 0%, transparent 50%)' }}></div>
         <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <Link href="/doctors" className="inline-flex items-center gap-2 text-teal-200 hover:text-white text-sm font-bold uppercase tracking-widest mb-4 transition-colors">
+            <Link href={`/profile/doctor/${doctor.id}`} className="inline-flex items-center gap-2 text-teal-200 hover:text-white text-sm font-bold uppercase tracking-widest mb-4 transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-              Back to Directory
+              Back to Profile
             </Link>
             <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2">Book Appointment</h1>
             <p className="text-teal-100/80 text-sm md:text-base max-w-xl">Complete your secure booking for a video consultation. All sessions are fully encrypted and HIPAA/FHIR-compliant.</p>
@@ -223,6 +223,9 @@ function BookAppointmentForm() {
                 <div className="w-12 h-1 bg-slate-100 rounded-full my-4"></div>
                 <p className="text-slate-500 text-sm">{doctor.experience || "10+ Years"} Experience</p>
                 <p className="text-slate-500 text-sm mt-1">{doctor.clinic?.name || "Verified Clinic"}</p>
+                <Link href={`/profile/doctor/${doctor.id}`} className="text-teal-600 hover:text-teal-700 text-xs font-bold uppercase tracking-widest mt-3 flex items-center justify-center gap-1 transition-all hover:scale-105">
+                  ↗ View Full Profile
+                </Link>
                 
                 <div className="mt-6 w-full bg-slate-50 rounded-xl p-4 border border-slate-100 flex justify-between items-center">
                   <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">Consultation Fee</span>
