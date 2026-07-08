@@ -278,6 +278,9 @@ export default function AdminDataCRM() {
         adminLocked: selectedListing.adminLocked || false,
         customSlug: selectedListing.customSlug?.trim() || "",
         videoFee: selectedListing.videoFee || "",
+        consultationFee: selectedListing.consultationFee || "",
+        launchFee: selectedListing.launchFee || "",
+        isTestAccount: selectedListing.isTestAccount || false,
         clinicName: selectedListing.clinicName || "",
         ...selectedListing,
         customFields: cleanDynamicFields,
@@ -888,6 +891,16 @@ export default function AdminDataCRM() {
                     <label className="form-label">Sub-Category / Specialty</label>
                     <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="form-input" />
                   </div>
+                  <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-6 rounded-2xl border border-slate-200 mt-2">
+                    <div>
+                      <label className="form-label text-slate-700">Standard Consultation Fee</label>
+                      <input type="number" value={selectedListing.consultationFee || ""} onChange={e => setSelectedListing({...selectedListing, consultationFee: e.target.value})} placeholder="e.g. 800" className="form-input bg-white" />
+                    </div>
+                    <div>
+                      <label className="form-label text-emerald-600">Launch Offer Fee (Discount)</label>
+                      <input type="number" value={selectedListing.launchFee || ""} onChange={e => setSelectedListing({...selectedListing, launchFee: e.target.value})} placeholder="e.g. 500" className="form-input bg-emerald-50/50 border-emerald-200 focus:border-emerald-500" />
+                    </div>
+                  </div>
                   <div className="col-span-2 mt-4">
                     <label className="form-label">About / Biography</label>
                     <textarea value={selectedListing.about || ""} onChange={e => setSelectedListing({...selectedListing, about: e.target.value})} className="form-input" rows={4} />
@@ -957,6 +970,10 @@ export default function AdminDataCRM() {
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input type="checkbox" id="featuredCheck" checked={selectedListing.featured || false} onChange={e => setSelectedListing({...selectedListing, featured: e.target.checked})} className="w-6 h-6 text-amber-500 rounded border-slate-300" />
                       <span className="text-sm font-bold text-slate-900">Featured / Sponsored</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input type="checkbox" id="testCheck" checked={selectedListing.isTestAccount || false} onChange={e => setSelectedListing({...selectedListing, isTestAccount: e.target.checked})} className="w-6 h-6 text-indigo-500 rounded border-slate-300" />
+                      <span className="text-sm font-bold text-indigo-900">Test Account (Bypass Pay)</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer ml-auto border-l border-slate-300 pl-6">
                       <div className={`relative inline-block w-12 h-6 rounded-full transition-colors ${selectedListing.isPublished !== false ? 'bg-teal-500' : 'bg-slate-300'}`}>
