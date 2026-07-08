@@ -300,8 +300,9 @@ export default function UnifiedProfileLayout({
                   </div>
                   
                   {verified && (
-                    <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-emerald-100">
-                      <Shield className="w-3 h-3 fill-emerald-600 text-white" /> Verified
+                    <div className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-emerald-400/50 backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.3)] overflow-hidden relative group">
+                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_2s_infinite]"></div>
+                      <Shield className="w-3 h-3 fill-emerald-500 text-emerald-200 z-10" /> <span className="z-10">Verified</span>
                     </div>
                   )}
                 </div>
@@ -317,7 +318,7 @@ export default function UnifiedProfileLayout({
                       window.location.href = `tel:${profile.phone || '9999999999'}`;
                     }
                   }} 
-                  className="bg-[#0F9D58] hover:bg-emerald-600 text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                  className="bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 border border-emerald-400/50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-[inset_0_0_20px_rgba(16,185,129,0.2),0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[inset_0_0_20px_rgba(16,185,129,0.4),0_0_25px_rgba(16,185,129,0.5)] backdrop-blur-xl group flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
                   <span className="opacity-50 text-[10px]">▼</span>
@@ -331,7 +332,7 @@ export default function UnifiedProfileLayout({
                       setShowUnverifiedModal(true);
                     }
                   }}
-                  className="bg-[#FF3B30] hover:bg-red-600 text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                  className="bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 border border-rose-400/50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-[inset_0_0_20px_rgba(244,63,94,0.2),0_0_15px_rgba(244,63,94,0.2)] hover:shadow-[inset_0_0_20px_rgba(244,63,94,0.4),0_0_25px_rgba(244,63,94,0.5)] backdrop-blur-xl group flex items-center justify-between px-5"
                 >
                   <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Urgent Video Call</span>
                   <span className="opacity-50 text-[10px]">▼</span>
@@ -353,7 +354,7 @@ export default function UnifiedProfileLayout({
                 
                 <button 
                   onClick={handleShare} 
-                  className="bg-slate-900 hover:bg-black text-white w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-center gap-2"
+                  className="bg-white/5 hover:bg-white/10 text-white border border-white/20 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-xl flex items-center justify-center gap-2"
                 >
                   <Share2 className="w-4 h-4"/> Share & Connect
                 </button>
@@ -380,7 +381,7 @@ export default function UnifiedProfileLayout({
                         window.scrollTo({ top: y, behavior: 'smooth' });
                       }
                     }}
-                    className={`px-8 py-3 text-[14px] font-bold tracking-wide transition-all shrink-0 rounded-t-lg ${activeSection === tab.id ? 'bg-[#00897B] text-white' : 'bg-transparent text-slate-300 hover:bg-white/5'}`}
+                    className={`px-8 py-3 text-[14px] font-bold tracking-wide transition-all shrink-0 rounded-t-lg ${activeSection === tab.id ? 'bg-teal-500/30 text-teal-300 border-t border-l border-r border-teal-400/50 backdrop-blur-xl shadow-[0_-10px_20px_rgba(20,184,166,0.2)]' : 'bg-transparent text-slate-300 hover:bg-white/5'}`}
                   >
                     {tab.label}
                   </button>
@@ -712,7 +713,7 @@ export default function UnifiedProfileLayout({
                       const deptName = typeof dept === 'string' ? dept : dept.name;
                       const deptDesc = typeof dept === 'string' ? "View Specialists &rarr;" : dept.description || "View Specialists &rarr;";
                       return (
-                        <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer flex flex-col justify-between h-full">
+                        <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 hover:border-cyan-400/40 hover:bg-white/10 hover:shadow-[0_0_40px_rgba(34,211,238,0.15)] transition-all duration-500 p-6 group rounded-2xl shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all group cursor-pointer flex flex-col justify-between h-full">
                           <div>
                             <div className="w-12 h-12 bg-white/5 rounded-xl border border-white/5 flex items-center justify-center mb-4 text-cyan-600 group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-colors">
                               <Activity className="w-6 h-6" />
