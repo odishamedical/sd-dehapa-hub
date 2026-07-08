@@ -21,6 +21,7 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [generatedToken, setGeneratedToken] = useState<string | null>(null);
   
   // Form fields
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -44,10 +45,16 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
         status: 'pending',
         createdAt: serverTimestamp(),
       };
+      
+      let token = null;
 
       if (bookingMode === 'offline' || bookingMode === 'schedule_video') {
         bookingData.date = selectedDate || 'Today';
         bookingData.time = selectedTime || 'As Soon As Possible';
+        if (bookingMode === 'offline') {
+          token = `TOK-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+          bookingData.tokenId = token;
+        }
       } else if (bookingMode === 'upload_rx') {
         bookingData.instructions = deliveryInstructions;
       } else if (bookingMode === 'request_bed') {
@@ -57,11 +64,15 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
 
       await addDoc(collection(db, 'bookings'), bookingData);
       
+      if (token) setGeneratedToken(token);
       setSubmitSuccess(true);
-      setTimeout(() => {
-        setShowModal(false);
-        setSubmitSuccess(false);
-      }, 3000);
+      
+      if (!token) {
+        setTimeout(() => {
+          setShowModal(false);
+          setSubmitSuccess(false);
+        }, 3000);
+      }
     } catch (err) {
       console.error(err);
       alert("Failed to submit request. Please try again.");
@@ -168,12 +179,31 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
               {(bookingMode === 'offline' || bookingMode === 'schedule_video') && (
                 <div className="space-y-6 relative">
                   {submitSuccess && (
-                    <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-2xl">
+                    <div className="absolute inset-0 bg-white/90 backdrop-blur-md z-20 flex flex-col items-center justify-center rounded-2xl p-6">
                       <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
                         <CheckCircle2 className="w-8 h-8" />
                       </div>
                       <h4 className="text-xl font-black text-[#0A1128] mb-2">Booking Confirmed!</h4>
-                      <p className="text-sm text-slate-500 text-center px-4">Your request has been sent to the provider. They will contact you shortly.</p>
+                      {generatedToken ? (
+                        <div className="bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl p-4 w-full text-center mt-2 shadow-sm">
+                           <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Your Booking Token</p>
+                           <p className="text-2xl font-black tracking-[0.2em] text-slate-900">{generatedToken}</p>
+                           <div className="mt-4 w-32 h-32 bg-white border border-slate-200 mx-auto rounded-lg flex items-center justify-center p-2 relative overflow-hidden">
+                             {/* Mock QR Code Pattern */}
+                             <div className="w-full h-full bg-slate-900 grid grid-cols-4 grid-rows-4 gap-1 p-1 rounded">
+                               {[...Array(16)].map((_, i) => (
+                                 <div key={i} className={`bg-white ${Math.random() > 0.5 ? 'opacity-100' : 'opacity-0'} rounded-sm`}></div>
+                               ))}
+                               <div className="absolute top-2 left-2 w-8 h-8 bg-white p-1"><div className="w-full h-full bg-slate-900"></div></div>
+                               <div className="absolute top-2 right-2 w-8 h-8 bg-white p-1"><div className="w-full h-full bg-slate-900"></div></div>
+                               <div className="absolute bottom-2 left-2 w-8 h-8 bg-white p-1"><div className="w-full h-full bg-slate-900"></div></div>
+                             </div>
+                           </div>
+                           <p className="text-[10px] text-slate-400 mt-3 font-medium">Show this at the reception desk to check-in instantly.</p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-slate-500 text-center px-4">Your request has been sent to the provider. They will contact you shortly.</p>
+                      )}
                     </div>
                   )}
                   <div>

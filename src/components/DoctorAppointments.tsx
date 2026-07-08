@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, orderBy, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, updateDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore';
 
-type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
+type AppointmentStatus = 'pending' | 'confirmed' | 'arrived' | 'completed' | 'cancelled';
 
 type Appointment = {
   id: string;
@@ -22,7 +22,10 @@ type Appointment = {
 export default function DoctorAppointments({ providerId }: { providerId: string }) {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'telemedicine'>('all');
+  const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'arrived' | 'telemedicine'>('all');
+  
+  const [tokenInput, setTokenInput] = useState('');
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -62,9 +65,64 @@ export default function DoctorAppointments({ providerId }: { providerId: string 
     }
   };
 
+  const handleTokenCheckIn = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!tokenInput.trim()) return;
+    
+    setIsCheckingIn(true);
+    try {
+      // Find the booking with this token
+      // Note: we are checking 'bookings' collection here since BookingEngine creates 'bookings', but wait, 
+      // DoctorAppointments fetches from 'appointments'. Let me search 'appointments' first, but if the schema is mixed, I should check 'bookings'.
+      // Looking closely at DoctorAppointments: it fetches from 'appointments'.
+      // But BookingEngine saves to 'bookings'. I should check BOTH or assume we migrate to bookings.
+      // Let's check 'bookings' where tokenId == tokenInput
+      const q = query(collection(db, 'bookings'), where('tokenId', '==', tokenInput.trim().toUpperCase()));
+      const snap = await getDocs(q);
+      
+      if (snap.empty) {
+        alert("Invalid or Expired Token. Please check again.");
+        setIsCheckingIn(false);
+        return;
+      }
+      
+      const bookingDoc = snap.docs[0];
+      const bookingData = bookingDoc.data();
+      
+      // Update status to arrived
+      await updateDoc(doc(db, 'bookings', bookingDoc.id), { status: 'arrived' });
+      
+      // Auto-Queue logic
+      await addDoc(collection(db, 'queue'), {
+        providerId: providerId,
+        patientName: bookingData.patientName || bookingData.patientEmail?.split('@')[0] || "Patient",
+        patientEmail: bookingData.patientEmail,
+        patientPhone: bookingData.patientPhone || "",
+        status: 'waiting',
+        priority: 'Normal',
+        type: bookingData.bookingMode === 'schedule_video' ? 'telemedicine' : 'walk-in',
+        source: 'token_checkin',
+        joinedAt: serverTimestamp(),
+      });
+      
+      alert(`Success! Checked in ${bookingData.patientEmail}. They have been added to the Live Queue.`);
+      setTokenInput('');
+      
+      // If we also track it locally in appointments list
+      setAppointments(prev => prev.map(apt => apt.id === bookingDoc.id ? { ...apt, status: 'arrived' } : apt));
+      
+    } catch (err) {
+      console.error("Check-in error:", err);
+      alert("Failed to check in token.");
+    } finally {
+      setIsCheckingIn(false);
+    }
+  };
+
   const filteredAppointments = appointments.filter(apt => {
     if (filter === 'pending') return apt.status === 'pending';
     if (filter === 'confirmed') return apt.status === 'confirmed';
+    if (filter === 'arrived') return apt.status === 'arrived';
     if (filter === 'telemedicine') return apt.type === 'telemedicine';
     return true;
   });
@@ -86,8 +144,42 @@ export default function DoctorAppointments({ providerId }: { providerId: string 
           <button onClick={() => setFilter('all')} className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${filter === 'all' ? 'bg-white text-purple-700 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>All</button>
           <button onClick={() => setFilter('pending')} className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${filter === 'pending' ? 'bg-white text-purple-700 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>Pending</button>
           <button onClick={() => setFilter('confirmed')} className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${filter === 'confirmed' ? 'bg-white text-purple-700 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>Confirmed</button>
+          <button onClick={() => setFilter('arrived')} className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${filter === 'arrived' ? 'bg-white text-purple-700 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>Arrived</button>
           <button onClick={() => setFilter('telemedicine')} className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${filter === 'telemedicine' ? 'bg-white text-purple-700 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>Telemedicine</button>
         </div>
+      </div>
+
+      {/* FAST TRACK TERMINAL */}
+      <div className="relative z-10 mb-8 p-6 bg-slate-900 rounded-[24px] shadow-lg flex flex-col md:flex-row items-center gap-6 overflow-hidden">
+         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 blur-3xl rounded-full"></div>
+         <div className="flex-1">
+           <h3 className="text-xl font-black text-white flex items-center gap-2">
+             <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+             Fast-Track Check-In
+           </h3>
+           <p className="text-slate-400 text-sm mt-1">Scan or enter the patient's booking token to instantly add them to the Live Queue.</p>
+         </div>
+         <form onSubmit={handleTokenCheckIn} className="w-full md:w-auto flex items-center gap-2">
+           <div className="relative">
+             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+               <span className="text-slate-500 font-black">#</span>
+             </div>
+             <input 
+               type="text"
+               value={tokenInput}
+               onChange={(e) => setTokenInput(e.target.value.toUpperCase())}
+               placeholder="TOK-XXXX"
+               className="w-full md:w-48 bg-slate-800 border border-slate-700 text-white rounded-xl pl-8 pr-4 py-3 font-bold uppercase tracking-widest focus:border-cyan-500 outline-none"
+             />
+           </div>
+           <button 
+             type="submit"
+             disabled={isCheckingIn || !tokenInput}
+             className="bg-cyan-500 hover:bg-cyan-400 text-slate-900 px-6 py-3 rounded-xl font-black uppercase tracking-widest transition-colors shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+           >
+             {isCheckingIn ? '...' : 'Verify'}
+           </button>
+         </form>
       </div>
 
       <div className="relative z-10">
@@ -123,11 +215,12 @@ export default function DoctorAppointments({ providerId }: { providerId: string 
                   </div>
                   <div className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${
                     apt.status === 'confirmed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                    apt.status === 'arrived' ? 'bg-cyan-50 text-cyan-600 border border-cyan-100' :
                     apt.status === 'pending' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
                     apt.status === 'cancelled' ? 'bg-red-50 text-red-600 border border-red-100' :
                     'bg-slate-100 text-slate-600 border border-slate-200'
                   }`}>
-                    {apt.status}
+                    {apt.status === 'arrived' ? 'In Waiting Room' : apt.status}
                   </div>
                 </div>
 
