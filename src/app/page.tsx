@@ -4,13 +4,20 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import QRCode from "react-qr-code";
-import { Search, Activity, PhoneCall, X, Video, Calendar, ShieldCheck, Stethoscope, Building2, TestTube2, Pill, Ambulance, QrCode, AlertCircle, Syringe, HeartPulse } from "lucide-react";
+import { Search, Activity, PhoneCall, X, Video, Calendar, ShieldCheck, Stethoscope, Building2, TestTube2, Pill, Ambulance, QrCode, AlertCircle, Syringe, HeartPulse, Globe2, Zap, CheckCircle2 } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useRouter } from "next/navigation";
 
 const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
   ssr: false
 });
+
+const SEO_PHRASES = [
+  "Consult Top Indian Doctors from Anywhere.",
+  "Instantly Book ICU Beds in Emergencies.",
+  "Secure Your Lifetime Health Records.",
+  "Access the Best Specialists Globally."
+];
 
 export default function DehapaHome() {
   const router = useRouter();
@@ -22,6 +29,11 @@ export default function DehapaHome() {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [userUid, setUserUid] = useState<string | null>(null);
 
+  // Typing Effect State
+  const [currentPhraseIdx, setCurrentPhraseIdx] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
   useEffect(() => {
     const uid = localStorage.getItem("sd_current_user_uid") || localStorage.getItem("sd_current_user_email");
     setUserUid(uid);
@@ -30,6 +42,34 @@ export default function DehapaHome() {
     window.addEventListener('sd_open_qr_modal', handleOpenQR);
     return () => window.removeEventListener('sd_open_qr_modal', handleOpenQR);
   }, []);
+
+  // SEO Typing Effect Logic
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const currentPhrase = SEO_PHRASES[currentPhraseIdx];
+
+    const handleTyping = () => {
+      if (isDeleting) {
+        setDisplayText(prev => prev.slice(0, -1));
+        if (displayText.length === 0) {
+          setIsDeleting(false);
+          setCurrentPhraseIdx((prev) => (prev + 1) % SEO_PHRASES.length);
+        }
+      } else {
+        setDisplayText(currentPhrase.slice(0, displayText.length + 1));
+        if (displayText === currentPhrase) {
+          timer = setTimeout(() => setIsDeleting(true), 2500); // Pause before deleting
+          return;
+        }
+      }
+      
+      const typingSpeed = isDeleting ? 30 : 60; // Deletes faster than it types
+      timer = setTimeout(handleTyping, typingSpeed);
+    };
+
+    timer = setTimeout(handleTyping, 50);
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, currentPhraseIdx]);
 
   const handlePingAmbulance = () => {
     setIsPinging(true);
@@ -62,23 +102,26 @@ export default function DehapaHome() {
 
       <div className="relative z-10 pb-20">
         
-        {/* HERO & COMMAND CENTER */}
-        <section className="pt-24 pb-12 px-4 sm:px-6 max-w-[1400px] mx-auto flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-teal-300 font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-md">
+        {/* HERO & COMMAND CENTER (COMPACT & SEO OPTIMIZED) */}
+        <section className="pt-10 pb-6 px-4 sm:px-6 max-w-[1400px] mx-auto flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-teal-300 font-bold text-xs uppercase tracking-widest mb-4 backdrop-blur-md">
             <Activity className="w-4 h-4" /> Sovereign Health Network
           </div>
           
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black mb-4 tracking-tight drop-shadow-lg leading-tight">
-            Healthcare <br className="hidden sm:block"/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-300">Reimagined.</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-3 tracking-tight drop-shadow-lg leading-tight">
+            The World's Most Advanced <br className="hidden sm:block"/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-300">Medical Network.</span>
           </h1>
           
-          <p className="text-lg sm:text-xl text-slate-300 font-medium mb-12 max-w-2xl">
-            The next-generation sovereign directory. Discover verified doctors, hospitals, and clinics powered by advanced transparency.
-          </p>
+          {/* Dynamic SEO Typing Text */}
+          <div className="h-8 mb-6 flex items-center justify-center">
+            <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-medium">
+              {displayText}<span className="inline-block w-0.5 h-5 ml-1 bg-teal-400 animate-pulse"></span>
+            </p>
+          </div>
 
           {/* Master Search Console (Glass) */}
-          <div className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] rounded-[2rem] p-3 flex flex-col sm:flex-row items-center gap-3 relative transition-all focus-within:bg-white/15 focus-within:border-teal-400/50 focus-within:shadow-[0_0_50px_rgba(45,212,191,0.25)]">
-            <form onSubmit={handleSearch} className="flex-1 flex items-center w-full px-4 h-14 sm:h-16">
+          <div className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] rounded-[2rem] p-3 flex flex-col sm:flex-row items-center gap-3 relative transition-all focus-within:bg-white/15 focus-within:border-teal-400/50 focus-within:shadow-[0_0_50px_rgba(45,212,191,0.25)] mb-4">
+            <form onSubmit={handleSearch} className="flex-1 flex items-center w-full px-4 h-12 sm:h-14">
               <Search className="w-6 h-6 text-teal-400 shrink-0 mr-3" />
               <input 
                 type="text" 
@@ -90,9 +133,22 @@ export default function DehapaHome() {
             </form>
             
             <div className="w-full sm:w-auto flex gap-2">
-              <button onClick={() => setIsScannerOpen(true)} className="h-14 sm:h-16 px-4 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 transition-colors flex items-center justify-center backdrop-blur-md" title="Scan QR">
+              <button onClick={() => setIsScannerOpen(true)} className="h-12 sm:h-14 px-4 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 transition-colors flex items-center justify-center backdrop-blur-md" title="Scan QR">
                 <QrCode className="w-6 h-6" />
               </button>
+            </div>
+          </div>
+
+          {/* Global Trust Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-semibold text-slate-300">
+            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
+              <span>🇮🇳</span> Access World-Renowned Indian Doctors
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
+              <Globe2 className="w-4 h-4 text-cyan-400" /> Available in 150+ Countries
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
+              <Zap className="w-4 h-4 text-amber-400" /> Instant Live Consults
             </div>
           </div>
         </section>
