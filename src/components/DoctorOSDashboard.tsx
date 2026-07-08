@@ -5,13 +5,6 @@ import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDocs, updateDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
-"use client";
-
-import React, { useState, useEffect } from 'react';
-import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
-import { useRouter } from 'next/navigation';
-import { db } from '@/lib/firebase';
-import { doc, getDocs, updateDoc, collection, query, where, onSnapshot, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import MyNetworkHub from './network/MyNetworkHub';
 import DigitalRxPad from '@/components/DigitalRxPad';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
