@@ -141,7 +141,7 @@ export default function DehapaHome() {
 
             {/* Card 2: Instant Video Consult */}
             <Link href="/urgent-care" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
-              <Image src="/images/cards/card_video_consult.jpg" alt="Video Consult" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_video_consult.png" alt="Video Consult" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-cyan-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
@@ -155,7 +155,7 @@ export default function DehapaHome() {
 
             {/* Card 3: Schedule Clinic Visit */}
             <Link href="/search?type=doctor" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
-              <Image src="/images/cards/card_clinic_visit.jpg" alt="Clinic Visit" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_clinic_visit.png" alt="Clinic Visit" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-emerald-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
@@ -169,7 +169,7 @@ export default function DehapaHome() {
 
             {/* Card 4: Live Ambulance */}
             <Link href="/ambulance" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
-              <Image src="/images/cards/card_ambulance.jpg" alt="Ambulance" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_ambulance.png" alt="Ambulance" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-rose-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
@@ -183,7 +183,7 @@ export default function DehapaHome() {
 
             {/* Card 5: Order Medicines */}
             <Link href="/pharmacies" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group">
-              <Image src="/images/cards/card_medicines.jpg" alt="Medicines" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_medicines.png" alt="Medicines" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-amber-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
@@ -197,7 +197,7 @@ export default function DehapaHome() {
 
             {/* Card 6: My Health Vault */}
             <Link href="/portal" className="snap-start shrink-0 w-[280px] sm:w-[320px] h-[400px] sm:h-[450px] relative rounded-[2rem] overflow-hidden group pr-4 sm:pr-0">
-              <Image src="/images/cards/card_health_vault.jpg" alt="Health Vault" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_health_vault.png" alt="Health Vault" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-purple-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 z-30 transform group-hover:-translate-y-2 transition-transform duration-300">
@@ -225,7 +225,7 @@ export default function DehapaHome() {
             
             {/* Card 1: Doctor OS */}
             <Link href="/login?redirect=/portal/doctor" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group">
-              <Image src="/images/cards/card_doctor_os.jpg" alt="Doctor OS" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_doctor_os.png" alt="Doctor OS" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-indigo-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
@@ -241,7 +241,7 @@ export default function DehapaHome() {
 
             {/* Card 2: Hospital Admin */}
             <Link href="/login?redirect=/portal/hospital" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group">
-              <Image src="/images/cards/card_hospital_admin.jpg" alt="Hospital Admin" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_hospital_admin.png" alt="Hospital Admin" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-blue-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
@@ -257,7 +257,7 @@ export default function DehapaHome() {
 
             {/* Card 3: Pharmacy Fulfillment */}
             <Link href="/login?redirect=/portal/pharmacy" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group">
-              <Image src="/images/cards/card_pharmacy_network.jpg" alt="Pharmacy Network" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_pharmacy_network.png" alt="Pharmacy Network" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-fuchsia-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
@@ -273,7 +273,7 @@ export default function DehapaHome() {
 
             {/* Card 4: Pathology Labs */}
             <Link href="/login?redirect=/portal/lab" className="snap-start shrink-0 w-[300px] sm:w-[360px] h-[250px] sm:h-[280px] relative rounded-[2rem] overflow-hidden group pr-4 sm:pr-0">
-              <Image src="/images/cards/card_pathology_lab.jpg" alt="Pathology Labs" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <Image src="/images/cards/card_pathology_lab.png" alt="Pathology Labs" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
               <div className="absolute inset-0 border border-white/10 rounded-[2rem] z-20 group-hover:border-violet-400/50 transition-colors"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-4">
