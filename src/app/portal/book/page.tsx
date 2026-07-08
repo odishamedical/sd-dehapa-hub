@@ -314,6 +314,11 @@ function BookAppointmentForm() {
                 <p className="text-slate-300 text-sm font-medium">{doctor.experience || "10+ Years"} Experience</p>
                 <p className="text-slate-400 text-sm mt-1">{doctor.clinic?.name || "Verified Clinic"}</p>
                 
+                <Link href={`/profile/doctor/${doctor.customSlug || doctor.id}`} target="_blank" className="mt-4 inline-flex items-center gap-1.5 px-5 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-cyan-500/50 rounded-full text-xs font-bold text-cyan-400 uppercase tracking-widest transition-all">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                  View Profile
+                </Link>
+                
                 <div className="mt-8 w-full bg-black/40 rounded-2xl p-5 border border-white/10 flex flex-col gap-2 backdrop-blur-md relative overflow-hidden">
                   <div className="absolute -top-4 -right-4 w-20 h-20 bg-emerald-500/10 blur-xl rounded-full"></div>
                   <span className="text-slate-400 text-xs font-bold uppercase tracking-widest text-left">Total Fee</span>
