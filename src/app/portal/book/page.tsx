@@ -107,9 +107,16 @@ function BookAppointmentForm() {
       base = Math.floor(base * 1.5);
     }
     
-    // Testing Phase Discount 
-    const discounted = 500; // Hardcoded testing launch offer
-    return { original: base, discounted: discounted };
+    // Launch discount logic
+    // First check if the admin explicitly set a "launchFee" for this doctor
+    let discounted = doctor.launchFee ? parseInt(doctor.launchFee.toString()) : base * 0.5;
+    
+    // Safety check: Discount can NEVER be higher than the original base price
+    if (discounted > base) {
+      discounted = base;
+    }
+    
+    return { original: base, discounted: Math.floor(discounted) };
   };
 
   const isTestAccount = doctor?.id === "68bKd57pRmlZHQbMdBFq" || doctor?.isTestAccount === true;
