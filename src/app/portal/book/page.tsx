@@ -242,7 +242,7 @@ function BookAppointmentForm() {
               {/* Doctor Summary Card */}
               <div className="bg-white/10 backdrop-blur-3xl rounded-[2rem] p-6 shadow-[0_15px_40px_rgba(20,184,166,0.15)] border border-white/20 flex flex-col items-center text-center group">
                 <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-white/20 shadow-[0_0_30px_rgba(20,184,166,0.3)] mb-4 bg-black/20">
-                  <img src={doctor.image || \`https://ui-avatars.com/api/?name=\${encodeURIComponent(doctor.name)}&background=0f766e&color=fff&size=150\`} alt={doctor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <img src={doctor.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=0f766e&color=fff&size=150`} alt={doctor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
                 <h2 className="text-2xl font-black text-white">{doctor.name}</h2>
                 <p className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-400 font-bold text-sm uppercase tracking-wider mt-1">{doctor.specialty || doctor.category}</p>
@@ -323,11 +323,11 @@ function BookAppointmentForm() {
                             key={t}
                             type="button"
                             onClick={() => setSelectedTime(t)}
-                            className={\`py-3.5 rounded-xl border text-sm font-bold transition-all cursor-pointer backdrop-blur-md \${
+                            className={`py-3.5 rounded-xl border text-sm font-bold transition-all cursor-pointer backdrop-blur-md ${
                               isActive 
                                 ? "bg-teal-500/30 border-teal-400/50 text-teal-300 shadow-[inset_0_0_20px_rgba(20,184,166,0.3),0_0_15px_rgba(20,184,166,0.2)] scale-[1.02]" 
                                 : "bg-white/5 border-white/10 text-slate-300 hover:border-cyan-400/50 hover:bg-white/10"
-                            }\`}
+                            }`}
                           >
                             {t}
                           </button>
@@ -410,7 +410,7 @@ function BookAppointmentForm() {
                   Processing...
                 </>
               ) : (
-                \`Pay Now (₹\${doctor.consultationFee || 500})\`
+                `Pay Now (₹${doctor.consultationFee || 500})`
               )}
             </button>
             <Link href="/portal" className="inline-block mt-4 text-sm text-slate-400 hover:text-white transition-colors relative z-10">
