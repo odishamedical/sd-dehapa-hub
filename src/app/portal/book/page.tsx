@@ -7,6 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, collection, addDoc, updateDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 
+type ConsultationMode = 'video_scheduled' | 'clinic' | 'video_urgent';
+
 function BookAppointmentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -19,6 +21,9 @@ function BookAppointmentForm() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userUid, setUserUid] = useState<string | null>(null);
+  
+  const [consultationMode, setConsultationMode] = useState<ConsultationMode>('video_scheduled');
+
   const [selectedDate, setSelectedDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 1); // tomorrow
@@ -30,6 +35,7 @@ function BookAppointmentForm() {
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [bookingId, setBookingId] = useState("");
+  const [clinicCode, setClinicCode] = useState<string | null>(null);
 
   useEffect(() => {
     const email = localStorage.getItem("sd_current_user_email");
@@ -83,24 +89,56 @@ function BookAppointmentForm() {
     fetchAdsAndDoctor();
   }, [router, docId]);
 
+  const getPricing = () => {
+    if (!doctor) return { original: 0, discounted: 0 };
+    
+    let base = 500;
+    if (doctor.consultationFee) {
+      base = parseInt(doctor.consultationFee.toString());
+    } else {
+       const cat = (doctor.category || "").toLowerCase();
+       if (cat.includes('super')) base = 1200;
+       else if (cat.includes('specialist')) base = 800;
+       else if (cat.includes('ayush')) base = 300;
+       else base = 500;
+    }
+
+    if (consultationMode === 'video_urgent') {
+      base = Math.floor(base * 1.5);
+    }
+    
+    // Testing Phase Discount 
+    const discounted = 500; // Hardcoded testing launch offer
+    return { original: base, discounted: discounted };
+  };
+
+  const isTestAccount = doctor?.id === "68bKd57pRmlZHQbMdBFq" || doctor?.isTestAccount === true;
+
   const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!doctor || !userEmail) return;
     
     setIsSubmitting(true);
     try {
+      const code = consultationMode === 'clinic' ? 'DH-' + Math.random().toString(36).substr(2, 5).toUpperCase() : null;
+      setClinicCode(code);
+
+      const pricing = getPricing();
+
       const appointmentData = {
         patientId: userUid,
         patientName: userName,
         patientEmail: userEmail,
         doctorId: doctor.id,
         doctorName: doctor.name,
-        date: selectedDate,
-        timeSlot: selectedTime,
+        date: consultationMode === 'video_urgent' ? new Date().toISOString().split('T')[0] : selectedDate,
+        timeSlot: consultationMode === 'video_urgent' ? 'Immediate' : selectedTime,
         symptoms: symptoms,
         status: "Pending", // Pending payment
-        type: "Telemedicine",
-        fee: doctor.consultationFee || 500, // Default fee if not set
+        type: consultationMode === 'clinic' ? 'Clinic Visit' : (consultationMode === 'video_urgent' ? 'Urgent Video Call' : 'Telemedicine'),
+        fee: pricing.discounted,
+        originalFee: pricing.original,
+        clinicEntryCode: code,
         timestamp: serverTimestamp(),
       };
 
@@ -116,14 +154,31 @@ function BookAppointmentForm() {
     }
   };
 
+  const handleTestBypass = async () => {
+    try {
+      setIsSubmitting(true);
+      await updateDoc(doc(db, "appointments", bookingId), {
+        status: "Confirmed",
+        paymentId: "TEST_BYPASS_" + Math.random().toString(36).substr(2, 9)
+      });
+      setPaymentSuccess(true);
+    } catch(err) {
+      console.error(err);
+      alert("Test bypass failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handlePayment = async () => {
     try {
       setIsSubmitting(true);
-      // Create Order
+      const pricing = getPricing();
+      
       const res = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: doctor.consultationFee || 500, receipt: bookingId })
+        body: JSON.stringify({ amount: pricing.discounted, receipt: bookingId })
       });
       const orderData = await res.json();
       
@@ -133,7 +188,6 @@ function BookAppointmentForm() {
          return;
       }
 
-      // Razorpay options
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder_key", 
         amount: orderData.amount,
@@ -154,7 +208,6 @@ function BookAppointmentForm() {
             });
             const verifyData = await verifyRes.json();
             if (verifyData.success) {
-              // Update appointment status in Firestore
               await updateDoc(doc(db, "appointments", bookingId), {
                 status: "Confirmed",
                 paymentId: response.razorpay_payment_id
@@ -209,6 +262,8 @@ function BookAppointmentForm() {
     );
   }
 
+  const pricing = getPricing();
+
   return (
     <div className="min-h-screen bg-[#050B14] font-sans pb-24 text-slate-200 selection:bg-teal-500/30 overflow-x-hidden">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
@@ -228,8 +283,8 @@ function BookAppointmentForm() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
               Back to Profile
             </Link>
-            <h1 className="text-4xl md:text-5xl font-black mb-2 text-white">Book Appointment</h1>
-            <p className="text-slate-400 text-sm md:text-base max-w-xl">Complete your secure booking for a video consultation. All sessions are fully encrypted and HIPAA/FHIR-compliant.</p>
+            <h1 className="text-4xl md:text-5xl font-black mb-2 text-white">Secure Checkout</h1>
+            <p className="text-slate-400 text-sm md:text-base max-w-xl">Complete your secure booking. All sessions and data are fully encrypted and HIPAA/FHIR-compliant.</p>
           </div>
         </div>
       </div>
@@ -252,13 +307,13 @@ function BookAppointmentForm() {
                 <p className="text-slate-300 text-sm font-medium">{doctor.experience || "10+ Years"} Experience</p>
                 <p className="text-slate-400 text-sm mt-1">{doctor.clinic?.name || "Verified Clinic"}</p>
                 
-                <Link href={`/profile/doctor/${doctor.id}`} className="text-cyan-400 hover:text-cyan-300 text-xs font-bold uppercase tracking-widest mt-4 flex items-center justify-center gap-1 transition-all hover:scale-105">
-                  ↗ View Full Profile
-                </Link>
-                
-                <div className="mt-8 w-full bg-black/20 rounded-2xl p-4 border border-white/10 flex justify-between items-center backdrop-blur-md">
-                  <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">Consultation Fee</span>
-                  <span className="text-white font-black text-xl">₹{doctor.consultationFee || 500}</span>
+                <div className="mt-8 w-full bg-black/40 rounded-2xl p-5 border border-white/10 flex flex-col gap-2 backdrop-blur-md relative overflow-hidden">
+                  <div className="absolute -top-4 -right-4 w-20 h-20 bg-emerald-500/10 blur-xl rounded-full"></div>
+                  <span className="text-slate-400 text-xs font-bold uppercase tracking-widest text-left">Total Fee</span>
+                  <div className="flex flex-col items-start gap-1">
+                    <span className="line-through text-slate-500 font-bold">₹{pricing.original}</span>
+                    <span className="text-emerald-400 font-black text-3xl">₹{pricing.discounted} <span className="text-xs text-emerald-500 uppercase tracking-widest ml-1">(Launch Offer)</span></span>
+                  </div>
                 </div>
               </div>
 
@@ -272,7 +327,7 @@ function BookAppointmentForm() {
                 <p className="text-emerald-100/70 text-xs leading-relaxed relative z-10">Your medical data is protected. This session is fully encrypted and never recorded without your explicit consent.</p>
               </div>
 
-              {/* AD SLOT: booking_sidebar */}
+              {/* AD SLOT */}
               {platformAds['ad_slot_booking_sidebar'] && (
                 <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-4 border border-white/10 group overflow-hidden">
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-3 text-center">Advertisement</p>
@@ -294,47 +349,80 @@ function BookAppointmentForm() {
               <div className="bg-white/10 backdrop-blur-3xl rounded-[2rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 relative overflow-hidden">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/10 blur-[100px] rounded-full"></div>
                 
-                <h3 className="text-3xl font-black text-white mb-8 relative z-10">Select Schedule</h3>
+                <h3 className="text-3xl font-black text-white mb-8 relative z-10">Consultation Setup</h3>
                 
                 <form onSubmit={handleBook} className="space-y-8 text-left relative z-10">
+                  
+                  {/* Mode Selector */}
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date of Consultation</label>
-                    <input 
-                      type="date" 
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      required
-                      min={new Date().toISOString().split('T')[0]}
-                      className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all font-semibold"
-                      style={{ colorScheme: 'dark' }}
-                    />
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Select Mode</label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      
+                      {/* Clinic Visit */}
+                      <button type="button" onClick={() => setConsultationMode('clinic')} className={`p-4 rounded-2xl border text-left transition-all ${consultationMode === 'clinic' ? 'bg-emerald-500/20 border-emerald-400/50 shadow-[0_0_20px_rgba(16,185,129,0.2)]' : 'bg-black/20 border-white/10 hover:border-emerald-400/30'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-3 ${consultationMode === 'clinic' ? 'bg-emerald-400 text-black' : 'bg-white/10 text-emerald-400'}`}>🏥</div>
+                        <h4 className={`font-bold ${consultationMode === 'clinic' ? 'text-emerald-300' : 'text-slate-300'}`}>Clinic Visit</h4>
+                        <p className="text-xs text-slate-500 mt-1">Visit the doctor in person</p>
+                      </button>
+
+                      {/* Scheduled Video */}
+                      <button type="button" onClick={() => setConsultationMode('video_scheduled')} className={`p-4 rounded-2xl border text-left transition-all ${consultationMode === 'video_scheduled' ? 'bg-cyan-500/20 border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.2)]' : 'bg-black/20 border-white/10 hover:border-cyan-400/30'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-3 ${consultationMode === 'video_scheduled' ? 'bg-cyan-400 text-black' : 'bg-white/10 text-cyan-400'}`}>📅</div>
+                        <h4 className={`font-bold ${consultationMode === 'video_scheduled' ? 'text-cyan-300' : 'text-slate-300'}`}>Video Call</h4>
+                        <p className="text-xs text-slate-500 mt-1">Book a secure virtual session</p>
+                      </button>
+
+                      {/* Urgent Video */}
+                      <button type="button" onClick={() => setConsultationMode('video_urgent')} className={`p-4 rounded-2xl border text-left transition-all ${consultationMode === 'video_urgent' ? 'bg-rose-500/20 border-rose-400/50 shadow-[0_0_20px_rgba(244,63,94,0.2)]' : 'bg-black/20 border-white/10 hover:border-rose-400/30'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-3 ${consultationMode === 'video_urgent' ? 'bg-rose-400 text-black' : 'bg-white/10 text-rose-400'}`}>⚡</div>
+                        <h4 className={`font-bold ${consultationMode === 'video_urgent' ? 'text-rose-300' : 'text-slate-300'}`}>Urgent Call</h4>
+                        <p className="text-xs text-slate-500 mt-1">Connect immediately (Premium)</p>
+                      </button>
+
+                    </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-end">
-                      <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Available Time Slots</label>
-                      <span className="text-[10px] font-bold text-teal-300 bg-teal-500/20 border border-teal-500/30 px-2 py-1 rounded-md backdrop-blur-md">IST (GMT+5:30)</span>
+                  {consultationMode !== 'video_urgent' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                      <div className="space-y-3">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date of Consultation</label>
+                        <input 
+                          type="date" 
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                          required
+                          min={new Date().toISOString().split('T')[0]}
+                          className="w-full bg-black/30 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all font-semibold"
+                          style={{ colorScheme: 'dark' }}
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-end">
+                          <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Time Slot</label>
+                          <span className="text-[10px] font-bold text-teal-300 bg-teal-500/20 border border-teal-500/30 px-2 py-1 rounded-md backdrop-blur-md">IST (GMT+5:30)</span>
+                        </div>
+                        <select 
+                          value={selectedTime}
+                          onChange={(e) => setSelectedTime(e.target.value)}
+                          required
+                          className="w-full bg-black/30 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all font-semibold appearance-none"
+                        >
+                          {["09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:30 AM", "02:00 PM", "03:00 PM", "04:30 PM", "06:00 PM"].map((t) => (
+                            <option key={t} value={t}>{t}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                      {["09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:30 AM", "02:00 PM", "03:00 PM", "04:30 PM", "06:00 PM"].map((t) => {
-                        const isActive = selectedTime === t;
-                        return (
-                          <button
-                            key={t}
-                            type="button"
-                            onClick={() => setSelectedTime(t)}
-                            className={`py-3.5 rounded-xl border text-sm font-bold transition-all cursor-pointer backdrop-blur-md ${
-                              isActive 
-                                ? "bg-teal-500/30 border-teal-400/50 text-teal-300 shadow-[inset_0_0_20px_rgba(20,184,166,0.3),0_0_15px_rgba(20,184,166,0.2)] scale-[1.02]" 
-                                : "bg-white/5 border-white/10 text-slate-300 hover:border-cyan-400/50 hover:bg-white/10"
-                            }`}
-                          >
-                            {t}
-                          </button>
-                        );
-                      })}
+                  ) : (
+                    <div className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-6 flex items-start gap-4 animate-in fade-in zoom-in duration-300">
+                       <div className="w-10 h-10 rounded-full bg-rose-500/20 flex flex-shrink-0 items-center justify-center text-rose-400 text-xl font-bold">!</div>
+                       <div>
+                         <h4 className="font-bold text-rose-300">Immediate Consultation Required</h4>
+                         <p className="text-sm text-rose-100/70 mt-1">You are requesting an urgent connection. The doctor will be notified immediately upon payment confirmation. Premium pricing (1.5x) is applied.</p>
+                       </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="space-y-3">
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Chief Symptoms / Reason</label>
@@ -362,7 +450,7 @@ function BookAppointmentForm() {
                       ) : (
                         <>
                           <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                          Confirm Schedule
+                          Proceed to Payment
                         </>
                       )}
                     </button>
@@ -382,7 +470,7 @@ function BookAppointmentForm() {
             <div className="relative z-10">
               <h3 className="text-3xl md:text-4xl font-black text-white mb-4">Pending Payment</h3>
               <p className="text-slate-300 leading-relaxed text-lg">
-                Your video consultation with <strong className="text-teal-400">{doctor.name}</strong> on <strong className="text-white">{selectedDate}</strong> at <strong className="text-white">{selectedTime}</strong> is temporarily reserved. Complete payment to confirm.
+                Your <span className="font-bold text-white uppercase">{consultationMode.replace('_', ' ')}</span> with <strong className="text-teal-400">{doctor.name}</strong> is temporarily reserved. Complete payment to confirm.
               </p>
             </div>
 
@@ -410,9 +498,20 @@ function BookAppointmentForm() {
                   Processing...
                 </>
               ) : (
-                `Pay Now (₹${doctor.consultationFee || 500})`
+                `Pay Now (₹${pricing.discounted})`
               )}
             </button>
+            
+            {isTestAccount && (
+              <button 
+                onClick={handleTestBypass}
+                disabled={isSubmitting}
+                className="w-full py-4 mt-2 bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-300 border border-indigo-400/50 rounded-2xl text-xs font-black uppercase tracking-widest transition-all backdrop-blur-xl relative z-10 flex items-center justify-center gap-2"
+              >
+                🛠 Bypass Payment (Test Mode)
+              </button>
+            )}
+
             <Link href="/portal" className="inline-block mt-4 text-sm text-slate-400 hover:text-white transition-colors relative z-10">
               Cancel & Return to Dashboard
             </Link>
@@ -428,7 +527,7 @@ function BookAppointmentForm() {
             <div className="relative z-10">
               <h3 className="text-3xl md:text-4xl font-black text-white mb-4">Consultation Confirmed!</h3>
               <p className="text-slate-300 leading-relaxed text-lg">
-                Thank you, <strong className="text-white">{userName}</strong>. Payment received. Your video consultation with <strong className="text-teal-400">{doctor.name}</strong> is fully confirmed.
+                Thank you, <strong className="text-white">{userName}</strong>. Payment received. Your <span className="font-bold text-white uppercase">{consultationMode.replace('_', ' ')}</span> with <strong className="text-teal-400">{doctor.name}</strong> is fully confirmed.
               </p>
             </div>
 
@@ -437,10 +536,21 @@ function BookAppointmentForm() {
                 <span className="text-slate-400 text-sm">Booking ID</span>
                 <strong className="text-white font-mono">{bookingId.substring(0, 8).toUpperCase()}</strong>
               </div>
-              <div className="flex justify-between items-center pt-1">
-                <span className="text-slate-400 text-sm">Logistics</span>
-                <strong className="text-teal-400 text-sm font-bold">Join via Dashboard</strong>
-              </div>
+              
+              {consultationMode === 'clinic' ? (
+                <div className="pt-2 text-center">
+                  <span className="text-slate-400 text-xs font-bold uppercase tracking-widest block mb-2">Clinic Entry Code</span>
+                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 inline-block">
+                    <strong className="text-emerald-400 text-3xl font-mono tracking-[0.2em]">{clinicCode}</strong>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-3">Please show this code at the reception desk.</p>
+                </div>
+              ) : (
+                <div className="flex justify-between items-center pt-1">
+                  <span className="text-slate-400 text-sm">Logistics</span>
+                  <strong className="text-teal-400 text-sm font-bold">Join via Dashboard</strong>
+                </div>
+              )}
             </div>
 
             <Link href="/portal" className="inline-block w-full py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-xl relative z-10">
