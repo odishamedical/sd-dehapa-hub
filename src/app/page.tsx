@@ -119,24 +119,37 @@ export default function DehapaHome() {
             </p>
           </div>
 
-          {/* Master Search Console (Glass) */}
-          <div className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] rounded-[2rem] p-3 flex flex-col sm:flex-row items-center gap-3 relative transition-all focus-within:bg-white/15 focus-within:border-teal-400/50 focus-within:shadow-[0_0_50px_rgba(45,212,191,0.25)] mb-4">
-            <form onSubmit={handleSearch} className="flex-1 flex items-center w-full px-4 h-12 sm:h-14">
-              <Search className="w-6 h-6 text-teal-400 shrink-0 mr-3" />
+          {/* Search Console Container */}
+          <div className="w-full max-w-3xl mb-4 flex flex-col sm:flex-row gap-3">
+            
+            {/* Master Search Bar (Glass) */}
+            <form onSubmit={handleSearch} className="flex-1 bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] rounded-2xl sm:rounded-full p-2 flex items-center relative transition-all focus-within:bg-white/15 focus-within:border-teal-400/50 focus-within:shadow-[0_0_50px_rgba(45,212,191,0.25)]">
+              <div className="pl-4 pr-3 text-teal-400">
+                <Search className="w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
               <input 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="What kind of care do you need today?" 
-                className="w-full bg-transparent border-none outline-none text-white text-lg placeholder:text-slate-400 focus:ring-0" 
+                className="flex-1 bg-transparent border-none outline-none text-white text-base sm:text-lg placeholder:text-slate-400 focus:ring-0 min-w-0" 
               />
+              <button 
+                type="submit" 
+                className="ml-2 px-5 py-3 sm:py-3.5 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-bold rounded-xl sm:rounded-full shadow-lg shrink-0 transition-all text-sm sm:text-base"
+              >
+                Search
+              </button>
             </form>
             
-            <div className="w-full sm:w-auto flex gap-2">
-              <button onClick={() => setIsScannerOpen(true)} className="h-12 sm:h-14 px-4 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 transition-colors flex items-center justify-center backdrop-blur-md" title="Scan QR">
-                <QrCode className="w-6 h-6" />
-              </button>
-            </div>
+            {/* Separate QR Scanner Button */}
+            <button 
+              onClick={() => setIsScannerOpen(true)} 
+              className="h-14 sm:h-[68px] aspect-square bg-white/10 border border-white/20 text-white rounded-2xl sm:rounded-full hover:bg-white/20 hover:border-cyan-400 transition-all flex items-center justify-center backdrop-blur-md shrink-0 shadow-lg mx-auto sm:mx-0" 
+              title="Scan QR Identity"
+            >
+              <QrCode className="w-6 h-6 sm:w-7 sm:h-7" />
+            </button>
           </div>
 
           {/* Global Trust Badges */}
