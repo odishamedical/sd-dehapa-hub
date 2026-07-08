@@ -5,7 +5,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { useRouter, useSearchParams } from "next/navigation";
 import { db } from "@/lib/firebase";
-import { doc, getDoc, collection, addDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc, updateDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
 
 function BookAppointmentForm() {
   const router = useRouter();
@@ -14,6 +14,7 @@ function BookAppointmentForm() {
   
   const [loading, setLoading] = useState(true);
   const [doctor, setDoctor] = useState<any>(null);
+  const [platformAds, setPlatformAds] = useState<any>({});
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
@@ -44,7 +45,24 @@ function BookAppointmentForm() {
     setUserName(name || "Patient");
     setUserUid(uid);
 
-    const fetchDoctor = async () => {
+    const fetchAdsAndDoctor = async () => {
+      // Fetch Ads
+      try {
+        const adsSnap = await getDocs(query(collection(db, 'platform_ads'), where('active', '==', true)));
+        const adsData: any = {};
+        adsSnap.forEach(d => {
+          const ad = d.data();
+          const slot = ad.slot || ad.slotId;
+          if (slot && (ad.targetType === 'global' || !ad.targetType || (ad.targetType === 'specific_profile' && ad.targetId === docId))) {
+            adsData[slot] = ad;
+          }
+        });
+        setPlatformAds(adsData);
+      } catch(e) {
+        console.error("Failed to fetch ads", e);
+      }
+
+      // Fetch Doctor
       if (!docId) {
         setLoading(false);
         return;
@@ -61,7 +79,8 @@ function BookAppointmentForm() {
         setLoading(false);
       }
     };
-    fetchDoctor();
+    
+    fetchAdsAndDoctor();
   }, [router, docId]);
 
   const handleBook = async (e: React.FormEvent) => {
@@ -173,97 +192,128 @@ function BookAppointmentForm() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-         <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-[#050B14] flex items-center justify-center">
+         <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (!doctor) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+      <div className="min-h-screen bg-[#050B14] flex items-center justify-center text-white">
          <div className="text-center">
            <h2 className="text-2xl font-bold mb-2">Doctor Not Found</h2>
-           <Link href="/doctors" className="text-teal-600 underline">Return to Directory</Link>
+           <Link href="/search" className="text-cyan-400 underline hover:text-cyan-300">Return to Directory</Link>
          </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] font-sans pb-24">
+    <div className="min-h-screen bg-[#050B14] font-sans pb-24 text-slate-200 selection:bg-teal-500/30 overflow-x-hidden">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+      
+      {/* MESH GRADIENT BACKGROUND */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-60 mix-blend-screen">
+        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-teal-600/30 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-600/30 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] bg-cyan-600/20 rounded-full blur-[100px]"></div>
+      </div>
+
       {/* Header Area */}
-      <div className="bg-teal-900 text-white pt-24 pb-12 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 150%, #14b8a6 0%, transparent 50%)' }}></div>
-        <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="pt-24 pb-12 px-6 relative z-10 border-b border-white/10 bg-white/5 backdrop-blur-xl">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <Link href={`/profile/doctor/${doctor.id}`} className="inline-flex items-center gap-2 text-teal-200 hover:text-white text-sm font-bold uppercase tracking-widest mb-4 transition-colors">
+            <Link href={`/profile/doctor/${doctor.id}`} className="inline-flex items-center gap-2 text-teal-300 hover:text-white text-sm font-bold uppercase tracking-widest mb-4 transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
               Back to Profile
             </Link>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2">Book Appointment</h1>
-            <p className="text-teal-100/80 text-sm md:text-base max-w-xl">Complete your secure booking for a video consultation. All sessions are fully encrypted and HIPAA/FHIR-compliant.</p>
+            <h1 className="text-4xl md:text-5xl font-black mb-2 text-white">Book Appointment</h1>
+            <p className="text-slate-400 text-sm md:text-base max-w-xl">Complete your secure booking for a video consultation. All sessions are fully encrypted and HIPAA/FHIR-compliant.</p>
           </div>
         </div>
       </div>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 -mt-8 relative z-20">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 relative z-20 mt-12">
         {!bookingSuccess ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Column: Doctor Summary */}
+            {/* Left Column: Doctor Summary & Ads */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col items-center text-center">
-                
-                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-teal-50 shadow-md mb-4">
-                  <img src={doctor.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=0f766e&color=fff&size=150`} alt={doctor.name} className="w-full h-full object-cover" />
+              {/* Doctor Summary Card */}
+              <div className="bg-white/10 backdrop-blur-3xl rounded-[2rem] p-6 shadow-[0_15px_40px_rgba(20,184,166,0.15)] border border-white/20 flex flex-col items-center text-center group">
+                <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-white/20 shadow-[0_0_30px_rgba(20,184,166,0.3)] mb-4 bg-black/20">
+                  <img src={doctor.image || \`https://ui-avatars.com/api/?name=\${encodeURIComponent(doctor.name)}&background=0f766e&color=fff&size=150\`} alt={doctor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
-                <h2 className="text-xl font-bold text-slate-900">{doctor.name}</h2>
-                <p className="text-teal-600 font-bold text-sm uppercase tracking-wider mt-1">{doctor.specialty || doctor.category}</p>
-                <div className="w-12 h-1 bg-slate-100 rounded-full my-4"></div>
-                <p className="text-slate-500 text-sm">{doctor.experience || "10+ Years"} Experience</p>
-                <p className="text-slate-500 text-sm mt-1">{doctor.clinic?.name || "Verified Clinic"}</p>
-                <Link href={`/profile/doctor/${doctor.id}`} className="text-teal-600 hover:text-teal-700 text-xs font-bold uppercase tracking-widest mt-3 flex items-center justify-center gap-1 transition-all hover:scale-105">
+                <h2 className="text-2xl font-black text-white">{doctor.name}</h2>
+                <p className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-400 font-bold text-sm uppercase tracking-wider mt-1">{doctor.specialty || doctor.category}</p>
+                
+                <div className="w-12 h-1 bg-white/10 rounded-full my-4"></div>
+                
+                <p className="text-slate-300 text-sm font-medium">{doctor.experience || "10+ Years"} Experience</p>
+                <p className="text-slate-400 text-sm mt-1">{doctor.clinic?.name || "Verified Clinic"}</p>
+                
+                <Link href={`/profile/doctor/${doctor.id}`} className="text-cyan-400 hover:text-cyan-300 text-xs font-bold uppercase tracking-widest mt-4 flex items-center justify-center gap-1 transition-all hover:scale-105">
                   ↗ View Full Profile
                 </Link>
                 
-                <div className="mt-6 w-full bg-slate-50 rounded-xl p-4 border border-slate-100 flex justify-between items-center">
-                  <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">Consultation Fee</span>
-                  <span className="text-slate-900 font-black text-lg">₹{doctor.consultationFee || 500}</span>
+                <div className="mt-8 w-full bg-black/20 rounded-2xl p-4 border border-white/10 flex justify-between items-center backdrop-blur-md">
+                  <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">Consultation Fee</span>
+                  <span className="text-white font-black text-xl">₹{doctor.consultationFee || 500}</span>
                 </div>
               </div>
 
-              <div className="bg-teal-50 rounded-2xl p-6 border border-teal-100">
-                <h4 className="font-bold text-teal-900 flex items-center gap-2 mb-2">
-                  <svg className="w-5 h-5 text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
+              {/* Secure Guarantee */}
+              <div className="bg-emerald-500/10 rounded-[2rem] p-6 border border-emerald-500/30 backdrop-blur-md relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/20 blur-2xl"></div>
+                <h4 className="font-bold text-emerald-300 flex items-center gap-2 mb-3 relative z-10">
+                  <svg className="w-5 h-5 text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
                   Secure Guarantee
                 </h4>
-                <p className="text-teal-700/80 text-xs leading-relaxed">Your medical data is protected. This session is fully encrypted and never recorded without your explicit consent.</p>
+                <p className="text-emerald-100/70 text-xs leading-relaxed relative z-10">Your medical data is protected. This session is fully encrypted and never recorded without your explicit consent.</p>
               </div>
+
+              {/* AD SLOT: booking_sidebar */}
+              {platformAds['ad_slot_booking_sidebar'] && (
+                <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-4 border border-white/10 group overflow-hidden">
+                  <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-3 text-center">Advertisement</p>
+                  <div className="w-full rounded-xl overflow-hidden border border-white/10 shadow-[0_5px_20px_rgba(0,0,0,0.3)]">
+                    {platformAds['ad_slot_booking_sidebar'].link ? (
+                      <a href={platformAds['ad_slot_booking_sidebar'].link} target="_blank" rel="noopener noreferrer">
+                        <img src={platformAds['ad_slot_booking_sidebar'].imageUrl} alt="Advertisement" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
+                      </a>
+                    ) : (
+                      <img src={platformAds['ad_slot_booking_sidebar'].imageUrl} alt="Advertisement" className="w-full h-auto object-cover" />
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right Column: Booking Form */}
             <div className="lg:col-span-8">
-              <div className="bg-white rounded-3xl p-6 md:p-10 shadow-xl shadow-slate-200/50 border border-slate-100">
-                <h3 className="text-2xl font-bold text-slate-900 mb-8">Select Schedule</h3>
+              <div className="bg-white/10 backdrop-blur-3xl rounded-[2rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 relative overflow-hidden">
+                <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/10 blur-[100px] rounded-full"></div>
                 
-                <form onSubmit={handleBook} className="space-y-8 text-left">
+                <h3 className="text-3xl font-black text-white mb-8 relative z-10">Select Schedule</h3>
+                
+                <form onSubmit={handleBook} className="space-y-8 text-left relative z-10">
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Date of Consultation</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date of Consultation</label>
                     <input 
                       type="date" 
                       value={selectedDate}
                       onChange={(e) => setSelectedDate(e.target.value)}
                       required
                       min={new Date().toISOString().split('T')[0]}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-semibold"
+                      className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all font-semibold"
+                      style={{ colorScheme: 'dark' }}
                     />
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex justify-between items-end">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Available Time Slots</label>
-                      <span className="text-[10px] font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded">IST (GMT+5:30)</span>
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Available Time Slots</label>
+                      <span className="text-[10px] font-bold text-teal-300 bg-teal-500/20 border border-teal-500/30 px-2 py-1 rounded-md backdrop-blur-md">IST (GMT+5:30)</span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {["09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:30 AM", "02:00 PM", "03:00 PM", "04:30 PM", "06:00 PM"].map((t) => {
@@ -273,11 +323,11 @@ function BookAppointmentForm() {
                             key={t}
                             type="button"
                             onClick={() => setSelectedTime(t)}
-                            className={`py-3.5 rounded-xl border text-sm font-bold transition-all cursor-pointer ${
+                            className={\`py-3.5 rounded-xl border text-sm font-bold transition-all cursor-pointer backdrop-blur-md \${
                               isActive 
-                                ? "bg-teal-600 border-teal-600 text-white shadow-lg shadow-teal-600/30 scale-[1.02]" 
-                                : "bg-white border-slate-200 text-slate-600 hover:border-teal-300 hover:bg-teal-50"
-                            }`}
+                                ? "bg-teal-500/30 border-teal-400/50 text-teal-300 shadow-[inset_0_0_20px_rgba(20,184,166,0.3),0_0_15px_rgba(20,184,166,0.2)] scale-[1.02]" 
+                                : "bg-white/5 border-white/10 text-slate-300 hover:border-cyan-400/50 hover:bg-white/10"
+                            }\`}
                           >
                             {t}
                           </button>
@@ -287,22 +337,22 @@ function BookAppointmentForm() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Chief Symptoms / Reason</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Chief Symptoms / Reason</label>
                     <textarea 
                       rows={4}
                       value={symptoms}
                       onChange={(e) => setSymptoms(e.target.value)}
                       placeholder="Please briefly describe your symptoms (e.g. Mild fever since yesterday, headache)..."
                       required
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-semibold resize-none"
+                      className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all font-semibold resize-none placeholder-slate-600"
                     />
                   </div>
 
-                  <div className="pt-6 border-t border-slate-100">
+                  <div className="pt-8 border-t border-white/10">
                     <button 
                       type="submit" 
                       disabled={isSubmitting}
-                      className="w-full py-5 bg-slate-900 hover:bg-black text-white font-black text-sm uppercase tracking-widest rounded-2xl hover:scale-[1.01] active:scale-95 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.2)] flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full py-5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 border border-emerald-400/50 rounded-2xl shadow-[inset_0_0_20px_rgba(16,185,129,0.2),0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[inset_0_0_20px_rgba(16,185,129,0.4),0_0_25px_rgba(16,185,129,0.5)] font-black text-sm uppercase tracking-widest backdrop-blur-xl transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed group"
                     >
                       {isSubmitting ? (
                         <>
@@ -311,7 +361,7 @@ function BookAppointmentForm() {
                         </>
                       ) : (
                         <>
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                          <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                           Confirm Schedule
                         </>
                       )}
@@ -322,33 +372,37 @@ function BookAppointmentForm() {
             </div>
           </div>
         ) : !paymentSuccess ? (
-          <div className="max-w-2xl mx-auto bg-white rounded-3xl p-10 md:p-16 shadow-2xl shadow-emerald-900/10 border border-slate-100 text-center space-y-8 animate-in zoom-in-95 duration-500 mt-12">
-            <div className="w-24 h-24 rounded-full bg-slate-50 border-4 border-slate-100 flex items-center justify-center text-slate-500 mx-auto">
+          <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-3xl rounded-[2rem] p-10 md:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 text-center space-y-8 animate-in zoom-in-95 duration-500 mt-12 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-teal-500/5 to-transparent pointer-events-none"></div>
+            
+            <div className="w-24 h-24 rounded-full bg-black/20 border-2 border-teal-500/30 shadow-[0_0_30px_rgba(20,184,166,0.2)] flex items-center justify-center text-teal-400 mx-auto relative z-10 backdrop-blur-md">
               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
             </div>
             
-            <div>
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">Pending Payment</h3>
-              <p className="text-slate-600 leading-relaxed text-lg">
-                Your video consultation with <strong className="text-teal-600">{doctor.name}</strong> on <strong className="text-slate-900">{selectedDate}</strong> at <strong className="text-slate-900">{selectedTime}</strong> is temporarily reserved. Complete payment to confirm.
+            <div className="relative z-10">
+              <h3 className="text-3xl md:text-4xl font-black text-white mb-4">Pending Payment</h3>
+              <p className="text-slate-300 leading-relaxed text-lg">
+                Your video consultation with <strong className="text-teal-400">{doctor.name}</strong> on <strong className="text-white">{selectedDate}</strong> at <strong className="text-white">{selectedTime}</strong> is temporarily reserved. Complete payment to confirm.
               </p>
             </div>
 
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-left space-y-3 mx-auto max-w-sm">
-              <div className="flex justify-between items-center border-b border-slate-200 pb-3">
-                <span className="text-slate-500 text-sm">Booking ID</span>
-                <strong className="text-slate-900 font-mono">{bookingId.substring(0, 8).toUpperCase()}</strong>
+            <div className="bg-black/30 border border-white/10 rounded-2xl p-6 text-left space-y-3 mx-auto max-w-sm relative z-10 backdrop-blur-md">
+              <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                <span className="text-slate-400 text-sm">Booking ID</span>
+                <strong className="text-white font-mono">{bookingId.substring(0, 8).toUpperCase()}</strong>
               </div>
               <div className="flex justify-between items-center pt-1">
-                <span className="text-slate-500 text-sm">Status</span>
-                <strong className="text-amber-500 text-sm font-bold">Awaiting Payment</strong>
+                <span className="text-slate-400 text-sm">Status</span>
+                <strong className="text-amber-400 text-sm font-bold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Awaiting Payment
+                </strong>
               </div>
             </div>
 
             <button 
               onClick={handlePayment}
               disabled={isSubmitting}
-              className="w-full py-4 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-sm font-bold uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(13,148,136,0.3)] hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-100"
+              className="w-full py-5 bg-teal-500/20 hover:bg-teal-500/40 text-teal-300 border border-teal-400/50 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-[inset_0_0_20px_rgba(20,184,166,0.2),0_0_15px_rgba(20,184,166,0.2)] hover:shadow-[inset_0_0_20px_rgba(20,184,166,0.4),0_0_25px_rgba(20,184,166,0.5)] backdrop-blur-xl relative z-10 flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-100"
             >
               {isSubmitting ? (
                 <>
@@ -356,38 +410,40 @@ function BookAppointmentForm() {
                   Processing...
                 </>
               ) : (
-                `Pay Now (₹${doctor.consultationFee || 500})`
+                \`Pay Now (₹\${doctor.consultationFee || 500})\`
               )}
             </button>
-            <Link href="/portal" className="inline-block mt-4 text-sm text-slate-500 hover:text-slate-900 underline">
+            <Link href="/portal" className="inline-block mt-4 text-sm text-slate-400 hover:text-white transition-colors relative z-10">
               Cancel & Return to Dashboard
             </Link>
           </div>
         ) : (
-          <div className="max-w-2xl mx-auto bg-white rounded-3xl p-10 md:p-16 shadow-2xl shadow-emerald-900/10 border border-slate-100 text-center space-y-8 animate-in zoom-in-95 duration-500 mt-12">
-            <div className="w-24 h-24 rounded-full bg-emerald-50 border-4 border-emerald-100 flex items-center justify-center text-emerald-500 text-5xl mx-auto">
+          <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-3xl rounded-[2rem] p-10 md:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 text-center space-y-8 animate-in zoom-in-95 duration-500 mt-12 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none"></div>
+
+            <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-400/50 shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-center text-emerald-400 text-5xl mx-auto relative z-10 backdrop-blur-xl">
               ✓
             </div>
             
-            <div>
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-4">Consultation Confirmed!</h3>
-              <p className="text-slate-600 leading-relaxed text-lg">
-                Thank you, <strong className="text-slate-900">{userName}</strong>. Payment received. Your video consultation with <strong className="text-teal-600">{doctor.name}</strong> is fully confirmed.
+            <div className="relative z-10">
+              <h3 className="text-3xl md:text-4xl font-black text-white mb-4">Consultation Confirmed!</h3>
+              <p className="text-slate-300 leading-relaxed text-lg">
+                Thank you, <strong className="text-white">{userName}</strong>. Payment received. Your video consultation with <strong className="text-teal-400">{doctor.name}</strong> is fully confirmed.
               </p>
             </div>
 
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-left space-y-3 mx-auto max-w-sm">
-              <div className="flex justify-between items-center border-b border-slate-200 pb-3">
-                <span className="text-slate-500 text-sm">Booking ID</span>
-                <strong className="text-slate-900 font-mono">{bookingId.substring(0, 8).toUpperCase()}</strong>
+            <div className="bg-black/30 border border-white/10 rounded-2xl p-6 text-left space-y-3 mx-auto max-w-sm relative z-10 backdrop-blur-md">
+              <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                <span className="text-slate-400 text-sm">Booking ID</span>
+                <strong className="text-white font-mono">{bookingId.substring(0, 8).toUpperCase()}</strong>
               </div>
               <div className="flex justify-between items-center pt-1">
-                <span className="text-slate-500 text-sm">Logistics</span>
-                <strong className="text-teal-600 text-sm">Join via Dashboard</strong>
+                <span className="text-slate-400 text-sm">Logistics</span>
+                <strong className="text-teal-400 text-sm font-bold">Join via Dashboard</strong>
               </div>
             </div>
 
-            <Link href="/portal" className="inline-block w-full py-4 bg-slate-900 hover:bg-black text-white rounded-xl text-sm font-bold uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:scale-105">
+            <Link href="/portal" className="inline-block w-full py-5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-xl relative z-10">
               Go to Patient Dashboard
             </Link>
           </div>
@@ -400,8 +456,8 @@ function BookAppointmentForm() {
 export default function BookAppointment() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#020610] text-[#f8fafc] font-sans flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#06b6d4]/20 border-t-[#06b6d4] rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#050B14] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
       </div>
     }>
       <BookAppointmentForm />
