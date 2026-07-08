@@ -373,10 +373,10 @@ function BookAppointmentForm() {
                       </button>
 
                       {/* Urgent Video */}
-                      <button type="button" onClick={() => setConsultationMode('video_urgent')} className={`p-4 rounded-2xl border text-left transition-all ${consultationMode === 'video_urgent' ? 'bg-rose-500/20 border-rose-400/50 shadow-[0_0_20px_rgba(244,63,94,0.2)]' : 'bg-black/20 border-white/10 hover:border-rose-400/30'}`}>
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-3 ${consultationMode === 'video_urgent' ? 'bg-rose-400 text-black' : 'bg-white/10 text-rose-400'}`}>⚡</div>
-                        <h4 className={`font-bold ${consultationMode === 'video_urgent' ? 'text-rose-300' : 'text-slate-300'}`}>Urgent Call</h4>
-                        <p className="text-xs text-slate-500 mt-1">Connect immediately (Premium)</p>
+                      <button type="button" onClick={() => setConsultationMode('video_urgent')} className={`p-4 rounded-2xl border text-left transition-all ${consultationMode === 'video_urgent' ? 'bg-gradient-to-br from-red-600/40 to-red-950/60 border-red-500/50 shadow-[inset_0_0_20px_rgba(239,68,68,0.3),0_0_25px_rgba(239,68,68,0.4)] backdrop-blur-xl' : 'bg-black/20 border-white/10 hover:border-red-500/40 hover:bg-red-500/5'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-3 ${consultationMode === 'video_urgent' ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.8)]' : 'bg-white/10 text-red-400'}`}>⚡</div>
+                        <h4 className={`font-bold ${consultationMode === 'video_urgent' ? 'text-red-300' : 'text-slate-300'}`}>Urgent Call</h4>
+                        <p className={`text-xs mt-1 ${consultationMode === 'video_urgent' ? 'text-red-200' : 'text-slate-500'}`}>Connect immediately (Premium)</p>
                       </button>
 
                     </div>
@@ -415,11 +415,12 @@ function BookAppointmentForm() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-6 flex items-start gap-4 animate-in fade-in zoom-in duration-300">
-                       <div className="w-10 h-10 rounded-full bg-rose-500/20 flex flex-shrink-0 items-center justify-center text-rose-400 text-xl font-bold">!</div>
-                       <div>
-                         <h4 className="font-bold text-rose-300">Immediate Consultation Required</h4>
-                         <p className="text-sm text-rose-100/70 mt-1">You are requesting an urgent connection. The doctor will be notified immediately upon payment confirmation. Premium pricing (1.5x) is applied.</p>
+                    <div className="bg-gradient-to-br from-red-600/20 to-black/40 border border-red-500/40 rounded-2xl p-6 flex items-start gap-4 animate-in fade-in zoom-in duration-300 shadow-[inset_0_0_30px_rgba(239,68,68,0.1)] backdrop-blur-md relative overflow-hidden">
+                       <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/20 blur-3xl rounded-full"></div>
+                       <div className="w-10 h-10 rounded-full bg-red-500/30 border border-red-400/50 flex flex-shrink-0 items-center justify-center text-red-300 text-xl font-bold shadow-[0_0_15px_rgba(239,68,68,0.4)] relative z-10">!</div>
+                       <div className="relative z-10">
+                         <h4 className="font-bold text-red-400 text-lg">Immediate Consultation Required</h4>
+                         <p className="text-sm text-red-200 mt-1 leading-relaxed">You are requesting an urgent connection. The doctor will be notified immediately upon payment confirmation. Premium pricing (1.5x) is applied.</p>
                        </div>
                     </div>
                   )}
