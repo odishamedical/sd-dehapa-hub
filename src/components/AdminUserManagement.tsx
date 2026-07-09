@@ -191,42 +191,42 @@ export default function AdminUserManagement() {
   const ecosystemRoles = ['Member', 'Doctor', 'Hospital', 'Lab', 'Pharmacy', 'Ambulance', 'Admin', 'Super_Admin'];
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-slate-300 rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[80vh] relative">
+    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-white/10 text-white rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[80vh] relative">
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
 
       {/* Top Metrics Bar */}
       <div className="px-4 md:px-6 pt-4 md:pt-6 pb-2 flex overflow-x-auto snap-x snap-mandatory gap-3 md:gap-4 relative z-10 shrink-0 custom-scrollbar">
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-slate-200/50 shadow-sm flex items-center gap-4 snap-center">
+        <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-white/5 shadow-sm flex items-center gap-4 snap-center">
           <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
           </div>
           <div>
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Users</p>
-            <p className="text-2xl font-bold text-slate-900">{users.length}</p>
+            <p className="text-2xl font-bold text-white">{users.length}</p>
           </div>
         </div>
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-slate-200/50 shadow-sm flex items-center gap-4 snap-center">
+        <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-white/5 shadow-sm flex items-center gap-4 snap-center">
           <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
           </div>
           <div>
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">New (7 Days)</p>
-            <p className="text-2xl font-bold text-slate-900">+{recentUsers}</p>
+            <p className="text-2xl font-bold text-white">+{recentUsers}</p>
           </div>
         </div>
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-slate-200/50 shadow-sm flex items-center gap-4 snap-center">
+        <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-white/5 shadow-sm flex items-center gap-4 snap-center">
           <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
           </div>
           <div>
             <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Suspended Accounts</p>
-            <p className="text-2xl font-bold text-slate-900">{users.filter(u => u.status === 'suspended').length}</p>
+            <p className="text-2xl font-bold text-white">{users.filter(u => u.status === 'suspended').length}</p>
           </div>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="px-4 md:px-6 py-4 border-b border-slate-300 bg-white/40 backdrop-blur-md flex flex-col lg:flex-row gap-4 items-center justify-between shrink-0 relative z-10">
+      <div className="px-4 md:px-6 py-4 border-b border-white/10 text-white bg-slate-900/40 backdrop-blur-md flex flex-col lg:flex-row gap-4 items-center justify-between shrink-0 relative z-10">
         
         {selectedUsers.length > 0 ? (
           <div className="flex flex-wrap gap-2 items-center w-full lg:w-auto bg-slate-800 rounded-xl px-4 py-2 text-white shadow-lg animate-in fade-in slide-in-from-top-2">
@@ -258,13 +258,13 @@ export default function AdminUserManagement() {
               placeholder="Search name, email, phone..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full sm:flex-1 min-w-[200px] border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-2.5 md:px-5 md:py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white/80 backdrop-blur-sm"
+              className="w-full sm:flex-1 min-w-[200px] border border-white/10 text-white hover:border-teal-400 rounded-xl px-4 py-2.5 md:px-5 md:py-3 shadow-sm text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-slate-800/80 backdrop-blur-sm"
             />
             <div className="grid grid-cols-2 gap-3 w-full sm:w-auto">
               <select 
                 value={roleFilter} 
                 onChange={e => setRoleFilter(e.target.value)}
-                className="w-full sm:w-[140px] border border-slate-300 rounded-xl px-3 py-2.5 md:py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
+                className="w-full sm:w-[140px] border border-white/10 text-white rounded-xl px-3 py-2.5 md:py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-slate-800/80 backdrop-blur-sm font-medium"
               >
                 <option value="all">All Roles</option>
                 {ecosystemRoles.map((role, idx) => (
@@ -274,7 +274,7 @@ export default function AdminUserManagement() {
               <select 
                 value={statusFilter} 
                 onChange={e => setStatusFilter(e.target.value)}
-                className="w-full sm:w-[140px] border border-slate-300 rounded-xl px-3 py-2.5 md:py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-white/80 backdrop-blur-sm font-medium"
+                className="w-full sm:w-[140px] border border-white/10 text-white rounded-xl px-3 py-2.5 md:py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none form-select bg-slate-800/80 backdrop-blur-sm font-medium"
               >
                 <option value="all">All Statuses</option>
                 <option value="active">Active</option>
@@ -289,41 +289,41 @@ export default function AdminUserManagement() {
       </div>
 
       {isAdding && (
-        <div className="p-6 border-b border-slate-300 bg-teal-50/80 backdrop-blur-md shrink-0 relative z-10 animate-in slide-in-from-top-4 duration-300">
-          <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <div className="p-6 border-b border-white/10 text-white bg-teal-50/80 backdrop-blur-md shrink-0 relative z-10 animate-in slide-in-from-top-4 duration-300">
+          <h4 className="font-bold text-white mb-4 flex items-center gap-2">
             <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
             Register New Patient
           </h4>
           <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
             <div className="lg:col-span-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Full Name *</label>
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-widest mb-1.5">Full Name *</label>
               <input 
                 type="text" required
                 value={newUser.name} onChange={e => setNewUser({...newUser, name: e.target.value})}
-                className="w-full bg-white border border-teal-200 rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none font-medium" 
+                className="w-full bg-slate-800 border border-teal-500/30 text-white rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none font-medium" 
               />
             </div>
             <div className="lg:col-span-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Phone Number</label>
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-widest mb-1.5">Phone Number</label>
               <input 
                 type="tel" 
                 value={newUser.phone} onChange={e => setNewUser({...newUser, phone: e.target.value})}
-                className="w-full bg-white border border-teal-200 rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none font-medium" 
+                className="w-full bg-slate-800 border border-teal-500/30 text-white rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none font-medium" 
               />
             </div>
             <div className="lg:col-span-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Email Address</label>
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-widest mb-1.5">Email Address</label>
               <input 
                 type="email" 
                 value={newUser.email} onChange={e => setNewUser({...newUser, email: e.target.value})}
-                className="w-full bg-white border border-teal-200 rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none font-medium" 
+                className="w-full bg-slate-800 border border-teal-500/30 text-white rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none font-medium" 
               />
             </div>
             <div className="lg:col-span-1">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Gender</label>
+              <label className="block text-xs font-bold text-slate-300 uppercase tracking-widest mb-1.5">Gender</label>
               <select 
                 value={newUser.gender} onChange={e => setNewUser({...newUser, gender: e.target.value})}
-                className="w-full bg-white border border-teal-200 rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none form-select font-medium"
+                className="w-full bg-slate-800 border border-teal-500/30 text-white rounded-xl px-4 py-2.5 shadow-sm text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none form-select font-medium"
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -344,7 +344,7 @@ export default function AdminUserManagement() {
       )}
 
       {/* Main Table Area */}
-      <div className="flex-1 overflow-auto bg-white/70 backdrop-blur-md relative z-10 custom-scrollbar">
+      <div className="flex-1 overflow-auto bg-slate-900/50 backdrop-blur-md relative z-10 custom-scrollbar">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
@@ -353,12 +353,12 @@ export default function AdminUserManagement() {
           <div className="flex flex-col items-center justify-center h-64 text-slate-500 font-medium">No users found.</div>
         ) : (
           <table className="w-full text-left border-collapse block md:table">
-            <thead className="bg-slate-100/80 backdrop-blur-sm sticky top-0 z-20 shadow-sm border-b border-slate-200 hidden md:table-header-group">
+            <thead className="bg-slate-100/80 backdrop-blur-sm sticky top-0 z-20 shadow-sm border-b border-white/5 hidden md:table-header-group">
               <tr>
                 <th className="px-6 py-4 w-10">
                   <input 
                     type="checkbox" 
-                    className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                    className="w-4 h-4 rounded border-white/10 text-white text-teal-600 focus:ring-teal-500 cursor-pointer"
                     checked={filteredUsers.length > 0 && selectedUsers.length === filteredUsers.length}
                     onChange={(e) => {
                       if (e.target.checked) setSelectedUsers(filteredUsers.map(u => u.id));
@@ -386,12 +386,12 @@ export default function AdminUserManagement() {
                   <tr 
                     key={user.id} 
                     className={`block md:table-row mb-3 md:mb-0 rounded-2xl md:rounded-none border md:border-none shadow-sm md:shadow-none p-4 md:p-0 transition-colors group cursor-pointer 
-                      ${selectedUsers.includes(user.id) ? 'bg-teal-50 border-teal-200' : 'bg-white md:bg-transparent border-slate-200 md:hover:bg-teal-50/50'}`}
+                      ${selectedUsers.includes(user.id) ? 'bg-teal-50 border-teal-200' : 'bg-slate-800 md:bg-transparent border-white/5 md:hover:bg-slate-800/40'}`}
                   >
                     <td className="hidden md:table-cell px-6 py-4" onClick={(e) => e.stopPropagation()}>
                       <input 
                         type="checkbox" 
-                        className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                        className="w-4 h-4 rounded border-white/10 text-white text-teal-600 focus:ring-teal-500 cursor-pointer"
                         checked={selectedUsers.includes(user.id)}
                         onChange={(e) => {
                           if (e.target.checked) setSelectedUsers([...selectedUsers, user.id]);
@@ -404,7 +404,7 @@ export default function AdminUserManagement() {
                       <div className="absolute top-0 right-0 md:hidden" onClick={(e) => e.stopPropagation()}>
                         <input 
                           type="checkbox" 
-                          className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer shadow-sm"
+                          className="w-5 h-5 rounded border-white/10 text-white text-teal-600 focus:ring-teal-500 cursor-pointer shadow-sm"
                           checked={selectedUsers.includes(user.id)}
                           onChange={(e) => {
                             if (e.target.checked) setSelectedUsers([...selectedUsers, user.id]);
@@ -415,14 +415,14 @@ export default function AdminUserManagement() {
 
                       <div className="flex items-center gap-3 pr-8 md:pr-0">
                         {user.avatar ? (
-                          <img src={user.avatar} alt="Avatar" className="w-12 h-12 md:w-10 md:h-10 rounded-full object-cover shadow-sm border border-slate-200 shrink-0" />
+                          <img src={user.avatar} alt="Avatar" className="w-12 h-12 md:w-10 md:h-10 rounded-full object-cover shadow-sm border border-white/5 shrink-0" />
                         ) : (
-                          <div className="w-12 h-12 md:w-10 md:h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold uppercase shadow-sm border border-slate-200 shrink-0">
+                          <div className="w-12 h-12 md:w-10 md:h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold uppercase shadow-sm border border-white/5 shrink-0">
                             {(user.name || user.displayName) ? (user.name || user.displayName).charAt(0) : '?'}
                           </div>
                         )}
                         <div className="min-w-0 flex-1">
-                          <div className="font-bold text-slate-900 drop-shadow-sm group-hover:text-teal-700 transition-colors truncate">{user.name || user.displayName || "Unknown User"}</div>
+                          <div className="font-bold text-white drop-shadow-sm group-hover:text-teal-700 transition-colors truncate">{user.name || user.displayName || "Unknown User"}</div>
                           <div className="text-xs text-slate-500 mt-0.5 truncate">{user.gender || "Not specified"}</div>
                         </div>
                       </div>
@@ -430,11 +430,11 @@ export default function AdminUserManagement() {
                       {/* Mobile-Only Combined Data Block */}
                       <div className="mt-4 pt-3 border-t border-slate-100 md:hidden grid grid-cols-2 gap-2">
                         <div className="flex flex-col gap-1.5">
-                          <div className="text-xs font-medium text-slate-700 flex items-center gap-1.5 truncate"><svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> <span className="truncate">{user.phone || "N/A"}</span></div>
+                          <div className="text-xs font-medium text-slate-300 flex items-center gap-1.5 truncate"><svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> <span className="truncate">{user.phone || "N/A"}</span></div>
                           <div className="text-[10px] text-slate-500 flex items-center gap-1.5 truncate"><svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> <span className="truncate">{user.email || "N/A"}</span></div>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 justify-center">
-                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-slate-100 text-slate-300 border border-white/5'}`}>
                             {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
                           </span>
                           <div className="flex items-center gap-1.5 mt-1">
@@ -447,11 +447,11 @@ export default function AdminUserManagement() {
                       </div>
                     </td>
                     <td className="hidden md:table-cell px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                      <div className="text-sm font-medium text-slate-700 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> {user.phone || "N/A"}</div>
+                      <div className="text-sm font-medium text-slate-300 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> {user.phone || "N/A"}</div>
                       <div className="text-xs text-slate-500 mt-1 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> {user.email || "N/A"}</div>
                     </td>
                     <td className="hidden md:table-cell px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                      <span className={`border px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                      <span className={`border px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-300 border-white/5'}`}>
                         {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
                       </span>
                     </td>
@@ -485,7 +485,7 @@ export default function AdminUserManagement() {
       {selectedUser && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setSelectedUser(null)}></div>
-          <div className="relative w-full max-w-3xl bg-white shadow-2xl flex flex-col transform transition-transform duration-300 rounded-3xl overflow-hidden max-h-[90vh]">
+          <div className="relative w-full max-w-3xl bg-slate-900 shadow-2xl border border-white/10 text-white flex flex-col transform transition-transform duration-300 rounded-3xl overflow-hidden max-h-[90vh]">
             {/* Modal Header */}
             <div className="bg-slate-900 text-white p-6 shrink-0 relative overflow-hidden z-20 shadow-md">
               <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500 rounded-full blur-3xl opacity-20 -mr-10 -mt-10 pointer-events-none"></div>
@@ -524,29 +524,29 @@ export default function AdminUserManagement() {
             </div>
 
             {/* Drawer Tabs */}
-            <div className="flex border-b border-slate-200 bg-slate-50 shrink-0">
+            <div className="flex border-b border-white/5 bg-slate-50 shrink-0">
               <button 
                 onClick={() => setDrawerTab('profile')}
-                className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all border-b-2 ${drawerTab === 'profile' ? 'text-teal-600 border-teal-600 bg-white' : 'text-slate-500 border-transparent hover:text-slate-700 hover:bg-slate-100'}`}
+                className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all border-b-2 ${drawerTab === 'profile' ? 'text-teal-600 border-teal-600 bg-slate-800' : 'text-slate-500 border-transparent hover:text-slate-300 hover:bg-slate-100'}`}
               >
                 Profile Overview
               </button>
               <button 
                 onClick={() => setDrawerTab('activity')}
-                className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all border-b-2 ${drawerTab === 'activity' ? 'text-teal-600 border-teal-600 bg-white' : 'text-slate-500 border-transparent hover:text-slate-700 hover:bg-slate-100'}`}
+                className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all border-b-2 ${drawerTab === 'activity' ? 'text-teal-600 border-teal-600 bg-slate-800' : 'text-slate-500 border-transparent hover:text-slate-300 hover:bg-slate-100'}`}
               >
                 Activity Timeline
               </button>
               <button 
                 onClick={() => setDrawerTab('actions')}
-                className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all border-b-2 ${drawerTab === 'actions' ? 'text-teal-600 border-teal-600 bg-white' : 'text-slate-500 border-transparent hover:text-slate-700 hover:bg-slate-100'}`}
+                className={`flex-1 py-4 text-sm font-bold tracking-wide transition-all border-b-2 ${drawerTab === 'actions' ? 'text-teal-600 border-teal-600 bg-slate-800' : 'text-slate-500 border-transparent hover:text-slate-300 hover:bg-slate-100'}`}
               >
                 Admin Actions
               </button>
             </div>
 
             {/* Drawer Content Area */}
-            <div className="flex-1 overflow-y-auto p-6 bg-white custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 bg-slate-800 custom-scrollbar">
               
               {drawerTab === 'profile' && (
                 <div className="space-y-8 animate-in fade-in duration-300">
@@ -555,14 +555,14 @@ export default function AdminUserManagement() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                       Contact Information
                     </h4>
-                    <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-slate-50 rounded-2xl border border-white/5 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Phone Number</p>
-                        <p className="font-medium text-slate-900 mt-1">{selectedUser.phone || "Not provided"}</p>
+                        <p className="font-medium text-white mt-1">{selectedUser.phone || "Not provided"}</p>
                       </div>
                       <div>
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email Address</p>
-                        <p className="font-medium text-slate-900 mt-1">{selectedUser.email || "Not provided"}</p>
+                        <p className="font-medium text-white mt-1">{selectedUser.email || "Not provided"}</p>
                       </div>
                     </div>
                   </section>
@@ -572,18 +572,18 @@ export default function AdminUserManagement() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
                       Demographics
                     </h4>
-                    <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-slate-50 rounded-2xl border border-white/5 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Gender</p>
-                        <p className="font-medium text-slate-900 mt-1">{selectedUser.gender || "Unknown"}</p>
+                        <p className="font-medium text-white mt-1">{selectedUser.gender || "Unknown"}</p>
                       </div>
                       <div>
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Blood Group</p>
-                        <p className="font-medium text-slate-900 mt-1">{selectedUser.bloodGroup || "Not specified"}</p>
+                        <p className="font-medium text-white mt-1">{selectedUser.bloodGroup || "Not specified"}</p>
                       </div>
                       <div className="md:col-span-2">
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Primary Address</p>
-                        <p className="font-medium text-slate-900 mt-1">
+                        <p className="font-medium text-white mt-1">
                           {typeof selectedUser.address === 'object' && selectedUser.address !== null 
                             ? (selectedUser.address.localAddress || selectedUser.address.city || Object.values(selectedUser.address).filter(v => typeof v === 'string').join(', ')) 
                             : (selectedUser.address || "No address on file.")}
@@ -606,13 +606,13 @@ export default function AdminUserManagement() {
                     </div>
                   </div>
 
-                  <div className="relative border-l-2 border-slate-200 ml-5 pl-8 space-y-8">
+                  <div className="relative border-l-2 border-white/5 ml-5 pl-8 space-y-8">
                     {/* Mocked Activity Items */}
                     <div className="relative">
                       <div className="absolute -left-[41px] w-5 h-5 bg-teal-500 rounded-full border-4 border-white shadow-sm"></div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Today, 10:30 AM</p>
-                      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                        <p className="font-bold text-slate-900">Booked Doctor Appointment</p>
+                      <div className="bg-slate-800 border border-white/5 rounded-xl p-4 shadow-sm">
+                        <p className="font-bold text-white">Booked Doctor Appointment</p>
                         <p className="text-sm text-slate-600 mt-1">Booked a consultation with Dr. Ranjita Ghadei.</p>
                         <span className="inline-block mt-3 bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Upcoming</span>
                       </div>
@@ -621,8 +621,8 @@ export default function AdminUserManagement() {
                     <div className="relative">
                       <div className="absolute -left-[41px] w-5 h-5 bg-indigo-500 rounded-full border-4 border-white shadow-sm"></div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">2 Days Ago</p>
-                      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                        <p className="font-bold text-slate-900">Accessed Sovereign Vault</p>
+                      <div className="bg-slate-800 border border-white/5 rounded-xl p-4 shadow-sm">
+                        <p className="font-bold text-white">Accessed Sovereign Vault</p>
                         <p className="text-sm text-slate-600 mt-1">Viewed medical records from AMRI Hospital.</p>
                       </div>
                     </div>
@@ -630,8 +630,8 @@ export default function AdminUserManagement() {
                     <div className="relative">
                       <div className="absolute -left-[41px] w-5 h-5 bg-blue-500 rounded-full border-4 border-white shadow-sm"></div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Last Week</p>
-                      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                        <p className="font-bold text-slate-900">Video Consultation</p>
+                      <div className="bg-slate-800 border border-white/5 rounded-xl p-4 shadow-sm">
+                        <p className="font-bold text-white">Video Consultation</p>
                         <p className="text-sm text-slate-600 mt-1">Completed a 15-minute video call.</p>
                         <span className="inline-block mt-3 bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Completed</span>
                       </div>
@@ -640,8 +640,8 @@ export default function AdminUserManagement() {
                     <div className="relative">
                       <div className="absolute -left-[41px] w-5 h-5 bg-slate-300 rounded-full border-4 border-white shadow-sm"></div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{selectedUser.createdAt ? new Date(selectedUser.createdAt.seconds * 1000).toLocaleDateString() : 'Registration Date'}</p>
-                      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-                        <p className="font-bold text-slate-900">Account Created</p>
+                      <div className="bg-slate-800 border border-white/5 rounded-xl p-4 shadow-sm">
+                        <p className="font-bold text-white">Account Created</p>
                         <p className="text-sm text-slate-600 mt-1">Joined the DehaPa platform.</p>
                       </div>
                     </div>
@@ -651,8 +651,8 @@ export default function AdminUserManagement() {
 
               {drawerTab === 'actions' && (
                 <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                    <h4 className="font-bold text-slate-900 flex items-center gap-2 mb-2">
+                  <div className="bg-slate-800 border border-white/5 rounded-2xl p-6 shadow-sm">
+                    <h4 className="font-bold text-white flex items-center gap-2 mb-2">
                       <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"></path></svg>
                       Contact via WhatsApp
                     </h4>
@@ -667,15 +667,15 @@ export default function AdminUserManagement() {
                     </a>
                   </div>
                   
-                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                    <h4 className="font-bold text-slate-900 flex items-center gap-2 mb-2">
+                  <div className="bg-slate-800 border border-white/5 rounded-2xl p-6 shadow-sm">
+                    <h4 className="font-bold text-white flex items-center gap-2 mb-2">
                       <svg className="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                       Role Management
                     </h4>
                     <p className="text-sm text-slate-500 mb-6">Manually override this user's role. Doing this will grant them immediate access to their corresponding provider dashboard.</p>
                     <div className="flex gap-3">
                       <select 
-                        className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+                        className="flex-1 bg-slate-50 border border-white/5 rounded-xl px-4 py-3 text-sm font-bold text-slate-300 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
                         onChange={(e) => handleIndividualRoleChange(selectedUser.id, e.target.value)}
                         value={selectedUser.role || ''}
                       >
@@ -687,15 +687,15 @@ export default function AdminUserManagement() {
                     </div>
                   </div>
 
-                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                    <h4 className="font-bold text-slate-900 flex items-center gap-2 mb-2">
+                  <div className="bg-slate-800 border border-white/5 rounded-2xl p-6 shadow-sm">
+                    <h4 className="font-bold text-white flex items-center gap-2 mb-2">
                       <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
                       Reset Password
                     </h4>
                     <p className="text-sm text-slate-500 mb-6">Send an email or SMS containing a magic link to securely reset their credentials.</p>
                     <button 
                       onClick={() => alert('Password reset link sent to user!')}
-                      className="bg-white border-2 border-indigo-200 hover:border-indigo-500 text-indigo-700 px-6 py-3 rounded-xl font-bold transition-all shadow-sm w-full"
+                      className="bg-slate-800 border-2 border-indigo-200 hover:border-indigo-500 text-indigo-700 px-6 py-3 rounded-xl font-bold transition-all shadow-sm w-full"
                     >
                       Send Reset Link
                     </button>

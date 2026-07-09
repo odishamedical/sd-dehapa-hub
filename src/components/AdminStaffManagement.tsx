@@ -71,31 +71,31 @@ export default function AdminStaffManagement() {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+    <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-sm">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-xl font-bold text-slate-900">Staff & Permissions</h3>
+          <h3 className="text-xl font-bold text-white">Staff & Permissions</h3>
           <p className="text-sm font-medium text-slate-500 mt-1">Manage team access and role-based permissions.</p>
         </div>
       </div>
 
-      <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-8 flex flex-col lg:flex-row gap-4 lg:items-end">
+      <div className="bg-slate-50 p-6 rounded-2xl border border-white/10 mb-8 flex flex-col lg:flex-row gap-4 lg:items-end">
         <div className="flex-1 w-full">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Staff Email Address</label>
+          <label className="block text-xs font-bold text-slate-300 uppercase tracking-widest mb-1.5">Staff Email Address</label>
           <input 
             type="email" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. employee@dehapa.com"
-            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 font-medium" 
+            className="w-full bg-slate-800 border border-white/20 text-white rounded-xl px-4 py-3 shadow-sm text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 font-medium" 
           />
         </div>
         <div className="w-full lg:w-64">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1.5">Assign Role</label>
+          <label className="block text-xs font-bold text-slate-300 uppercase tracking-widest mb-1.5">Assign Role</label>
           <select 
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 font-bold form-select"
+            className="w-full bg-slate-800 border border-white/20 text-white rounded-xl px-4 py-3 shadow-sm text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 font-bold form-select"
           >
             <option value="data_entry">Data Manager (CRM Only)</option>
             <option value="verification_officer">Verification Officer (Claims)</option>
@@ -117,14 +117,14 @@ export default function AdminStaffManagement() {
           <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : staff.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl">
-          <p className="font-bold text-slate-900 mb-1">No Staff Members</p>
+        <div className="text-center py-12 border-2 border-dashed border-white/10 rounded-xl">
+          <p className="font-bold text-white mb-1">No Staff Members</p>
           <p className="text-sm text-slate-500 max-w-sm mx-auto">Only the default super admin has access right now.</p>
         </div>
       ) : (
-        <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
+        <div className="border border-white/10 rounded-xl overflow-hidden bg-slate-800">
           <table className="w-full text-left block md:table">
-            <thead className="bg-slate-50 border-b border-slate-200 hidden md:table-header-group">
+            <thead className="bg-slate-50 border-b border-white/10 hidden md:table-header-group">
               <tr>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Email</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Role</th>
@@ -133,9 +133,9 @@ export default function AdminStaffManagement() {
             </thead>
             <tbody className="block md:table-row-group divide-y divide-slate-100 p-3 md:p-0">
               {staff.map(user => (
-                <tr key={user.id} className="block md:table-row hover:bg-slate-50 transition-colors p-4 md:p-0">
+                <tr key={user.id} className="block md:table-row hover:bg-slate-800/40 transition-colors p-4 md:p-0">
                   <td className="block md:table-cell px-0 md:px-6 py-1 md:py-4">
-                    <div className="font-bold text-slate-900 break-all md:break-normal">{user.email}</div>
+                    <div className="font-bold text-white break-all md:break-normal">{user.email}</div>
                   </td>
                   <td className="block md:table-cell px-0 md:px-6 py-2 md:py-4">
                     <span className="bg-teal-50 text-teal-700 border border-teal-200 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest inline-block">

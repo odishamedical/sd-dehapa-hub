@@ -81,10 +81,10 @@ export default function AdminSlugRegistry() {
   );
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+    <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-slate-100 pb-6">
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
             Premium Slug Registry 
             <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-teal-200">
               {slugs.length} Registered
@@ -102,7 +102,7 @@ export default function AdminSlugRegistry() {
             placeholder="Search slugs or names..." 
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white"
+            className="w-full border-2 border-white/10 hover:border-white/20 rounded-xl px-5 py-3.5 shadow-sm text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-slate-800"
           />
         </div>
       </div>
@@ -112,18 +112,18 @@ export default function AdminSlugRegistry() {
           <svg className="animate-spin w-8 h-8 text-teal-600" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
         </div>
       ) : filteredSlugs.length === 0 ? (
-        <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-300">
-          <div className="w-16 h-16 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-400 mx-auto mb-4">
+        <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-white/20">
+          <div className="w-16 h-16 bg-slate-900 border border-white/10 rounded-full flex items-center justify-center text-slate-400 mx-auto mb-4">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </div>
-          <h3 className="text-lg font-bold text-slate-900 mb-1">No Premium Slugs Found</h3>
+          <h3 className="text-lg font-bold text-white mb-1">No Premium Slugs Found</h3>
           <p className="text-sm text-slate-500">There are currently no records with a registered custom slug.</p>
         </div>
       ) : (
         <div className="overflow-x-auto md:overflow-visible">
           <table className="w-full text-left border-collapse block md:table">
             <thead className="hidden md:table-header-group">
-              <tr className="border-b border-slate-200 bg-slate-50">
+              <tr className="border-b border-white/10 bg-slate-50">
                 <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap rounded-tl-xl">Premium Slug</th>
                 <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Entity Name</th>
                 <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">Category</th>
@@ -150,7 +150,7 @@ export default function AdminSlugRegistry() {
                 const categoryUrl = `/${baseCategoryPath}/${doc.customSlug}`;
 
                 return (
-                  <tr key={doc.id} className="block md:table-row bg-white md:bg-transparent mb-3 md:mb-0 border border-slate-200 md:border-none shadow-sm md:shadow-none p-4 md:p-0 rounded-xl md:rounded-none hover:bg-slate-50 transition-colors">
+                  <tr key={doc.id} className="block md:table-row bg-slate-800 md:bg-transparent mb-3 md:mb-0 border border-white/10 md:border-none shadow-sm md:shadow-none p-4 md:p-0 rounded-xl md:rounded-none hover:bg-slate-800/40 transition-colors">
                     <td className="block md:table-cell p-0 md:p-4">
                       <div className="flex justify-between items-start md:block">
                         <div>
@@ -159,9 +159,9 @@ export default function AdminSlugRegistry() {
                             <span className="md:hidden text-[10px] font-bold text-amber-600 flex items-center gap-1 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">Global Root</span>
                           </div>
                           <div className="md:hidden mt-2">
-                            <p className="font-bold text-slate-900 text-sm">{doc.name || "Unnamed"}</p>
+                            <p className="font-bold text-white text-sm">{doc.name || "Unnamed"}</p>
                             <p className="text-xs text-slate-500 mt-0.5">{doc.district}, {doc.state}</p>
-                            <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider mt-2 inline-block">{doc.category || "General"}</span>
+                            <span className="bg-slate-100 text-slate-300 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider mt-2 inline-block">{doc.category || "General"}</span>
                           </div>
                         </div>
 
@@ -171,7 +171,7 @@ export default function AdminSlugRegistry() {
                           </button>
                           <div className="flex gap-2">
                             {baseCategoryPath && (
-                              <a target="_blank" rel="noopener noreferrer" href={categoryUrl} title="View Category URL" className="w-8 h-8 bg-white border border-slate-200 hover:border-teal-500 hover:text-teal-600 rounded flex items-center justify-center text-slate-500 transition-colors shadow-sm">
+                              <a target="_blank" rel="noopener noreferrer" href={categoryUrl} title="View Category URL" className="w-8 h-8 bg-slate-900 border border-white/10 hover:border-teal-500 hover:text-teal-600 rounded flex items-center justify-center text-slate-500 transition-colors shadow-sm">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                               </a>
                             )}
@@ -183,11 +183,11 @@ export default function AdminSlugRegistry() {
                       </div>
                     </td>
                     <td className="hidden md:table-cell p-4">
-                      <p className="font-bold text-slate-900">{doc.name || "Unnamed"}</p>
+                      <p className="font-bold text-white">{doc.name || "Unnamed"}</p>
                       <p className="text-xs text-slate-500 truncate max-w-[200px]">{doc.district}, {doc.state}</p>
                     </td>
                     <td className="hidden md:table-cell p-4">
-                      <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold uppercase tracking-wider">{doc.category || "General"}</span>
+                      <span className="bg-slate-100 text-slate-300 px-2 py-1 rounded text-xs font-bold uppercase tracking-wider">{doc.category || "General"}</span>
                     </td>
                     <td className="hidden md:table-cell p-4">
                       <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
@@ -198,7 +198,7 @@ export default function AdminSlugRegistry() {
                     <td className="hidden md:table-cell p-4 text-right">
                       <div className="flex justify-end gap-2">
                         {baseCategoryPath && (
-                          <a target="_blank" rel="noopener noreferrer" href={categoryUrl} title="View Category URL" className="w-8 h-8 bg-white border border-slate-200 hover:border-teal-500 hover:text-teal-600 rounded flex items-center justify-center text-slate-500 transition-colors shadow-sm">
+                          <a target="_blank" rel="noopener noreferrer" href={categoryUrl} title="View Category URL" className="w-8 h-8 bg-slate-900 border border-white/10 hover:border-teal-500 hover:text-teal-600 rounded flex items-center justify-center text-slate-500 transition-colors shadow-sm">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                           </a>
                         )}

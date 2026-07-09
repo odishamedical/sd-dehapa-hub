@@ -532,7 +532,7 @@ export default function AdminDataCRM() {
             <select 
               value={stateFilter} 
               onChange={e => { setStateFilter(e.target.value); setDistrictFilter(""); setBlockFilter(""); }}
-              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-32 form-select bg-white/80 backdrop-blur-sm font-medium"
+              className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-32 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
             >
               <option value="">All States</option>
               {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
@@ -542,7 +542,7 @@ export default function AdminDataCRM() {
             <select 
               value={districtFilter} 
               onChange={e => { setDistrictFilter(e.target.value); setBlockFilter(""); }}
-              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-white/80 backdrop-blur-sm font-medium"
+              className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
             >
               <option value="">All Districts</option>
               {districtsByState[stateFilter].map(d => <option key={d} value={d}>{d}</option>)}
@@ -552,7 +552,7 @@ export default function AdminDataCRM() {
             <select 
               value={blockFilter} 
               onChange={e => setBlockFilter(e.target.value)}
-              className="border border-slate-300 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-white/80 backdrop-blur-sm font-medium"
+              className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
             >
               <option value="">All Blocks</option>
               {blocksByDistrict[districtFilter].map(b => <option key={b} value={b}>{b}</option>)}
@@ -573,7 +573,7 @@ export default function AdminDataCRM() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-slate-900/40 border-b border-slate-800 shrink-0 relative z-10">
-        <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-700 shadow-sm flex items-center gap-4">
+        <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
           </div>
@@ -582,7 +582,7 @@ export default function AdminDataCRM() {
             <div className="text-xs font-bold text-teal-400/80 uppercase tracking-widest mt-1">Total Entities</div>
           </div>
         </div>
-        <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-700 shadow-sm flex items-center gap-4">
+        <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
           </div>
@@ -591,7 +591,7 @@ export default function AdminDataCRM() {
             <div className="text-xs font-bold text-amber-400/80 uppercase tracking-widest mt-1">Pending Verification</div>
           </div>
         </div>
-        <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-700 shadow-sm flex items-center gap-4">
+        <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-slate-700/50 text-slate-400 border border-slate-600/50 flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
           </div>
@@ -878,7 +878,7 @@ export default function AdminDataCRM() {
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-1.5">
-                      <label className="text-xs font-bold text-slate-700 uppercase tracking-widest">Assigned Owner Email</label>
+                      <label className="text-xs font-bold text-slate-300 uppercase tracking-widest">Assigned Owner Email</label>
                       {selectedListing.verified && selectedListing.ownerEmail === selectedListing.assignedOwnerEmail && selectedListing.assignedOwnerEmail ? (
                         <span className="text-[10px] font-bold text-teal-600 uppercase tracking-widest flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> Verified</span>
                       ) : null}
@@ -908,21 +908,21 @@ export default function AdminDataCRM() {
                   </div>
                   
                   {/* Vault Storage Metrics (Read-only) */}
-                  <div className="col-span-1 md:col-span-2 bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-wrap gap-8 items-center">
+                  <div className="col-span-1 md:col-span-2 bg-slate-900/50 border border-white/5 rounded-xl p-5 shadow-inner flex flex-wrap gap-8 items-center backdrop-blur-md">
                     <div>
-                      <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Vault Storage Usage</div>
-                      <div className="text-2xl font-black text-slate-800 flex items-end gap-2">
-                        {selectedListing.vaultFilesStored || 0} <span className="text-sm font-medium text-slate-500 mb-1">Files</span>
+                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Vault Storage Usage</div>
+                      <div className="text-2xl font-black text-slate-200 flex items-end gap-2">
+                        {selectedListing.vaultFilesStored || 0} <span className="text-sm font-medium text-slate-400 mb-1">Files</span>
                       </div>
                     </div>
                     <div>
-                      <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Vault Network Forwards</div>
-                      <div className="text-2xl font-black text-slate-800 flex items-end gap-2">
-                        {selectedListing.vaultFilesSent || 0} <span className="text-sm font-medium text-slate-500 mb-1">Sent</span>
+                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Vault Network Forwards</div>
+                      <div className="text-2xl font-black text-slate-200 flex items-end gap-2">
+                        {selectedListing.vaultFilesSent || 0} <span className="text-sm font-medium text-slate-400 mb-1">Sent</span>
                       </div>
                     </div>
                     <div className="ml-auto">
-                      <span className="text-xs bg-amber-100 text-amber-700 font-bold px-3 py-1.5 rounded-lg border border-amber-200">
+                      <span className="text-xs bg-amber-500/20 text-amber-300 font-bold px-3 py-1.5 rounded-lg border border-amber-500/30">
                         Tiered Billing Data
                       </span>
                     </div>
@@ -976,9 +976,9 @@ export default function AdminDataCRM() {
                       </div>
                     </>
                   )}
-                  <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-6 rounded-2xl border border-slate-200 mt-2">
+                  <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-800/40 p-6 rounded-2xl border border-white/10 mt-2">
                     <div>
-                      <label className="form-label text-slate-700">Standard Consultation Fee</label>
+                      <label className="form-label text-slate-300">Standard Consultation Fee</label>
                       <input type="number" value={selectedListing.consultationFee || ""} onChange={e => setSelectedListing({...selectedListing, consultationFee: e.target.value})} placeholder="e.g. 800" className="form-input-dark" />
                     </div>
                     <div>
@@ -1022,7 +1022,7 @@ export default function AdminDataCRM() {
                                     checked={selectedListing[field.key] || false} 
                                     onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.checked})} 
                                   />
-                                  <span className="text-sm font-bold text-slate-700">{field.label}</span>
+                                  <span className="text-sm font-bold text-slate-300">{field.label}</span>
                                 </label>
                             ) : field.type === 'select' ? (
                                 <select 
@@ -1175,7 +1175,7 @@ export default function AdminDataCRM() {
                         />
                       ) : field.type === 'string_array' ? (
                         <>
-                          <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">{field.label}</h4>
+                          <h4 className="font-bold text-slate-200 mb-4 text-sm uppercase tracking-widest">{field.label}</h4>
                           <InlineEditArray 
                             items={selectedListing[field.key] || []} 
                             onSave={(newItems) => setSelectedListing({...selectedListing, [field.key]: newItems})} 
@@ -1185,7 +1185,7 @@ export default function AdminDataCRM() {
                         </>
                       ) : (
                         <div className={field.type === 'textarea' ? "col-span-2" : ""}>
-                          <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">{field.label}</h4>
+                          <h4 className="font-bold text-slate-200 mb-4 text-sm uppercase tracking-widest">{field.label}</h4>
                           {field.type === 'textarea' ? (
                               <textarea 
                                 className="form-input-dark" 
@@ -1201,7 +1201,7 @@ export default function AdminDataCRM() {
                                   checked={selectedListing[field.key] || false} 
                                   onChange={e => setSelectedListing({...selectedListing, [field.key]: e.target.checked})} 
                                 />
-                                <span className="text-sm font-bold text-slate-700">{field.label}</span>
+                                <span className="text-sm font-bold text-slate-300">{field.label}</span>
                               </label>
                           ) : field.type === 'select' ? (
                               <select 
@@ -1227,8 +1227,8 @@ export default function AdminDataCRM() {
                   ))}
                   
                   {(!selectedListing.category || !directoryConfig[selectedListing.category] || !directoryConfig[selectedListing.category]?.tabs?.find(t => t.id === activeTab)) && (
-                    <div className="bg-slate-50 border-2 border-dashed border-slate-200 p-8 rounded-2xl text-center">
-                      <p className="text-slate-500 font-bold text-sm">No specific configuration available for this tab in {selectedListing.category || "this category"}.</p>
+                    <div className="bg-slate-800/40 border-2 border-dashed border-white/10 p-8 rounded-2xl text-center">
+                      <p className="text-slate-400 font-medium">Select a category in Basic Info to unlock specific {activeTab} settings.</p>
                     </div>
                   )}
                 </div>
