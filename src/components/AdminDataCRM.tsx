@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
-import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc, serverTimestamp, orderBy } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import PremiumSlugModal from './PremiumSlugModal';
@@ -65,7 +65,7 @@ export default function AdminDataCRM() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const recordsRef = collection(db, 'service_providers');
+      const recordsRef = collection(db, 'directory');
       const q = query(recordsRef, orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
       const fetchedData = snapshot.docs.map(doc => ({
