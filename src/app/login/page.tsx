@@ -95,7 +95,29 @@ function LoginContent() {
       }
     }
 
-    if (userEmail === 'odishamedical@gmail.com') {
+    if (userEmail && userRole === 'user') {
+      try {
+        const dirQuery = query(collection(db, 'directory'), where('ownerEmail', '==', userEmail.toLowerCase().trim()));
+        const dirDocs = await getDocs(dirQuery);
+        if (!dirDocs.empty) {
+          const listing = dirDocs.docs[0].data();
+          const category = listing.category || '';
+          if (category.toLowerCase() === 'doctor') userRole = 'doctor';
+          else if (category.toLowerCase() === 'hospital') userRole = 'hospital';
+          else if (category.toLowerCase() === 'pharmacy') userRole = 'pharmacy';
+          else if (category.toLowerCase() === 'lab') userRole = 'lab';
+          else if (category.toLowerCase() === 'ambulance') userRole = 'ambulance';
+          else userRole = 'owner';
+          
+          // Update user doc with new role
+          await updateDoc(userRef, { role: userRole });
+        }
+      } catch (err) {
+        console.error("Failed to check directory ownership", err);
+      }
+    }
+
+    if (userEmail === 'odishamedical@gmail.com' || userEmail === 'admin@shyamdash.com') {
       userRole = 'super_admin';
     }
     
@@ -114,6 +136,18 @@ function LoginContent() {
     
     // Notify GlobalHeader that auth state has changed
     window.dispatchEvent(new Event("sd_auth_change"));
+    
+    return userRole;
+  };
+
+  const getSmartRedirect = (role: string, currentRedirect: string) => {
+    if (currentRedirect !== '/portal') return currentRedirect;
+    if (role === 'doctor') return '/portal/doctor';
+    if (role === 'hospital') return '/portal/hospital';
+    if (role === 'pharmacy') return '/portal/pharmacy';
+    if (role === 'lab') return '/portal/lab';
+    if (role === 'super_admin') return '/portal/admin';
+    return '/portal';
   };
 
   const handleGoogleLogin = async () => {
@@ -122,8 +156,8 @@ function LoginContent() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      await saveUserToFirestore(result.user);
-      router.push(redirectUrl);
+      const role = await saveUserToFirestore(result.user);
+      router.push(getSmartRedirect(role, redirectUrl));
     } catch (err: any) {
       setError(err.message || 'Google sign in failed');
       setLoading(false);
@@ -138,14 +172,14 @@ function LoginContent() {
       // Attempt login first
       try {
         const result = await signInWithEmailAndPassword(auth, email, password);
-        await saveUserToFirestore(result.user);
-        router.push(redirectUrl);
+        const role = await saveUserToFirestore(result.user);
+        router.push(getSmartRedirect(role, redirectUrl));
       } catch (loginErr: any) {
         // If user not found, create one
         if (loginErr.code === 'auth/user-not-found' || loginErr.code === 'auth/invalid-credential') {
             const result = await createUserWithEmailAndPassword(auth, email, password);
-            await saveUserToFirestore(result.user);
-            router.push(redirectUrl);
+            const role = await saveUserToFirestore(result.user);
+            router.push(getSmartRedirect(role, redirectUrl));
         } else {
             throw loginErr;
         }
@@ -198,8 +232,8 @@ function LoginContent() {
       if (data.token) {
           import('firebase/auth').then(async ({ signInWithCustomToken }) => {
              const result = await signInWithCustomToken(auth, data.token);
-             await saveUserToFirestore(result.user, { phone });
-             router.push(redirectUrl);
+             const role = await saveUserToFirestore(result.user, { phone });
+             router.push(getSmartRedirect(role, redirectUrl));
           });
       } else {
           // Mock login for now if backend is not fully ready

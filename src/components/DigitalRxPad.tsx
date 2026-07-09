@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import { ConsultationProvider, useConsultation } from '@/plugins/core/ConsultationContext';
+import { ExtensionPoint } from '@/plugins/core/ExtensionPoint';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -14,45 +16,31 @@ interface DigitalRxPadProps {
   onSave?: (patient: any, pdfBlob?: Blob) => void;
 }
 
-export default function DigitalRxPad({ patient, provider, onClose, onSave }: DigitalRxPadProps) {
+export default function DigitalRxPad(props: DigitalRxPadProps) {
+  return (
+    <ConsultationProvider initialPatientName={props.patient?.name}>
+      <DigitalRxPadContent {...props} />
+    </ConsultationProvider>
+  );
+}
+
+function DigitalRxPadContent({ patient, provider, onClose, onSave }: DigitalRxPadProps) {
+  const { state, updateState } = useConsultation();
   const [mounted, setMounted] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAILoading, setIsAILoading] = useState(false);
   
-  // Clinical States
-  const [vitals, setVitals] = useState({ bp: '120/80', pulse: '72', temp: '98.6', weight: '70' });
-  const [complaints, setComplaints] = useState('');
-  const [diagnosis, setDiagnosis] = useState('');
-  const [medications, setMedications] = useState([{ name: 'Tab. Paracetamol 500mg', dosage: '1-0-1', duration: '5 Days' }]);
+  // Derived Clinical States from Data Bus
+  const vitals = state.vitals;
+  const complaints = state.complaints.join(', ');
+  const diagnosis = state.diagnosis.join(', ');
+  const medications = state.medicines; // Now mapped from the context
   const [labs, setLabs] = useState('');
   const [advice, setAdvice] = useState('');
 
   const pdfRef = useRef<HTMLDivElement>(null);
 
-  const handleAIAssistant = async () => {
-    if (!complaints.trim()) return alert("Please enter Chief Complaints first.");
-    setIsAILoading(true);
-    try {
-      const res = await fetch('/api/cdss', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ patientDetails: patient, chiefComplaints: complaints })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        if (data.suggestedDiagnosis) setDiagnosis(data.suggestedDiagnosis);
-        if (data.suggestedLabs && Array.isArray(data.suggestedLabs)) setLabs(data.suggestedLabs.join(', '));
-        if (data.suggestedMedicines && Array.isArray(data.suggestedMedicines)) setMedications(data.suggestedMedicines);
-      } else {
-        alert(data.error || "AI failed to generate suggestions.");
-      }
-    } catch (e) {
-      console.error("AI Error:", e);
-      alert("Could not connect to AI Assistant.");
-    } finally {
-      setIsAILoading(false);
-    }
-  };
+
 
   useEffect(() => {
     setMounted(true);
@@ -134,42 +122,15 @@ export default function DigitalRxPad({ patient, provider, onClose, onSave }: Dig
         <div className="max-w-5xl mx-auto space-y-8 pb-32">
           
           {/* STEP 1: VITALS */}
-          <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold text-slate-900">Vitals & Measurements</h3>
-                <p className="text-slate-500">Collected by receptionist or inputted manually.</p>
-              </div>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Blood Pressure</label>
-                  <div className="relative">
-                    <input type="text" value={vitals.bp} onChange={e => setVitals({...vitals, bp: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 font-bold focus:border-teal-500 focus:bg-white transition-all outline-none" />
-                    <span className="absolute right-4 top-3 text-slate-400 text-sm font-medium">mmHg</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Pulse Rate</label>
-                  <div className="relative">
-                    <input type="text" value={vitals.pulse} onChange={e => setVitals({...vitals, pulse: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 font-bold focus:border-teal-500 focus:bg-white transition-all outline-none" />
-                    <span className="absolute right-4 top-3 text-slate-400 text-sm font-medium">bpm</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Temperature</label>
-                  <div className="relative">
-                    <input type="text" value={vitals.temp} onChange={e => setVitals({...vitals, temp: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 font-bold focus:border-teal-500 focus:bg-white transition-all outline-none" />
-                    <span className="absolute right-4 top-3 text-slate-400 text-sm font-medium">°F</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Weight</label>
-                  <div className="relative">
-                    <input type="text" value={vitals.weight} onChange={e => setVitals({...vitals, weight: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 font-bold focus:border-teal-500 focus:bg-white transition-all outline-none" />
-                    <span className="absolute right-4 top-3 text-slate-400 text-sm font-medium">kg</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* STEP 1: PLUGGABLE VITALS */}
+          <div className="mb-4">
+            <ExtensionPoint name="rx_pad_header" />
+          </div>
+
+          {/* STEP 2: PLUGGABLE TAGS */}
+          <div className="mb-4">
+            <ExtensionPoint name="rx_pad_body" />
+          </div>
 
           {/* STEP 2: CLINICAL NOTES & AI */}
           <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
@@ -178,82 +139,25 @@ export default function DigitalRxPad({ patient, provider, onClose, onSave }: Dig
                   <h3 className="text-2xl font-bold text-slate-900">Clinical Notes</h3>
                   <p className="text-slate-500">Record complaints and patient history.</p>
                 </div>
-                <button 
-                  onClick={handleAIAssistant} 
-                  disabled={isAILoading}
-                  className="px-4 py-2 bg-indigo-50 text-indigo-700 font-bold text-sm rounded-xl border border-indigo-100 hover:bg-indigo-100 flex items-center gap-2 transition-colors disabled:opacity-50"
-                >
-                  {isAILoading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-indigo-700 border-t-transparent rounded-full animate-spin"></div>
-                      Analyzing...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                      AI Assistant
-                    </>
-                  )}
-                </button>
+                <ExtensionPoint name="rx_pad_notes_actions" patient={patient} />
               </div>
               <div className="space-y-6">
                 <div>
                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Chief Complaints</label>
-                   <textarea value={complaints} onChange={e => setComplaints(e.target.value)} rows={4} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 focus:border-teal-500 focus:bg-white transition-all outline-none resize-none" placeholder="E.g., Fever since 3 days, body ache..."></textarea>
+                   <textarea value={complaints} onChange={e => updateState({ complaints: [e.target.value] })} rows={4} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 focus:border-teal-500 focus:bg-white transition-all outline-none resize-none" placeholder="E.g., Fever since 3 days, body ache..."></textarea>
                 </div>
                 
                 <div>
                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Diagnosis</label>
-                   <input type="text" value={diagnosis} onChange={e => setDiagnosis(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-slate-900 font-bold focus:border-teal-500 focus:bg-white transition-all outline-none" placeholder="E.g., Viral Pyrexia" />
+                   <input type="text" value={diagnosis} onChange={e => updateState({ diagnosis: [e.target.value] })} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-slate-900 font-bold focus:border-teal-500 focus:bg-white transition-all outline-none" placeholder="E.g., Viral Pyrexia" />
                 </div>
               </div>
             </div>
 
-          {/* STEP 3: RX GRID */}
-          <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold text-slate-900">Medication</h3>
-                <p className="text-slate-500">Search and add drugs to the prescription.</p>
-              </div>
-              
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col md:flex-row gap-4">
-                 <div className="flex-1">
-                   <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 transition-all outline-none" placeholder="Search Medicine (e.g. Paracetamol 500mg)" />
-                 </div>
-                 <div className="w-full md:w-32">
-                   <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 transition-all outline-none">
-                     <option>1-0-1</option>
-                     <option>1-1-1</option>
-                     <option>1-0-0</option>
-                   </select>
-                 </div>
-                 <div className="w-full md:w-32">
-                   <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:border-teal-500 transition-all outline-none">
-                     <option>5 Days</option>
-                     <option>3 Days</option>
-                     <option>SOS</option>
-                   </select>
-                 </div>
-                 <button className="px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all">
-                   Add
-                 </button>
-              </div>
-
-              {/* Added Medications Mock */}
-              <div className="space-y-3 mt-6">
-                 {medications.map((med, idx) => (
-                   <div key={idx} className="p-5 border border-slate-200 rounded-xl flex items-center justify-between bg-white hover:border-teal-300 transition-colors shadow-sm">
-                      <div>
-                        <div className="font-bold text-slate-900 text-lg">{med.name}</div>
-                        <div className="text-sm text-slate-500 mt-1">{med.dosage} (After Food) • {med.duration}</div>
-                      </div>
-                      <button className="text-slate-400 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 transition-colors">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                      </button>
-                   </div>
-                 ))}
-              </div>
-            </div>
+          {/* STEP 3: PLUGGABLE MEDICATIONS */}
+          <div className="mb-4">
+            <ExtensionPoint name="rx_pad_medications" />
+          </div>
 
           {/* STEP 4: LABS & ADVICE */}
           <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
@@ -276,8 +180,10 @@ export default function DigitalRxPad({ patient, provider, onClose, onSave }: Dig
         </div>
       </div>
 
-      {/* FLOATING SAVE BUTTON */}
-      <div className="absolute bottom-8 right-8 z-50 pointer-events-auto">
+      {/* FLOATING SAVE BUTTON & ACTIONS */}
+      <div className="absolute bottom-8 right-8 z-50 pointer-events-auto flex items-center gap-4">
+        <ExtensionPoint name="rx_pad_actions" patient={patient} />
+        
         <button 
           onClick={handleSave}
           disabled={isGenerating}

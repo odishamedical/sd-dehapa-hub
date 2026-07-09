@@ -9,6 +9,7 @@ import InviteWidget from '@/components/InviteWidget';
 import PharmacyFulfillmentWidget from '@/components/PharmacyFulfillmentWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
+import { ExtensionPoint } from '@/plugins/core/ExtensionPoint';
 
 export default function LabDashboard() {
   const customTabs: DashboardTab[] = [
@@ -23,6 +24,18 @@ export default function LabDashboard() {
       label: "Rx Inbox & Orders",
       section: "ORDERS & REPORTS",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"></path></svg>
+    },
+    {
+      id: "report_uploader",
+      label: "1-Click Uploader",
+      section: "ORDERS & REPORTS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+    },
+    {
+      id: "home_collection",
+      label: "Home Collection Router",
+      section: "OPERATIONS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
     }
   ];
 
@@ -55,6 +68,23 @@ export default function LabDashboard() {
         <PharmacyFulfillmentWidget providerId={entityData.id || ''} />
       );
     }
+    
+    if (tabId === "report_uploader") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8">
+          <ExtensionPoint name="lab_report_uploader" />
+        </div>
+      );
+    }
+
+    if (tabId === "home_collection") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8">
+          <ExtensionPoint name="lab_home_collection" />
+        </div>
+      );
+    }
+
     return null;
   };
 

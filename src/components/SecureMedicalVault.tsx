@@ -5,6 +5,7 @@ import { VaultService, VaultDocument, VaultFolder } from '@/lib/vault.service';
 import VaultForwardModal from './VaultForwardModal';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { ExtensionPoint } from '@/plugins/core/ExtensionPoint';
 
 export default function SecureMedicalVault({ providerId, providerName }: { providerId: string, providerName?: string }) {
   const [activeFolder, setActiveFolder] = useState<VaultFolder>('inbox');
@@ -295,6 +296,10 @@ export default function SecureMedicalVault({ providerId, providerName }: { provi
               </div>
             </button>
           ))}
+          
+          {/* INJECTED PLUGINS (Family Profiles, Reminders) */}
+          <ExtensionPoint name="vault_sidebar_widgets" providerId={providerId} />
+          
         </nav>
       </div>
 

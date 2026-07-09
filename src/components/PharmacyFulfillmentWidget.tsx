@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, doc, updateDoc, orderBy } from 'firebase/firestore';
 import { VaultDocument } from '@/lib/vault.service';
+import { ExtensionPoint } from '@/plugins/core/ExtensionPoint';
 
 export default function PharmacyFulfillmentWidget({ providerId }: { providerId: string }) {
   const [orders, setOrders] = useState<VaultDocument[]>([]);
@@ -202,12 +203,11 @@ export default function PharmacyFulfillmentWidget({ providerId }: { providerId: 
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Payment Received
                       </div>
-                      <button 
-                        onClick={() => handleUpdateStatus(order.id, 'Dispatched')}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-colors shadow-lg"
-                      >
-                        Dispatch Order
-                      </button>
+                      <ExtensionPoint 
+                        name="pharmacy_dispatch_actions" 
+                        order={order} 
+                        onDispatch={() => handleUpdateStatus(order.id, 'Dispatched')} 
+                      />
                     </div>
                   )}
 

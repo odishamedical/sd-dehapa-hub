@@ -2,6 +2,16 @@ import type { Metadata } from "next";
 import "./globals.css";
 import GlobalHeader from "@/components/GlobalHeader";
 import TenantProvider from "@/components/TenantContext";
+import { initializePlugins } from "@/plugins";
+import { PluginEngineProvider } from "@/plugins/core/PluginEngineProvider";
+
+// Boot up the Switchboard engine
+if (typeof window !== 'undefined') {
+  initializePlugins();
+} else {
+  // Ensure it also initializes in SSR
+  initializePlugins();
+}
 
 export const metadata: Metadata = {
   title: "Dehapa | Your Health, Our Mission",
@@ -45,15 +55,17 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col font-sans overflow-x-clip md:pb-0 pb-[80px]">
         <TenantProvider>
-          <UserPresenceProvider />
-          <GlobalHeader activeProject="Telemedicine" />
-          <div className="flex-1 pt-20 md:pt-24">
-            {children}
-          </div>
-          <GlobalFooter />
-          <GlobalScannerController />
-          <GlobalTelemedicineFAB />
-          <DoctorCommandDock />
+          <PluginEngineProvider>
+            <UserPresenceProvider />
+            <GlobalHeader activeProject="Telemedicine" />
+            <div className="flex-1 pt-20 md:pt-24">
+              {children}
+            </div>
+            <GlobalFooter />
+            <GlobalScannerController />
+            <GlobalTelemedicineFAB />
+            <DoctorCommandDock />
+          </PluginEngineProvider>
         </TenantProvider>
       </body>
     </html>

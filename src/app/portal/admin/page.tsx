@@ -11,6 +11,7 @@ import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import AdminDataCRM from '@/components/AdminDataCRM';
+import AdminDataCRMV2 from '@/components/dashboard/ui/AdminDataCRMV2';
 import AdminVerificationCRM from '@/components/AdminVerificationCRM';
 import AdminSlugRegistry from '@/components/AdminSlugRegistry';
 import AdminWhatsAppDashboard from '@/components/AdminWhatsAppDashboard';
@@ -712,7 +713,7 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === "data-crm" && (
-            <AdminDataCRM />
+            <AdminDataCRMV2 />
           )}
 
           {activeTab === "slug-registry" && (
