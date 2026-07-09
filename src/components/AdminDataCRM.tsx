@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
-import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc, serverTimestamp, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import PremiumSlugModal from './PremiumSlugModal';
@@ -440,13 +440,29 @@ export default function AdminDataCRM() {
   };
 
   const handleMigrateLegacy = async () => {
-    if (!confirm("Are you sure you want to run the migration? This will pull all records from 'service_providers' and inject them into 'directory'.")) return;
     setIsBulking(true);
     try {
-      const legacyRef = collection(db, 'service_providers');
-      const snap = await getDocs(legacyRef);
-      if (snap.empty) {
-        alert("No legacy records found in service_providers.");
+      const possibleCollections = ['service_providers', 'google_places', 'crawler_data', 'scraped_listings', 'doctors', 'hospitals'];
+      let foundCollection = null;
+      let snap = null;
+
+      for (const col of possibleCollections) {
+        const testRef = collection(db, col);
+        const testSnap = await getDocs(query(testRef, limit(1)));
+        if (!testSnap.empty) {
+          foundCollection = col;
+          snap = await getDocs(testRef);
+          break;
+        }
+      }
+
+      if (!foundCollection) {
+        alert("No legacy records found in any known legacy collection (service_providers, google_places, etc.). Did you perhaps forget to click 'Inject to Database' when scraping?");
+        setIsBulking(false);
+        return;
+      }
+      
+      if (!confirm(`Found ${snap.docs.length} records in '${foundCollection}'. Do you want to migrate them to 'directory'?`)) {
         setIsBulking(false);
         return;
       }
@@ -457,12 +473,13 @@ export default function AdminDataCRM() {
         await setDoc(doc(db, 'directory', docSnap.id), {
           ...dData,
           migratedFromLegacy: true,
+          legacyCollection: foundCollection,
           updatedAt: serverTimestamp()
         }, { merge: true });
         count++;
       }
       
-      alert(`Migration complete! Successfully migrated ${count} legacy records. Refreshing data...`);
+      alert(`Migration complete! Successfully migrated ${count} legacy records from ${foundCollection}. Refreshing data...`);
       await fetchData();
     } catch (e) {
       console.error(e);
