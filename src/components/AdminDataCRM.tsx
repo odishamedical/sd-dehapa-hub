@@ -66,8 +66,7 @@ export default function AdminDataCRM() {
     setLoading(true);
     try {
       const recordsRef = collection(db, 'directory');
-      const q = query(recordsRef, orderBy('createdAt', 'desc'));
-      const snapshot = await getDocs(q);
+      const snapshot = await getDocs(recordsRef);
       const fetchedData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -96,8 +95,10 @@ export default function AdminDataCRM() {
     if (blockFilter && item.city !== blockFilter && item.block !== blockFilter) return false; // checking both city and block for backward compatibility
     return true;
   }).sort((a: any, b: any) => {
-    if (sortOption === "newest") return (b.createdAt?.toMillis ? b.createdAt.toMillis() : 0) - (a.createdAt?.toMillis ? a.createdAt.toMillis() : 0);
-    if (sortOption === "oldest") return (a.createdAt?.toMillis ? a.createdAt.toMillis() : 0) - (b.createdAt?.toMillis ? b.createdAt.toMillis() : 0);
+    const aTime = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0);
+    const bTime = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0);
+    if (sortOption === "newest") return bTime - aTime;
+    if (sortOption === "oldest") return aTime - bTime;
     if (sortOption === "recent_update") return (b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0) - (a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0);
     if (sortOption === "alpha") return (a.name || "").localeCompare(b.name || "");
     return 0;
