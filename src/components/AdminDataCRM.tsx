@@ -439,6 +439,39 @@ export default function AdminDataCRM() {
     a.click();
   };
 
+  const handleMigrateLegacy = async () => {
+    if (!confirm("Are you sure you want to run the migration? This will pull all records from 'service_providers' and inject them into 'directory'.")) return;
+    setIsBulking(true);
+    try {
+      const legacyRef = collection(db, 'service_providers');
+      const snap = await getDocs(legacyRef);
+      if (snap.empty) {
+        alert("No legacy records found in service_providers.");
+        setIsBulking(false);
+        return;
+      }
+      
+      let count = 0;
+      for (const docSnap of snap.docs) {
+        const dData = docSnap.data();
+        await setDoc(doc(db, 'directory', docSnap.id), {
+          ...dData,
+          migratedFromLegacy: true,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        count++;
+      }
+      
+      alert(`Migration complete! Successfully migrated ${count} legacy records. Refreshing data...`);
+      await fetchData();
+    } catch (e) {
+      console.error(e);
+      alert("Failed during migration process. Check console for errors.");
+    }
+    setIsBulking(false);
+  };
+
+
   return (
     <div className="bg-[#0B1121] border border-slate-800 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.4)] overflow-hidden flex flex-col h-[80vh] relative">
       <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/5 via-indigo-500/5 to-transparent opacity-100 z-0 pointer-events-none"></div>
@@ -456,6 +489,10 @@ export default function AdminDataCRM() {
           <button onClick={() => { setCountryFilter(""); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); setSearch(""); setCategoryFilter(""); }} className="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-3 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2 whitespace-nowrap">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             Reset
+          </button>
+          <button onClick={handleMigrateLegacy} disabled={isBulking} className="bg-amber-600 hover:bg-amber-500 text-white border border-amber-500 px-4 py-3 rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+            {isBulking ? "Migrating..." : "Migrate Legacy Data"}
           </button>
           <button onClick={handleExportCSV} className="bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 px-5 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
