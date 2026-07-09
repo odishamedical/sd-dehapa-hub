@@ -78,6 +78,7 @@ export default function AdminDashboard() {
   });
   const [crawlerCategory, setCrawlerCategory] = useState("Doctor");
   const [crawlerSubCategory, setCrawlerSubCategory] = useState("");
+  const [crawlerTier, setCrawlerTier] = useState("Specialist");
   const [customSubCategory, setCustomSubCategory] = useState("");
   const [crawlerQuery, setCrawlerQuery] = useState("");
 
@@ -227,6 +228,7 @@ export default function AdminDashboard() {
           image: listing.image || "",
           category: crawlerCategory,
           subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
+          ...(crawlerCategory === "Doctor" && { tier: crawlerTier }),
           country: crawlerAddress.country,
           state: crawlerAddress.state,
           district: crawlerAddress.district,
@@ -454,10 +456,30 @@ export default function AdminDashboard() {
                         {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
                         <option value="Other">Other (Add Custom)</option>
                       </select>
-                      {crawlerSubCategory === "Other" && (
-                        <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full mt-2 border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white" />
-                      )}
                     </div>
+
+                    {crawlerCategory === "Doctor" && (
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Doctor Tier</label>
+                        <select 
+                          value={crawlerTier} 
+                          onChange={(e) => setCrawlerTier(e.target.value)}
+                          className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-teal-500 outline-none transition-all"
+                        >
+                          <option value="Ayush">Ayush</option>
+                          <option value="MBBS">MBBS</option>
+                          <option value="Specialist">Specialist</option>
+                          <option value="Super Specialist">Super Specialist</option>
+                        </select>
+                      </div>
+                    )}
+
+                    {crawlerSubCategory === "Other" && (
+                      <div className={crawlerCategory === "Doctor" ? "md:col-span-3" : ""}>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Custom Sub-category</label>
+                        <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white" />
+                      </div>
+                    )}
 
                     <div>
                       <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Custom Query Name</label>

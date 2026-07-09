@@ -411,7 +411,7 @@ export default function UrgentCareWizard() {
                           ))}
                         </div>
                         <div className="mt-4 pt-4 border-t border-white/10 flex justify-center">
-                          <Link href="/directory" className="text-xs text-slate-400 hover:text-white font-bold transition-colors">
+                          <Link href="/doctors" className="text-xs text-slate-400 hover:text-white font-bold transition-colors">
                             Prefer to choose? Browse Online Directory &rarr;
                           </Link>
                         </div>
@@ -432,7 +432,7 @@ export default function UrgentCareWizard() {
                         We currently have <strong className="text-rose-400">0</strong> {specialty ? specialty : selectedTier} doctors online right now. 
                         Please check back again later or browse our directory to book an appointment.
                       </p>
-                      <Link href="/directory" className="bg-slate-800 hover:bg-slate-700 px-8 py-4 rounded-full text-white font-bold transition-all inline-flex items-center gap-2 shadow-md border border-slate-700">
+                      <Link href="/doctors" className="bg-slate-800 hover:bg-slate-700 px-8 py-4 rounded-full text-white font-bold transition-all inline-flex items-center gap-2 shadow-md border border-slate-700">
                         Browse Directory
                       </Link>
                     </div>

@@ -176,6 +176,7 @@ export default function DoctorsDirectory({
   const [searchDistrict, setSearchDistrict] = useState(initialDistrict);
   const [searchType, setSearchType] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [selectedTiers, setSelectedTiers] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -212,6 +213,7 @@ export default function DoctorsDirectory({
           district: d.district || "Unknown",
           state: d.state || "Odisha",
           country: d.country || "India",
+          tier: d.tier || null,
           customSlug: d.customSlug
         }));
 
@@ -234,6 +236,11 @@ export default function DoctorsDirectory({
     
     if (selectedDistricts.length > 0) {
       if (!selectedDistricts.map(d => d.toLowerCase()).includes(doc.district?.toLowerCase())) return false;
+    }
+    
+    if (selectedTiers.length > 0) {
+      const docTier = doc.tier || "Specialist"; // Default legacy data to Specialist
+      if (!selectedTiers.includes(docTier)) return false;
     }
     
     if (searchDistrict && doc.district?.toLowerCase() !== searchDistrict.toLowerCase()) {
@@ -317,6 +324,26 @@ export default function DoctorsDirectory({
                 </div>
               </div>
               
+              <div className="pt-6 border-t border-slate-800">
+                <label className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest block mb-3">Provider Tier</label>
+                <div className="flex flex-col gap-3">
+                  {["Ayush", "MBBS", "Specialist", "Super Specialist"].map((tier: string) => (
+                    <label key={tier} className="flex items-center gap-3 cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-slate-700 bg-[#040815] text-cyan-500 focus:ring-cyan-500 cursor-pointer shadow-sm" 
+                        checked={selectedTiers.includes(tier)}
+                        onChange={(e) => {
+                          if (e.target.checked) setSelectedTiers([...selectedTiers, tier]);
+                          else setSelectedTiers(selectedTiers.filter(t => t !== tier));
+                        }}
+                      />
+                      <span className="text-sm font-bold text-slate-300 group-hover:text-cyan-400 transition-colors">{tier} Doctor</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               <div className="pt-6 border-t border-slate-800">
                 <label className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest block mb-3">Locality / District</label>
                 <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
