@@ -9,9 +9,13 @@ export default function AdminPlatformSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [prices, setPrices] = useState({
     ayush: 200,
+    ayushMarket: 400,
     mbbs: 250,
+    mbbsMarket: 500,
     specialist: 400,
-    superSpecialist: 500
+    specialistMarket: 800,
+    superSpecialist: 500,
+    superSpecialistMarket: 1000
   });
 
   useEffect(() => {
@@ -21,7 +25,8 @@ export default function AdminPlatformSettings() {
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
-          setPrices(docSnap.data() as any);
+          // Merge with defaults to ensure all keys exist
+          setPrices(prev => ({...prev, ...docSnap.data()}));
         } else {
           // Initialize if it doesn't exist
           await setDoc(docRef, prices);
@@ -72,53 +77,69 @@ export default function AdminPlatformSettings() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
           <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
             <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             Urgent Care Video Consult Pricing
           </h4>
-          <p className="text-xs text-slate-500 mb-6">These prices are dynamically shown to patients in the Urgent Care queue.</p>
+          <p className="text-xs text-slate-500 mb-6">Set both the 'Market Fee' (shown crossed out) and the 'Subsidized Fee' (what patients actually pay) for each tier.</p>
           
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">Ayush Doctor (₹)</label>
-              <input 
-                type="number" 
-                value={prices.ayush} 
-                onChange={(e) => setPrices({...prices, ayush: Number(e.target.value)})}
-                className="w-full bg-white border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-bold" 
-              />
-            </div>
-            
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">MBBS Doctor (₹)</label>
-              <input 
-                type="number" 
-                value={prices.mbbs} 
-                onChange={(e) => setPrices({...prices, mbbs: Number(e.target.value)})}
-                className="w-full bg-white border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-bold" 
-              />
-            </div>
-            
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">Specialist (₹)</label>
-              <input 
-                type="number" 
-                value={prices.specialist} 
-                onChange={(e) => setPrices({...prices, specialist: Number(e.target.value)})}
-                className="w-full bg-white border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-bold" 
-              />
+          <div className="space-y-6">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <label className="block text-sm font-black text-slate-800 mb-3">Ayush Doctor</label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Market Fee (₹)</label>
+                  <input type="number" value={prices.ayushMarket} onChange={(e) => setPrices({...prices, ayushMarket: Number(e.target.value)})} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1">Subsidized Fee (₹)</label>
+                  <input type="number" value={prices.ayush} onChange={(e) => setPrices({...prices, ayush: Number(e.target.value)})} className="w-full bg-teal-50/50 border border-teal-200 rounded-lg px-3 py-2 text-sm text-teal-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">Super Specialist (₹)</label>
-              <input 
-                type="number" 
-                value={prices.superSpecialist} 
-                onChange={(e) => setPrices({...prices, superSpecialist: Number(e.target.value)})}
-                className="w-full bg-white border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-bold" 
-              />
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <label className="block text-sm font-black text-slate-800 mb-3">MBBS Doctor</label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Market Fee (₹)</label>
+                  <input type="number" value={prices.mbbsMarket} onChange={(e) => setPrices({...prices, mbbsMarket: Number(e.target.value)})} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1">Subsidized Fee (₹)</label>
+                  <input type="number" value={prices.mbbs} onChange={(e) => setPrices({...prices, mbbs: Number(e.target.value)})} className="w-full bg-teal-50/50 border border-teal-200 rounded-lg px-3 py-2 text-sm text-teal-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <label className="block text-sm font-black text-slate-800 mb-3">Specialist</label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Market Fee (₹)</label>
+                  <input type="number" value={prices.specialistMarket} onChange={(e) => setPrices({...prices, specialistMarket: Number(e.target.value)})} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1">Subsidized Fee (₹)</label>
+                  <input type="number" value={prices.specialist} onChange={(e) => setPrices({...prices, specialist: Number(e.target.value)})} className="w-full bg-teal-50/50 border border-teal-200 rounded-lg px-3 py-2 text-sm text-teal-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <label className="block text-sm font-black text-slate-800 mb-3">Super Specialist</label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Market Fee (₹)</label>
+                  <input type="number" value={prices.superSpecialistMarket} onChange={(e) => setPrices({...prices, superSpecialistMarket: Number(e.target.value)})} className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1">Subsidized Fee (₹)</label>
+                  <input type="number" value={prices.superSpecialist} onChange={(e) => setPrices({...prices, superSpecialist: Number(e.target.value)})} className="w-full bg-teal-50/50 border border-teal-200 rounded-lg px-3 py-2 text-sm text-teal-900 focus:outline-none focus:border-teal-500 font-bold" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

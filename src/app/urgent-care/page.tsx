@@ -33,9 +33,13 @@ export default function UrgentCareWizard() {
   const [fee, setFee] = useState(0);
   const [pricingMap, setPricingMap] = useState<any>({
     ayush: 200,
+    ayushMarket: 400,
     mbbs: 250,
+    mbbsMarket: 500,
     specialist: 400,
-    superSpecialist: 500
+    specialistMarket: 800,
+    superSpecialist: 500,
+    superSpecialistMarket: 1000
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -297,42 +301,42 @@ export default function UrgentCareWizard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 
                 <button onClick={() => handleTierSelect('Ayush')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm">50% Off</div>
+                  <div className="absolute top-0 right-0 bg-teal-600/30 text-teal-300 text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm border-l border-b border-teal-500/30 flex items-center gap-1"><HeartPulse className="w-3 h-3" /> Subsidized Care</div>
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Ayush Doctor</h3>
                   <p className="text-sm text-slate-400">Homeopathy, Ayurveda, General Wellness</p>
-                  <div className="mt-4 flex items-center gap-2">
-                    <p className="text-xs font-bold text-slate-500 line-through tracking-widest uppercase">₹400</p>
-                    <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">₹200</p>
+                  <div className="mt-4 flex flex-col gap-0.5">
+                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.ayushMarket || (pricingMap.ayush ? pricingMap.ayush * 2 : 400)}</span></p>
+                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.ayush || 200}</p>
                   </div>
                 </button>
 
                 <button onClick={() => handleTierSelect('MBBS')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm">50% Off</div>
+                  <div className="absolute top-0 right-0 bg-teal-600/30 text-teal-300 text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm border-l border-b border-teal-500/30 flex items-center gap-1"><HeartPulse className="w-3 h-3" /> Subsidized Care</div>
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">MBBS Doctor</h3>
                   <p className="text-sm text-slate-400">General Physician, Common Illnesses</p>
-                  <div className="mt-4 flex items-center gap-2">
-                    <p className="text-xs font-bold text-slate-500 line-through tracking-widest uppercase">₹500</p>
-                    <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">₹250</p>
+                  <div className="mt-4 flex flex-col gap-0.5">
+                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.mbbsMarket || (pricingMap.mbbs ? pricingMap.mbbs * 2 : 500)}</span></p>
+                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.mbbs || 250}</p>
                   </div>
                 </button>
 
                 <button onClick={() => handleTierSelect('Specialist')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm">50% Off</div>
+                  <div className="absolute top-0 right-0 bg-teal-600/30 text-teal-300 text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm border-l border-b border-teal-500/30 flex items-center gap-1"><HeartPulse className="w-3 h-3" /> Subsidized Care</div>
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Specialist</h3>
                   <p className="text-sm text-slate-400">Dermatologist, Pediatrician, Gynecologist, etc.</p>
-                  <div className="mt-4 flex items-center gap-2">
-                    <p className="text-xs font-bold text-slate-500 line-through tracking-widest uppercase">₹800</p>
-                    <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">₹400</p>
+                  <div className="mt-4 flex flex-col gap-0.5">
+                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.specialistMarket || (pricingMap.specialist ? pricingMap.specialist * 2 : 800)}</span></p>
+                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.specialist || 400}</p>
                   </div>
                 </button>
 
                 <button onClick={() => handleTierSelect('Super Specialist')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm">50% Off</div>
+                  <div className="absolute top-0 right-0 bg-teal-600/30 text-teal-300 text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-lg shadow-sm border-l border-b border-teal-500/30 flex items-center gap-1"><HeartPulse className="w-3 h-3" /> Subsidized Care</div>
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Super Specialist</h3>
                   <p className="text-sm text-slate-400">Cardiologist, Neurologist, Oncologist, etc.</p>
-                  <div className="mt-4 flex items-center gap-2">
-                    <p className="text-xs font-bold text-slate-500 line-through tracking-widest uppercase">₹1000</p>
-                    <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">₹500</p>
+                  <div className="mt-4 flex flex-col gap-0.5">
+                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.superSpecialistMarket || (pricingMap.superSpecialist ? pricingMap.superSpecialist * 2 : 1000)}</span></p>
+                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.superSpecialist || 500}</p>
                   </div>
                 </button>
 
