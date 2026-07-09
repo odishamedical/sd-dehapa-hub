@@ -8,9 +8,10 @@ export default function AdminPlatformSettings() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [prices, setPrices] = useState({
-    generalPhysician: 299,
-    specialist: 599,
-    superSpecialist: 999
+    ayush: 200,
+    mbbs: 250,
+    specialist: 400,
+    superSpecialist: 500
   });
 
   useEffect(() => {
@@ -75,17 +76,27 @@ export default function AdminPlatformSettings() {
         <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
           <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
             <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Telemedicine Consultation Pricing
+            Urgent Care Video Consult Pricing
           </h4>
-          <p className="text-xs text-slate-500 mb-6">These prices are dynamically shown to patients in the Instant Consult widget.</p>
+          <p className="text-xs text-slate-500 mb-6">These prices are dynamically shown to patients in the Urgent Care queue.</p>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">General Physician (₹)</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">Ayush Doctor (₹)</label>
               <input 
                 type="number" 
-                value={prices.generalPhysician} 
-                onChange={(e) => setPrices({...prices, generalPhysician: Number(e.target.value)})}
+                value={prices.ayush} 
+                onChange={(e) => setPrices({...prices, ayush: Number(e.target.value)})}
+                className="w-full bg-white border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-bold" 
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">MBBS Doctor (₹)</label>
+              <input 
+                type="number" 
+                value={prices.mbbs} 
+                onChange={(e) => setPrices({...prices, mbbs: Number(e.target.value)})}
                 className="w-full bg-white border border-slate-300 hover:border-teal-400 rounded-xl px-4 py-3 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-bold" 
               />
             </div>

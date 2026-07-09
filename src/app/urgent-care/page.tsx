@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { Activity, ShieldCheck, HeartPulse, Video, AlertCircle, ChevronRight, Stethoscope, ArrowLeft, Home, User } from "lucide-react";
 
 type DoctorTier = "Ayush" | "MBBS" | "Specialist" | "Super Specialist" | null;
@@ -31,6 +31,12 @@ export default function UrgentCareWizard() {
   // Simulating check state
   const [isChecking, setIsChecking] = useState(false);
   const [fee, setFee] = useState(0);
+  const [pricingMap, setPricingMap] = useState<any>({
+    ayush: 200,
+    mbbs: 250,
+    specialist: 400,
+    superSpecialist: 500
+  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -65,18 +71,31 @@ export default function UrgentCareWizard() {
         console.error("Error fetching specialties:", err);
       }
     };
+    
+    const fetchPricing = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'platform_settings', 'pricing'));
+        if (docSnap.exists()) {
+          setPricingMap(docSnap.data());
+        }
+      } catch (err) {
+        console.error("Error fetching pricing:", err);
+      }
+    };
+
     fetchSpecialties();
+    fetchPricing();
   }, []);
 
   const handleTierSelect = (tier: DoctorTier) => {
     setSelectedTier(tier);
     setSpecialty(""); // Reset specialty
     
-    // 50% Launch Discount Pricing
-    if (tier === "Ayush") setFee(200);
-    else if (tier === "MBBS") setFee(250);
-    else if (tier === "Specialist") setFee(400);
-    else if (tier === "Super Specialist") setFee(500);
+    // Use dynamic pricing from Firebase
+    if (tier === "Ayush") setFee(pricingMap.ayush || 200);
+    else if (tier === "MBBS") setFee(pricingMap.mbbs || 250);
+    else if (tier === "Specialist") setFee(pricingMap.specialist || 400);
+    else if (tier === "Super Specialist") setFee(pricingMap.superSpecialist || 500);
 
     if (tier === "Specialist" || tier === "Super Specialist") {
       setStep(2);
