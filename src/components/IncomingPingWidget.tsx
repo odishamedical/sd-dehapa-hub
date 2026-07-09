@@ -65,7 +65,9 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty, onAccept
                             (data.pingType === 'broadcast' || !data.pingType) && 
                             (data.targetCategory === doctorSpecialty || 
                              data.department === doctorSpecialty || 
-                             data.specialtyTier === doctorSpecialty);
+                             data.specialtyTier === doctorSpecialty ||
+                             data.requiredTier === doctorSpecialty ||
+                             data.requiredSpecialty === doctorSpecialty);
         
         if (isDirect || isBroadcast) {
           validRequests.push({ id: doc.id, ...data });
@@ -88,7 +90,45 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty, onAccept
       console.error("Error listening for incoming requests:", error);
     });
 
-    return () => unsubRequests();
+    // URGENT QUEUE LISTENER (Global Broadcast)
+    const qUrgent = query(
+      collection(db, 'urgentQueue'),
+      where('status', '==', 'waiting')
+    );
+    
+    const unsubUrgent = onSnapshot(qUrgent, (snapshot) => {
+      if (!isOnline) return; // Must be online to get urgent broadcasts
+      
+      let validRequests = [];
+      const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
+      
+      for (const doc of snapshot.docs) {
+        const data = doc.data();
+        const pingTime = data.timestamp?.toMillis ? data.timestamp.toMillis() : 0;
+        if (pingTime > 0 && pingTime < thirtyMinutesAgo) continue;
+        
+        // If doctor's specialty matches the required tier or required specialty
+        if (data.requiredSpecialty === doctorSpecialty || data.requiredTier === doctorSpecialty || doctorSpecialty === 'MBBS' || doctorSpecialty === 'Doctor') {
+           validRequests.push({ id: doc.id, collection: 'urgentQueue', ...data });
+        }
+      }
+      
+      if (validRequests.length > 0) {
+        // Sort in memory
+        validRequests.sort((a, b) => {
+          const timeA = a.timestamp?.toMillis ? a.timestamp.toMillis() : 0;
+          const timeB = b.timestamp?.toMillis ? b.timestamp.toMillis() : 0;
+          return timeB - timeA;
+        });
+        
+        setIncomingRequest(prev => prev ? prev : validRequests[0]); // Don't override if already ringing
+      }
+    });
+
+    return () => {
+      unsubRequests();
+      unsubUrgent();
+    };
   }, [doctorId, isOnline, doctorSpecialty]);
 
   // 3. Play audible ringtone loop during active incoming request
@@ -167,15 +207,17 @@ export default function IncomingPingWidget({ doctorId, doctorSpecialty, onAccept
     setIsAccepting(true);
     
     try {
-      const reqRef = doc(db, 'consultation_requests', incomingRequest.id);
+      const collectionName = incomingRequest.collection || 'consultation_requests';
+      const reqRef = doc(db, collectionName, incomingRequest.id);
       
       // In a real production app, we would use a Firestore Transaction here to prevent race conditions.
       // For now, we do a quick read-then-update.
       const snap = await getDoc(reqRef);
-      if (snap.exists() && snap.data().status === 'pending') {
+      if (snap.exists() && (snap.data().status === 'pending' || snap.data().status === 'waiting')) {
         await updateDoc(reqRef, {
-          status: 'accepted',
+          status: collectionName === 'urgentQueue' ? 'matched' : 'accepted',
           acceptedByDoctorId: doctorId,
+          roomId: incomingRequest.id,
           acceptedAt: new Date()
         });
         
