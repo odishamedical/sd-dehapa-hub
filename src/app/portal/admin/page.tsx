@@ -22,6 +22,8 @@ import AdminSupportTickets from '@/components/AdminSupportTickets';
 import AdminViralAnalytics from '@/components/AdminViralAnalytics';
 import AdminAdEngine from '@/components/AdminAdEngine';
 import AdminPlatformSettings from '@/components/AdminPlatformSettings';
+import AdminMasterSwitchboard from '@/components/AdminMasterSwitchboard';
+import AdminTenantGenerator from '@/components/AdminTenantGenerator';
 
 interface StagedListing {
   id: string;
@@ -321,6 +323,20 @@ export default function AdminDashboard() {
       label: "Staff Management",
       section: "System Controls",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+    },
+    {
+      id: "plugins",
+      label: "Master Switchboard",
+      section: "System Controls",
+      badge: "Engine",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    },
+    {
+      id: "tenants",
+      label: "App Generator",
+      section: "System Controls",
+      badge: "New",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
     },
     {
       id: "audit",
@@ -725,6 +741,16 @@ export default function AdminDashboard() {
           )}
           {activeTab === "whatsapp" && (
             <AdminWhatsAppDashboard />
+          )}
+          {activeTab === "plugins" && (
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+              <AdminMasterSwitchboard />
+            </div>
+          )}
+          {activeTab === "tenants" && (
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+              <AdminTenantGenerator />
+            </div>
           )}
     </DashboardLayout>
   );
