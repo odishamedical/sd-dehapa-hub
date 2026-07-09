@@ -891,6 +891,24 @@ export default function AdminDataCRM() {
                     <label className="form-label">Sub-Category / Specialty</label>
                     <input type="text" value={selectedListing.subCategory || ""} onChange={e => setSelectedListing({...selectedListing, subCategory: e.target.value})} className="form-input" />
                   </div>
+                  {selectedListing.category === 'Doctor' && (
+                    <>
+                      <div>
+                        <label className="form-label">Primary Specialty</label>
+                        <input type="text" value={selectedListing.primarySpecialty || ""} onChange={e => setSelectedListing({...selectedListing, primarySpecialty: e.target.value})} className="form-input" />
+                      </div>
+                      <div>
+                        <label className="form-label">Doctor Tier</label>
+                        <select value={selectedListing.doctorTier || ""} onChange={e => setSelectedListing({...selectedListing, doctorTier: e.target.value})} className="form-input">
+                          <option value="">Select Tier</option>
+                          <option value="Ayush">Ayush</option>
+                          <option value="MBBS">MBBS</option>
+                          <option value="Specialist">Specialist</option>
+                          <option value="Super Specialist">Super Specialist</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
                   <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-6 rounded-2xl border border-slate-200 mt-2">
                     <div>
                       <label className="form-label text-slate-700">Standard Consultation Fee</label>

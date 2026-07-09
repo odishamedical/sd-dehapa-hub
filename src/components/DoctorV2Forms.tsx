@@ -206,6 +206,16 @@ export default function DoctorV2Forms({ activeTab, entityData, setEntityData }: 
             <input type="text" className="sd-input-v3" placeholder="e.g. Cardiologist" value={entityData.primarySpecialty || ""} onChange={e => updateField('primarySpecialty', e.target.value)} />
           </div>
           <div>
+            <label className="sd-label-v3">Doctor Tier <span className="text-rose-500">*</span></label>
+            <select className="sd-input-v3" value={entityData.doctorTier || ""} onChange={e => updateField('doctorTier', e.target.value)}>
+              <option value="">Select Tier</option>
+              <option value="Ayush">Ayush Doctor (Homeopathy, Ayurveda)</option>
+              <option value="MBBS">MBBS Doctor (General Physician)</option>
+              <option value="Specialist">Specialist (Dermatologist, Pediatrician, etc.)</option>
+              <option value="Super Specialist">Super Specialist (Cardiologist, Neurologist, etc.)</option>
+            </select>
+          </div>
+          <div>
             <label className="sd-label-v3 flex justify-between">
               Custom Vanity URL 
               <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold">Premium</span>
