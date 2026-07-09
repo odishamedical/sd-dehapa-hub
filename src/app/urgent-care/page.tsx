@@ -174,23 +174,23 @@ export default function UrgentCareWizard() {
 
 
   return (
-    <div className="min-h-screen bg-[#050B14] font-sans pb-24 text-slate-200 selection:bg-rose-500/30 overflow-x-hidden">
+    <div className="min-h-screen bg-[#050B14] font-sans pb-24 text-slate-200 selection:bg-teal-500/30 overflow-x-hidden">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       
       {/* URGENT RED MESH GRADIENT */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-40 mix-blend-screen">
-        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-rose-600/30 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-red-900/40 rounded-full blur-[120px]"></div>
+        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-teal-600/30 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-teal-900/40 rounded-full blur-[120px]"></div>
       </div>
 
-      <div className="pt-24 pb-12 px-6 relative z-10 border-b border-rose-500/10 bg-black/20 backdrop-blur-xl">
+      <div className="pt-24 pb-12 px-6 relative z-10 border-b border-teal-500/10 bg-black/20 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 font-bold text-xs uppercase tracking-widest mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/20 border border-teal-500/50 text-teal-400 font-bold text-xs uppercase tracking-widest mb-4">
               <AlertCircle className="w-4 h-4 animate-pulse" /> Emergency Line
             </div>
             <h1 className="text-4xl md:text-5xl font-black mb-2 text-white">Instant Video Triage</h1>
-            <p className="text-rose-200/70 text-sm md:text-base max-w-xl">Bypass the standard wait times. Connect with a highly qualified doctor within minutes securely.</p>
+            <p className="text-teal-200/70 text-sm md:text-base max-w-xl">Bypass the standard wait times. Connect with a highly qualified doctor within minutes securely.</p>
           </div>
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function UrgentCareWizard() {
           {/* Step Indicators */}
           <div className="flex gap-2 mb-10">
             {[1,2,3,4,5].map((i) => (
-               <div key={i} className={`h-1.5 flex-1 rounded-full ${step >= i ? 'bg-rose-500 shadow-[0_0_10px_rgba(225,29,72,0.6)]' : 'bg-white/10'}`}></div>
+               <div key={i} className={`h-1.5 flex-1 rounded-full ${step >= i ? 'bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.6)]' : 'bg-white/10'}`}></div>
             ))}
           </div>
 
@@ -213,28 +213,28 @@ export default function UrgentCareWizard() {
               <h2 className="text-2xl font-black text-white mb-6">Which type of doctor do you need?</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 
-                <button onClick={() => handleTierSelect('Ayush')} className="text-left bg-black/40 border border-white/10 hover:border-rose-400/50 rounded-2xl p-6 transition-all hover:bg-rose-500/5 group">
-                  <h3 className="text-xl font-bold text-rose-300 mb-1 group-hover:text-rose-400">Ayush Doctor</h3>
+                <button onClick={() => handleTierSelect('Ayush')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group">
+                  <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Ayush Doctor</h3>
                   <p className="text-sm text-slate-400">Homeopathy, Ayurveda, General Wellness</p>
-                  <p className="text-xs font-bold text-rose-500 mt-4 tracking-widest uppercase">Est. Fee: ₹300</p>
+                  <p className="text-xs font-bold text-teal-500 mt-4 tracking-widest uppercase">Est. Fee: ₹300</p>
                 </button>
 
-                <button onClick={() => handleTierSelect('MBBS')} className="text-left bg-black/40 border border-white/10 hover:border-rose-400/50 rounded-2xl p-6 transition-all hover:bg-rose-500/5 group">
-                  <h3 className="text-xl font-bold text-rose-300 mb-1 group-hover:text-rose-400">MBBS Doctor</h3>
+                <button onClick={() => handleTierSelect('MBBS')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group">
+                  <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">MBBS Doctor</h3>
                   <p className="text-sm text-slate-400">General Physician, Common Illnesses</p>
-                  <p className="text-xs font-bold text-rose-500 mt-4 tracking-widest uppercase">Est. Fee: ₹500</p>
+                  <p className="text-xs font-bold text-teal-500 mt-4 tracking-widest uppercase">Est. Fee: ₹500</p>
                 </button>
 
-                <button onClick={() => handleTierSelect('Specialist')} className="text-left bg-black/40 border border-white/10 hover:border-rose-400/50 rounded-2xl p-6 transition-all hover:bg-rose-500/5 group">
-                  <h3 className="text-xl font-bold text-rose-300 mb-1 group-hover:text-rose-400">Specialist</h3>
+                <button onClick={() => handleTierSelect('Specialist')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group">
+                  <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Specialist</h3>
                   <p className="text-sm text-slate-400">Dermatologist, Pediatrician, Gynecologist, etc.</p>
-                  <p className="text-xs font-bold text-rose-500 mt-4 tracking-widest uppercase">Est. Fee: ₹1200</p>
+                  <p className="text-xs font-bold text-teal-500 mt-4 tracking-widest uppercase">Est. Fee: ₹1200</p>
                 </button>
 
-                <button onClick={() => handleTierSelect('Super Specialist')} className="text-left bg-black/40 border border-white/10 hover:border-rose-400/50 rounded-2xl p-6 transition-all hover:bg-rose-500/5 group">
-                  <h3 className="text-xl font-bold text-rose-300 mb-1 group-hover:text-rose-400">Super Specialist</h3>
+                <button onClick={() => handleTierSelect('Super Specialist')} className="text-left bg-black/40 border border-white/10 hover:border-teal-400/50 rounded-2xl p-6 transition-all hover:bg-teal-500/5 group">
+                  <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Super Specialist</h3>
                   <p className="text-sm text-slate-400">Cardiologist, Neurologist, Oncologist, etc.</p>
-                  <p className="text-xs font-bold text-rose-500 mt-4 tracking-widest uppercase">Est. Fee: ₹2500</p>
+                  <p className="text-xs font-bold text-teal-500 mt-4 tracking-widest uppercase">Est. Fee: ₹2500</p>
                 </button>
 
               </div>
@@ -244,7 +244,7 @@ export default function UrgentCareWizard() {
           {/* STEP 2: Sub Specialty */}
           {step === 2 && (
             <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-              <button onClick={() => setStep(1)} className="text-xs text-rose-400 font-bold uppercase tracking-widest mb-6 flex items-center gap-1 hover:text-rose-300">
+              <button onClick={() => setStep(1)} className="text-xs text-teal-400 font-bold uppercase tracking-widest mb-6 flex items-center gap-1 hover:text-teal-300">
                 &larr; Back
               </button>
               <h2 className="text-2xl font-black text-white mb-2">Select a Specialty</h2>
@@ -253,7 +253,7 @@ export default function UrgentCareWizard() {
               <select 
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
-                className="w-full bg-black/30 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-rose-500/50 focus:ring-4 focus:ring-rose-500/10 transition-all font-semibold appearance-none mb-6"
+                className="w-full bg-black/30 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 transition-all font-semibold appearance-none mb-6"
               >
                 <option value="">-- Choose a Specialty --</option>
                 {selectedTier === 'Specialist' ? (
@@ -277,7 +277,7 @@ export default function UrgentCareWizard() {
               <button 
                 onClick={handleSpecialtySelect}
                 disabled={!specialty}
-                className="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-4 rounded-xl disabled:opacity-50 transition-colors shadow-[0_0_20px_rgba(225,29,72,0.4)]"
+                className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 rounded-xl disabled:opacity-50 transition-colors shadow-[0_0_20px_rgba(20,184,166,0.4)]"
               >
                 Continue to Availability Check
               </button>
@@ -289,7 +289,7 @@ export default function UrgentCareWizard() {
             <div className="animate-in fade-in zoom-in duration-500 flex flex-col items-center text-center py-10">
               {isChecking ? (
                 <>
-                  <div className="w-24 h-24 rounded-full border-4 border-rose-500/30 border-t-rose-500 animate-spin mb-6"></div>
+                  <div className="w-24 h-24 rounded-full border-4 border-teal-500/30 border-t-teal-500 animate-spin mb-6"></div>
                   <h2 className="text-2xl font-black text-white mb-2">Pinging the Network...</h2>
                   <p className="text-slate-400">Searching for available {specialty ? specialty : selectedTier} doctors online right now.</p>
                 </>
@@ -302,7 +302,7 @@ export default function UrgentCareWizard() {
                   <p className="text-slate-300 text-lg mb-8">
                     <strong className="text-emerald-400">{doctorsAvailable} {specialty ? specialty : selectedTier} Doctors</strong> are currently online and ready to take your call instantly.
                   </p>
-                  <button onClick={() => setStep(4)} className="bg-rose-600 hover:bg-rose-500 px-10 py-4 rounded-full text-white font-bold shadow-[0_0_30px_rgba(225,29,72,0.5)] transition-all flex items-center gap-2">
+                  <button onClick={() => setStep(4)} className="bg-teal-600 hover:bg-teal-500 px-10 py-4 rounded-full text-white font-bold shadow-[0_0_30px_rgba(20,184,166,0.5)] transition-all flex items-center gap-2">
                     Proceed to Registration <ChevronRight className="w-5 h-5" />
                   </button>
                 </>
@@ -313,7 +313,7 @@ export default function UrgentCareWizard() {
           {/* STEP 4: Symptoms & Details */}
           {step === 4 && (
              <div className="animate-in fade-in slide-in-from-right-8 duration-500">
-               <button onClick={() => setStep(3)} className="text-xs text-rose-400 font-bold uppercase tracking-widest mb-6 flex items-center gap-1 hover:text-rose-300">
+               <button onClick={() => setStep(3)} className="text-xs text-teal-400 font-bold uppercase tracking-widest mb-6 flex items-center gap-1 hover:text-teal-300">
                  &larr; Back
                </button>
                <h2 className="text-2xl font-black text-white mb-6">Patient Pre-Registration</h2>
@@ -322,27 +322,27 @@ export default function UrgentCareWizard() {
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    <div>
                      <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Patient Name</label>
-                     <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} required className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-rose-500/50 outline-none" />
+                     <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} required className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-teal-500/50 outline-none" />
                    </div>
                    <div>
                      <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Phone Number</label>
-                     <input type="tel" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} required placeholder="+91 9999999999" className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-rose-500/50 outline-none" />
+                     <input type="tel" value={userPhone} onChange={(e) => setUserPhone(e.target.value)} required placeholder="+91 9999999999" className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-teal-500/50 outline-none" />
                    </div>
                  </div>
 
                  <div>
                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Chief Symptoms (Brief)</label>
-                   <textarea rows={3} value={symptoms} onChange={(e) => setSymptoms(e.target.value)} required placeholder="E.g., High fever since morning, severe headache..." className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-rose-500/50 outline-none resize-none"></textarea>
+                   <textarea rows={3} value={symptoms} onChange={(e) => setSymptoms(e.target.value)} required placeholder="E.g., High fever since morning, severe headache..." className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-teal-500/50 outline-none resize-none"></textarea>
                  </div>
 
-                 <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 flex items-start gap-3">
-                   <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-                   <p className="text-xs text-rose-200/80 leading-relaxed">
+                 <div className="bg-teal-500/10 border border-teal-500/30 rounded-xl p-4 flex items-start gap-3">
+                   <AlertCircle className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
+                   <p className="text-xs text-teal-200/80 leading-relaxed">
                      Please ensure all details are accurate. A doctor will review your symptoms instantly. This is a non-refundable emergency consultation fee.
                    </p>
                  </div>
 
-                 <button type="submit" className="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-4 rounded-xl transition-colors shadow-[0_0_20px_rgba(225,29,72,0.4)]">
+                 <button type="submit" className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 rounded-xl transition-colors shadow-[0_0_20px_rgba(20,184,166,0.4)]">
                    Continue to Secure Checkout
                  </button>
                </form>
@@ -352,7 +352,7 @@ export default function UrgentCareWizard() {
           {/* STEP 5: Payment */}
           {step === 5 && (
             <div className="animate-in fade-in zoom-in duration-500 flex flex-col items-center text-center">
-               <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-rose-400 mb-6">
+               <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-teal-400 mb-6">
                  <Video className="w-8 h-8" />
                </div>
                <h2 className="text-3xl font-black text-white mb-2">Final Step: Secure Payment</h2>
@@ -371,14 +371,14 @@ export default function UrgentCareWizard() {
                  )}
                  <div className="flex justify-between items-center text-lg">
                    <span className="text-slate-300 font-bold">Total Urgent Fee</span>
-                   <span className="font-black text-rose-400">₹{fee}</span>
+                   <span className="font-black text-teal-400">₹{fee}</span>
                  </div>
                </div>
 
                <button 
                  onClick={handlePayment} 
                  disabled={isSubmitting}
-                 className="w-full max-w-sm bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-black text-lg py-4 rounded-xl shadow-[0_0_30px_rgba(225,29,72,0.5)] transition-all disabled:opacity-50"
+                 className="w-full max-w-sm bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white font-black text-lg py-4 rounded-xl shadow-[0_0_30px_rgba(20,184,166,0.5)] transition-all disabled:opacity-50"
                >
                  {isSubmitting ? 'Processing...' : `Pay ₹${fee} & Connect`}
                </button>
