@@ -305,8 +305,8 @@ export default function UrgentCareWizard() {
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Ayush Doctor</h3>
                   <p className="text-sm text-slate-400">Homeopathy, Ayurveda, General Wellness</p>
                   <div className="mt-4 flex flex-col gap-0.5">
-                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.ayushMarket || (pricingMap.ayush ? pricingMap.ayush * 2 : 400)}</span></p>
-                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.ayush || 200}</p>
+                     <p className="text-xs font-medium text-slate-400">Market fee: <span className="line-through">₹{pricingMap.ayushMarket || (pricingMap.ayush ? pricingMap.ayush * 2 : 400)}</span></p>
+                     <p className="text-xl font-black text-emerald-400">Subsidized fee: ₹{pricingMap.ayush || 200}</p>
                   </div>
                 </button>
 
@@ -315,8 +315,8 @@ export default function UrgentCareWizard() {
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">MBBS Doctor</h3>
                   <p className="text-sm text-slate-400">General Physician, Common Illnesses</p>
                   <div className="mt-4 flex flex-col gap-0.5">
-                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.mbbsMarket || (pricingMap.mbbs ? pricingMap.mbbs * 2 : 500)}</span></p>
-                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.mbbs || 250}</p>
+                     <p className="text-xs font-medium text-slate-400">Market fee: <span className="line-through">₹{pricingMap.mbbsMarket || (pricingMap.mbbs ? pricingMap.mbbs * 2 : 500)}</span></p>
+                     <p className="text-xl font-black text-emerald-400">Subsidized fee: ₹{pricingMap.mbbs || 250}</p>
                   </div>
                 </button>
 
@@ -325,8 +325,8 @@ export default function UrgentCareWizard() {
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Specialist</h3>
                   <p className="text-sm text-slate-400">Dermatologist, Pediatrician, Gynecologist, etc.</p>
                   <div className="mt-4 flex flex-col gap-0.5">
-                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.specialistMarket || (pricingMap.specialist ? pricingMap.specialist * 2 : 800)}</span></p>
-                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.specialist || 400}</p>
+                     <p className="text-xs font-medium text-slate-400">Market fee: <span className="line-through">₹{pricingMap.specialistMarket || (pricingMap.specialist ? pricingMap.specialist * 2 : 800)}</span></p>
+                     <p className="text-xl font-black text-emerald-400">Subsidized fee: ₹{pricingMap.specialist || 400}</p>
                   </div>
                 </button>
 
@@ -335,8 +335,8 @@ export default function UrgentCareWizard() {
                   <h3 className="text-xl font-bold text-teal-300 mb-1 group-hover:text-teal-400">Super Specialist</h3>
                   <p className="text-sm text-slate-400">Cardiologist, Neurologist, Oncologist, etc.</p>
                   <div className="mt-4 flex flex-col gap-0.5">
-                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Market Fee: <span className="line-through">₹{pricingMap.superSpecialistMarket || (pricingMap.superSpecialist ? pricingMap.superSpecialist * 2 : 1000)}</span></p>
-                     <p className="text-sm font-black text-emerald-400 tracking-widest uppercase">Platform Rate: ₹{pricingMap.superSpecialist || 500}</p>
+                     <p className="text-xs font-medium text-slate-400">Market fee: <span className="line-through">₹{pricingMap.superSpecialistMarket || (pricingMap.superSpecialist ? pricingMap.superSpecialist * 2 : 1000)}</span></p>
+                     <p className="text-xl font-black text-emerald-400">Subsidized fee: ₹{pricingMap.superSpecialist || 500}</p>
                   </div>
                 </button>
 
