@@ -79,6 +79,10 @@ export default function AdminDataCRM() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const filteredData = data.filter(item => {
     if (search && !item.name?.toLowerCase().includes(search.toLowerCase()) && !item.phone?.includes(search)) return false;
     if (categoryFilter && item.category !== categoryFilter) return false;
