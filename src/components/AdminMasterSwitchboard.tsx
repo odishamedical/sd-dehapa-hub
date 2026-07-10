@@ -113,7 +113,7 @@ export default function AdminMasterSwitchboard() {
             return (
               <div 
                 key={plugin.id} 
-                className={`relative overflow-hidden rounded-[2rem] p-8 transition-all duration-500 group flex flex-col h-[280px] ${
+                className={`relative overflow-hidden rounded-[2rem] p-8 transition-all duration-500 group flex flex-col h-full min-h-[280px] ${
                   isEnabled 
                   ? 'bg-gradient-to-br from-emerald-900/40 via-slate-900/80 to-slate-900/90 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/50' 
                   : 'bg-slate-800/40 border-white/5 shadow-lg backdrop-blur-md grayscale-[0.4] hover:grayscale-[0.2]'
