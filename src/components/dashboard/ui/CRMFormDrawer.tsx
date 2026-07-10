@@ -239,26 +239,25 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
                            updatedData.category === 'Lab' ? 'Lab' : 
                            updatedData.category === 'Pharmacy' ? 'Pharmacy' : 'Member';
                            
-          import('firebase/firestore').then(async ({ query, collection, where, getDocs, updateDoc, setDoc, doc }) => {
-            const usersRef = collection(db, 'users');
-            const q = query(usersRef, where('email', '==', updatedData.ownerEmail));
-            const snapshot = await getDocs(q);
-            if (!snapshot.empty) {
-              const userDoc = snapshot.docs[0];
-              await updateDoc(doc(db, 'users', userDoc.id), { role: userRole });
-            } else {
-              // Create placeholder user so they have the role when they eventually sign up
-              const cleanId = updatedData.ownerEmail.replace(/[^a-zA-Z0-9@.]/g, '');
-              await setDoc(doc(db, 'users', cleanId), {
-                email: updatedData.ownerEmail,
-                name: updatedData.name,
-                role: userRole,
-                status: 'active',
-                createdAt: new Date(),
-                updatedAt: new Date()
-              }, { merge: true });
-            }
-          });
+          const usersRef = collection(db, 'users');
+          const q = query(usersRef, where('email', '==', updatedData.ownerEmail));
+          const snapshot = await getDocs(q);
+          
+          if (!snapshot.empty) {
+            const userDoc = snapshot.docs[0];
+            await updateDoc(doc(db, 'users', userDoc.id), { role: userRole });
+          } else {
+            // Create placeholder user so they have the role when they eventually sign up
+            const cleanId = updatedData.ownerEmail.replace(/[^a-zA-Z0-9@.]/g, '');
+            await setDoc(doc(db, 'users', cleanId), {
+              email: updatedData.ownerEmail,
+              name: updatedData.name,
+              role: userRole,
+              status: 'active',
+              createdAt: new Date(),
+              updatedAt: new Date()
+            }, { merge: true });
+          }
         } catch (roleErr) {
           console.error("Failed to upgrade user role:", roleErr);
         }
@@ -266,8 +265,8 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
 
       onSaveSuccess();
     } catch (e) {
-      console.error(e);
-      alert("Failed to save listing.");
+      console.error("FULL SAVE ERROR:", e);
+      alert(`Failed to save listing: ${e instanceof Error ? e.message : 'Unknown error'}`);
     }
     setIsSaving(false);
   };
