@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, orderBy, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { AdminCard, AdminHeader } from '@/components/admin/ui';
 
 export default function AdminSupportTickets() {
   const [tickets, setTickets] = useState<any[]>([]);
@@ -41,35 +42,35 @@ export default function AdminSupportTickets() {
   });
 
   return (
-    <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-sm">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div>
-          <h3 className="text-lg font-bold">Support & Coordinator Requests</h3>
-          <p className="text-sm text-slate-500">Manage patient requests and provider onboarding assistance.</p>
-        </div>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-lg">
-           {['all', 'open', 'resolved', 'onboarding', 'patient'].map(f => (
-             <button
-               key={f}
-               onClick={() => setFilter(f)}
-               className={`px-3 py-1.5 rounded-md text-xs font-bold uppercase transition-all ${filter === f ? 'bg-slate-800 shadow-sm text-teal-700' : 'text-slate-500 hover:text-slate-300'}`}
-             >
-               {f}
-             </button>
-           ))}
-        </div>
-      </div>
+    <AdminCard>
+      <AdminHeader 
+        title="Support & Coordinator Requests"
+        description="Manage patient requests and provider onboarding assistance."
+        actions={
+          <div className="flex gap-2 bg-slate-950 p-1 rounded-lg border border-slate-800">
+             {['all', 'open', 'resolved', 'onboarding', 'patient'].map(f => (
+               <button
+                 key={f}
+                 onClick={() => setFilter(f)}
+                 className={`px-3 py-1.5 rounded-md text-xs font-bold uppercase transition-all ${filter === f ? 'bg-cyan-900/50 shadow-sm text-cyan-400 border border-cyan-500/30' : 'text-slate-500 hover:text-slate-300'}`}
+               >
+                 {f}
+               </button>
+             ))}
+          </div>
+        }
+      />
 
       {loading ? (
         <div className="flex justify-center py-12">
           <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : filteredTickets.length === 0 ? (
-        <div className="text-center py-16 border-2 border-dashed border-white/10 rounded-xl bg-slate-50">
-          <div className="w-16 h-16 bg-slate-900 border border-white/10 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+        <div className="text-center py-16 border-2 border-dashed border-slate-800 rounded-xl bg-slate-950/50">
+          <div className="w-16 h-16 bg-slate-900 border border-slate-800 shadow-sm rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
           </div>
-          <p className="font-bold text-white mb-1">No Support Tickets</p>
+          <p className="font-bold text-slate-300 mb-1">No Support Tickets</p>
           <p className="text-sm text-slate-500 max-w-sm mx-auto">When users request help, they will appear here.</p>
         </div>
       ) : (
@@ -79,10 +80,10 @@ export default function AdminSupportTickets() {
             const isOnboarding = ticket.source === 'onboarding_dashboard';
             
             return (
-              <div key={ticket.id} className={`border rounded-xl p-5 transition-all ${isOpen ? 'border-amber-200 bg-amber-50/30' : 'border-white/10 bg-slate-50 opacity-70'}`}>
+              <div key={ticket.id} className={`border rounded-xl p-5 transition-all ${isOpen ? 'border-amber-500/50 bg-amber-500/10' : 'border-slate-800 bg-slate-900/50 opacity-70'}`}>
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md mb-2 inline-block ${isOpen ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-600'}`}>
+                    <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md mb-2 inline-block ${isOpen ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
                       {ticket.status}
                     </span>
                     {isOnboarding ? (
@@ -108,7 +109,7 @@ export default function AdminSupportTickets() {
                     {isOpen && (
                       <button 
                         onClick={() => handleResolve(ticket.id)}
-                        className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                        className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm"
                       >
                         Mark Resolved
                       </button>
@@ -120,7 +121,7 @@ export default function AdminSupportTickets() {
                     )}
                   </div>
                 </div>
-                <div className="bg-slate-800 border border-white/5 rounded-lg p-4 mt-3">
+                <div className="bg-slate-950/50 border border-slate-800 rounded-lg p-4 mt-3">
                   <p className="text-sm text-slate-300 font-medium whitespace-pre-wrap">"{isOnboarding ? ticket.message : ticket.query}"</p>
                 </div>
               </div>
@@ -128,6 +129,6 @@ export default function AdminSupportTickets() {
           })}
         </div>
       )}
-    </div>
+    </AdminCard>
   );
 }

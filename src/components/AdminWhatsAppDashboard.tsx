@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 import { collection, query, onSnapshot, orderBy, getDoc, getDocs, doc, setDoc, serverTimestamp, updateDoc, deleteField } from 'firebase/firestore';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import * as XLSX from 'xlsx';
+import { AdminCard, AdminHeader } from '@/components/admin/ui';
 
 export default function AdminWhatsAppDashboard() {
   const [sessions, setSessions] = useState<any[]>([]);
@@ -381,7 +382,7 @@ export default function AdminWhatsAppDashboard() {
   };
 
   return (
-    <div className="space-y-6 relative">
+    <AdminCard noPadding className="relative flex flex-col h-full">
       {/* Settings Modal */}
       {isSettingsOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -432,30 +433,37 @@ export default function AdminWhatsAppDashboard() {
       )}
 
       {/* Header and Tabs */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-900/50 backdrop-blur-md p-2 rounded-2xl shadow-sm border border-white/5">
-        <div className="flex p-1 bg-slate-800 rounded-xl w-full md:w-auto">
-          <button 
-            onClick={() => setInternalTab('inbox')}
-            className={`flex-1 md:flex-none py-2 px-6 font-bold text-sm rounded-lg transition-all ${internalTab === 'inbox' ? 'bg-slate-700 text-teal-400 shadow-sm' : 'text-slate-400 hover:text-white'}`}
-          >
-            Live Inbox
-          </button>
-          <button 
-            onClick={() => setInternalTab('crm')}
-            className={`flex-1 md:flex-none py-2 px-6 font-bold text-sm rounded-lg transition-all flex items-center justify-center gap-2 ${internalTab === 'crm' ? 'bg-slate-700 text-teal-400 shadow-sm' : 'text-slate-400 hover:text-white'}`}
-          >
-            Contacts & Broadcast
-          </button>
-        </div>
-        <button 
-          onClick={() => setIsSettingsOpen(true)}
-          className="text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-800 transition-colors"
-          title="API Settings"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        </button>
-      </div>
+      <AdminHeader 
+        title="WhatsApp Dashboard"
+        description="Manage live inbox and broadcast contacts."
+        actions={
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+            <div className="flex p-1 bg-slate-800 rounded-xl w-full md:w-auto">
+              <button 
+                onClick={() => setInternalTab('inbox')}
+                className={`flex-1 md:flex-none py-2 px-6 font-bold text-sm rounded-lg transition-all ${internalTab === 'inbox' ? 'bg-slate-700 text-cyan-400 shadow-sm' : 'text-slate-400 hover:text-white'}`}
+              >
+                Live Inbox
+              </button>
+              <button 
+                onClick={() => setInternalTab('crm')}
+                className={`flex-1 md:flex-none py-2 px-6 font-bold text-sm rounded-lg transition-all flex items-center justify-center gap-2 ${internalTab === 'crm' ? 'bg-slate-700 text-cyan-400 shadow-sm' : 'text-slate-400 hover:text-white'}`}
+              >
+                Contacts & Broadcast
+              </button>
+            </div>
+            <button 
+              onClick={() => setIsSettingsOpen(true)}
+              className="w-full md:w-auto p-2.5 bg-slate-900 border border-slate-700 hover:border-cyan-500 rounded-xl text-slate-400 hover:text-cyan-400 transition-colors shadow-sm"
+              title="API Configuration"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </button>
+          </div>
+        }
+      />
 
+      <div className="p-6 md:p-8 flex-1">
       {internalTab === 'inbox' && (
       <div className="flex flex-col lg:flex-row h-[700px] bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-white/10">
       {/* Sidebar */}
@@ -878,6 +886,7 @@ export default function AdminWhatsAppDashboard() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </AdminCard>
   );
 }

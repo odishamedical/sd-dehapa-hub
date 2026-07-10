@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, where, doc, writeBatch, serverTimestamp, updateDoc } from 'firebase/firestore';
 import PremiumSlugModal from './PremiumSlugModal';
+import { AdminCard, AdminHeader } from '@/components/admin/ui';
 
 export default function AdminSlugRegistry() {
   const [slugs, setSlugs] = useState<any[]>([]);
@@ -81,31 +82,35 @@ export default function AdminSlugRegistry() {
   );
 
   return (
-    <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-sm">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b border-slate-100 pb-6">
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+    <AdminCard noPadding>
+      <AdminHeader 
+        title={
+          <div className="flex items-center gap-2">
             Premium Slug Registry 
-            <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-teal-200">
+            <span className="bg-cyan-900/50 text-cyan-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-cyan-500/30">
               {slugs.length} Registered
             </span>
-          </h3>
-          <p className="text-sm text-slate-500 mt-1 mb-4">Track all claimed vanity URLs across the ecosystem.</p>
-          <button onClick={() => setIsModalOpen(true)} className="px-6 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm shadow-md transition-colors flex items-center gap-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-            Book New Slug for User
-          </button>
-        </div>
-        <div className="w-full md:w-72">
-          <input 
-            type="text" 
-            placeholder="Search slugs or names..." 
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full border-2 border-white/10 hover:border-white/20 rounded-xl px-5 py-3.5 shadow-sm text-white focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-slate-800"
-          />
-        </div>
-      </div>
+          </div>
+        }
+        description="Track all claimed vanity URLs across the ecosystem."
+        actions={
+          <div className="flex flex-col md:flex-row gap-3">
+            <button onClick={() => setIsModalOpen(true)} className="px-6 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm shadow-md transition-colors flex items-center gap-2 border border-slate-800">
+              <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+              Book New Slug
+            </button>
+            <input 
+              type="text" 
+              placeholder="Search slugs or names..." 
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full md:w-72 border border-slate-800 hover:border-slate-700 rounded-xl px-5 py-2 shadow-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all font-medium placeholder:text-slate-500 bg-slate-950/80"
+            />
+          </div>
+        }
+      />
+      
+      <div className="p-6 md:p-8">
 
       {loading ? (
         <div className="flex justify-center items-center py-20">
@@ -226,6 +231,7 @@ export default function AdminSlugRegistry() {
         isAdminMode={true}
         onAdminBook={handleAdminBook}
       />
-    </div>
+      </div>
+    </AdminCard>
   );
 }

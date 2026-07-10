@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { AdminCard, AdminHeader } from '@/components/admin/ui';
 
 interface UserDoc {
   uid: string;
@@ -98,16 +99,15 @@ export default function AdminViralAnalytics() {
   }
 
   return (
-    <div className="bg-slate-900/50 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-sm">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+    <AdminCard noPadding>
+      <AdminHeader 
+        title={
+          <div className="flex items-center gap-2">
             <span className="text-2xl">🚀</span> Viral Loop Analytics
-          </h2>
-          <p className="text-sm font-medium text-slate-400 mt-1">
-            Track which doctors, hospitals, and users are successfully inviting others to DehaPa.
-          </p>
-        </div>
+          </div>
+        }
+        description="Track which doctors, hospitals, and users are successfully inviting others to DehaPa."
+        actions={
         <div className="bg-gradient-to-r from-fuchsia-900/20 to-fuchsia-800/10 border border-fuchsia-500/20 px-6 py-3 rounded-2xl flex items-center gap-4 shadow-sm">
           <div className="w-10 h-10 bg-fuchsia-500/20 rounded-full flex items-center justify-center text-fuchsia-400 shadow-sm border border-fuchsia-500/30">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
@@ -117,7 +117,10 @@ export default function AdminViralAnalytics() {
             <p className="text-2xl font-black text-fuchsia-100 leading-none mt-0.5">{totalReferrals}</p>
           </div>
         </div>
-      </div>
+        }
+      />
+      
+      <div className="p-6 md:p-8">
 
       {leaderboard.length === 0 ? (
         <div className="text-center py-16 border-2 border-dashed border-white/10 rounded-2xl bg-slate-800/40">
@@ -193,6 +196,7 @@ export default function AdminViralAnalytics() {
           </table>
         </div>
       )}
-    </div>
+      </div>
+    </AdminCard>
   );
 }

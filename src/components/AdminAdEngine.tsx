@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
 import { collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { AdminCard, AdminHeader } from '@/components/admin/ui';
 
 interface AdSlot {
   id: string;
@@ -115,18 +116,18 @@ export default function AdminAdEngine() {
   };
 
   return (
-    <div className="min-h-full">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-end mb-8">
-          <div>
-            <h2 className="text-2xl font-black text-white font-serif tracking-tight">Ad Injection Engine</h2>
-            <p className="text-slate-400 font-medium mt-1">Monetize the platform globally or target specific premium profiles.</p>
-          </div>
-          <div className="bg-teal-900/30 text-teal-300 px-4 py-1.5 rounded-xl font-bold text-xs uppercase tracking-widest border border-teal-500/30">
+    <AdminCard noPadding>
+      <AdminHeader 
+        title="Ad Injection Engine"
+        description="Monetize the platform globally or target specific premium profiles."
+        actions={
+          <div className="bg-cyan-900/30 text-cyan-300 px-4 py-1.5 rounded-xl font-bold text-xs uppercase tracking-widest border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.1)]">
             {ads.length} Active Slots
           </div>
-        </div>
+        }
+      />
 
+      <div className="p-6 md:p-8">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           
           {/* Ad Creation Form */}
@@ -337,6 +338,6 @@ export default function AdminAdEngine() {
 
         </div>
       </div>
-    </div>
+    </AdminCard>
   );
 }
