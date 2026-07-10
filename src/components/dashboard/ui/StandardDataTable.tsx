@@ -2,9 +2,11 @@ import React from 'react';
 import { Edit, Eye, EyeOff, ShieldCheck, ShieldAlert } from 'lucide-react';
 
 export interface ColumnDef<T> {
-  header: string;
+  header: React.ReactNode;
+  accessorKey?: keyof T;
   accessorKey?: keyof T;
   cell?: (item: T) => React.ReactNode;
+  className?: string;
 }
 
 interface StandardDataTableProps<T> {
@@ -43,7 +45,7 @@ export function StandardDataTable<T extends { id?: string }>({
         <thead className="text-xs uppercase bg-slate-800/50 text-slate-400">
           <tr>
             {columns.map((col, i) => (
-              <th key={i} scope="col" className="px-6 py-4 font-medium tracking-wider">
+              <th key={i} scope="col" className={`px-6 py-4 font-medium tracking-wider ${col.className || ''}`}>
                 {col.header}
               </th>
             ))}
@@ -57,7 +59,7 @@ export function StandardDataTable<T extends { id?: string }>({
               onClick={() => onRowClick && onRowClick(item)}
             >
               {columns.map((col, colIndex) => (
-                <td key={colIndex} className="px-6 py-4 whitespace-nowrap">
+                <td key={colIndex} className={`px-6 py-4 whitespace-nowrap ${col.className || ''}`}>
                   {col.cell ? col.cell(item) : col.accessorKey ? String(item[col.accessorKey] || '') : null}
                 </td>
               ))}
