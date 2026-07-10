@@ -24,6 +24,7 @@ import AdminAdEngine from '@/components/AdminAdEngine';
 import AdminPlatformSettings from '@/components/AdminPlatformSettings';
 import AdminMasterSwitchboard from '@/components/AdminMasterSwitchboard';
 import AdminTenantGenerator from '@/components/AdminTenantGenerator';
+import { AdminCard, AdminHeader } from '@/components/admin/ui';
 
 interface StagedListing {
   id: string;
@@ -422,52 +423,50 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === "audit" && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-               <h3 className="text-lg font-bold mb-1">Sovereign Vault Audit Logs</h3>
-               <p className="text-sm text-slate-500 mb-6">System-wide immutable logs of health record access for legal compliance.</p>
-               
-               <div className="text-center py-16 border border-slate-200 rounded-xl bg-slate-50">
+            <AdminCard>
+               <AdminHeader title="Sovereign Vault Audit Logs" description="System-wide immutable logs of health record access for legal compliance." />
+               <div className="text-center py-16 border border-slate-800 rounded-xl bg-slate-950/50">
                  <p className="font-mono text-xs uppercase tracking-widest text-slate-500">No Logs Generated Yet</p>
                </div>
-            </div>
+            </AdminCard>
           )}
 
           {activeTab === "crawler" && (
-            <div className="bg-white border-0 rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h3 className="text-lg font-bold">Google Maps Data Crawler</h3>
-                  <p className="text-sm text-slate-500">Automatically fetch and publish Hospitals, Labs, and Clinics from Google Places API.</p>
-                </div>
-                <div className="bg-teal-50 text-teal-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-teal-100">
-                  API Connected
-                </div>
-              </div>
+            <AdminCard>
+              <AdminHeader 
+                title="Google Maps Data Crawler" 
+                description="Automatically fetch and publish Hospitals, Labs, and Clinics from Google Places API."
+                actions={
+                  <div className="bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                    API Connected
+                  </div>
+                }
+              />
               
-              <div className="bg-[#F9FAFB] border-0 rounded-xl p-6 mb-8 shadow-inner">
+              <div className="bg-slate-800/50 border border-slate-800 rounded-xl p-6 mb-8 shadow-inner">
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 items-start">
                   <div className="md:col-span-3 lg:col-span-5">
-                    <AddressBlock data={crawlerAddress} onChange={setCrawlerAddress} />
+                    <AddressBlock data={crawlerAddress} onChange={setCrawlerAddress} darkTheme={true} />
                   </div>
                   
-                  <div className="md:col-span-3 lg:col-span-5 grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-slate-200">
+                  <div className="md:col-span-3 lg:col-span-5 grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-slate-800">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Category</label>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Category</label>
                       <select 
                         value={crawlerCategory} 
                         onChange={(e) => { setCrawlerCategory(e.target.value); setCrawlerSubCategory(""); setCustomSubCategory(""); }}
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-teal-500 outline-none transition-all"
+                        className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all"
                       >
                         {platformCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Sub-category</label>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Sub-category</label>
                       <select 
                         value={crawlerSubCategory} 
                         onChange={(e) => setCrawlerSubCategory(e.target.value)}
-                        className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-teal-500 outline-none transition-all"
+                        className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all"
                       >
                         <option value="">Any {crawlerCategory}</option>
                         {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
@@ -477,11 +476,11 @@ export default function AdminDashboard() {
 
                     {crawlerCategory === "Doctor" && (
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Doctor Tier</label>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Doctor Tier</label>
                         <select 
                           value={crawlerTier} 
                           onChange={(e) => setCrawlerTier(e.target.value)}
-                          className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-teal-500 outline-none transition-all"
+                          className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all"
                         >
                           <option value="Ayush">Ayush</option>
                           <option value="MBBS">MBBS</option>
@@ -493,19 +492,19 @@ export default function AdminDashboard() {
 
                     {crawlerSubCategory === "Other" && (
                       <div className={crawlerCategory === "Doctor" ? "md:col-span-3" : ""}>
-                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Custom Sub-category</label>
-                        <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white" />
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Custom Sub-category</label>
+                        <input type="text" value={customSubCategory} onChange={(e) => setCustomSubCategory(e.target.value)} placeholder="Type custom specialty..." className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all" />
                       </div>
                     )}
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-widest tracking-wider mb-1.5">Custom Query Name</label>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Custom Query Name</label>
                       <input 
                         type="text" 
                         value={crawlerQuery} 
                         onChange={(e) => setCrawlerQuery(e.target.value)} 
                         placeholder="e.g. Top Doctors, Apollo..." 
-                        className="w-full border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-400 bg-white" 
+                        className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all" 
                       />
                     </div>
                   </div>
@@ -650,9 +649,8 @@ export default function AdminDashboard() {
                   )}
                 </div>
               )}
-            </div>
+            </AdminCard>
           )}
-
                     {activeTab === "staff" && (
             <AdminStaffManagement />
           )}

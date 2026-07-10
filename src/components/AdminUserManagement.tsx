@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, doc, setDoc, getDocs, deleteDoc, updateDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { AdminCard, AdminHeader } from '@/components/admin/ui';
 
 export default function AdminUserManagement() {
   const [users, setUsers] = useState<any[]>([]);
@@ -191,11 +192,9 @@ export default function AdminUserManagement() {
   const ecosystemRoles = ['Member', 'Doctor', 'Hospital', 'Lab', 'Pharmacy', 'Ambulance', 'Admin', 'Super_Admin'];
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 border border-white/10 text-white rounded-3xl shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-[80vh] relative">
-      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
-
+    <AdminCard className="flex flex-col h-[80vh] overflow-hidden" noPadding>
       {/* Top Metrics Bar */}
-      <div className="px-4 md:px-6 pt-4 md:pt-6 pb-2 flex overflow-x-auto snap-x snap-mandatory gap-3 md:gap-4 relative z-10 shrink-0 custom-scrollbar">
+      <div className="px-4 md:px-6 pt-4 md:pt-6 pb-2 flex overflow-x-auto snap-x snap-mandatory gap-3 md:gap-4 relative z-10 shrink-0 custom-scrollbar border-b border-slate-800">
         <div className="bg-slate-800/80 backdrop-blur-md rounded-2xl p-4 w-[85vw] sm:w-auto sm:flex-1 min-w-[200px] shrink-0 border border-white/5 shadow-sm flex items-center gap-4 snap-center">
           <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -226,7 +225,7 @@ export default function AdminUserManagement() {
       </div>
 
       {/* Filter Bar */}
-      <div className="px-4 md:px-6 py-4 border-b border-white/10 text-white bg-slate-900/40 backdrop-blur-md flex flex-col lg:flex-row gap-4 items-center justify-between shrink-0 relative z-10">
+      <div className="px-4 md:px-6 py-4 border-b border-slate-800 text-white bg-slate-900 flex flex-col lg:flex-row gap-4 items-center justify-between shrink-0 relative z-10">
         
         {selectedUsers.length > 0 ? (
           <div className="flex flex-wrap gap-2 items-center w-full lg:w-auto bg-slate-800 rounded-xl px-4 py-2 text-white shadow-lg animate-in fade-in slide-in-from-top-2">
@@ -344,7 +343,7 @@ export default function AdminUserManagement() {
       )}
 
       {/* Main Table Area */}
-      <div className="flex-1 overflow-auto bg-slate-900/50 backdrop-blur-md relative z-10 custom-scrollbar">
+      <div className="flex-1 overflow-auto bg-slate-900 relative z-10 custom-scrollbar">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
@@ -353,7 +352,7 @@ export default function AdminUserManagement() {
           <div className="flex flex-col items-center justify-center h-64 text-slate-500 font-medium">No users found.</div>
         ) : (
           <table className="w-full text-left border-collapse block md:table">
-            <thead className="bg-slate-100/80 backdrop-blur-sm sticky top-0 z-20 shadow-sm border-b border-white/5 hidden md:table-header-group">
+            <thead className="bg-slate-800 sticky top-0 z-20 shadow-sm border-b border-slate-700 hidden md:table-header-group">
               <tr>
                 <th className="px-6 py-4 w-10">
                   <input 
@@ -373,7 +372,7 @@ export default function AdminUserManagement() {
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Registered</th>
               </tr>
             </thead>
-            <tbody className="block md:table-row-group divide-y divide-transparent md:divide-slate-200/60 p-3 md:p-0">
+            <tbody className="block md:table-row-group divide-y divide-transparent md:divide-slate-800 p-3 md:p-0">
               {filteredUsers.map(user => {
                 const isSuspended = user.status === 'suspended';
                 let isOnline = false;
@@ -727,6 +726,6 @@ export default function AdminUserManagement() {
           </div>
         </div>
       )}
-    </div>
+    </AdminCard>
   );
 }
