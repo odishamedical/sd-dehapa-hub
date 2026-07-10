@@ -5,6 +5,11 @@ import { doc, onSnapshot, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { PluginRegistry } from './PluginRegistry';
 import { useTenant } from '@/components/TenantContext';
+import { initializePlugins } from '@/plugins';
+
+// Ensure plugins are initialized in the client browser memory
+initializePlugins();
+
 
 interface PluginEngineContextType {
   activePlugins: Record<string, boolean>; // e.g. { 'vitals.compact': true, 'rx.auto_suggest': false }
