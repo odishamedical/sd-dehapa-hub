@@ -968,10 +968,10 @@ export default function UnifiedProfileLayout({
 
             {/* Ad Space */}
             {heroRightAd && (
-              <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-xl aspect-square md:aspect-[4/3] lg:aspect-[3/4]">
+              <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center min-h-[250px]">
                 {heroRightAd.imageUrl ? (
                   <a href={heroRightAd.linkUrl} target="_blank" rel="noreferrer">
-                    <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
+                    <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-auto object-contain" />
                   </a>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-white/5" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode }} />

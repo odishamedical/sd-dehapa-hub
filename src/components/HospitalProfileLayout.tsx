@@ -499,10 +499,10 @@ export default function HospitalProfileLayout({
 
              {/* Ad Space */}
              {heroRightAd && (
-               <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white aspect-square md:aspect-[4/3] lg:aspect-[3/4]">
+                <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white flex items-center justify-center min-h-[250px]">
                  {heroRightAd.imageUrl ? (
                    <a href={heroRightAd.linkUrl || '#'} target="_blank" rel="noreferrer">
-                     <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
+                     <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-auto object-contain" />
                    </a>
                  ) : (
                    <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode || '' }} />

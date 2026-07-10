@@ -7,6 +7,8 @@ import QRCode from "react-qr-code";
 import { Search, Activity, PhoneCall, X, Video, Calendar, ShieldCheck, Stethoscope, Building2, TestTube2, Pill, Ambulance, QrCode, AlertCircle, Syringe, HeartPulse, Globe2, Zap, CheckCircle2 } from "lucide-react";
 import dynamic from 'next/dynamic';
 import { useRouter } from "next/navigation";
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
   ssr: false
@@ -28,6 +30,7 @@ export default function DehapaHome() {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [userUid, setUserUid] = useState<string | null>(null);
+  const [platformAds, setPlatformAds] = useState<any>({});
 
   // Typing Effect State
   const [currentPhraseIdx, setCurrentPhraseIdx] = useState(0);
@@ -40,6 +43,29 @@ export default function DehapaHome() {
 
     const handleOpenQR = () => setIsQrModalOpen(true);
     window.addEventListener('sd_open_qr_modal', handleOpenQR);
+
+    const fetchAds = async () => {
+      try {
+        const adsQuery = query(collection(db, 'platform_ads'), where('active', '==', true));
+        const adsSnap = await getDocs(adsQuery);
+        const adsData: any = {};
+        
+        adsSnap.forEach(d => {
+          const ad = d.data();
+          const slot = ad.slot || ad.slotId;
+          if (slot) {
+            if (!adsData[slot]) adsData[slot] = [];
+            adsData[slot].push(ad);
+          }
+        });
+        
+        setPlatformAds(adsData);
+      } catch(e) {
+        console.error("Ads fetch failed", e);
+      }
+    };
+    fetchAds();
+
     return () => window.removeEventListener('sd_open_qr_modal', handleOpenQR);
   }, []);
 
@@ -166,6 +192,23 @@ export default function DehapaHome() {
           </div>
         </section>
 
+        {/* --- AD SLOT: CAROUSEL --- */}
+        {platformAds['ad_slot_home_carousel'] && platformAds['ad_slot_home_carousel'].length > 0 && (
+          <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mb-10">
+            <div className="w-full h-auto min-h-[120px] md:min-h-[250px] bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 flex items-center justify-center relative group">
+              {/* For simplicity right now, we show the first one in the array for the carousel */}
+              {platformAds['ad_slot_home_carousel'][0].type === 'image' ? (
+                <a href={platformAds['ad_slot_home_carousel'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
+                  <img src={platformAds['ad_slot_home_carousel'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[300px] object-contain" />
+                </a>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-slate-900" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_carousel'][0].htmlCode }} />
+              )}
+              <span className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] uppercase font-bold text-slate-400">Sponsored</span>
+            </div>
+          </section>
+        )}
+
         {/* THE MASTER BENTO BOX GRID */}
         <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full">
           
@@ -263,8 +306,48 @@ export default function DehapaHome() {
               </div>
             </Link>
 
+          </div>
+        </section>
 
-            {/* DIAGNOSTICS BENTO */}
+        {/* --- AD SLOT: GRID (3 TICKETS) --- */}
+        {platformAds['ad_slot_home_grid'] && platformAds['ad_slot_home_grid'].length > 0 && (
+          <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {platformAds['ad_slot_home_grid'].slice(0, 3).map((ad: any, idx: number) => (
+                <div key={idx} className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl border border-white/10 flex items-center justify-center min-h-[150px] relative">
+                  {ad.type === 'image' ? (
+                    <a href={ad.linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
+                      <img src={ad.imageUrl} alt="Advertisement" className="w-full h-auto object-contain" />
+                    </a>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: ad.htmlCode }} />
+                  )}
+                  <span className="absolute top-3 right-3 bg-black/50 backdrop-blur-md px-2 py-0.5 rounded text-[8px] uppercase font-bold text-slate-400">Ad</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* --- AD SLOT: DISTRIBUTED 1 --- */}
+        {platformAds['ad_slot_home_distributed_1'] && platformAds['ad_slot_home_distributed_1'].length > 0 && (
+          <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mt-10">
+            <div className="w-full bg-slate-900 rounded-[2rem] overflow-hidden shadow-xl border border-white/10 flex items-center justify-center min-h-[120px] relative">
+              {platformAds['ad_slot_home_distributed_1'][0].type === 'image' ? (
+                <a href={platformAds['ad_slot_home_distributed_1'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
+                  <img src={platformAds['ad_slot_home_distributed_1'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
+                </a>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_1'][0].htmlCode }} />
+              )}
+              <span className="absolute top-3 right-3 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] uppercase font-bold text-slate-400">Sponsored</span>
+            </div>
+          </section>
+        )}
+
+        {/* DIAGNOSTICS BENTO */}
+        <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 auto-rows-[250px]">
             {/* 7. Order Medicines (2x1 Wide) */}
             <Link href="/pharmacies" className="col-span-1 md:col-span-2 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
               <Image src="/images/cards/card_medicines.png" alt="Order Medicines" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
@@ -317,6 +400,21 @@ export default function DehapaHome() {
           </div>
         </section>
 
+        {/* --- AD SLOT: DISTRIBUTED 2 --- */}
+        {platformAds['ad_slot_home_distributed_2'] && platformAds['ad_slot_home_distributed_2'].length > 0 && (
+          <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mt-10">
+            <div className="w-full bg-slate-900 rounded-[2rem] overflow-hidden shadow-xl border border-white/10 flex items-center justify-center min-h-[120px] relative">
+              {platformAds['ad_slot_home_distributed_2'][0].type === 'image' ? (
+                <a href={platformAds['ad_slot_home_distributed_2'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
+                  <img src={platformAds['ad_slot_home_distributed_2'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
+                </a>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_2'][0].htmlCode }} />
+              )}
+              <span className="absolute top-3 right-3 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] uppercase font-bold text-slate-400">Sponsored</span>
+            </div>
+          </section>
+        )}
 
         {/* B2B PROVIDER SECTION */}
         <section className="pt-16 px-4 sm:px-6 max-w-[1400px] mx-auto w-full">
@@ -388,6 +486,22 @@ export default function DehapaHome() {
             </Link>
           </div>
         </section>
+
+        {/* --- AD SLOT: DISTRIBUTED 3 (ABOVE FOOTER) --- */}
+        {platformAds['ad_slot_home_distributed_3'] && platformAds['ad_slot_home_distributed_3'].length > 0 && (
+          <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mt-16 mb-4">
+            <div className="w-full bg-slate-900 rounded-[2rem] overflow-hidden shadow-xl border border-white/10 flex items-center justify-center min-h-[120px] relative">
+              {platformAds['ad_slot_home_distributed_3'][0].type === 'image' ? (
+                <a href={platformAds['ad_slot_home_distributed_3'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
+                  <img src={platformAds['ad_slot_home_distributed_3'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
+                </a>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_3'][0].htmlCode }} />
+              )}
+              <span className="absolute top-3 right-3 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] uppercase font-bold text-slate-400">Sponsored</span>
+            </div>
+          </section>
+        )}
 
       </div>
 

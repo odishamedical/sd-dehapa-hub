@@ -15,7 +15,11 @@ const AD_SLOTS: AdSlot[] = [
   { id: 'ad_slot_doctor_hero_top', label: 'Doctor Profile - Top Hero (Global)' },
   { id: 'ad_slot_doctor_hero_right', label: 'Doctor Profile - Right Sidebar (Premium)' },
   { id: 'ad_slot_directory_sidebar', label: 'Directory Search - Left Sidebar' },
-  { id: 'ad_slot_home_featured', label: 'Homepage - Featured Section' }
+  { id: 'ad_slot_home_carousel', label: 'Homepage - Main Carousel (Top)' },
+  { id: 'ad_slot_home_grid', label: 'Homepage - 3-Ticket Grid (Middle)' },
+  { id: 'ad_slot_home_distributed_1', label: 'Homepage - Distributed Slot 1 (Under Top Doctors)' },
+  { id: 'ad_slot_home_distributed_2', label: 'Homepage - Distributed Slot 2 (Under Nearby Hospitals)' },
+  { id: 'ad_slot_home_distributed_3', label: 'Homepage - Distributed Slot 3 (Above Footer)' }
 ];
 
 export default function AdminAdEngine() {
@@ -277,9 +281,9 @@ export default function AdminAdEngine() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {ads.map(ad => (
                   <div key={ad.id} className={`bg-slate-800/40 rounded-2xl border ${ad.active ? 'border-teal-500/50 shadow-[0_0_20px_rgba(20,184,166,0.15)]' : 'border-white/10 opacity-70'} overflow-hidden transition-all`}>
-                    <div className="h-40 bg-slate-900 relative group flex items-center justify-center overflow-hidden">
+                    <div className="min-h-[160px] bg-slate-900 relative group flex items-center justify-center overflow-hidden">
                       {ad.type === 'image' ? (
-                        <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-full object-cover" />
+                        <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-auto max-h-40 object-contain p-2" />
                       ) : (
                         <div className="p-4 text-xs font-mono text-slate-400 break-all w-full h-full overflow-hidden">
                           {ad.htmlCode}

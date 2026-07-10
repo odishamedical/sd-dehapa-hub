@@ -343,13 +343,13 @@ function BookAppointmentForm() {
               {platformAds['ad_slot_booking_sidebar'] && (
                 <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-4 border border-white/10 group overflow-hidden">
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-3 text-center">Advertisement</p>
-                  <div className="w-full rounded-xl overflow-hidden border border-white/10 shadow-[0_5px_20px_rgba(0,0,0,0.3)]">
+                  <div className="w-full rounded-xl overflow-hidden border border-white/10 shadow-[0_5px_20px_rgba(0,0,0,0.3)] bg-slate-900 flex items-center justify-center">
                     {platformAds['ad_slot_booking_sidebar'].link ? (
-                      <a href={platformAds['ad_slot_booking_sidebar'].link} target="_blank" rel="noopener noreferrer">
-                        <img src={platformAds['ad_slot_booking_sidebar'].imageUrl} alt="Advertisement" className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <a href={platformAds['ad_slot_booking_sidebar'].link} target="_blank" rel="noopener noreferrer" className="w-full">
+                        <img src={platformAds['ad_slot_booking_sidebar'].imageUrl} alt="Advertisement" className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700" />
                       </a>
                     ) : (
-                      <img src={platformAds['ad_slot_booking_sidebar'].imageUrl} alt="Advertisement" className="w-full h-auto object-cover" />
+                      <img src={platformAds['ad_slot_booking_sidebar'].imageUrl} alt="Advertisement" className="w-full h-auto object-contain" />
                     )}
                   </div>
                 </div>
