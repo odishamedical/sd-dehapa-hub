@@ -433,7 +433,7 @@ export default function AdminUserManagement() {
                           <div className="text-[10px] text-slate-500 flex items-center gap-1.5 truncate"><svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> <span className="truncate">{user.email || "N/A"}</span></div>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 justify-center">
-                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-slate-100 text-slate-300 border border-white/5'}`}>
+                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' : 'bg-slate-700 text-slate-300 border border-slate-600'}`}>
                             {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
                           </span>
                           <div className="flex items-center gap-1.5 mt-1">
@@ -450,7 +450,7 @@ export default function AdminUserManagement() {
                       <div className="text-xs text-slate-500 mt-1 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> {user.email || "N/A"}</div>
                     </td>
                     <td className="hidden md:table-cell px-6 py-4" onClick={() => { setSelectedUser(user); setDrawerTab('profile'); }}>
-                      <span className={`border px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-300 border-white/5'}`}>
+                      <span className={`border px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest ${user.role?.toLowerCase() === 'admin' ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' : user.role?.toLowerCase() === 'doctor' ? 'bg-teal-500/20 text-teal-300 border-teal-500/30' : 'bg-slate-700 text-slate-300 border-slate-600'}`}>
                         {['member', 'user', 'patient'].includes(user.role?.toLowerCase() || 'member') ? 'Member' : user.role}
                       </span>
                     </td>
@@ -554,13 +554,13 @@ export default function AdminUserManagement() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                       Contact Information
                     </h4>
-                    <div className="bg-slate-50 rounded-2xl border border-white/5 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-slate-800/50 rounded-2xl border border-white/5 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Phone Number</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone Number</p>
                         <p className="font-medium text-white mt-1">{selectedUser.phone || "Not provided"}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email Address</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Address</p>
                         <p className="font-medium text-white mt-1">{selectedUser.email || "Not provided"}</p>
                       </div>
                     </div>
@@ -571,17 +571,17 @@ export default function AdminUserManagement() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
                       Demographics
                     </h4>
-                    <div className="bg-slate-50 rounded-2xl border border-white/5 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-slate-800/50 rounded-2xl border border-white/5 p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Gender</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gender</p>
                         <p className="font-medium text-white mt-1">{selectedUser.gender || "Unknown"}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Blood Group</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Blood Group</p>
                         <p className="font-medium text-white mt-1">{selectedUser.bloodGroup || "Not specified"}</p>
                       </div>
                       <div className="md:col-span-2">
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Primary Address</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Primary Address</p>
                         <p className="font-medium text-white mt-1">
                           {typeof selectedUser.address === 'object' && selectedUser.address !== null 
                             ? (selectedUser.address.localAddress || selectedUser.address.city || Object.values(selectedUser.address).filter(v => typeof v === 'string').join(', ')) 
