@@ -9,17 +9,18 @@ import { AdminCard, AdminHeader } from '@/components/admin/ui';
 interface AdSlot {
   id: string;
   label: string;
+  dimensions?: string;
 }
 
 const AD_SLOTS: AdSlot[] = [
-  { id: 'ad_slot_doctor_hero_top', label: 'Doctor Profile - Top Hero (Global)' },
-  { id: 'ad_slot_doctor_hero_right', label: 'Doctor Profile - Right Sidebar (Premium)' },
-  { id: 'ad_slot_directory_sidebar', label: 'Directory Search - Left Sidebar' },
-  { id: 'ad_slot_home_carousel', label: 'Homepage - Main Carousel (Top)' },
-  { id: 'ad_slot_home_grid', label: 'Homepage - 3-Ticket Grid (Middle)' },
-  { id: 'ad_slot_home_distributed_1', label: 'Homepage - Distributed Slot 1 (Under Top Doctors)' },
-  { id: 'ad_slot_home_distributed_2', label: 'Homepage - Distributed Slot 2 (Under Nearby Hospitals)' },
-  { id: 'ad_slot_home_distributed_3', label: 'Homepage - Distributed Slot 3 (Above Footer)' }
+  { id: 'ad_slot_doctor_hero_top', label: 'Doctor Profile - Top Hero (Global)', dimensions: 'Recommended: 1200x300px (Widescreen)' },
+  { id: 'ad_slot_doctor_hero_right', label: 'Doctor Profile - Right Sidebar (Premium)', dimensions: 'Recommended: 600x600px (Square)' },
+  { id: 'ad_slot_directory_sidebar', label: 'Directory Search - Left Sidebar', dimensions: 'Recommended: 600x800px (Vertical)' },
+  { id: 'ad_slot_home_carousel', label: 'Homepage - Main Carousel (Top)', dimensions: 'Recommended: 1200x400px (Widescreen)' },
+  { id: 'ad_slot_home_grid', label: 'Homepage - 3-Ticket Grid (Middle)', dimensions: 'Recommended: 800x800px (Square)' },
+  { id: 'ad_slot_home_distributed_1', label: 'Homepage - Distributed Slot 1 (Under Top Doctors)', dimensions: 'Recommended: 1200x300px (Widescreen)' },
+  { id: 'ad_slot_home_distributed_2', label: 'Homepage - Distributed Slot 2 (Under Nearby Hospitals)', dimensions: 'Recommended: 1200x300px (Widescreen)' },
+  { id: 'ad_slot_home_distributed_3', label: 'Homepage - Distributed Slot 3 (Above Footer)', dimensions: 'Recommended: 1200x300px (Widescreen)' }
 ];
 
 export default function AdminAdEngine() {
@@ -30,18 +31,30 @@ export default function AdminAdEngine() {
   const [slotId, setSlotId] = useState(AD_SLOTS[0].id);
   const [targetType, setTargetType] = useState<'global' | 'category' | 'specific_profile'>('global');
   const [targetId, setTargetId] = useState('');
-  const [adType, setAdType] = useState<'image' | 'adsense'>('image');
+  const [adType, setAdType] = useState<'image' | 'adsense' | 'split'>('image');
   
   // Image Upload State
+  const [uploadMode, setUploadMode] = useState<'new' | 'vault'>('new');
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [vaultImageUrl, setVaultImageUrl] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
   
+  // Split Layout State
+  const [headline, setHeadline] = useState('');
+  const [subtext, setSubtext] = useState('');
+  const [buttonText, setButtonText] = useState('Learn More');
+
   // AdSense State
   const [htmlCode, setHtmlCode] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  const selectedSlot = AD_SLOTS.find(s => s.id === slotId);
+
+  // Extract unique vault images
+  const vaultImages = Array.from(new Set(ads.map(ad => ad.imageUrl).filter(url => Boolean(url))));
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'platform_ads'), (snapshot) => {
@@ -64,12 +77,17 @@ export default function AdminAdEngine() {
     try {
       let finalImageUrl = '';
 
-      if (adType === 'image') {
-        if (!imageFile) throw new Error("Please upload an image for the ad.");
-        const fileExt = imageFile.name.split('.').pop();
-        const storageRef = ref(storage, `ads/${Date.now()}_${slotId}.${fileExt}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
-        finalImageUrl = await getDownloadURL(uploadResult.ref);
+      if (adType === 'image' || adType === 'split') {
+        if (uploadMode === 'new') {
+          if (!imageFile) throw new Error("Please upload an image for the ad.");
+          const fileExt = imageFile.name.split('.').pop();
+          const storageRef = ref(storage, `ads/${Date.now()}_${slotId}.${fileExt}`);
+          const uploadResult = await uploadBytes(storageRef, imageFile);
+          finalImageUrl = await getDownloadURL(uploadResult.ref);
+        } else {
+          if (!vaultImageUrl) throw new Error("Please select an image from the vault.");
+          finalImageUrl = vaultImageUrl;
+        }
       } else {
         if (!htmlCode) throw new Error("Please paste the AdSense HTML code.");
       }
@@ -77,7 +95,7 @@ export default function AdminAdEngine() {
       // If global, document ID is just the slotId. If specific, it's slotId_targetId
       const docId = targetType === 'global' ? slotId : `${slotId}_${targetId}`;
 
-      const adData = {
+      const adData: any = {
         slotId,
         targetType,
         targetId: targetType === 'global' ? 'all' : targetId,
@@ -89,11 +107,21 @@ export default function AdminAdEngine() {
         updatedAt: serverTimestamp(),
       };
 
+      if (adType === 'split') {
+        adData.headline = headline;
+        adData.subtext = subtext;
+        adData.buttonText = buttonText;
+      }
+
       await setDoc(doc(db, 'platform_ads', docId), adData);
       
       setSuccessMsg("Ad successfully injected to the platform!");
       setImageFile(null);
+      setVaultImageUrl('');
       setHtmlCode('');
+      setHeadline('');
+      setSubtext('');
+      setButtonText('Learn More');
       setLinkUrl('');
     } catch (err: any) {
       setError(err.message || "Failed to inject ad.");
@@ -147,7 +175,10 @@ export default function AdminAdEngine() {
 
               <form onSubmit={handleInjectAd} className="space-y-5">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Slot Location</label>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex items-center justify-between">
+                    <span>Slot Location</span>
+                    {selectedSlot?.dimensions && <span className="text-teal-400">{selectedSlot.dimensions}</span>}
+                  </label>
                   <select 
                     value={slotId}
                     onChange={(e) => setSlotId(e.target.value)}
@@ -186,34 +217,83 @@ export default function AdminAdEngine() {
 
                 <div className="pt-4 border-t border-white/10">
                   <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Ad Format</label>
-                  <div className="flex gap-4">
-                    <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'image' ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
-                      <input type="radio" name="adType" value="image" checked={adType === 'image'} onChange={() => setAdType('image')} className="sr-only" />
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                      <span className="font-bold text-sm">Image Banner</span>
-                    </label>
-                    <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'adsense' ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
-                      <input type="radio" name="adType" value="adsense" checked={adType === 'adsense'} onChange={() => setAdType('adsense')} className="sr-only" />
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                      <span className="font-bold text-sm">HTML / AdSense</span>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'image' ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                        <input type="radio" name="adType" value="image" checked={adType === 'image'} onChange={() => setAdType('image')} className="sr-only" />
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span className="font-bold text-xs">Image Banner</span>
+                      </label>
+                      <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'adsense' ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                        <input type="radio" name="adType" value="adsense" checked={adType === 'adsense'} onChange={() => setAdType('adsense')} className="sr-only" />
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        <span className="font-bold text-xs">AdSense</span>
+                      </label>
+                    </div>
+                    <label className={`w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'split' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                      <input type="radio" name="adType" value="split" checked={adType === 'split'} onChange={() => setAdType('split')} className="sr-only" />
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
+                      <span className="font-bold text-xs">Split Layout (50% Image / 50% Text)</span>
                     </label>
                   </div>
                 </div>
 
-                {adType === 'image' ? (
+                {adType === 'image' || adType === 'split' ? (
                   <div className="space-y-4 animate-in fade-in">
-                    <div>
-                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Upload Image</label>
-                      <input 
-                        type="file" 
-                        accept="image/*"
-                        required
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) setImageFile(e.target.files[0]);
-                        }}
-                        className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-teal-500/20 file:text-teal-400 hover:file:bg-teal-500/30"
-                      />
+                    
+                    {/* Media Vault Toggle */}
+                    <div className="flex bg-slate-900 rounded-lg p-1 border border-white/5 w-fit mb-4">
+                      <button 
+                        type="button"
+                        onClick={() => setUploadMode('new')}
+                        className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${uploadMode === 'new' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                      >
+                        Upload New
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => setUploadMode('vault')}
+                        className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${uploadMode === 'vault' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                      >
+                        Media Vault
+                      </button>
                     </div>
+
+                    {uploadMode === 'new' ? (
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Upload Image</label>
+                        <input 
+                          type="file" 
+                          accept="image/*"
+                          required={uploadMode === 'new'}
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) setImageFile(e.target.files[0]);
+                          }}
+                          className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-teal-500/20 file:text-teal-400 hover:file:bg-teal-500/30"
+                        />
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Select from Vault</label>
+                        {vaultImages.length === 0 ? (
+                          <p className="text-xs text-slate-500 italic">No previous images found in the vault.</p>
+                        ) : (
+                          <div className="grid grid-cols-3 gap-2 max-h-[150px] overflow-y-auto pr-1">
+                            {vaultImages.map((url, i) => (
+                              <button 
+                                type="button" 
+                                key={i} 
+                                onClick={() => setVaultImageUrl(url)}
+                                className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all ${vaultImageUrl === url ? 'border-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.5)]' : 'border-transparent hover:border-white/20'}`}
+                              >
+                                <img src={url} alt={`Vault Image ${i}`} className="w-full h-full object-cover" />
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     <div>
                       <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Click URL (Where it links to)</label>
                       <input 
@@ -225,6 +305,23 @@ export default function AdminAdEngine() {
                         className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                       />
                     </div>
+                    
+                    {adType === 'split' && (
+                      <div className="space-y-4 pt-4 border-t border-white/10">
+                        <div>
+                          <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Headline</label>
+                          <input type="text" required value={headline} onChange={(e) => setHeadline(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none" placeholder="E.g., 50% Off Full Body Checkup" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Subtext</label>
+                          <input type="text" required value={subtext} onChange={(e) => setSubtext(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none" placeholder="E.g., Valid until Friday. Walk-ins welcome." />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Button Text</label>
+                          <input type="text" required value={buttonText} onChange={(e) => setButtonText(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none" placeholder="Learn More" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="animate-in fade-in">
@@ -284,6 +381,17 @@ export default function AdminAdEngine() {
                     <div className="min-h-[160px] bg-slate-900 relative group flex items-center justify-center overflow-hidden">
                       {ad.type === 'image' ? (
                         <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-auto max-h-40 object-contain p-2" />
+                      ) : ad.type === 'split' ? (
+                        <div className="flex w-full h-full">
+                          <div className="w-1/2 h-full flex items-center justify-center p-2">
+                            <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-auto max-h-40 object-contain" />
+                          </div>
+                          <div className="w-1/2 h-full flex flex-col justify-center p-4 bg-slate-800">
+                            <h5 className="font-bold text-white text-xs truncate">{ad.headline}</h5>
+                            <p className="text-[10px] text-slate-400 truncate mt-1">{ad.subtext}</p>
+                            <span className="mt-2 inline-block bg-teal-500 text-white text-[8px] font-bold px-2 py-1 rounded w-fit">{ad.buttonText}</span>
+                          </div>
+                        </div>
                       ) : (
                         <div className="p-4 text-xs font-mono text-slate-400 break-all w-full h-full overflow-hidden">
                           {ad.htmlCode}
@@ -307,8 +415,8 @@ export default function AdminAdEngine() {
                     
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
-                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${ad.type === 'image' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-amber-500/20 text-amber-300'}`}>
-                          {ad.type === 'image' ? 'Image Banner' : 'HTML / AdSense'}
+                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${ad.type === 'image' ? 'bg-indigo-500/20 text-indigo-300' : ad.type === 'split' ? 'bg-fuchsia-500/20 text-fuchsia-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                          {ad.type === 'image' ? 'Image Banner' : ad.type === 'split' ? 'Split Layout' : 'HTML / AdSense'}
                         </span>
                         <div className="flex items-center gap-1.5">
                           <div className={`w-2 h-2 rounded-full ${ad.active ? 'bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.8)]' : 'bg-slate-500'}`}></div>

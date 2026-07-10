@@ -969,10 +969,23 @@ export default function UnifiedProfileLayout({
             {/* Ad Space */}
             {heroRightAd && (
               <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center min-h-[250px]">
-                {heroRightAd.imageUrl ? (
-                  <a href={heroRightAd.linkUrl} target="_blank" rel="noreferrer">
+                {heroRightAd.type === 'image' ? (
+                  <a href={heroRightAd.linkUrl} target="_blank" rel="noreferrer" className="w-full flex items-center justify-center p-2">
                     <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-auto object-contain" />
                   </a>
+                ) : heroRightAd.type === 'split' ? (
+                  <div className="flex flex-col w-full">
+                    <div className="w-full flex items-center justify-center p-4 bg-white/5">
+                      <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-auto max-h-[200px] object-contain" />
+                    </div>
+                    <div className="w-full flex flex-col items-center text-center p-6 bg-gradient-to-t from-slate-900 to-transparent">
+                      <h3 className="text-xl font-black text-white mb-2 leading-tight">{heroRightAd.headline}</h3>
+                      <p className="text-slate-300 text-sm mb-5">{heroRightAd.subtext}</p>
+                      <a href={heroRightAd.linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-2 px-6 rounded-full transition-colors w-fit text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(20,184,166,0.3)]">
+                        {heroRightAd.buttonText}
+                      </a>
+                    </div>
+                  </div>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-white/5" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode }} />
                 )}

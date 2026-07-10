@@ -196,11 +196,23 @@ export default function DehapaHome() {
         {platformAds['ad_slot_home_carousel'] && platformAds['ad_slot_home_carousel'].length > 0 && (
           <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mb-10">
             <div className="w-full h-auto min-h-[120px] md:min-h-[250px] bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 flex items-center justify-center relative group">
-              {/* For simplicity right now, we show the first one in the array for the carousel */}
               {platformAds['ad_slot_home_carousel'][0].type === 'image' ? (
                 <a href={platformAds['ad_slot_home_carousel'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
                   <img src={platformAds['ad_slot_home_carousel'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[300px] object-contain" />
                 </a>
+              ) : platformAds['ad_slot_home_carousel'][0].type === 'split' ? (
+                <div className="flex flex-col md:flex-row w-full h-full items-stretch">
+                  <div className="w-full md:w-1/2 flex items-center justify-center p-6 bg-slate-900/50">
+                    <img src={platformAds['ad_slot_home_carousel'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
+                  </div>
+                  <div className="w-full md:w-1/2 flex flex-col justify-center p-8 lg:p-12 bg-gradient-to-br from-slate-800 to-slate-900 border-l border-white/5">
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-4 leading-tight">{platformAds['ad_slot_home_carousel'][0].headline}</h2>
+                    <p className="text-slate-300 md:text-lg mb-8">{platformAds['ad_slot_home_carousel'][0].subtext}</p>
+                    <a href={platformAds['ad_slot_home_carousel'][0].linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-3 px-8 rounded-full transition-colors w-fit shadow-[0_0_20px_rgba(20,184,166,0.3)] text-sm uppercase tracking-widest">
+                      {platformAds['ad_slot_home_carousel'][0].buttonText}
+                    </a>
+                  </div>
+                </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-900" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_carousel'][0].htmlCode }} />
               )}
@@ -317,8 +329,21 @@ export default function DehapaHome() {
                 <div key={idx} className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl border border-white/10 flex items-center justify-center min-h-[150px] relative">
                   {ad.type === 'image' ? (
                     <a href={ad.linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
-                      <img src={ad.imageUrl} alt="Advertisement" className="w-full h-auto object-contain" />
+                      <img src={ad.imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
                     </a>
+                  ) : ad.type === 'split' ? (
+                    <div className="flex flex-col w-full h-full">
+                      <div className="w-full h-1/2 flex items-center justify-center p-4 bg-slate-900/50">
+                        <img src={ad.imageUrl} alt="Advertisement" className="w-full h-auto max-h-[150px] object-contain" />
+                      </div>
+                      <div className="w-full h-1/2 flex flex-col justify-center p-6 bg-gradient-to-br from-slate-800 to-slate-900 border-t border-white/5">
+                        <h3 className="text-xl font-black text-white mb-2 leading-tight">{ad.headline}</h3>
+                        <p className="text-slate-300 text-sm mb-4 line-clamp-2">{ad.subtext}</p>
+                        <a href={ad.linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-2 px-6 rounded-full transition-colors w-fit text-xs uppercase tracking-widest shadow-lg">
+                          {ad.buttonText}
+                        </a>
+                      </div>
+                    </div>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: ad.htmlCode }} />
                   )}
@@ -337,6 +362,19 @@ export default function DehapaHome() {
                 <a href={platformAds['ad_slot_home_distributed_1'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
                   <img src={platformAds['ad_slot_home_distributed_1'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
                 </a>
+              ) : platformAds['ad_slot_home_distributed_1'][0].type === 'split' ? (
+                <div className="flex flex-col md:flex-row w-full h-full items-stretch">
+                  <div className="w-full md:w-1/3 flex items-center justify-center p-4 bg-slate-900/50">
+                    <img src={platformAds['ad_slot_home_distributed_1'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[200px] object-contain" />
+                  </div>
+                  <div className="w-full md:w-2/3 flex flex-col justify-center p-6 lg:p-8 bg-gradient-to-r from-slate-800 to-slate-900 border-l border-white/5">
+                    <h2 className="text-xl md:text-2xl font-black text-white mb-2 leading-tight">{platformAds['ad_slot_home_distributed_1'][0].headline}</h2>
+                    <p className="text-slate-300 mb-6">{platformAds['ad_slot_home_distributed_1'][0].subtext}</p>
+                    <a href={platformAds['ad_slot_home_distributed_1'][0].linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-2.5 px-6 rounded-full transition-colors w-fit text-xs uppercase tracking-widest shadow-lg">
+                      {platformAds['ad_slot_home_distributed_1'][0].buttonText}
+                    </a>
+                  </div>
+                </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_1'][0].htmlCode }} />
               )}
@@ -408,6 +446,19 @@ export default function DehapaHome() {
                 <a href={platformAds['ad_slot_home_distributed_2'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
                   <img src={platformAds['ad_slot_home_distributed_2'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
                 </a>
+              ) : platformAds['ad_slot_home_distributed_2'][0].type === 'split' ? (
+                <div className="flex flex-col md:flex-row w-full h-full items-stretch">
+                  <div className="w-full md:w-1/3 flex items-center justify-center p-4 bg-slate-900/50">
+                    <img src={platformAds['ad_slot_home_distributed_2'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[200px] object-contain" />
+                  </div>
+                  <div className="w-full md:w-2/3 flex flex-col justify-center p-6 lg:p-8 bg-gradient-to-r from-slate-800 to-slate-900 border-l border-white/5">
+                    <h2 className="text-xl md:text-2xl font-black text-white mb-2 leading-tight">{platformAds['ad_slot_home_distributed_2'][0].headline}</h2>
+                    <p className="text-slate-300 mb-6">{platformAds['ad_slot_home_distributed_2'][0].subtext}</p>
+                    <a href={platformAds['ad_slot_home_distributed_2'][0].linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-2.5 px-6 rounded-full transition-colors w-fit text-xs uppercase tracking-widest shadow-lg">
+                      {platformAds['ad_slot_home_distributed_2'][0].buttonText}
+                    </a>
+                  </div>
+                </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_2'][0].htmlCode }} />
               )}
@@ -495,6 +546,19 @@ export default function DehapaHome() {
                 <a href={platformAds['ad_slot_home_distributed_3'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
                   <img src={platformAds['ad_slot_home_distributed_3'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
                 </a>
+              ) : platformAds['ad_slot_home_distributed_3'][0].type === 'split' ? (
+                <div className="flex flex-col md:flex-row w-full h-full items-stretch">
+                  <div className="w-full md:w-1/3 flex items-center justify-center p-4 bg-slate-900/50">
+                    <img src={platformAds['ad_slot_home_distributed_3'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[200px] object-contain" />
+                  </div>
+                  <div className="w-full md:w-2/3 flex flex-col justify-center p-6 lg:p-8 bg-gradient-to-r from-slate-800 to-slate-900 border-l border-white/5">
+                    <h2 className="text-xl md:text-2xl font-black text-white mb-2 leading-tight">{platformAds['ad_slot_home_distributed_3'][0].headline}</h2>
+                    <p className="text-slate-300 mb-6">{platformAds['ad_slot_home_distributed_3'][0].subtext}</p>
+                    <a href={platformAds['ad_slot_home_distributed_3'][0].linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-2.5 px-6 rounded-full transition-colors w-fit text-xs uppercase tracking-widest shadow-lg">
+                      {platformAds['ad_slot_home_distributed_3'][0].buttonText}
+                    </a>
+                  </div>
+                </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_3'][0].htmlCode }} />
               )}
