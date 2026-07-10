@@ -16,7 +16,8 @@ export default function AdminDataCRMV2() {
     loading, 
     filteredData, 
     stats,
-    filters 
+    filters,
+    fetchData
   } = useAdminData();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
