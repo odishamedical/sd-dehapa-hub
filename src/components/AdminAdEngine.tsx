@@ -31,12 +31,14 @@ export default function AdminAdEngine() {
   const [slotId, setSlotId] = useState(AD_SLOTS[0].id);
   const [targetType, setTargetType] = useState<'global' | 'category' | 'specific_profile'>('global');
   const [targetId, setTargetId] = useState('');
-  const [adType, setAdType] = useState<'image' | 'adsense' | 'split'>('image');
+  const [adType, setAdType] = useState<'image' | 'adsense' | 'split' | 'slider'>('image');
   
   // Image Upload State
   const [uploadMode, setUploadMode] = useState<'new' | 'vault'>('new');
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]); // For Slider
   const [vaultImageUrl, setVaultImageUrl] = useState('');
+  const [vaultImageUrls, setVaultImageUrls] = useState<string[]>([]); // For Slider
   const [linkUrl, setLinkUrl] = useState('');
   
   // Split Layout State
@@ -53,8 +55,8 @@ export default function AdminAdEngine() {
 
   const selectedSlot = AD_SLOTS.find(s => s.id === slotId);
 
-  // Extract unique vault images
-  const vaultImages = Array.from(new Set(ads.map(ad => ad.imageUrl).filter(url => Boolean(url))));
+  // Extract unique vault images. Since some ads are sliders with an array of images, flatmap them.
+  const vaultImages = Array.from(new Set(ads.flatMap(ad => ad.sliderImages || [ad.imageUrl]).filter(url => Boolean(url))));
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'platform_ads'), (snapshot) => {
@@ -76,8 +78,23 @@ export default function AdminAdEngine() {
 
     try {
       let finalImageUrl = '';
+      let finalSliderImages: string[] = [];
 
-      if (adType === 'image' || adType === 'split') {
+      if (adType === 'slider') {
+        if (uploadMode === 'new') {
+          if (imageFiles.length < 2) throw new Error("Please upload at least 2 images for the slider.");
+          const uploadPromises = imageFiles.map(async (file, idx) => {
+            const fileExt = file.name.split('.').pop();
+            const storageRef = ref(storage, `ads/${Date.now()}_${slotId}_${idx}.${fileExt}`);
+            const uploadResult = await uploadBytes(storageRef, file);
+            return getDownloadURL(uploadResult.ref);
+          });
+          finalSliderImages = await Promise.all(uploadPromises);
+        } else {
+          if (vaultImageUrls.length < 2) throw new Error("Please select at least 2 images from the vault.");
+          finalSliderImages = vaultImageUrls;
+        }
+      } else if (adType === 'image' || adType === 'split') {
         if (uploadMode === 'new') {
           if (!imageFile) throw new Error("Please upload an image for the ad.");
           const fileExt = imageFile.name.split('.').pop();
@@ -100,12 +117,19 @@ export default function AdminAdEngine() {
         targetType,
         targetId: targetType === 'global' ? 'all' : targetId,
         type: adType,
-        imageUrl: finalImageUrl,
-        linkUrl,
-        htmlCode,
         active: true,
         updatedAt: serverTimestamp(),
       };
+
+      if (adType === 'slider') {
+        adData.sliderImages = finalSliderImages;
+        adData.linkUrl = linkUrl;
+      } else if (adType === 'image' || adType === 'split') {
+        adData.imageUrl = finalImageUrl;
+        adData.linkUrl = linkUrl;
+      } else {
+        adData.htmlCode = htmlCode;
+      }
 
       if (adType === 'split') {
         adData.headline = headline;
@@ -117,7 +141,9 @@ export default function AdminAdEngine() {
       
       setSuccessMsg("Ad successfully injected to the platform!");
       setImageFile(null);
+      setImageFiles([]);
       setVaultImageUrl('');
+      setVaultImageUrls([]);
       setHtmlCode('');
       setHeadline('');
       setSubtext('');
@@ -230,15 +256,22 @@ export default function AdminAdEngine() {
                         <span className="font-bold text-xs">AdSense</span>
                       </label>
                     </div>
-                    <label className={`w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'split' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
-                      <input type="radio" name="adType" value="split" checked={adType === 'split'} onChange={() => setAdType('split')} className="sr-only" />
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
-                      <span className="font-bold text-xs">Split Layout (50% Image / 50% Text)</span>
-                    </label>
+                    <div className="flex gap-2">
+                      <label className={`w-1/2 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'split' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                        <input type="radio" name="adType" value="split" checked={adType === 'split'} onChange={() => setAdType('split')} className="sr-only" />
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
+                        <span className="font-bold text-xs text-center leading-tight">Split Layout<br/>(50% Image / 50% Text)</span>
+                      </label>
+                      <label className={`w-1/2 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'slider' ? 'border-fuchsia-500 bg-fuchsia-500/10 text-fuchsia-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                        <input type="radio" name="adType" value="slider" checked={adType === 'slider'} onChange={() => setAdType('slider')} className="sr-only" />
+                        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <span className="font-bold text-xs text-center leading-tight">Animated Slider<br/>(Multi-Image)</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
 
-                {adType === 'image' || adType === 'split' ? (
+                {adType === 'image' || adType === 'split' || adType === 'slider' ? (
                   <div className="space-y-4 animate-in fade-in">
                     
                     {/* Media Vault Toggle */}
@@ -261,34 +294,61 @@ export default function AdminAdEngine() {
 
                     {uploadMode === 'new' ? (
                       <div>
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Upload Image</label>
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex justify-between">
+                          <span>Upload Image{adType === 'slider' ? 's (Select Multiple)' : ''}</span>
+                          {adType === 'slider' && imageFiles.length > 0 && <span className="text-fuchsia-400">{imageFiles.length} selected</span>}
+                        </label>
                         <input 
                           type="file" 
                           accept="image/*"
+                          multiple={adType === 'slider'}
                           required={uploadMode === 'new'}
                           onChange={(e) => {
-                            if (e.target.files && e.target.files[0]) setImageFile(e.target.files[0]);
+                            if (e.target.files) {
+                              if (adType === 'slider') {
+                                setImageFiles(Array.from(e.target.files));
+                              } else {
+                                setImageFile(e.target.files[0]);
+                              }
+                            }
                           }}
                           className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-teal-500/20 file:text-teal-400 hover:file:bg-teal-500/30"
                         />
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Select from Vault</label>
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex justify-between">
+                          <span>Select from Vault</span>
+                          {adType === 'slider' && vaultImageUrls.length > 0 && <span className="text-fuchsia-400">{vaultImageUrls.length} selected</span>}
+                        </label>
                         {vaultImages.length === 0 ? (
                           <p className="text-xs text-slate-500 italic">No previous images found in the vault.</p>
                         ) : (
                           <div className="grid grid-cols-3 gap-2 max-h-[150px] overflow-y-auto pr-1">
-                            {vaultImages.map((url, i) => (
-                              <button 
-                                type="button" 
-                                key={i} 
-                                onClick={() => setVaultImageUrl(url)}
-                                className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all ${vaultImageUrl === url ? 'border-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.5)]' : 'border-transparent hover:border-white/20'}`}
-                              >
-                                <img src={url} alt={`Vault Image ${i}`} className="w-full h-full object-cover" />
-                              </button>
-                            ))}
+                            {vaultImages.map((url, i) => {
+                              const isSelected = adType === 'slider' ? vaultImageUrls.includes(url) : vaultImageUrl === url;
+                              return (
+                                <button 
+                                  type="button" 
+                                  key={i} 
+                                  onClick={() => {
+                                    if (adType === 'slider') {
+                                      setVaultImageUrls(prev => prev.includes(url) ? prev.filter(u => u !== url) : [...prev, url]);
+                                    } else {
+                                      setVaultImageUrl(url);
+                                    }
+                                  }}
+                                  className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all ${isSelected ? 'border-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.5)]' : 'border-transparent hover:border-white/20'}`}
+                                >
+                                  <img src={url} alt={`Vault Image ${i}`} className="w-full h-full object-cover" />
+                                  {isSelected && adType === 'slider' && (
+                                    <div className="absolute top-1 right-1 bg-teal-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                                      {vaultImageUrls.indexOf(url) + 1}
+                                    </div>
+                                  )}
+                                </button>
+                              );
+                            })}
                           </div>
                         )}
                       </div>
@@ -392,6 +452,18 @@ export default function AdminAdEngine() {
                             <span className="mt-2 inline-block bg-teal-500 text-white text-[8px] font-bold px-2 py-1 rounded w-fit">{ad.buttonText}</span>
                           </div>
                         </div>
+                      ) : ad.type === 'slider' ? (
+                        <div className="relative w-full h-full p-2 flex items-center justify-center">
+                          {ad.sliderImages && ad.sliderImages.length > 0 && (
+                            <img src={ad.sliderImages[0]} alt="Slider Preview" className="w-full h-auto max-h-40 object-contain opacity-50" />
+                          )}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="bg-fuchsia-500 text-white font-bold text-xs px-3 py-1 rounded-full shadow-lg border border-fuchsia-400 flex items-center gap-2">
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                              Slider ({ad.sliderImages?.length || 0} Images)
+                            </span>
+                          </div>
+                        </div>
                       ) : (
                         <div className="p-4 text-xs font-mono text-slate-400 break-all w-full h-full overflow-hidden">
                           {ad.htmlCode}
@@ -415,8 +487,8 @@ export default function AdminAdEngine() {
                     
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
-                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${ad.type === 'image' ? 'bg-indigo-500/20 text-indigo-300' : ad.type === 'split' ? 'bg-fuchsia-500/20 text-fuchsia-300' : 'bg-amber-500/20 text-amber-300'}`}>
-                          {ad.type === 'image' ? 'Image Banner' : ad.type === 'split' ? 'Split Layout' : 'HTML / AdSense'}
+                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${ad.type === 'image' ? 'bg-indigo-500/20 text-indigo-300' : ad.type === 'split' ? 'bg-teal-500/20 text-teal-300' : ad.type === 'slider' ? 'bg-fuchsia-500/20 text-fuchsia-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                          {ad.type === 'image' ? 'Image Banner' : ad.type === 'split' ? 'Split Layout' : ad.type === 'slider' ? 'Animated Slider' : 'HTML / AdSense'}
                         </span>
                         <div className="flex items-center gap-1.5">
                           <div className={`w-2 h-2 rounded-full ${ad.active ? 'bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.8)]' : 'bg-slate-500'}`}></div>

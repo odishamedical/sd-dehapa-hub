@@ -6,6 +6,9 @@ import Image from "next/image";
 import QRCode from "react-qr-code";
 import { Search, Activity, PhoneCall, X, Video, Calendar, ShieldCheck, Stethoscope, Building2, TestTube2, Pill, Ambulance, QrCode, AlertCircle, Syringe, HeartPulse, Globe2, Zap, CheckCircle2 } from "lucide-react";
 import dynamic from 'next/dynamic';
+import FeatureToggleMap from '@/components/FeatureToggleMap';
+import { getNewsArticles, NewsArticle } from '@/lib/news';
+import AdSliderRenderer from '@/components/AdSliderRenderer';
 import { useRouter } from "next/navigation";
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -213,6 +216,8 @@ export default function DehapaHome() {
                     </a>
                   </div>
                 </div>
+              ) : platformAds['ad_slot_home_carousel'][0].type === 'slider' ? (
+                <AdSliderRenderer images={platformAds['ad_slot_home_carousel'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_carousel'][0].linkUrl} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-900" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_carousel'][0].htmlCode }} />
               )}
@@ -344,6 +349,8 @@ export default function DehapaHome() {
                         </a>
                       </div>
                     </div>
+                  ) : ad.type === 'slider' ? (
+                    <AdSliderRenderer images={ad.sliderImages || []} linkUrl={ad.linkUrl} />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: ad.htmlCode }} />
                   )}
@@ -375,6 +382,8 @@ export default function DehapaHome() {
                     </a>
                   </div>
                 </div>
+              ) : platformAds['ad_slot_home_distributed_1'][0].type === 'slider' ? (
+                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_1'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_1'][0].linkUrl} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_1'][0].htmlCode }} />
               )}
@@ -459,6 +468,8 @@ export default function DehapaHome() {
                     </a>
                   </div>
                 </div>
+              ) : platformAds['ad_slot_home_distributed_2'][0].type === 'slider' ? (
+                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_2'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_2'][0].linkUrl} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_2'][0].htmlCode }} />
               )}
@@ -559,6 +570,8 @@ export default function DehapaHome() {
                     </a>
                   </div>
                 </div>
+              ) : platformAds['ad_slot_home_distributed_3'][0].type === 'slider' ? (
+                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_3'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_3'][0].linkUrl} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_3'][0].htmlCode }} />
               )}

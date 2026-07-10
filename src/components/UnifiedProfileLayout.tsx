@@ -7,6 +7,7 @@ import { auth, db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { ConnectionService, ConnectionStatus } from '@/services/connection.service';
+import AdSliderRenderer from '@/components/AdSliderRenderer';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   Award, MapPin, Phone, Star, CheckCircle2, Shield, 
@@ -986,6 +987,8 @@ export default function UnifiedProfileLayout({
                       </a>
                     </div>
                   </div>
+                ) : heroRightAd.type === 'slider' ? (
+                  <AdSliderRenderer images={heroRightAd.sliderImages || []} linkUrl={heroRightAd.linkUrl} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-white/5" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode }} />
                 )}

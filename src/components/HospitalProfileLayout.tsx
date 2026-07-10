@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import AdSliderRenderer from '@/components/AdSliderRenderer';
 import { usePathname } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
@@ -517,6 +519,8 @@ export default function HospitalProfileLayout({
                        </a>
                      </div>
                    </div>
+                 ) : heroRightAd.type === 'slider' ? (
+                   <AdSliderRenderer images={heroRightAd.sliderImages || []} linkUrl={heroRightAd.linkUrl || '#'} />
                  ) : (
                    <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode || '' }} />
                  )}
