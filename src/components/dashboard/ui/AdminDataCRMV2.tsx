@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useAdminData } from '@/hooks/useAdminData';
 import { StandardDataTable } from '@/components/dashboard/ui/StandardDataTable';
-import { StandardFormDrawer } from '@/components/dashboard/ui/StandardFormDrawer';
+import { CRMFormDrawer } from '@/components/dashboard/ui/CRMFormDrawer';
 import { Edit } from 'lucide-react';
 import Link from 'next/link';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
@@ -191,44 +191,16 @@ export default function AdminDataCRMV2() {
       </div>
 
       {/* Reusable Form Drawer */}
-      <StandardFormDrawer
+      <CRMFormDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        title={selectedItem ? `Edit ${selectedItem.name}` : "New Record"}
-        onSave={() => alert("Save logic separated into Phase 3")}
-      >
-        <div className="space-y-4">
-          <p className="text-slate-400 text-sm mb-4">
-            The massive form logic from V1 is currently being componentized. 
-            This shell demonstrates the decoupled architecture.
-          </p>
-          
-          <div>
-            <label className="text-xs font-bold text-slate-500 uppercase">Name</label>
-            <input 
-              type="text" 
-              defaultValue={selectedItem?.name} 
-              className="w-full mt-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-teal-500"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-bold text-slate-500 uppercase">Category</label>
-            <input 
-              type="text" 
-              defaultValue={selectedItem?.category} 
-              className="w-full mt-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-teal-500"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
-            <input 
-              type="text" 
-              defaultValue={selectedItem?.phone} 
-              className="w-full mt-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-teal-500"
-            />
-          </div>
-        </div>
-      </StandardFormDrawer>
+        selectedItem={selectedItem}
+        isNew={selectedItem?.id?.startsWith("NEW_")}
+        onSaveSuccess={() => {
+          setIsDrawerOpen(false);
+          fetchData();
+        }}
+      />
     </AdminCard>
   );
 }
