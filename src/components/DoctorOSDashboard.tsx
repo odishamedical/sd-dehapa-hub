@@ -17,6 +17,7 @@ import { VaultService } from '@/lib/vault.service';
 import BillingInvoice from '@/components/BillingInvoice';
 import DoctorPluginStore from '@/components/DoctorPluginStore';
 import DoctorAppointments from '@/components/DoctorAppointments';
+import DoctorDocumentVault from '@/components/DoctorDocumentVault';
 
 const faqData = [
   {
@@ -1094,6 +1095,27 @@ export default function DoctorOSDashboard() {
                {saveStatus === 'error' && <div className="text-rose-400 text-sm font-bold flex items-center gap-2"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Error saving changes</div>}
                {saveStatus === 'idle' && <div className="text-slate-500 text-sm flex items-center gap-2">Changes are saved automatically</div>}
             </div>
+          </div>
+        )}
+
+        {activeTab === "document_vault" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto relative">
+             {/* Soft-lock overlay for Advanced OS (Document Vault) */}
+             {!(entityData?.activePlugins || []).includes("plugin_vip_rx_pad") && (
+               <div className="absolute inset-0 z-50 bg-slate-900/80 backdrop-blur-sm rounded-[32px] flex items-center justify-center p-6">
+                 <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                   <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/20">
+                     <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                   </div>
+                   <h3 className="text-2xl font-black text-white mb-2">Advanced OS Required</h3>
+                   <p className="text-slate-400 text-sm mb-6">Upgrade to Advanced OS to unlock the Document Vault and manage clinic compliance certificates.</p>
+                   <button onClick={() => handleTabChange("plugin_store")} className="bg-purple-500 hover:bg-purple-400 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all">
+                     Unlock Advanced OS
+                   </button>
+                 </div>
+               </div>
+             )}
+             <DoctorDocumentVault />
           </div>
         )}
 
