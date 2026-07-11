@@ -520,7 +520,7 @@ export default function HospitalProfileLayout({
                      </div>
                    </div>
                  ) : heroRightAd.type === 'slider' ? (
-                   <AdSliderRenderer images={heroRightAd.sliderImages || []} linkUrl={heroRightAd.linkUrl || '#'} />
+                   <AdSliderRenderer images={heroRightAd.sliderImages || []} linkUrl={heroRightAd.linkUrl || '#'} animationStyle={heroRightAd.animationStyle || 'fade'} />
                  ) : (
                    <div className="w-full h-full flex items-center justify-center bg-slate-50" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode || '' }} />
                  )}

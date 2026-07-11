@@ -38,6 +38,7 @@ export default function AdminAdEngine() {
   const [targetType, setTargetType] = useState<'global' | 'category' | 'specific_profile'>('global');
   const [targetId, setTargetId] = useState('');
   const [adType, setAdType] = useState<'image' | 'adsense' | 'split' | 'slider'>('image');
+  const [animationStyle, setAnimationStyle] = useState<'fade' | 'slide-left' | 'slide-right' | 'slide-up' | 'slide-down' | 'zoom'>('fade');
   
   // Image Upload State
   const [uploadMode, setUploadMode] = useState<'new' | 'vault'>('new');
@@ -136,6 +137,7 @@ export default function AdminAdEngine() {
       if (adType === 'slider') {
         adData.sliderImages = finalSliderImages;
         adData.linkUrl = linkUrl;
+        adData.animationStyle = animationStyle;
       } else if (adType === 'image' || adType === 'split') {
         adData.imageUrl = finalImageUrl;
         adData.linkUrl = linkUrl;
@@ -200,6 +202,7 @@ export default function AdminAdEngine() {
     setUploadMode('vault');
     if (ad.type === 'slider') {
       setVaultImageUrls(ad.sliderImages || []);
+      setAnimationStyle(ad.animationStyle || 'fade');
     } else {
       setVaultImageUrl(ad.imageUrl || '');
     }
@@ -381,6 +384,20 @@ export default function AdminAdEngine() {
                     </label>
                   </div>
 
+                  {adType === 'slider' && (
+                    <div className="animate-in fade-in slide-in-from-top-2 mb-6 bg-fuchsia-500/5 border border-fuchsia-500/20 rounded-2xl p-6">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Animation Style</label>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {['fade', 'slide-left', 'slide-right', 'slide-up', 'slide-down', 'zoom'].map((style) => (
+                          <label key={style} className={`flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${animationStyle === style ? 'border-fuchsia-500 bg-fuchsia-500/20 text-fuchsia-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                            <input type="radio" name="animationStyle" value={style} checked={animationStyle === style} onChange={() => setAnimationStyle(style as any)} className="sr-only" />
+                            <span className="font-bold text-xs capitalize">{style.replace('-', ' ')}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {adType === 'image' || adType === 'split' || adType === 'slider' ? (
                     <div className="space-y-6 animate-in fade-in">
                       
@@ -412,18 +429,38 @@ export default function AdminAdEngine() {
                               type="file" 
                               accept="image/*"
                               multiple={adType === 'slider'}
-                              required={uploadMode === 'new'}
+                              required={uploadMode === 'new' && (adType === 'slider' ? imageFiles.length === 0 : !imageFile)}
                               onChange={(e) => {
                                 if (e.target.files) {
                                   if (adType === 'slider') {
-                                    setImageFiles(Array.from(e.target.files));
+                                    setImageFiles(prev => [...prev, ...Array.from(e.target.files as FileList)]);
                                   } else {
                                     setImageFile(e.target.files[0]);
                                   }
                                 }
+                                e.target.value = ''; // Reset input to allow selecting same file again if removed
                               }}
                               className="w-full text-sm text-slate-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-teal-500/20 file:text-teal-400 hover:file:bg-teal-500/30 transition-colors cursor-pointer border border-white/5 bg-slate-900/50 p-2 rounded-2xl"
                             />
+                            {adType === 'slider' && imageFiles.length > 0 && (
+                              <div className="mt-4 space-y-2">
+                                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400">Selected Sequence</label>
+                                <div className="flex flex-wrap gap-2">
+                                  {imageFiles.map((file, idx) => (
+                                    <div key={idx} className="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 flex items-center gap-2 text-xs text-slate-300">
+                                      <span className="bg-fuchsia-500/20 text-fuchsia-400 w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px]">{idx + 1}</span>
+                                      <span className="truncate max-w-[100px]">{file.name}</span>
+                                      <button type="button" onClick={() => setImageFiles(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-300 ml-1">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {adType !== 'slider' && imageFile && (
+                              <div className="mt-2 text-xs text-teal-400 font-bold">{imageFile.name}</div>
+                            )}
                           </div>
                         ) : (
                           <div className="space-y-2">

@@ -988,7 +988,7 @@ export default function UnifiedProfileLayout({
                     </div>
                   </div>
                 ) : heroRightAd.type === 'slider' ? (
-                  <AdSliderRenderer images={heroRightAd.sliderImages || []} linkUrl={heroRightAd.linkUrl} />
+                  <AdSliderRenderer images={heroRightAd.sliderImages || []} linkUrl={heroRightAd.linkUrl} animationStyle={heroRightAd.animationStyle || 'fade'} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-white/5" dangerouslySetInnerHTML={{ __html: heroRightAd.htmlCode }} />
                 )}

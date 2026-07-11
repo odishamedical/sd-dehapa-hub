@@ -217,7 +217,7 @@ export default function DehapaHome() {
                   </div>
                 </div>
               ) : platformAds['ad_slot_home_carousel'][0].type === 'slider' ? (
-                <AdSliderRenderer images={platformAds['ad_slot_home_carousel'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_carousel'][0].linkUrl} />
+                <AdSliderRenderer images={platformAds['ad_slot_home_carousel'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_carousel'][0].linkUrl} animationStyle={platformAds['ad_slot_home_carousel'][0].animationStyle || 'fade'} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-900" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_carousel'][0].htmlCode }} />
               )}
@@ -350,7 +350,7 @@ export default function DehapaHome() {
                       </div>
                     </div>
                   ) : ad.type === 'slider' ? (
-                    <AdSliderRenderer images={ad.sliderImages || []} linkUrl={ad.linkUrl} />
+                    <AdSliderRenderer images={ad.sliderImages || []} linkUrl={ad.linkUrl} animationStyle={ad.animationStyle || 'fade'} />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: ad.htmlCode }} />
                   )}
@@ -383,7 +383,7 @@ export default function DehapaHome() {
                   </div>
                 </div>
               ) : platformAds['ad_slot_home_distributed_1'][0].type === 'slider' ? (
-                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_1'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_1'][0].linkUrl} />
+                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_1'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_1'][0].linkUrl} animationStyle={platformAds['ad_slot_home_distributed_1'][0].animationStyle || 'fade'} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_1'][0].htmlCode }} />
               )}
@@ -469,7 +469,7 @@ export default function DehapaHome() {
                   </div>
                 </div>
               ) : platformAds['ad_slot_home_distributed_2'][0].type === 'slider' ? (
-                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_2'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_2'][0].linkUrl} />
+                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_2'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_2'][0].linkUrl} animationStyle={platformAds['ad_slot_home_distributed_2'][0].animationStyle || 'fade'} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_2'][0].htmlCode }} />
               )}
@@ -571,7 +571,7 @@ export default function DehapaHome() {
                   </div>
                 </div>
               ) : platformAds['ad_slot_home_distributed_3'][0].type === 'slider' ? (
-                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_3'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_3'][0].linkUrl} />
+                <AdSliderRenderer images={platformAds['ad_slot_home_distributed_3'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_distributed_3'][0].linkUrl} animationStyle={platformAds['ad_slot_home_distributed_3'][0].animationStyle || 'fade'} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_distributed_3'][0].htmlCode }} />
               )}

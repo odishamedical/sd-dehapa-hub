@@ -6,9 +6,10 @@ interface AdSliderRendererProps {
   images: string[];
   linkUrl?: string;
   interval?: number; // milliseconds
+  animationStyle?: string;
 }
 
-export default function AdSliderRenderer({ images, linkUrl, interval = 3000 }: AdSliderRendererProps) {
+export default function AdSliderRenderer({ images, linkUrl, interval = 3000, animationStyle = 'fade' }: AdSliderRendererProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -23,6 +24,40 @@ export default function AdSliderRenderer({ images, linkUrl, interval = 3000 }: A
 
   if (!images || images.length === 0) return null;
 
+  const getAnimationClasses = (idx: number) => {
+    const isActive = idx === currentIndex;
+    
+    // Base transition
+    let base = "absolute w-full h-auto max-h-full object-contain transition-all duration-1000 ease-in-out";
+    
+    if (animationStyle === 'fade') {
+      return `${base} ${isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'}`;
+    }
+    
+    if (animationStyle === 'slide-left') {
+      return `${base} ${isActive ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 -translate-x-full z-0'}`;
+    }
+    
+    if (animationStyle === 'slide-right') {
+      return `${base} ${isActive ? 'opacity-100 translate-x-0 z-10' : 'opacity-0 translate-x-full z-0'}`;
+    }
+    
+    if (animationStyle === 'slide-up') {
+      return `${base} ${isActive ? 'opacity-100 translate-y-0 z-10' : 'opacity-0 translate-y-full z-0'}`;
+    }
+    
+    if (animationStyle === 'slide-down') {
+      return `${base} ${isActive ? 'opacity-100 translate-y-0 z-10' : 'opacity-0 -translate-y-full z-0'}`;
+    }
+    
+    if (animationStyle === 'zoom') {
+      return `${base} ${isActive ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-50 z-0'}`;
+    }
+
+    // Default fallback
+    return `${base} ${isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'}`;
+  };
+
   const content = (
     <div className="relative w-full h-full overflow-hidden flex items-center justify-center">
       {images.map((img, idx) => (
@@ -30,7 +65,7 @@ export default function AdSliderRenderer({ images, linkUrl, interval = 3000 }: A
           key={idx}
           src={img}
           alt={`Advertisement ${idx + 1}`}
-          className={`absolute w-full h-auto max-h-full object-contain transition-opacity duration-1000 ease-in-out ${idx === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+          className={getAnimationClasses(idx)}
         />
       ))}
       
