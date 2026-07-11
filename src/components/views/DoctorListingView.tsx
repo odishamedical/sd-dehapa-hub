@@ -200,6 +200,8 @@ export default function DoctorsDirectory({
     };
     fetchAds();
   }, []);
+
+  useEffect(() => {
     const fetchDoctors = async () => {
       try {
         // Removed orderBy to prevent any Missing Index errors
