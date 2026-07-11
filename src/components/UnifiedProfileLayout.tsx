@@ -332,10 +332,10 @@ export default function UnifiedProfileLayout({
                       router.push(`/portal/book?doctor=${profile.id}`);
                     }
                   }} 
-                  className="bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 border border-emerald-400/50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-[inset_0_0_20px_rgba(16,185,129,0.2),0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[inset_0_0_20px_rgba(16,185,129,0.4),0_0_25px_rgba(16,185,129,0.5)] backdrop-blur-xl group flex items-center justify-between px-5"
+                  className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
                 >
-                  <span className="flex items-center gap-2"><MapPin className="w-4 h-4"/> Book Appointment</span>
-                  <span className="opacity-50 text-[10px]">▼</span>
+                  <span className="flex items-center gap-2"><MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/> Book Appointment</span>
+                  <span className="opacity-70 text-[10px]">▼</span>
                 </button>
                 
                 <button 
@@ -346,10 +346,10 @@ export default function UnifiedProfileLayout({
                       setShowUnverifiedModal(true);
                     }
                   }}
-                  className="bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 border border-rose-400/50 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-[inset_0_0_20px_rgba(244,63,94,0.2),0_0_15px_rgba(244,63,94,0.2)] hover:shadow-[inset_0_0_20px_rgba(244,63,94,0.4),0_0_25px_rgba(244,63,94,0.5)] backdrop-blur-xl group flex items-center justify-between px-5"
+                  className="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
                 >
-                  <span className="flex items-center gap-2"><Video className="w-4 h-4"/> Urgent Video Call</span>
-                  <span className="opacity-50 text-[10px]">▼</span>
+                  <span className="flex items-center gap-2"><Video className="w-5 h-5 group-hover:scale-110 transition-transform"/> Urgent Video Call</span>
+                  <span className="opacity-70 text-[10px]">▼</span>
                 </button>
                 
                 <button 
@@ -360,17 +360,17 @@ export default function UnifiedProfileLayout({
                       window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
                     }
                   }} 
-                  className="bg-white/10 backdrop-blur-xl border-[1.5px] border-white/20 text-indigo-300 hover:bg-white/5 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-sm flex items-center justify-between px-5"
+                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
                 >
-                  <span className="flex items-center gap-2"><Stethoscope className="w-4 h-4"/> Schedule Telemedicine</span>
-                  <span className="opacity-50 text-[10px]">▼</span>
+                  <span className="flex items-center gap-2"><Stethoscope className="w-5 h-5 group-hover:scale-110 transition-transform"/> Schedule Telemedicine</span>
+                  <span className="opacity-70 text-[10px]">▼</span>
                 </button>
                 
                 <button 
                   onClick={handleShare} 
-                  className="bg-white/5 hover:bg-white/10 text-white border border-white/20 w-full py-3 rounded-lg font-bold text-[15px] transition-all shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-xl flex items-center justify-center gap-2"
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 w-full py-3.5 rounded-xl font-bold text-[15px] transition-all duration-300 shadow-sm backdrop-blur-md flex items-center justify-center gap-2 hover:-translate-y-0.5 group"
                 >
-                  <Share2 className="w-4 h-4"/> Share & Connect
+                  <Share2 className="w-4 h-4 group-hover:rotate-12 transition-transform"/> Share & Connect
                 </button>
               </div>
             </div>
@@ -928,15 +928,15 @@ export default function UnifiedProfileLayout({
 
               {/* Claim Profile Upsell (Moved to Bottom) */}
               {!verified && (
-                <div className="bg-[#00897B] rounded-[2rem] p-8 md:p-12 mb-8 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-xl relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 backdrop-blur-xl/5 rounded-full blur-3xl group-hover:bg-white/5 backdrop-blur-xl/10 transition-colors"></div>
+                <div className="bg-gradient-to-br from-[#00897B] to-teal-900 rounded-[2rem] p-8 md:p-12 mb-8 flex flex-col sm:flex-row items-center justify-between gap-8 shadow-[0_20px_50px_rgba(0,137,123,0.3)] relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-colors duration-500"></div>
                   
                   <div className="relative z-10 text-center sm:text-left">
-                    <h4 className="font-black text-white text-2xl md:text-3xl">Are you {profile.name}?</h4>
-                    <p className="text-teal-50 mt-2 max-w-lg text-lg">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
+                    <h4 className="font-black text-white text-3xl md:text-4xl drop-shadow-sm">Are you {profile.name}?</h4>
+                    <p className="text-teal-50 mt-3 max-w-xl text-lg font-medium opacity-90 leading-relaxed">Claim your digital stage. Verify your credentials, add exclusive clinic media, and unlock the Dehapa VIP Rx Pad.</p>
                   </div>
-                  <button onClick={() => setShowClaimModal(true)} className="relative z-10 shrink-0 bg-white/5 backdrop-blur-xl text-[#00897B] px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-white/5 transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+                  <button onClick={() => setShowClaimModal(true)} className="relative z-10 shrink-0 bg-white text-[#00897B] px-10 py-5 rounded-2xl font-black text-[15px] uppercase tracking-[0.2em] hover:bg-teal-50 transition-all duration-300 shadow-[0_10px_30px_rgba(255,255,255,0.3)] hover:shadow-[0_15px_40px_rgba(255,255,255,0.5)] hover:-translate-y-1 active:scale-95 border-b-4 border-slate-200">
                     Claim Exclusivity
                   </button>
                 </div>
