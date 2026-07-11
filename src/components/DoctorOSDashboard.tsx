@@ -16,6 +16,7 @@ import SupportDashboard from '@/components/SupportDashboard';
 import { VaultService } from '@/lib/vault.service';
 import BillingInvoice from '@/components/BillingInvoice';
 import DoctorPluginStore from '@/components/DoctorPluginStore';
+import DoctorAppointments from '@/components/DoctorAppointments';
 
 const faqData = [
   {
@@ -926,14 +927,39 @@ export default function DoctorOSDashboard() {
            </div>
         )}
 
-        {["telemedicine"].includes(activeTab) && (
-          <div className="space-y-6">
-            <div className="bg-black/20 backdrop-blur-xl p-12 rounded-2xl shadow-lg border border-white/10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
-               <div className="w-20 h-20 bg-teal-500/10 border border-teal-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[inset_0_0_20px_rgba(20,184,166,0.1)]">
-                 <svg className="w-10 h-10 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+        {activeTab === "telemedicine" && (
+          <div className="space-y-6 relative animate-in fade-in slide-in-from-bottom-4">
+            {/* Subscription Gate Overlay */}
+            {!(entityData?.activePlugins || []).includes("plugin_telemedicine_scheduled") && 
+             !(entityData?.activePlugins || []).includes("plugin_telemedicine_urgent") && (
+              <div className="absolute inset-0 z-50 bg-slate-900/80 backdrop-blur-sm rounded-[32px] flex items-center justify-center p-6">
+                <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                  <div className="w-16 h-16 bg-sky-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-sky-500/20">
+                    <svg className="w-8 h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-2">Telemedicine Pro Required</h3>
+                  <p className="text-slate-400 text-sm mb-6">Upgrade your subscription to unlock the Telemedicine Hub and start accepting virtual video consultations.</p>
+                  <button onClick={() => handleTabChange("plugin_store")} className="bg-sky-500 hover:bg-sky-400 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">
+                    View Upgrade Options
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl">
+               <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+                  <div>
+                    <h3 className="text-2xl font-black text-white flex items-center gap-3">
+                      <div className="w-10 h-10 bg-sky-500/10 rounded-full flex items-center justify-center border border-sky-500/20 shadow-[0_0_15px_rgba(14,165,233,0.2)]">
+                         <svg className="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                      </div>
+                      Telemedicine Hub
+                    </h3>
+                    <p className="text-sm text-slate-400 mt-2">Manage your virtual appointments and video rooms.</p>
+                  </div>
                </div>
-               <h2 className="text-3xl font-black text-white tracking-tight mb-3">Coming Soon in Phase 3</h2>
-               <p className="text-slate-400 text-lg max-w-lg mx-auto">We are building this premium feature to give you unparalleled control over your clinic's operations.</p>
+               
+               <DoctorAppointments providerId={entityData.id} />
             </div>
           </div>
         )}

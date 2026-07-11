@@ -16,6 +16,7 @@ function BookAppointmentForm() {
   
   const [loading, setLoading] = useState(true);
   const [doctor, setDoctor] = useState<any>(null);
+  const [globalFees, setGlobalFees] = useState<any>(null);
   const [platformAds, setPlatformAds] = useState<any>({});
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -52,9 +53,13 @@ function BookAppointmentForm() {
     setUserUid(uid);
 
     const fetchAdsAndDoctor = async () => {
-      // Fetch Ads
+      // Fetch Ads and Global Fees in parallel
       try {
-        const adsSnap = await getDocs(query(collection(db, 'platform_ads'), where('active', '==', true)));
+        const [adsSnap, feesSnap] = await Promise.all([
+          getDocs(query(collection(db, 'platform_ads'), where('active', '==', true))),
+          getDoc(doc(db, 'platform_settings', 'pricing'))
+        ]);
+        
         const adsData: any = {};
         adsSnap.forEach(d => {
           const ad = d.data();
@@ -64,8 +69,23 @@ function BookAppointmentForm() {
           }
         });
         setPlatformAds(adsData);
+
+        if (feesSnap.exists()) {
+          setGlobalFees(feesSnap.data());
+        } else {
+          setGlobalFees({
+            clinic_global: 500, clinic_platform_fee: 0,
+            scheduled_global: 500, scheduled_platform_fee: 50,
+            urgent_global: 999, urgent_platform_fee: 100
+          });
+        }
       } catch(e) {
-        console.error("Failed to fetch ads", e);
+        console.error("Failed to fetch ads or fees", e);
+        setGlobalFees({
+            clinic_global: 500, clinic_platform_fee: 0,
+            scheduled_global: 500, scheduled_platform_fee: 50,
+            urgent_global: 999, urgent_platform_fee: 100
+        });
       }
 
       // Fetch Doctor
@@ -90,33 +110,33 @@ function BookAppointmentForm() {
   }, [router, docId]);
 
   const getPricing = () => {
-    if (!doctor) return { original: 0, discounted: 0 };
+    if (!doctor || !globalFees) return { original: 0, discounted: 0, platformFee: 0, total: 0 };
     
     let base = 500;
-    if (doctor.consultationFee) {
-      base = parseInt(doctor.consultationFee.toString());
-    } else {
-       const cat = (doctor.category || "").toLowerCase();
-       if (cat.includes('super')) base = 1200;
-       else if (cat.includes('specialist')) base = 800;
-       else if (cat.includes('ayush')) base = 300;
-       else base = 500;
-    }
+    let platformFee = 0;
 
-    if (consultationMode === 'video_urgent') {
-      base = Math.floor(base * 1.5);
+    if (consultationMode === 'clinic') {
+      base = (doctor.inClinicFee !== undefined && doctor.inClinicFee !== "") ? parseInt(doctor.inClinicFee.toString()) : globalFees.clinic_global;
+      platformFee = globalFees.clinic_platform_fee;
+    } else if (consultationMode === 'video_scheduled') {
+      base = (doctor.videoFee !== undefined && doctor.videoFee !== "") ? parseInt(doctor.videoFee.toString()) : globalFees.scheduled_global;
+      platformFee = globalFees.scheduled_platform_fee;
+    } else if (consultationMode === 'video_urgent') {
+      base = (doctor.emergencyFee !== undefined && doctor.emergencyFee !== "") ? parseInt(doctor.emergencyFee.toString()) : globalFees.urgent_global;
+      platformFee = globalFees.urgent_platform_fee;
     }
     
-    // Launch discount logic
-    // First check if the admin explicitly set a "launchFee" for this doctor
-    let discounted = doctor.launchFee ? parseInt(doctor.launchFee.toString()) : base * 0.5;
+    // Safety check for empty or invalid values
+    if (isNaN(base)) base = 500;
+    if (isNaN(platformFee)) platformFee = 0;
     
-    // Safety check: Discount can NEVER be higher than the original base price
-    if (discounted > base) {
-      discounted = base;
-    }
-    
-    return { original: base, discounted: Math.floor(discounted) };
+    return { 
+      original: base + platformFee, // Deprecated, keeping for compatibility
+      discounted: base + platformFee, // Keeping for compatibility
+      consultationFee: base,
+      platformFee: platformFee,
+      total: base + platformFee
+    };
   };
 
   const isTestAccount = doctor?.id === "68bKd57pRmlZHQbMdBFq" || doctor?.isTestAccount === true;
@@ -143,8 +163,10 @@ function BookAppointmentForm() {
         symptoms: symptoms,
         status: "Pending", // Pending payment
         type: consultationMode === 'clinic' ? 'Clinic Visit' : (consultationMode === 'video_urgent' ? 'Urgent Video Call' : 'Telemedicine'),
-        fee: pricing.discounted,
-        originalFee: pricing.original,
+        fee: pricing.total,
+        consultationFee: pricing.consultationFee,
+        platformFee: pricing.platformFee,
+        originalFee: pricing.total,
         clinicEntryCode: code,
         timestamp: serverTimestamp(),
       };
@@ -185,7 +207,7 @@ function BookAppointmentForm() {
       const res = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: pricing.discounted, receipt: bookingId })
+        body: JSON.stringify({ amount: pricing.total, receipt: bookingId })
       });
       const orderData = await res.json();
       
@@ -319,12 +341,22 @@ function BookAppointmentForm() {
                   View Profile
                 </Link>
                 
-                <div className="mt-8 w-full bg-black/40 rounded-2xl p-5 border border-white/10 flex flex-col gap-2 backdrop-blur-md relative overflow-hidden">
+                <div className="mt-8 w-full bg-black/40 rounded-2xl p-5 border border-white/10 flex flex-col gap-3 backdrop-blur-md relative overflow-hidden text-left">
                   <div className="absolute -top-4 -right-4 w-20 h-20 bg-emerald-500/10 blur-xl rounded-full"></div>
-                  <span className="text-slate-400 text-xs font-bold uppercase tracking-widest text-left">Total Fee</span>
-                  <div className="flex flex-col items-start gap-1">
-                    <span className="line-through text-slate-500 font-bold">₹{pricing.original}</span>
-                    <span className="text-emerald-400 font-black text-3xl">₹{pricing.discounted} <span className="text-xs text-emerald-500 uppercase tracking-widest ml-1">(Launch Offer)</span></span>
+                  
+                  <div className="flex justify-between items-center text-sm font-bold">
+                    <span className="text-slate-400">Consultation Fee</span>
+                    <span className="text-white">₹{pricing.consultationFee}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center text-sm font-bold border-b border-white/10 pb-3">
+                    <span className="text-slate-400">Platform Fee</span>
+                    <span className="text-white">+ ₹{pricing.platformFee}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">Total Pay</span>
+                    <span className="text-emerald-400 font-black text-3xl">₹{pricing.total}</span>
                   </div>
                 </div>
               </div>
