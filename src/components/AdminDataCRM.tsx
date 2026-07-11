@@ -1159,12 +1159,16 @@ export default function AdminDataCRM() {
                     <p className="text-xs text-slate-400 mb-6">Manage the OS features this provider has access to. Adding a plugin instantly unlocks features in their portal and public profile.</p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {[
+                      {(selectedListing.role === 'hospital' ? [
+                        { id: 'plugin_hospital_bed_manager', name: 'Live Bed Manager Pro', icon: '🛏️' },
+                        { id: 'plugin_hospital_ambulance', name: 'SOS Ambulance Dispatcher', icon: '🚑' },
+                        { id: 'plugin_hospital_roster', name: 'B2B Doctor Roster Network', icon: '🤝' }
+                      ] : [
                         { id: 'plugin_booking_physical', name: 'Physical Appointments', icon: '🏥' },
                         { id: 'plugin_telemedicine_scheduled', name: 'Scheduled Telemedicine', icon: '🩺' },
                         { id: 'plugin_telemedicine_urgent', name: 'Urgent Video Call', icon: '🎥' },
                         { id: 'plugin_vip_rx_pad', name: 'VIP Digital Rx Pad (+AI)', icon: '🧠' }
-                      ].map(plugin => {
+                      ]).map(plugin => {
                         const activePlugins = selectedListing.activePlugins || [];
                         const isActive = activePlugins.includes(plugin.id);
                         

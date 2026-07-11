@@ -11,6 +11,7 @@ import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
 import { ExtensionPoint } from '@/plugins/core/ExtensionPoint';
+import HospitalPluginStore from '@/components/HospitalPluginStore';
 
 export default function HospitalDashboard() {
   const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
@@ -91,6 +92,12 @@ export default function HospitalDashboard() {
       label: "Live Bed Manager",
       section: "HOSPITAL OPERATIONS",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+    },
+    {
+      id: "plugin_store",
+      label: "Upgrades & Add-ons",
+      section: "SYSTEM CONTROL",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
     }
   ];
 
@@ -166,7 +173,15 @@ export default function HospitalDashboard() {
     if (tabId === "bed_manager") {
       return (
         <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8">
-          <ExtensionPoint name="hospital_bed_manager" />
+          <ExtensionPoint name="hospital_bed_manager" provider={entityData} />
+        </div>
+      );
+    }
+
+    if (tabId === "plugin_store") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8">
+          <HospitalPluginStore entityData={entityData} />
         </div>
       );
     }

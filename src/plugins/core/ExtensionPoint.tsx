@@ -18,8 +18,13 @@ interface ExtensionPointProps {
  */
 // Translation Matrix mapping SaaS Subscription Plugins -> Engine Plugin IDs
 const SAAS_TO_ENGINE_MAP: Record<string, string[]> = {
+  // Doctor SaaS Plugins
   'plugin_vip_rx_pad': ['core.vitals', 'core.memory_tags', 'core.smart_medicine', 'core.whatsapp_dispatch', 'core.ai_diagnosis'],
-  // Add other mappings here as needed
+  
+  // Hospital SaaS Plugins
+  'plugin_hospital_bed_manager': ['hospital.bed_manager'],
+  'plugin_hospital_ambulance': ['hospital.ambulance_dispatch'],
+  'plugin_hospital_roster': ['hospital.doctor_roster']
 };
 
 export function ExtensionPoint({ name, className = "", provider, ...props }: ExtensionPointProps) {
