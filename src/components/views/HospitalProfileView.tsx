@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, collection, query, where, limit, getDocs, updateDoc } from 'firebase/firestore';
-import HospitalProfileLayout from '@/components/HospitalProfileLayout';
+import UnifiedProfileLayout from '@/components/UnifiedProfileLayout';
 
 export default function HospitalProfileView({ id, customSlug }: { id?: string, customSlug?: string }) {
   const [profile, setProfile] = useState<any>(null);
@@ -213,5 +213,5 @@ export default function HospitalProfileView({ id, customSlug }: { id?: string, c
     );
   }
 
-  return <HospitalProfileLayout profile={profile} type="hospital" canEdit={canEdit} onInlineSave={handleInlineSave} similarEntities={similarHospitals} platformAds={platformAds} />;
+  return <UnifiedProfileLayout profile={profile} type="hospital" canEdit={canEdit} onInlineSave={handleInlineSave} similarEntities={similarHospitals} platformAds={platformAds} />;
 }

@@ -192,6 +192,7 @@ export default function UnifiedProfileLayout({
 
   const heroRightAd = getAdSlot('hero_right');
   const heroTopAd = getAdSlot('hero_top');
+  const heroBottomAd = getAdSlot('hero_bottom');
 
   return (
     <div className="min-h-screen bg-[#050B14] font-sans pb-[160px] selection:bg-teal-500/30">
@@ -1040,6 +1041,34 @@ export default function UnifiedProfileLayout({
             )}
 
           </div>
+
+        {/* BOTTOM HERO AD */}
+        {heroBottomAd && (
+          <div className="w-full h-[150px] md:h-[250px] rounded-3xl overflow-hidden shadow-sm border-[4px] border-white/5 mt-8 relative">
+            {heroBottomAd.type === 'slider' ? (
+              <AdSliderRenderer images={heroBottomAd.sliderImages || []} linkUrl={heroBottomAd.linkUrl} animationStyle={heroBottomAd.animationStyle || 'fade'} />
+            ) : heroBottomAd.type === 'split' ? (
+              <div className="flex w-full h-full">
+                <div className="w-1/2 h-full flex flex-col justify-center p-8 bg-gradient-to-r from-teal-900 to-slate-900">
+                  <h3 className="text-3xl font-black text-white mb-2 leading-tight">{heroBottomAd.headline}</h3>
+                  <p className="text-slate-300 mb-6">{heroBottomAd.subtext}</p>
+                  <a href={heroBottomAd.linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-3 px-8 rounded-full transition-colors w-fit text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+                    {heroBottomAd.buttonText}
+                  </a>
+                </div>
+                <div className="w-1/2 h-full">
+                  <img src={heroBottomAd.imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
+                </div>
+              </div>
+            ) : heroBottomAd.type === 'image' ? (
+              <a href={heroBottomAd.linkUrl} target="_blank" rel="noreferrer" className="w-full h-full block">
+                <img src={heroBottomAd.imageUrl} alt="Advertisement" className="w-full h-full object-cover" />
+              </a>
+            ) : (
+              <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: heroBottomAd.htmlCode }} />
+            )}
+          </div>
+        )}
 
         </div>
       </div>

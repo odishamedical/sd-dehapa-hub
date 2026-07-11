@@ -31,30 +31,35 @@ const AD_SLOTS: AdSlot[] = [
   { id: 'ad_slot_doctors_list_bottom', label: 'Doctors Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Doctors Directory' },
   { id: 'ad_slot_doctor_hero_top', label: 'Doctor Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Doctor Profiles' },
   { id: 'ad_slot_doctor_hero_right', label: 'Doctor Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Doctor Profiles' },
+  { id: 'ad_slot_doctor_hero_bottom', label: 'Doctor Profile - Bottom Hero', dimensions: '1200x300px (Widescreen)', group: 'Doctor Profiles' },
 
   // Hospitals
   { id: 'ad_slot_hospitals_list_top', label: 'Hospitals Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Hospitals Directory' },
   { id: 'ad_slot_hospitals_list_bottom', label: 'Hospitals Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Hospitals Directory' },
   { id: 'ad_slot_hospital_hero_top', label: 'Hospital Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Hospital Profiles' },
   { id: 'ad_slot_hospital_hero_right', label: 'Hospital Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Hospital Profiles' },
+  { id: 'ad_slot_hospital_hero_bottom', label: 'Hospital Profile - Bottom Hero', dimensions: '1200x300px (Widescreen)', group: 'Hospital Profiles' },
 
   // Pharmacies
   { id: 'ad_slot_pharmacies_list_top', label: 'Pharmacies Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Pharmacies Directory' },
   { id: 'ad_slot_pharmacies_list_bottom', label: 'Pharmacies Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Pharmacies Directory' },
   { id: 'ad_slot_pharmacy_hero_top', label: 'Pharmacy Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Pharmacy Profiles' },
   { id: 'ad_slot_pharmacy_hero_right', label: 'Pharmacy Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Pharmacy Profiles' },
+  { id: 'ad_slot_pharmacy_hero_bottom', label: 'Pharmacy Profile - Bottom Hero', dimensions: '1200x300px (Widescreen)', group: 'Pharmacy Profiles' },
 
   // Ambulances
   { id: 'ad_slot_ambulances_list_top', label: 'Ambulances Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Ambulances Directory' },
   { id: 'ad_slot_ambulances_list_bottom', label: 'Ambulances Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Ambulances Directory' },
   { id: 'ad_slot_ambulance_hero_top', label: 'Ambulance Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Ambulance Profiles' },
   { id: 'ad_slot_ambulance_hero_right', label: 'Ambulance Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Ambulance Profiles' },
+  { id: 'ad_slot_ambulance_hero_bottom', label: 'Ambulance Profile - Bottom Hero', dimensions: '1200x300px (Widescreen)', group: 'Ambulance Profiles' },
 
   // Labs
   { id: 'ad_slot_labs_list_top', label: 'Labs Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Labs Directory' },
   { id: 'ad_slot_labs_list_bottom', label: 'Labs Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Labs Directory' },
   { id: 'ad_slot_lab_hero_top', label: 'Lab Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Lab Profiles' },
-  { id: 'ad_slot_lab_hero_right', label: 'Lab Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Lab Profiles' }
+  { id: 'ad_slot_lab_hero_right', label: 'Lab Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Lab Profiles' },
+  { id: 'ad_slot_lab_hero_bottom', label: 'Lab Profile - Bottom Hero', dimensions: '1200x300px (Widescreen)', group: 'Lab Profiles' }
 ];
 
 const ITEMS_PER_PAGE = 8;
