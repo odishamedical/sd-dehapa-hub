@@ -23,9 +23,15 @@ const AD_SLOTS: AdSlot[] = [
   { id: 'ad_slot_home_distributed_3', label: 'Homepage - Distributed Slot 3 (Above Footer)', dimensions: 'Recommended: 1200x300px (Widescreen)' }
 ];
 
+const ITEMS_PER_PAGE = 8;
+
 export default function AdminAdEngine() {
   const [ads, setAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Layout State
+  const [activeTab, setActiveTab] = useState<'create' | 'library'>('create');
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Form State
   const [slotId, setSlotId] = useState(AD_SLOTS[0].id);
@@ -61,6 +67,12 @@ export default function AdminAdEngine() {
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'platform_ads'), (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Sort ads by updatedAt descending for the library
+      data.sort((a: any, b: any) => {
+        const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
+        const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
+        return timeB - timeA;
+      });
       setAds(data);
       setLoading(false);
     }, (err) => {
@@ -149,6 +161,13 @@ export default function AdminAdEngine() {
       setSubtext('');
       setButtonText('Learn More');
       setLinkUrl('');
+      
+      // Navigate to library after short delay
+      setTimeout(() => {
+        setSuccessMsg('');
+        setActiveTab('library');
+      }, 1500);
+
     } catch (err: any) {
       setError(err.message || "Failed to inject ad.");
     } finally {
@@ -173,6 +192,68 @@ export default function AdminAdEngine() {
     }
   };
 
+  const handleDuplicate = (ad: any) => {
+    setSlotId(ad.slotId || AD_SLOTS[0].id);
+    setTargetType(ad.targetType || 'global');
+    setTargetId(ad.targetId === 'all' ? '' : (ad.targetId || ''));
+    setAdType(ad.type || 'image');
+    setUploadMode('vault');
+    if (ad.type === 'slider') {
+      setVaultImageUrls(ad.sliderImages || []);
+    } else {
+      setVaultImageUrl(ad.imageUrl || '');
+    }
+    setLinkUrl(ad.linkUrl || '');
+    setHtmlCode(ad.htmlCode || '');
+    setHeadline(ad.headline || '');
+    setSubtext(ad.subtext || '');
+    setButtonText(ad.buttonText || 'Learn More');
+    setActiveTab('create');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Pagination Logic
+  const totalPages = Math.ceil(ads.length / ITEMS_PER_PAGE);
+  const paginatedAds = ads.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  // Render Ad Preview Block
+  const renderAdPreview = (ad: any) => {
+    return (
+      <div className="min-h-[160px] bg-slate-900 relative group flex items-center justify-center overflow-hidden w-full h-full">
+        {ad.type === 'image' ? (
+          <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-auto max-h-40 object-contain p-2" />
+        ) : ad.type === 'split' ? (
+          <div className="flex w-full h-full">
+            <div className="w-1/2 h-full flex items-center justify-center p-2">
+              <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-auto max-h-40 object-contain" />
+            </div>
+            <div className="w-1/2 h-full flex flex-col justify-center p-4 bg-slate-800">
+              <h5 className="font-bold text-white text-xs truncate">{ad.headline}</h5>
+              <p className="text-[10px] text-slate-400 truncate mt-1">{ad.subtext}</p>
+              <span className="mt-2 inline-block bg-teal-500 text-white text-[8px] font-bold px-2 py-1 rounded w-fit">{ad.buttonText}</span>
+            </div>
+          </div>
+        ) : ad.type === 'slider' ? (
+          <div className="relative w-full h-full p-2 flex items-center justify-center">
+            {ad.sliderImages && ad.sliderImages.length > 0 && (
+              <img src={ad.sliderImages[0]} alt="Slider Preview" className="w-full h-auto max-h-40 object-contain opacity-50" />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="bg-fuchsia-500 text-white font-bold text-xs px-3 py-1 rounded-full shadow-lg border border-fuchsia-400 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Slider ({ad.sliderImages?.length || 0} Images)
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4 text-xs font-mono text-slate-400 break-all w-full h-full overflow-hidden">
+            {ad.htmlCode}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <AdminCard noPadding>
       <AdminHeader 
@@ -180,228 +261,268 @@ export default function AdminAdEngine() {
         description="Monetize the platform globally or target specific premium profiles."
         actions={
           <div className="bg-cyan-900/30 text-cyan-300 px-4 py-1.5 rounded-xl font-bold text-xs uppercase tracking-widest border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.1)]">
-            {ads.length} Active Slots
+            {ads.filter(a => a.active).length} Active Slots
           </div>
         }
       />
 
-      <div className="p-6 md:p-8">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          
-          {/* Ad Creation Form */}
-          <div className="xl:col-span-1">
-            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-xl border border-white/5 sticky top-24">
-              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <svg className="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                Inject New Ad
-              </h3>
+      {/* Tabs */}
+      <div className="flex px-6 md:px-8 mt-6 border-b border-white/10 gap-8">
+        <button 
+          onClick={() => setActiveTab('create')}
+          className={`pb-4 font-bold text-sm tracking-wider uppercase transition-colors flex items-center gap-2 relative ${activeTab === 'create' ? 'text-teal-400' : 'text-slate-400 hover:text-white'}`}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          Create Campaign
+          {activeTab === 'create' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-400 rounded-t-full shadow-[0_0_10px_rgba(45,212,191,0.8)]"></div>}
+        </button>
+        <button 
+          onClick={() => setActiveTab('library')}
+          className={`pb-4 font-bold text-sm tracking-wider uppercase transition-colors flex items-center gap-2 relative ${activeTab === 'library' ? 'text-teal-400' : 'text-slate-400 hover:text-white'}`}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          Ad Library ({ads.length})
+          {activeTab === 'library' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-400 rounded-t-full shadow-[0_0_10px_rgba(45,212,191,0.8)]"></div>}
+        </button>
+      </div>
 
+      <div className="p-6 md:p-8">
+        
+        {/* --- TAB 1: CREATE CAMPAIGN --- */}
+        {activeTab === 'create' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
+            <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl p-6 md:p-10 shadow-xl border border-white/5">
+              
               {error && <div className="bg-red-500/10 text-red-400 px-4 py-3 rounded-xl text-sm font-bold mb-6 border border-red-500/20">{error}</div>}
               {successMsg && <div className="bg-teal-500/10 text-teal-400 px-4 py-3 rounded-xl text-sm font-bold mb-6 border border-teal-500/20">{successMsg}</div>}
 
-              <form onSubmit={handleInjectAd} className="space-y-5">
+              <form onSubmit={handleInjectAd} className="space-y-8">
+                
+                {/* STEP 1: TARGETING */}
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex items-center justify-between">
-                    <span>Slot Location</span>
-                    {selectedSlot?.dimensions && <span className="text-teal-400">{selectedSlot.dimensions}</span>}
-                  </label>
-                  <select 
-                    value={slotId}
-                    onChange={(e) => setSlotId(e.target.value)}
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
-                  >
-                    {AD_SLOTS.map(slot => <option key={slot.id} value={slot.id}>{slot.label}</option>)}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target Scope</label>
-                  <select 
-                    value={targetType}
-                    onChange={(e) => { setTargetType(e.target.value as any); setTargetId(''); }}
-                    className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
-                  >
-                    <option value="global">Global (Appears everywhere in this slot)</option>
-                    <option value="specific_profile">Specific Doctor/Hospital Profile</option>
-                  </select>
-                </div>
-
-                {targetType === 'specific_profile' && (
-                  <div className="animate-in fade-in slide-in-from-top-2">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target Profile ID</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={targetId}
-                      onChange={(e) => setTargetId(e.target.value)}
-                      placeholder="e.g. dr-deepak-kumar..."
-                      className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
-                    />
-                    <p className="text-[10px] text-slate-500 mt-1">This ad will OVERRIDE global ads for this specific profile.</p>
-                  </div>
-                )}
-
-                <div className="pt-4 border-t border-white/10">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Ad Format</label>
-                  <div className="flex flex-col gap-2">
-                    <div className="flex gap-2">
-                      <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'image' ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
-                        <input type="radio" name="adType" value="image" checked={adType === 'image'} onChange={() => setAdType('image')} className="sr-only" />
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <span className="font-bold text-xs">Image Banner</span>
+                  <h4 className="text-teal-400 font-bold uppercase tracking-widest text-xs mb-4 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-teal-500/20 flex items-center justify-center">1</span>
+                    Targeting (Where & Who)
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex items-center justify-between">
+                        <span>Slot Location</span>
+                        {selectedSlot?.dimensions && <span className="text-teal-400 hidden sm:inline">{selectedSlot.dimensions}</span>}
                       </label>
-                      <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'adsense' ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
-                        <input type="radio" name="adType" value="adsense" checked={adType === 'adsense'} onChange={() => setAdType('adsense')} className="sr-only" />
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                        <span className="font-bold text-xs">AdSense</span>
-                      </label>
-                    </div>
-                    <div className="flex gap-2">
-                      <label className={`w-1/2 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'split' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
-                        <input type="radio" name="adType" value="split" checked={adType === 'split'} onChange={() => setAdType('split')} className="sr-only" />
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
-                        <span className="font-bold text-xs text-center leading-tight">Split Layout<br/>(50% Image / 50% Text)</span>
-                      </label>
-                      <label className={`w-1/2 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${adType === 'slider' ? 'border-fuchsia-500 bg-fuchsia-500/10 text-fuchsia-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
-                        <input type="radio" name="adType" value="slider" checked={adType === 'slider'} onChange={() => setAdType('slider')} className="sr-only" />
-                        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        <span className="font-bold text-xs text-center leading-tight">Animated Slider<br/>(Multi-Image)</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                {adType === 'image' || adType === 'split' || adType === 'slider' ? (
-                  <div className="space-y-4 animate-in fade-in">
-                    
-                    {/* Media Vault Toggle */}
-                    <div className="flex bg-slate-900 rounded-lg p-1 border border-white/5 w-fit mb-4">
-                      <button 
-                        type="button"
-                        onClick={() => setUploadMode('new')}
-                        className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${uploadMode === 'new' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                      <select 
+                        value={slotId}
+                        onChange={(e) => setSlotId(e.target.value)}
+                        className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                       >
-                        Upload New
-                      </button>
-                      <button 
-                        type="button"
-                        onClick={() => setUploadMode('vault')}
-                        className={`px-4 py-1.5 rounded-md text-xs font-bold transition-colors ${uploadMode === 'vault' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
-                      >
-                        Media Vault
-                      </button>
+                        {AD_SLOTS.map(slot => <option key={slot.id} value={slot.id}>{slot.label}</option>)}
+                      </select>
+                      {selectedSlot?.dimensions && <p className="text-teal-400 text-[10px] mt-1 sm:hidden">{selectedSlot.dimensions}</p>}
                     </div>
 
-                    {uploadMode === 'new' ? (
-                      <div>
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex justify-between">
-                          <span>Upload Image{adType === 'slider' ? 's (Select Multiple)' : ''}</span>
-                          {adType === 'slider' && imageFiles.length > 0 && <span className="text-fuchsia-400">{imageFiles.length} selected</span>}
-                        </label>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target Scope</label>
+                      <select 
+                        value={targetType}
+                        onChange={(e) => { setTargetType(e.target.value as any); setTargetId(''); }}
+                        className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
+                      >
+                        <option value="global">Global (Appears everywhere in this slot)</option>
+                        <option value="specific_profile">Specific Doctor/Hospital Profile</option>
+                      </select>
+                    </div>
+
+                    {targetType === 'specific_profile' && (
+                      <div className="animate-in fade-in slide-in-from-top-2 md:col-span-2">
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target Profile ID</label>
                         <input 
-                          type="file" 
-                          accept="image/*"
-                          multiple={adType === 'slider'}
-                          required={uploadMode === 'new'}
-                          onChange={(e) => {
-                            if (e.target.files) {
-                              if (adType === 'slider') {
-                                setImageFiles(Array.from(e.target.files));
-                              } else {
-                                setImageFile(e.target.files[0]);
-                              }
-                            }
-                          }}
-                          className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-teal-500/20 file:text-teal-400 hover:file:bg-teal-500/30"
+                          type="text" 
+                          required
+                          value={targetId}
+                          onChange={(e) => setTargetId(e.target.value)}
+                          placeholder="e.g. dr-deepak-kumar..."
+                          className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                         />
+                        <p className="text-[10px] text-slate-500 mt-1">This ad will OVERRIDE global ads for this specific profile.</p>
                       </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex justify-between">
-                          <span>Select from Vault</span>
-                          {adType === 'slider' && vaultImageUrls.length > 0 && <span className="text-fuchsia-400">{vaultImageUrls.length} selected</span>}
-                        </label>
-                        {vaultImages.length === 0 ? (
-                          <p className="text-xs text-slate-500 italic">No previous images found in the vault.</p>
+                    )}
+                  </div>
+                </div>
+
+                <hr className="border-white/10" />
+
+                {/* STEP 2: FORMAT & CREATIVE */}
+                <div>
+                  <h4 className="text-teal-400 font-bold uppercase tracking-widest text-xs mb-4 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-teal-500/20 flex items-center justify-center">2</span>
+                    Ad Format & Creative
+                  </h4>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                    <label className={`flex flex-col items-center justify-center text-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${adType === 'image' ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                      <input type="radio" name="adType" value="image" checked={adType === 'image'} onChange={() => setAdType('image')} className="sr-only" />
+                      <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      <span className="font-bold text-xs">Image Banner</span>
+                    </label>
+                    <label className={`flex flex-col items-center justify-center text-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${adType === 'split' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                      <input type="radio" name="adType" value="split" checked={adType === 'split'} onChange={() => setAdType('split')} className="sr-only" />
+                      <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
+                      <span className="font-bold text-[10px] leading-tight">Split Layout<br/>(50/50)</span>
+                    </label>
+                    <label className={`flex flex-col items-center justify-center text-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${adType === 'slider' ? 'border-fuchsia-500 bg-fuchsia-500/10 text-fuchsia-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                      <input type="radio" name="adType" value="slider" checked={adType === 'slider'} onChange={() => setAdType('slider')} className="sr-only" />
+                      <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                      <span className="font-bold text-[10px] leading-tight">Animated Slider</span>
+                    </label>
+                    <label className={`flex flex-col items-center justify-center text-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${adType === 'adsense' ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                      <input type="radio" name="adType" value="adsense" checked={adType === 'adsense'} onChange={() => setAdType('adsense')} className="sr-only" />
+                      <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                      <span className="font-bold text-xs">AdSense</span>
+                    </label>
+                  </div>
+
+                  {adType === 'image' || adType === 'split' || adType === 'slider' ? (
+                    <div className="space-y-6 animate-in fade-in">
+                      
+                      <div className="bg-slate-800/50 border border-white/5 rounded-2xl p-6">
+                        <div className="flex bg-slate-900 rounded-lg p-1 border border-white/5 w-fit mb-4 mx-auto sm:mx-0">
+                          <button 
+                            type="button"
+                            onClick={() => setUploadMode('new')}
+                            className={`px-6 py-2 rounded-md text-xs font-bold transition-colors ${uploadMode === 'new' ? 'bg-white/10 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}
+                          >
+                            Upload New
+                          </button>
+                          <button 
+                            type="button"
+                            onClick={() => setUploadMode('vault')}
+                            className={`px-6 py-2 rounded-md text-xs font-bold transition-colors ${uploadMode === 'vault' ? 'bg-white/10 text-white shadow-md' : 'text-slate-500 hover:text-slate-300'}`}
+                          >
+                            Media Vault
+                          </button>
+                        </div>
+
+                        {uploadMode === 'new' ? (
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex justify-between">
+                              <span>Upload Image{adType === 'slider' ? 's (Select Multiple)' : ''}</span>
+                              {adType === 'slider' && imageFiles.length > 0 && <span className="text-fuchsia-400">{imageFiles.length} selected</span>}
+                            </label>
+                            <input 
+                              type="file" 
+                              accept="image/*"
+                              multiple={adType === 'slider'}
+                              required={uploadMode === 'new'}
+                              onChange={(e) => {
+                                if (e.target.files) {
+                                  if (adType === 'slider') {
+                                    setImageFiles(Array.from(e.target.files));
+                                  } else {
+                                    setImageFile(e.target.files[0]);
+                                  }
+                                }
+                              }}
+                              className="w-full text-sm text-slate-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-teal-500/20 file:text-teal-400 hover:file:bg-teal-500/30 transition-colors cursor-pointer border border-white/5 bg-slate-900/50 p-2 rounded-2xl"
+                            />
+                          </div>
                         ) : (
-                          <div className="grid grid-cols-3 gap-2 max-h-[150px] overflow-y-auto pr-1">
-                            {vaultImages.map((url, i) => {
-                              const isSelected = adType === 'slider' ? vaultImageUrls.includes(url) : vaultImageUrl === url;
-                              return (
-                                <button 
-                                  type="button" 
-                                  key={i} 
-                                  onClick={() => {
-                                    if (adType === 'slider') {
-                                      setVaultImageUrls(prev => prev.includes(url) ? prev.filter(u => u !== url) : [...prev, url]);
-                                    } else {
-                                      setVaultImageUrl(url);
-                                    }
-                                  }}
-                                  className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all ${isSelected ? 'border-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.5)]' : 'border-transparent hover:border-white/20'}`}
-                                >
-                                  <img src={url} alt={`Vault Image ${i}`} className="w-full h-full object-cover" />
-                                  {isSelected && adType === 'slider' && (
-                                    <div className="absolute top-1 right-1 bg-teal-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                                      {vaultImageUrls.indexOf(url) + 1}
-                                    </div>
-                                  )}
-                                </button>
-                              );
-                            })}
+                          <div className="space-y-2">
+                            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 flex justify-between">
+                              <span>Select from Vault</span>
+                              {adType === 'slider' && vaultImageUrls.length > 0 && <span className="text-fuchsia-400">{vaultImageUrls.length} selected</span>}
+                            </label>
+                            {vaultImages.length === 0 ? (
+                              <p className="text-xs text-slate-500 italic p-4 bg-slate-900 rounded-xl text-center">No previous images found in the vault.</p>
+                            ) : (
+                              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                                {vaultImages.map((url, i) => {
+                                  const isSelected = adType === 'slider' ? vaultImageUrls.includes(url) : vaultImageUrl === url;
+                                  return (
+                                    <button 
+                                      type="button" 
+                                      key={i} 
+                                      onClick={() => {
+                                        if (adType === 'slider') {
+                                          setVaultImageUrls(prev => prev.includes(url) ? prev.filter(u => u !== url) : [...prev, url]);
+                                        } else {
+                                          setVaultImageUrl(url);
+                                        }
+                                      }}
+                                      className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all group ${isSelected ? 'border-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.5)] scale-105 z-10' : 'border-transparent hover:border-white/30 hover:scale-105'}`}
+                                    >
+                                      <img src={url} alt={`Vault Image ${i}`} className="w-full h-full object-cover" />
+                                      {isSelected && adType === 'slider' && (
+                                        <div className="absolute top-1 right-1 bg-teal-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg">
+                                          {vaultImageUrls.indexOf(url) + 1}
+                                        </div>
+                                      )}
+                                      {!isSelected && (
+                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <svg className="w-6 h-6 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                                         </div>
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
-                    )}
 
-                    <div>
-                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Click URL (Where it links to)</label>
-                      <input 
-                        type="url" 
+                      {adType === 'split' && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-indigo-500/5 border border-indigo-500/20 rounded-2xl p-6">
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Headline</label>
+                            <input type="text" required value={headline} onChange={(e) => setHeadline(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" placeholder="E.g., 50% Off Full Body Checkup" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Subtext</label>
+                            <input type="text" required value={subtext} onChange={(e) => setSubtext(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" placeholder="Valid until Friday. Walk-ins welcome." />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Button Text</label>
+                            <input type="text" required value={buttonText} onChange={(e) => setButtonText(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none" placeholder="Learn More" />
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div>
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Click URL (Where it links to)</label>
+                        <input 
+                          type="url" 
+                          required
+                          value={linkUrl}
+                          onChange={(e) => setLinkUrl(e.target.value)}
+                          placeholder="https://..."
+                          className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
+                        />
+                      </div>
+                      
+                    </div>
+                  ) : (
+                    <div className="animate-in fade-in">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">AdSense or Custom HTML Code</label>
+                      <textarea 
                         required
-                        value={linkUrl}
-                        onChange={(e) => setLinkUrl(e.target.value)}
-                        placeholder="https://"
-                        className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
+                        value={htmlCode}
+                        onChange={(e) => setHtmlCode(e.target.value)}
+                        rows={6}
+                        placeholder="<script async src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>..."
+                        className="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-4 text-sm font-mono text-emerald-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
                       />
                     </div>
-                    
-                    {adType === 'split' && (
-                      <div className="space-y-4 pt-4 border-t border-white/10">
-                        <div>
-                          <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Headline</label>
-                          <input type="text" required value={headline} onChange={(e) => setHeadline(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none" placeholder="E.g., 50% Off Full Body Checkup" />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Subtext</label>
-                          <input type="text" required value={subtext} onChange={(e) => setSubtext(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none" placeholder="E.g., Valid until Friday. Walk-ins welcome." />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Button Text</label>
-                          <input type="text" required value={buttonText} onChange={(e) => setButtonText(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none" placeholder="Learn More" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="animate-in fade-in">
-                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">AdSense or Custom HTML Code</label>
-                    <textarea 
-                      required
-                      value={htmlCode}
-                      onChange={(e) => setHtmlCode(e.target.value)}
-                      rows={5}
-                      placeholder="<script async src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>..."
-                      className="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-sm font-mono text-emerald-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
-                    />
-                  </div>
-                )}
+                  )}
+                </div>
 
-                <div className="pt-4 mt-2">
+                <hr className="border-white/10" />
+
+                {/* STEP 3: ACTION */}
+                <div className="flex justify-end pt-2">
                   <button 
                     type="submit" 
                     disabled={submitting}
-                    className="w-full bg-teal-600 hover:bg-teal-500 text-white px-6 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(13,148,136,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto bg-teal-600 hover:bg-teal-500 text-white px-10 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(13,148,136,0.4)] hover:shadow-[0_0_30px_rgba(13,148,136,0.6)] hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
                   >
                     {submitting ? (
                       <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
@@ -415,112 +536,131 @@ export default function AdminAdEngine() {
                 </div>
               </form>
             </div>
-          </div>
 
-          {/* Ad Inventory Grid */}
-          <div className="xl:col-span-2">
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-              Live Ad Inventory
-            </h3>
-
-            {loading ? (
-              <div className="flex justify-center py-20"><div className="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full"></div></div>
-            ) : ads.length === 0 ? (
-              <div className="bg-slate-800/40 rounded-3xl p-12 text-center border border-white/10 border-dashed">
-                <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500">
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            {/* Recently Injected */}
+            {ads.length > 0 && (
+              <div className="mt-12">
+                <h4 className="text-slate-400 font-bold uppercase tracking-widest text-xs mb-4">Recently Injected</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {ads.slice(0, 3).map(ad => (
+                    <div key={ad.id} className="bg-slate-800/40 rounded-2xl border border-white/5 overflow-hidden flex flex-col h-32 opacity-80 hover:opacity-100 transition-opacity cursor-pointer" onClick={() => setActiveTab('library')}>
+                       {renderAdPreview(ad)}
+                    </div>
+                  ))}
                 </div>
-                <h4 className="text-lg font-bold text-white">No Ads Running</h4>
-                <p className="text-slate-400">Inject an ad from the panel to start monetizing.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {ads.map(ad => (
-                  <div key={ad.id} className={`bg-slate-800/40 rounded-2xl border ${ad.active ? 'border-teal-500/50 shadow-[0_0_20px_rgba(20,184,166,0.15)]' : 'border-white/10 opacity-70'} overflow-hidden transition-all`}>
-                    <div className="min-h-[160px] bg-slate-900 relative group flex items-center justify-center overflow-hidden">
-                      {ad.type === 'image' ? (
-                        <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-auto max-h-40 object-contain p-2" />
-                      ) : ad.type === 'split' ? (
-                        <div className="flex w-full h-full">
-                          <div className="w-1/2 h-full flex items-center justify-center p-2">
-                            <img src={ad.imageUrl} alt="Ad Preview" className="w-full h-auto max-h-40 object-contain" />
-                          </div>
-                          <div className="w-1/2 h-full flex flex-col justify-center p-4 bg-slate-800">
-                            <h5 className="font-bold text-white text-xs truncate">{ad.headline}</h5>
-                            <p className="text-[10px] text-slate-400 truncate mt-1">{ad.subtext}</p>
-                            <span className="mt-2 inline-block bg-teal-500 text-white text-[8px] font-bold px-2 py-1 rounded w-fit">{ad.buttonText}</span>
-                          </div>
-                        </div>
-                      ) : ad.type === 'slider' ? (
-                        <div className="relative w-full h-full p-2 flex items-center justify-center">
-                          {ad.sliderImages && ad.sliderImages.length > 0 && (
-                            <img src={ad.sliderImages[0]} alt="Slider Preview" className="w-full h-auto max-h-40 object-contain opacity-50" />
-                          )}
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="bg-fuchsia-500 text-white font-bold text-xs px-3 py-1 rounded-full shadow-lg border border-fuchsia-400 flex items-center gap-2">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                              Slider ({ad.sliderImages?.length || 0} Images)
-                            </span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="p-4 text-xs font-mono text-slate-400 break-all w-full h-full overflow-hidden">
-                          {ad.htmlCode}
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
-                        <button 
-                          onClick={() => handleToggleActive(ad)}
-                          className={`${ad.active ? 'bg-amber-500 hover:bg-amber-400 text-amber-950' : 'bg-teal-500 hover:bg-teal-400 text-white'} px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors`}
-                        >
-                          {ad.active ? 'Pause Ad' : 'Resume Ad'}
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteAd(ad.id)}
-                          className="bg-red-500/80 hover:bg-red-400 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors border border-red-500/50"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="p-5">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${ad.type === 'image' ? 'bg-indigo-500/20 text-indigo-300' : ad.type === 'split' ? 'bg-teal-500/20 text-teal-300' : ad.type === 'slider' ? 'bg-fuchsia-500/20 text-fuchsia-300' : 'bg-amber-500/20 text-amber-300'}`}>
-                          {ad.type === 'image' ? 'Image Banner' : ad.type === 'split' ? 'Split Layout' : ad.type === 'slider' ? 'Animated Slider' : 'HTML / AdSense'}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-2 h-2 rounded-full ${ad.active ? 'bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.8)]' : 'bg-slate-500'}`}></div>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{ad.active ? 'Live' : 'Paused'}</span>
-                        </div>
-                      </div>
-                      
-                      <h4 className="font-bold text-white text-sm truncate" title={AD_SLOTS.find(s => s.id === ad.slotId)?.label || ad.slotId}>
-                        {AD_SLOTS.find(s => s.id === ad.slotId)?.label || ad.slotId}
-                      </h4>
-                      
-                      <div className="mt-3 flex items-center gap-2">
-                        {ad.targetType === 'global' ? (
-                          <span className="bg-slate-700/50 text-slate-300 px-2 py-1 rounded border border-white/10 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Global
-                          </span>
-                        ) : (
-                          <span className="bg-fuchsia-500/10 text-fuchsia-400 px-2 py-1 rounded border border-fuchsia-500/20 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            Target: {ad.targetId.substring(0, 10)}...
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
               </div>
             )}
           </div>
+        )}
 
-        </div>
+
+        {/* --- TAB 2: AD LIBRARY --- */}
+        {activeTab === 'library' && (
+          <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+            {loading ? (
+              <div className="flex justify-center py-20"><div className="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full"></div></div>
+            ) : ads.length === 0 ? (
+              <div className="bg-slate-800/40 rounded-3xl p-16 text-center border border-white/10 border-dashed max-w-2xl mx-auto mt-10">
+                <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-500">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <h4 className="text-xl font-black text-white mb-2">Library is Empty</h4>
+                <p className="text-slate-400 mb-8">You haven't injected any ads yet. Switch to the Create Campaign tab to get started.</p>
+                <button onClick={() => setActiveTab('create')} className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-colors text-sm uppercase tracking-wider">
+                  Create Campaign
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {paginatedAds.map(ad => (
+                    <div key={ad.id} className={`bg-slate-800/40 rounded-2xl border flex flex-col ${ad.active ? 'border-teal-500/30 shadow-[0_5px_15px_rgba(20,184,166,0.1)]' : 'border-white/5 opacity-75 grayscale-[30%]'} overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1`}>
+                      
+                      {/* Preview Region */}
+                      <div className="h-[140px] border-b border-white/5 bg-slate-900 group relative">
+                        {renderAdPreview(ad)}
+                        {/* Hover Overlay for Quick Actions */}
+                        <div className="absolute inset-0 bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 backdrop-blur-sm z-30">
+                          <button onClick={() => handleDuplicate(ad)} className="bg-indigo-500 hover:bg-indigo-400 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 w-32 justify-center shadow-lg">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            Duplicate
+                          </button>
+                          <button onClick={() => handleDeleteAd(ad.id)} className="bg-red-500/80 hover:bg-red-400 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 w-32 justify-center shadow-lg">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {/* Meta Region */}
+                      <div className="p-4 flex flex-col flex-grow">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest ${ad.type === 'image' ? 'bg-indigo-500/20 text-indigo-300' : ad.type === 'split' ? 'bg-teal-500/20 text-teal-300' : ad.type === 'slider' ? 'bg-fuchsia-500/20 text-fuchsia-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                            {ad.type}
+                          </span>
+                          
+                          <button 
+                            onClick={() => handleToggleActive(ad)}
+                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border transition-colors ${ad.active ? 'bg-teal-500/10 border-teal-500/30 text-teal-400 hover:bg-teal-500/20' : 'bg-slate-700/50 border-slate-600 text-slate-400 hover:bg-slate-700'}`}
+                            title={ad.active ? "Click to Pause" : "Click to Resume"}
+                          >
+                            <div className={`w-2 h-2 rounded-full ${ad.active ? 'bg-teal-400 animate-pulse' : 'bg-slate-500'}`}></div>
+                            <span className="text-[9px] font-bold uppercase tracking-widest">{ad.active ? 'Live' : 'Paused'}</span>
+                          </button>
+                        </div>
+                        
+                        <h4 className="font-bold text-white text-xs leading-tight mb-2 line-clamp-2" title={AD_SLOTS.find(s => s.id === ad.slotId)?.label || ad.slotId}>
+                          {AD_SLOTS.find(s => s.id === ad.slotId)?.label || ad.slotId}
+                        </h4>
+                        
+                        <div className="mt-auto pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                          <div className="flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z"></path></svg>
+                            {ad.targetType === 'global' ? 'Global' : 'Specific'}
+                          </div>
+                          <span>
+                            {ad.updatedAt?.toDate ? ad.updatedAt.toDate().toLocaleDateString() : 'Just now'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="mt-10 flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:pointer-events-none transition-colors border border-white/5"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <div className="flex gap-1">
+                      {Array.from({ length: totalPages }).map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setCurrentPage(i + 1)}
+                          className={`w-10 h-10 rounded-xl font-bold text-sm transition-colors border ${currentPage === i + 1 ? 'bg-teal-500/20 text-teal-400 border-teal-500/50' : 'bg-slate-800 text-slate-400 border-white/5 hover:bg-slate-700 hover:text-white'}`}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+                    </div>
+                    <button 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:pointer-events-none transition-colors border border-white/5"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </AdminCard>
   );
