@@ -191,6 +191,7 @@ export default function UnifiedProfileLayout({
   };
 
   const heroRightAd = getAdSlot('hero_right');
+  const heroTopAd = getAdSlot('hero_top');
 
   return (
     <div className="min-h-screen bg-[#050B14] font-sans pb-[160px] selection:bg-teal-500/30">
@@ -242,6 +243,17 @@ export default function UnifiedProfileLayout({
       {/* Main Content Container - Fluid Grid */}
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
         
+        {/* TOP HERO AD */}
+        {heroTopAd && (
+          <div className="w-full h-[150px] md:h-[250px] rounded-3xl overflow-hidden shadow-sm border-[4px] border-white/5 mb-8 relative">
+            {heroTopAd.type === 'slider' ? (
+              <AdSliderRenderer images={heroTopAd.sliderImages || []} linkUrl={heroTopAd.linkUrl} animationStyle={heroTopAd.animationStyle || 'fade'} />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-white/5" dangerouslySetInnerHTML={{ __html: heroTopAd.htmlCode }} />
+            )}
+          </div>
+        )}
+
         {/* HERO CARD - FULL WIDTH (Mockup Style) */}
         <div id="overview" className="bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] border-t-[#D32F2F] rounded-t-3xl shadow-sm">
           

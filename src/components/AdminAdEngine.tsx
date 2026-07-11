@@ -10,17 +10,51 @@ interface AdSlot {
   id: string;
   label: string;
   dimensions?: string;
+  group: string;
 }
 
 const AD_SLOTS: AdSlot[] = [
-  { id: 'ad_slot_doctor_hero_top', label: 'Doctor Profile - Top Hero (Global)', dimensions: 'Recommended: 1200x300px (Widescreen)' },
-  { id: 'ad_slot_doctor_hero_right', label: 'Doctor Profile - Right Sidebar (Premium)', dimensions: 'Recommended: 600x600px (Square)' },
-  { id: 'ad_slot_directory_sidebar', label: 'Directory Search - Left Sidebar', dimensions: 'Recommended: 600x800px (Vertical)' },
-  { id: 'ad_slot_home_carousel', label: 'Homepage - Main Carousel (Top)', dimensions: 'Recommended: 1200x400px (Widescreen)' },
-  { id: 'ad_slot_home_grid', label: 'Homepage - 3-Ticket Grid (Middle)', dimensions: 'Recommended: 800x800px (Square)' },
-  { id: 'ad_slot_home_distributed_1', label: 'Homepage - Distributed Slot 1 (Under Top Doctors)', dimensions: 'Recommended: 1200x300px (Widescreen)' },
-  { id: 'ad_slot_home_distributed_2', label: 'Homepage - Distributed Slot 2 (Under Nearby Hospitals)', dimensions: 'Recommended: 1200x300px (Widescreen)' },
-  { id: 'ad_slot_home_distributed_3', label: 'Homepage - Distributed Slot 3 (Above Footer)', dimensions: 'Recommended: 1200x300px (Widescreen)' }
+  // Homepage
+  { id: 'ad_slot_home_carousel', label: 'Main Carousel (Top)', dimensions: '1200x400px (Widescreen)', group: 'Homepage' },
+  { id: 'ad_slot_home_grid', label: '3-Ticket Grid (Middle)', dimensions: '800x800px (Square)', group: 'Homepage' },
+  { id: 'ad_slot_home_distributed_1', label: 'Distributed Slot 1 (Under Top Doctors)', dimensions: '1200x300px (Widescreen)', group: 'Homepage' },
+  { id: 'ad_slot_home_distributed_2', label: 'Distributed Slot 2 (Under Nearby Hospitals)', dimensions: '1200x300px (Widescreen)', group: 'Homepage' },
+  { id: 'ad_slot_home_distributed_3', label: 'Distributed Slot 3 (Above Footer)', dimensions: '1200x300px (Widescreen)', group: 'Homepage' },
+
+  // Global Search
+  { id: 'ad_slot_directory_top', label: 'Global Search - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Directory Search' },
+  { id: 'ad_slot_directory_sidebar', label: 'Global Search - Left Sidebar', dimensions: '600x800px (Vertical)', group: 'Directory Search' },
+  { id: 'ad_slot_directory_bottom', label: 'Global Search - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Directory Search' },
+
+  // Doctors
+  { id: 'ad_slot_doctors_list_top', label: 'Doctors Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Doctors Directory' },
+  { id: 'ad_slot_doctors_list_bottom', label: 'Doctors Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Doctors Directory' },
+  { id: 'ad_slot_doctor_hero_top', label: 'Doctor Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Doctor Profiles' },
+  { id: 'ad_slot_doctor_hero_right', label: 'Doctor Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Doctor Profiles' },
+
+  // Hospitals
+  { id: 'ad_slot_hospitals_list_top', label: 'Hospitals Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Hospitals Directory' },
+  { id: 'ad_slot_hospitals_list_bottom', label: 'Hospitals Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Hospitals Directory' },
+  { id: 'ad_slot_hospital_hero_top', label: 'Hospital Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Hospital Profiles' },
+  { id: 'ad_slot_hospital_hero_right', label: 'Hospital Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Hospital Profiles' },
+
+  // Pharmacies
+  { id: 'ad_slot_pharmacies_list_top', label: 'Pharmacies Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Pharmacies Directory' },
+  { id: 'ad_slot_pharmacies_list_bottom', label: 'Pharmacies Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Pharmacies Directory' },
+  { id: 'ad_slot_pharmacy_hero_top', label: 'Pharmacy Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Pharmacy Profiles' },
+  { id: 'ad_slot_pharmacy_hero_right', label: 'Pharmacy Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Pharmacy Profiles' },
+
+  // Ambulances
+  { id: 'ad_slot_ambulances_list_top', label: 'Ambulances Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Ambulances Directory' },
+  { id: 'ad_slot_ambulances_list_bottom', label: 'Ambulances Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Ambulances Directory' },
+  { id: 'ad_slot_ambulance_hero_top', label: 'Ambulance Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Ambulance Profiles' },
+  { id: 'ad_slot_ambulance_hero_right', label: 'Ambulance Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Ambulance Profiles' },
+
+  // Labs
+  { id: 'ad_slot_labs_list_top', label: 'Labs Directory - Top Banner', dimensions: '1200x200px (Widescreen)', group: 'Labs Directory' },
+  { id: 'ad_slot_labs_list_bottom', label: 'Labs Directory - Bottom Banner', dimensions: '1200x200px (Widescreen)', group: 'Labs Directory' },
+  { id: 'ad_slot_lab_hero_top', label: 'Lab Profile - Top Hero', dimensions: '1200x300px (Widescreen)', group: 'Lab Profiles' },
+  { id: 'ad_slot_lab_hero_right', label: 'Lab Profile - Right Sidebar', dimensions: '600x600px (Square)', group: 'Lab Profiles' }
 ];
 
 const ITEMS_PER_PAGE = 8;
@@ -318,7 +352,13 @@ export default function AdminAdEngine() {
                         onChange={(e) => setSlotId(e.target.value)}
                         className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                       >
-                        {AD_SLOTS.map(slot => <option key={slot.id} value={slot.id}>{slot.label}</option>)}
+                        {Array.from(new Set(AD_SLOTS.map(s => s.group))).map(group => (
+                          <optgroup key={group} label={group} className="text-slate-400 font-bold bg-slate-900">
+                            {AD_SLOTS.filter(s => s.group === group).map(slot => (
+                              <option key={slot.id} value={slot.id} className="text-white">{slot.label}</option>
+                            ))}
+                          </optgroup>
+                        ))}
                       </select>
                       {selectedSlot?.dimensions && <p className="text-teal-400 text-[10px] mt-1 sm:hidden">{selectedSlot.dimensions}</p>}
                     </div>
@@ -331,22 +371,25 @@ export default function AdminAdEngine() {
                         className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                       >
                         <option value="global">Global (Appears everywhere in this slot)</option>
-                        <option value="specific_profile">Specific Doctor/Hospital Profile</option>
+                        <option value="category">Specific Category/Specialty</option>
+                        <option value="specific_profile">Specific Doctor/Hospital/Pharmacy Profile</option>
                       </select>
                     </div>
 
-                    {targetType === 'specific_profile' && (
+                    {(targetType === 'specific_profile' || targetType === 'category') && (
                       <div className="animate-in fade-in slide-in-from-top-2 md:col-span-2">
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target Profile ID</label>
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
+                          {targetType === 'category' ? 'Target Category (e.g. Cardiologist, 24/7)' : 'Target Profile ID (e.g. dr-deepak-kumar)'}
+                        </label>
                         <input 
                           type="text" 
                           required
                           value={targetId}
                           onChange={(e) => setTargetId(e.target.value)}
-                          placeholder="e.g. dr-deepak-kumar..."
+                          placeholder={targetType === 'category' ? 'e.g. Cardiologist' : 'e.g. dr-deepak-kumar...'}
                           className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                         />
-                        <p className="text-[10px] text-slate-500 mt-1">This ad will OVERRIDE global ads for this specific profile.</p>
+                        <p className="text-[10px] text-slate-500 mt-1">This ad will OVERRIDE global ads for this specific target.</p>
                       </div>
                     )}
                   </div>

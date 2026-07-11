@@ -12,9 +12,10 @@ import Breadcrumb from '@/components/Breadcrumb';
 import DirectorySidebarFilter from '@/components/DirectorySidebarFilter';
 import CustomDropdown from '@/components/CustomDropdown';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 import PremiumHeroSearch from '@/components/PremiumHeroSearch';
+import AdSliderRenderer from '@/components/AdSliderRenderer';
 import { QRCodeSVG } from 'qrcode.react';
 import { QrCode, X } from 'lucide-react';
 
@@ -177,8 +178,28 @@ export default function DoctorsDirectory({
   const [searchType, setSearchType] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [selectedTiers, setSelectedTiers] = useState<string[]>([]);
+  const [platformAds, setPlatformAds] = useState<any>({});
 
   useEffect(() => {
+    const fetchAds = async () => {
+      try {
+        const adsQuery = query(collection(db, 'platform_ads'), where('active', '==', true));
+        const adsSnap = await getDocs(adsQuery);
+        const adsData: any = {};
+        adsSnap.forEach(d => {
+          const ad = d.data();
+          const slot = ad.slot || ad.slotId;
+          if (slot && (ad.targetType === 'global' || !ad.targetType || ad.targetType === 'category')) {
+             adsData[slot] = ad;
+          }
+        });
+        setPlatformAds(adsData);
+      } catch (e) {
+        console.error("Ads fetch failed", e);
+      }
+    };
+    fetchAds();
+  }, []);
     const fetchDoctors = async () => {
       try {
         // Removed orderBy to prevent any Missing Index errors
@@ -295,6 +316,15 @@ export default function DoctorsDirectory({
       />
 
       <main className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-12 relative z-10 -mt-12">
+        {platformAds['ad_slot_doctors_list_top'] && (
+          <div className="w-full h-[150px] md:h-[200px] mb-8 rounded-2xl overflow-hidden border border-slate-800 shadow-sm relative bg-[#0a1229]">
+            {platformAds['ad_slot_doctors_list_top'].type === 'slider' ? (
+              <AdSliderRenderer images={platformAds['ad_slot_doctors_list_top'].sliderImages || []} linkUrl={platformAds['ad_slot_doctors_list_top'].linkUrl} animationStyle={platformAds['ad_slot_doctors_list_top'].animationStyle || 'fade'} />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_doctors_list_top'].htmlCode }} />
+            )}
+          </div>
+        )}
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Left Sidebar Filters - 25% */}
@@ -440,6 +470,16 @@ export default function DoctorsDirectory({
 
           </div>
         </div>
+        
+        {platformAds['ad_slot_doctors_list_bottom'] && (
+          <div className="w-full h-[150px] md:h-[200px] mt-12 rounded-2xl overflow-hidden border border-slate-800 shadow-sm relative bg-[#0a1229]">
+            {platformAds['ad_slot_doctors_list_bottom'].type === 'slider' ? (
+              <AdSliderRenderer images={platformAds['ad_slot_doctors_list_bottom'].sliderImages || []} linkUrl={platformAds['ad_slot_doctors_list_bottom'].linkUrl} animationStyle={platformAds['ad_slot_doctors_list_bottom'].animationStyle || 'fade'} />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_doctors_list_bottom'].htmlCode }} />
+            )}
+          </div>
+        )}
       </main>
       {showProfileBlocker && (
         <ProfileBlockerModal onClose={() => setShowProfileBlocker(false)} />

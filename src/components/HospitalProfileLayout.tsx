@@ -71,6 +71,7 @@ export default function HospitalProfileLayout({
     return platformAds?.[`ad_slot_${type}_${suffix}`] || platformAds?.[`ad_slot_global_${suffix}`] || null;
   };
   const heroRightAd = getAdSlot('hero_right') || platformAds?.heroRight; // Fallback to old property if new ones don't exist yet
+  const heroTopAd = getAdSlot('hero_top');
 
   return (
     <div className="min-h-screen bg-[#FAFAFC] font-sans selection:bg-cyan-100 selection:text-cyan-900 pb-20">
@@ -91,6 +92,17 @@ export default function HospitalProfileLayout({
       {/* Main Content Container - Fluid Grid */}
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
         
+        {/* TOP HERO AD */}
+        {heroTopAd && (
+          <div className="w-full h-[150px] md:h-[250px] rounded-3xl overflow-hidden shadow-sm border border-slate-200 mb-8 bg-slate-100 relative">
+            {heroTopAd.type === 'slider' ? (
+              <AdSliderRenderer images={heroTopAd.sliderImages || []} linkUrl={heroTopAd.linkUrl} animationStyle={heroTopAd.animationStyle || 'fade'} />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center" dangerouslySetInnerHTML={{ __html: heroTopAd.htmlCode }} />
+            )}
+          </div>
+        )}
+
         {/* HERO CARD - FULL WIDTH (Mockup Style) */}
         <div id="overview" className="bg-gradient-to-r from-cyan-50/80 via-white to-teal-50/80 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] border-t-[#D32F2F] rounded-t-3xl shadow-sm">
           
