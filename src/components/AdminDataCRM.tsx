@@ -1160,10 +1160,10 @@ export default function AdminDataCRM() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {[
-                        { id: 'plugin_booking_physical', name: 'Physical Appointment Booking', icon: '🏥' },
+                        { id: 'plugin_booking_physical', name: 'Physical Appointments', icon: '🏥' },
                         { id: 'plugin_telemedicine_scheduled', name: 'Scheduled Telemedicine', icon: '🩺' },
                         { id: 'plugin_telemedicine_urgent', name: 'Urgent Video Call', icon: '🎥' },
-                        { id: 'plugin_rx_pad', name: 'VIP Digital Rx Pad', icon: '📝' }
+                        { id: 'plugin_vip_rx_pad', name: 'VIP Digital Rx Pad (+AI)', icon: '🧠' }
                       ].map(plugin => {
                         const activePlugins = selectedListing.activePlugins || [];
                         const isActive = activePlugins.includes(plugin.id);
