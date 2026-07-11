@@ -15,6 +15,7 @@ import WalletDashboard from '@/components/payments/WalletDashboard';
 import SupportDashboard from '@/components/SupportDashboard';
 import { VaultService } from '@/lib/vault.service';
 import BillingInvoice from '@/components/BillingInvoice';
+import DoctorPluginStore from '@/components/DoctorPluginStore';
 
 const faqData = [
   {
@@ -433,6 +434,12 @@ export default function DoctorOSDashboard() {
       label: "Help & Support",
       section: "SUPPORT & UTILITIES",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636a9 9 0 100 12.728M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    },
+    {
+      id: "plugin_store",
+      label: "App & Plugin Store",
+      section: "UPGRADES & ADD-ONS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
     }
   ];
 
@@ -1052,6 +1059,12 @@ export default function DoctorOSDashboard() {
         {activeTab === "faq" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
             <SupportDashboard userRole="doctor" userName={entityData?.name} faqData={faqData} />
+          </div>
+        )}
+
+        {activeTab === "plugin_store" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <DoctorPluginStore entityData={entityData} />
           </div>
         )}
           </div>

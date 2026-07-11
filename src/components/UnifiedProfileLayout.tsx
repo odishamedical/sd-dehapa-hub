@@ -194,6 +194,11 @@ export default function UnifiedProfileLayout({
   const heroTopAd = getAdSlot('hero_top');
   const heroBottomAd = getAdSlot('hero_bottom');
 
+  const hasPlugin = (pluginId: string) => {
+    if (!verified) return true; // Show for lead gen when unverified
+    return profile.activePlugins?.includes(pluginId) || false;
+  };
+
   return (
     <div className="min-h-screen bg-[#050B14] font-sans pb-[160px] selection:bg-teal-500/30">
       {/* MESH GRADIENT BACKGROUND */}
@@ -324,47 +329,53 @@ export default function UnifiedProfileLayout({
 
               {/* Right: Action Stack (Mockup Style) */}
               <div className="flex flex-col gap-3 w-full lg:w-[280px] shrink-0 justify-center">
-                <button 
-                  onClick={() => {
-                    if (!verified) {
-                      setShowUnverifiedModal(true);
-                    } else {
-                      router.push(`/portal/book?doctor=${profile.id}`);
-                    }
-                  }} 
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
-                >
-                  <span className="flex items-center gap-2"><MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/> Book Appointment</span>
-                  <span className="opacity-70 text-[10px]">▼</span>
-                </button>
+                {hasPlugin('plugin_booking_physical') && (
+                  <button 
+                    onClick={() => {
+                      if (!verified) {
+                        setShowUnverifiedModal(true);
+                      } else {
+                        router.push(`/portal/book?doctor=${profile.id}`);
+                      }
+                    }} 
+                    className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
+                  >
+                    <span className="flex items-center gap-2"><MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/> Book Appointment</span>
+                    <span className="opacity-70 text-[10px]">▼</span>
+                  </button>
+                )}
                 
-                <button 
-                  onClick={() => {
-                    if (verified) {
-                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }));
-                    } else {
-                      setShowUnverifiedModal(true);
-                    }
-                  }}
-                  className="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
-                >
-                  <span className="flex items-center gap-2"><Video className="w-5 h-5 group-hover:scale-110 transition-transform"/> Urgent Video Call</span>
-                  <span className="opacity-70 text-[10px]">▼</span>
-                </button>
+                {hasPlugin('plugin_telemedicine_urgent') && (
+                  <button 
+                    onClick={() => {
+                      if (verified) {
+                        window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }));
+                      } else {
+                        setShowUnverifiedModal(true);
+                      }
+                    }}
+                    className="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
+                  >
+                    <span className="flex items-center gap-2"><Video className="w-5 h-5 group-hover:scale-110 transition-transform"/> Urgent Video Call</span>
+                    <span className="opacity-70 text-[10px]">▼</span>
+                  </button>
+                )}
                 
-                <button 
-                  onClick={() => {
-                    if (!verified) {
-                      setShowUnverifiedModal(true);
-                    } else {
-                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
-                    }
-                  }} 
-                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
-                >
-                  <span className="flex items-center gap-2"><Stethoscope className="w-5 h-5 group-hover:scale-110 transition-transform"/> Schedule Telemedicine</span>
-                  <span className="opacity-70 text-[10px]">▼</span>
-                </button>
+                {hasPlugin('plugin_telemedicine_scheduled') && (
+                  <button 
+                    onClick={() => {
+                      if (!verified) {
+                        setShowUnverifiedModal(true);
+                      } else {
+                        window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
+                      }
+                    }} 
+                    className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
+                  >
+                    <span className="flex items-center gap-2"><Stethoscope className="w-5 h-5 group-hover:scale-110 transition-transform"/> Schedule Telemedicine</span>
+                    <span className="opacity-70 text-[10px]">▼</span>
+                  </button>
+                )}
                 
                 <button 
                   onClick={handleShare} 

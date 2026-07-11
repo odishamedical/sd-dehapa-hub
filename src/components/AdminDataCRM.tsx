@@ -790,6 +790,12 @@ export default function AdminDataCRM() {
               >
                 Locations & Clinics
               </button>
+              <button 
+                onClick={() => setActiveTab('plugins')}
+                className={`pb-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === 'plugins' ? 'border-amber-500 text-amber-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
+              >
+                Plugins & Add-ons
+              </button>
               {selectedListing.category && directoryConfig[selectedListing.category]?.tabs?.filter(t => t.id !== 'basic').map(tab => (
                 <button 
                   key={tab.id}
@@ -1146,7 +1152,54 @@ export default function AdminDataCRM() {
                 </div>
               )}
 
-              {activeTab !== 'basic' && activeTab !== 'locations' && (
+              {activeTab === 'plugins' && (
+                <div className="space-y-8">
+                  <div className="bg-slate-800/40 p-6 rounded-2xl border border-slate-700 shadow-sm">
+                    <h4 className="font-bold text-white mb-2 text-sm uppercase tracking-widest">Active Plugins & Capabilities</h4>
+                    <p className="text-xs text-slate-400 mb-6">Manage the OS features this provider has access to. Adding a plugin instantly unlocks features in their portal and public profile.</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {[
+                        { id: 'plugin_booking_physical', name: 'Physical Appointment Booking', icon: '🏥' },
+                        { id: 'plugin_telemedicine_scheduled', name: 'Scheduled Telemedicine', icon: '🩺' },
+                        { id: 'plugin_telemedicine_urgent', name: 'Urgent Video Call', icon: '🎥' },
+                        { id: 'plugin_rx_pad', name: 'VIP Digital Rx Pad', icon: '📝' }
+                      ].map(plugin => {
+                        const activePlugins = selectedListing.activePlugins || [];
+                        const isActive = activePlugins.includes(plugin.id);
+                        
+                        return (
+                          <div key={plugin.id} className={`p-4 rounded-xl border flex items-center justify-between transition-all ${isActive ? 'bg-amber-900/20 border-amber-500/50' : 'bg-slate-800/80 border-slate-700'}`}>
+                            <div className="flex items-center gap-3">
+                              <span className="text-xl">{plugin.icon}</span>
+                              <span className={`font-bold text-sm ${isActive ? 'text-amber-400' : 'text-slate-300'}`}>{plugin.name}</span>
+                            </div>
+                            <label className="relative inline-block w-12 h-6 rounded-full transition-colors cursor-pointer" style={{ backgroundColor: isActive ? '#f59e0b' : '#334155' }}>
+                              <input 
+                                type="checkbox" 
+                                className="absolute opacity-0 w-0 h-0" 
+                                checked={isActive} 
+                                onChange={(e) => {
+                                  let newPlugins = [...activePlugins];
+                                  if (e.target.checked) {
+                                    newPlugins.push(plugin.id);
+                                  } else {
+                                    newPlugins = newPlugins.filter(id => id !== plugin.id);
+                                  }
+                                  setSelectedListing({ ...selectedListing, activePlugins: newPlugins });
+                                }} 
+                              />
+                              <span className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${isActive ? 'transform translate-x-6' : ''}`}></span>
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab !== 'basic' && activeTab !== 'locations' && activeTab !== 'plugins' && (
                 <div className="space-y-8">
                   {selectedListing.category && directoryConfig[selectedListing.category]?.tabs?.find(t => t.id === activeTab)?.fields?.map(field => (
                     <div key={field.key} className="bg-slate-800/40 p-6 rounded-2xl border border-slate-700 shadow-sm">
