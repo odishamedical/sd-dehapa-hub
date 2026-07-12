@@ -16,6 +16,9 @@ import HospitalLiveBedManager from '@/components/HospitalLiveBedManager';
 import HospitalDoctorRoster from '@/components/HospitalDoctorRoster';
 import HospitalOTScheduler from '@/components/HospitalOTScheduler';
 import HospitalAmbulanceDispatch from '@/components/HospitalAmbulanceDispatch';
+import HospitalBilling from '@/components/HospitalBilling';
+import HospitalStaffControl from '@/components/HospitalStaffControl';
+import HospitalInsurancePortal from '@/components/HospitalInsurancePortal';
 
 export default function HospitalDashboard() {
 
@@ -141,6 +144,56 @@ export default function HospitalDashboard() {
       );
     }
 
+    if (tabId === "billing") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_hospital_ipd_pro") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-100">
+                  <span className="text-3xl">💳</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">IPD Pro Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Clinic & IPD Pro to unlock Centralized Billing and unify your invoices.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <HospitalBilling />
+        </div>
+      );
+    }
+
+    if (tabId === "staff_management") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_hospital_ipd_pro") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100">
+                  <span className="text-3xl">👥</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">IPD Pro Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Clinic & IPD Pro to unlock Staff Access Control and delegate tasks.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <HospitalStaffControl />
+        </div>
+      );
+    }
+
     if (tabId === "ambulance_dispatch") {
       return (
         <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
@@ -162,6 +215,31 @@ export default function HospitalDashboard() {
             </div>
           )}
           <HospitalAmbulanceDispatch />
+        </div>
+      );
+    }
+
+    if (tabId === "insurance_portal") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_hospital_enterprise_os") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-100">
+                  <span className="text-3xl">🛡️</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Enterprise OS Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Enterprise Health OS to unlock the Insurance & TPA Portal.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <HospitalInsurancePortal />
         </div>
       );
     }

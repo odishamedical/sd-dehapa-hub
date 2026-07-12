@@ -13,15 +13,19 @@ export function AIDiagnosisPlugin({ patient }: { patient: any }) {
     
     setIsAILoading(true);
     try {
-      const res = await fetch('/api/cdss', {
+      const res = await fetch('/api/ai/diagnose', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ patientDetails: patient, chiefComplaints: complaintsStr })
+        body: JSON.stringify({ 
+          patientNotes: complaintsStr,
+          vitals: state.vitals,
+          currentMeds: ''
+        })
       });
       const data = await res.json();
       if (res.ok) {
-        if (data.suggestedDiagnosis) updateState({ diagnosis: [data.suggestedDiagnosis] });
-        // The core plugin handles diagnosis, we could add a new field for 'suggestedLabs' to context later
+        // We set the raw Gemini analysis directly into the diagnosis array to display it in the Rx pad
+        updateState({ diagnosis: [data.analysis] });
       } else {
         alert(data.error || "AI failed to generate suggestions.");
       }
