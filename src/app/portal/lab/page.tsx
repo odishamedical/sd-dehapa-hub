@@ -9,6 +9,9 @@ import InviteWidget from '@/components/InviteWidget';
 import PharmacyFulfillmentWidget from '@/components/PharmacyFulfillmentWidget';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import SecureMedicalVault from '@/components/SecureMedicalVault';
+import LabPluginStore from '@/components/LabPluginStore';
+import LabB2BSocket from '@/components/LabB2BSocket';
+import LabReportUploader from '@/components/LabReportUploader';
 import { ExtensionPoint } from '@/plugins/core/ExtensionPoint';
 
 export default function LabDashboard() {
@@ -36,6 +39,18 @@ export default function LabDashboard() {
       label: "Home Collection Router",
       section: "OPERATIONS",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+    },
+    {
+      id: "b2b_socket",
+      label: "Hospital B2B Socket",
+      section: "ENTERPRISE",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+    },
+    {
+      id: "plugin_store",
+      label: "Lab OS Plans",
+      section: "ENTERPRISE",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
     }
   ];
 
@@ -65,22 +80,108 @@ export default function LabDashboard() {
 
     if (tabId === "inbox") {
       return (
-        <PharmacyFulfillmentWidget providerId={entityData.id || ''} />
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_lab_smart_pro") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-sky-100">
+                  <span className="text-3xl">📥</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Smart Pro Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Smart Lab Pro to unlock the digital Rx inbox.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <PharmacyFulfillmentWidget providerId={entityData.id || ''} />
+        </div>
       );
     }
     
     if (tabId === "report_uploader") {
       return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8">
-          <ExtensionPoint name="lab_report_uploader" />
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_lab_smart_pro") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-sky-100">
+                  <span className="text-3xl">📄</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Smart Pro Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Smart Lab Pro to unlock the 1-Click Report Uploader.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <LabReportUploader />
         </div>
       );
     }
 
     if (tabId === "home_collection") {
       return (
-        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8">
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_lab_smart_pro") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-sky-100">
+                  <span className="text-3xl">🏠</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Smart Pro Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Smart Lab Pro to unlock the Home Collection Dispatcher.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
           <ExtensionPoint name="lab_home_collection" />
+        </div>
+      );
+    }
+
+    if (tabId === "b2b_socket") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_lab_enterprise_os") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-100">
+                  <span className="text-3xl">🔌</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Enterprise Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Enterprise B2B Socket to connect directly with Hospital systems.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <LabB2BSocket />
+        </div>
+      );
+    }
+    
+    if (tabId === "plugin_store") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-5xl mx-auto py-8">
+          <LabPluginStore entityData={entityData} />
         </div>
       );
     }
