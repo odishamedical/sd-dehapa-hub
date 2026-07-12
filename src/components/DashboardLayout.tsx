@@ -2,6 +2,8 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import ContextHelpDrawer from './ContextHelpDrawer';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export type DashboardTab = {
   id: string;
@@ -74,6 +76,40 @@ export default function DashboardLayout({
     window.addEventListener('sd_open_qr_modal', handleOpenQR);
     return () => window.removeEventListener('sd_open_qr_modal', handleOpenQR);
   }, []);
+
+  useEffect(() => {
+    const handleAutoConnect = async (e: any) => {
+      const patientUid = e.detail;
+      // Prevent patients from auto-adding other patients this way, though UI blocks it
+      if (!userProfile?.uid || roleName === "User Portal" || roleName === "Patient") return;
+      
+      try {
+        await addDoc(collection(db, 'connections'), {
+            initiatorId: userProfile.uid,
+            initiatorRole: userRole || (roleName ? roleName.split(' ')[0].toLowerCase() : 'provider'),
+            receiverId: patientUid,
+            receiverRole: 'patient',
+            status: 'approved',
+            vaultAccessType: '24h',
+            vaultAccessExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        });
+        alert("Patient successfully identified and added to your network!");
+        // Optional: Trigger a refresh or navigate to patients tab
+        if (onTabChange) {
+           // We can guess the tab name based on standard portal tab IDs
+           onTabChange('patients');
+        }
+      } catch (err) {
+        console.error("Auto-connect error:", err);
+        alert("Failed to connect with patient.");
+      }
+    };
+    
+    window.addEventListener('sd_scanned_patient_uid', handleAutoConnect);
+    return () => window.removeEventListener('sd_scanned_patient_uid', handleAutoConnect);
+  }, [userProfile, userRole, roleName, onTabChange]);
 
   // Group tabs by section (maintain order)
   const sectionedTabsList: { section: string, tabs: DashboardTab[] }[] = [];

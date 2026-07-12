@@ -31,13 +31,44 @@ export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps)
             /* verbose= */ false
           );
 
+          let isNavigating = false;
           scanner.render(
             (decodedText) => {
-              if (decodedText.includes("dehapa.com")) {
-                alert("QR SCAN SUCCESS! Navigating to: \n" + decodedText);
+              if (isNavigating) return;
+
+              if (decodedText.startsWith("dehapa-auth://scan?uid=")) {
+                // It's a Patient's Sovereign ID QR Code
+                isNavigating = true;
+                const patientUid = decodedText.split("uid=")[1];
+                
+                if (scanner) {
+                  try { scanner.clear(); } catch(e) {}
+                }
+                
+                onClose();
+                // Dispatch custom event to be handled by the Dashboard
+                window.dispatchEvent(new CustomEvent('sd_scanned_patient_uid', { detail: patientUid }));
+                
+              } else if (
+                decodedText.includes("dehapa.com") || 
+                decodedText.includes("localhost") || 
+                decodedText.startsWith(window.location.origin)
+              ) {
+                // It's a Provider's Public Profile URL
+                isNavigating = true;
+                if (scanner) {
+                  try { scanner.clear(); } catch(e) {}
+                }
                 window.location.href = decodedText;
+                
               } else {
+                // Not a recognized platform code, but prevent spamming alerts
+                isNavigating = true;
+                if (scanner) {
+                  try { scanner.clear(); } catch(e) {}
+                }
                 alert("Scanned non-Dehapa code: " + decodedText);
+                onClose();
               }
             },
             (errorMessage) => {
