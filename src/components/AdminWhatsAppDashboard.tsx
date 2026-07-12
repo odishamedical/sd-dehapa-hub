@@ -350,6 +350,9 @@ export default function AdminWhatsAppDashboard() {
           })
         });
         success++;
+
+        // Delay of 2 seconds between messages to prevent rate-limiting and ensure they go one-by-one smoothly
+        await new Promise(r => setTimeout(r, 2000));
       } catch (e) {
         console.error("Failed to send to", phoneId);
       }
