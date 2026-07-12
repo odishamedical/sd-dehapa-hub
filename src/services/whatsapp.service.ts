@@ -83,7 +83,7 @@ export class WhatsAppService {
     return this.sendRequest(payload);
   }
 
-  static async sendTemplateMessage(to: string, templateName: string, languageCode: string = 'en_US', parameters?: string[]) {
+  static async sendTemplateMessage(to: string, templateName: string, languageCode: string = 'en_US', bodyParameters?: string[], buttonUrlParameter?: string) {
     const payload: any = {
       messaging_product: "whatsapp",
       recipient_type: "individual",
@@ -93,20 +93,37 @@ export class WhatsAppService {
         name: templateName,
         language: {
           code: languageCode
-        }
+        },
+        components: []
       }
     };
 
-    if (parameters && parameters.length > 0) {
-      payload.template.components = [
-        {
-          type: "body",
-          parameters: parameters.map(p => ({
+    if (bodyParameters && bodyParameters.length > 0) {
+      payload.template.components.push({
+        type: "body",
+        parameters: bodyParameters.map(p => ({
+          type: "text",
+          text: p
+        }))
+      });
+    }
+
+    if (buttonUrlParameter) {
+      payload.template.components.push({
+        type: "button",
+        sub_type: "url",
+        index: "0",
+        parameters: [
+          {
             type: "text",
-            text: p
-          }))
-        }
-      ];
+            text: buttonUrlParameter
+          }
+        ]
+      });
+    }
+
+    if (payload.template.components.length === 0) {
+      delete payload.template.components;
     }
 
     return this.sendRequest(payload);
