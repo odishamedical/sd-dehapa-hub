@@ -24,6 +24,7 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
   const [activeTab, setActiveTab] = useState("basic");
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [sentInvite, setSentInvite] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   
   // Advanced features state
   const [dynamicFields, setDynamicFields] = useState<{label: string, value: string}[]>([]);
@@ -57,6 +58,45 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
       setSlugAvailability({status: 'idle', message: ''});
     }
   }, [isOpen, initialItem]);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      setSentInvite('idle');
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
+
+  const handleSendWhatsAppInvite = async () => {
+    if (!selectedListing?.phone) {
+      alert("This listing has no phone number.");
+      return;
+    }
+    
+    if (!confirm(`Send WhatsApp Invite to ${selectedListing.name} at ${selectedListing.phone}?`)) return;
+    
+    setSentInvite('sending');
+    
+    try {
+      const res = await fetch('/api/leads/outreach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: selectedListing.phone, businessName: selectedListing.name })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send");
+      
+      setSentInvite('success');
+    } catch (err: any) {
+      alert("Error: " + err.message);
+      setSentInvite('error');
+    }
+  };
 
   const uniqueCategories = ['Doctor', 'Hospital', 'Pharmacy', 'Lab', 'Ambulance', 'Clinic'];
 
@@ -403,6 +443,18 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
                   <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                   Copy Magic Invite Link
                 </button>
+                {selectedListing.phone && (
+                  <button 
+                    onClick={handleSendWhatsAppInvite}
+                    disabled={sentInvite === 'sending'}
+                    className="w-full mt-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 px-4 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                    {sentInvite === 'success' ? 'WhatsApp Invite Sent!' : 
+                     sentInvite === 'sending' ? 'Sending Invite...' : 
+                     'Send WhatsApp Invite'}
+                  </button>
+                )}
                 <p className="text-[10px] text-slate-500 mt-2 text-center">Ghost Onboarding: Send link via WhatsApp to auto-assign profile.</p>
               </div>
               <div className="relative">
