@@ -22,10 +22,38 @@ export default function AdminDataCRMV2() {
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [sentLeads, setSentLeads] = useState<Record<string, 'sending' | 'success' | 'error'>>({});
 
   const handleRowClick = (item: any) => {
     setSelectedItem(item);
     setIsDrawerOpen(true);
+  };
+
+  const handleSendWhatsAppInvite = async (e: React.MouseEvent, item: any) => {
+    e.stopPropagation();
+    if (!item.phone) {
+      alert("This listing has no phone number.");
+      return;
+    }
+    
+    if (!confirm(`Send WhatsApp Invite to ${item.name} at ${item.phone}?`)) return;
+    
+    setSentLeads(prev => ({ ...prev, [item.id]: 'sending' }));
+    
+    try {
+      const res = await fetch('/api/leads/outreach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: item.phone, businessName: item.name })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send");
+      
+      setSentLeads(prev => ({ ...prev, [item.id]: 'success' }));
+    } catch (err: any) {
+      alert("Error: " + err.message);
+      setSentLeads(prev => ({ ...prev, [item.id]: 'error' }));
+    }
   };
 
   const columns = [
@@ -89,6 +117,20 @@ export default function AdminDataCRMV2() {
       className: "text-right",
       cell: (item: any) => (
         <div className="flex items-center justify-end gap-3">
+          {item.phone && (
+            <button 
+              onClick={(e) => handleSendWhatsAppInvite(e, item)} 
+              disabled={sentLeads[item.id] === 'sending'}
+              className="text-emerald-400 hover:text-emerald-300 font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/30 px-2 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+              <span className="hidden xl:inline">
+                {sentLeads[item.id] === 'success' ? 'Invite Sent' : 
+                 sentLeads[item.id] === 'sending' ? 'Sending...' : 
+                 'Send Invite'}
+              </span>
+            </button>
+          )}
           <Link href={generateUniversalSeoUrl(item, item.category?.toLowerCase() + 's' as any) || `/doctors/${item.customSlug || item.id}`} target="_blank" className="text-slate-400 hover:text-white font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 bg-slate-800 border border-slate-700 px-2 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             <span className="hidden xl:inline">Cat URL</span>
