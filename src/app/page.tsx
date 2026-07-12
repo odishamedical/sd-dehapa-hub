@@ -105,7 +105,7 @@ export default function DehapaHome() {
     setTimeout(() => {
       setIsPinging(false);
       setAmbulanceETA("3 mins away");
-      router.push('/ambulance'); 
+      router.push('/ambulances'); 
     }, 1500);
   };
 

@@ -4,8 +4,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { BotService } from '@/services/bot.service';
 import { WhatsAppService } from '@/services/whatsapp.service';
 
-// This is the token you will enter in the Meta Developer Dashboard
-const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'DEHAPA_WHATSAPP_SECRET_2026';
+const VERIFY_TOKEN = 'DEHAPA_WHATSAPP_SECRET_2026';
 
 // GET request is used by Meta for Webhook Verification
 export async function GET(req: NextRequest) {
