@@ -100,6 +100,8 @@ export default function UnifiedProfileLayout({
       if (connectionStatus !== 'approved' && connectionStatus !== 'pending' && user?.uid !== profile.id) {
         setShowInviteModal(true);
       }
+    } else if (searchParams?.get('action') === 'claim') {
+      setShowClaimModal(true);
     }
   }, [searchParams, connectionStatus, user, profile.id]);
 
