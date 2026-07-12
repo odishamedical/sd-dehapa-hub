@@ -13,66 +13,11 @@ import SecureMedicalVault from '@/components/SecureMedicalVault';
 import { ExtensionPoint } from '@/plugins/core/ExtensionPoint';
 import HospitalPluginStore from '@/components/HospitalPluginStore';
 import HospitalLiveBedManager from '@/components/HospitalLiveBedManager';
+import HospitalDoctorRoster from '@/components/HospitalDoctorRoster';
+import HospitalOTScheduler from '@/components/HospitalOTScheduler';
+import HospitalAmbulanceDispatch from '@/components/HospitalAmbulanceDispatch';
 
 export default function HospitalDashboard() {
-  const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-
-  // Search doctors in Firestore directory
-  useEffect(() => {
-    const searchDoctors = async () => {
-      if (doctorSearchQuery.length < 3) {
-        setSearchResults([]);
-        return;
-      }
-      setIsSearching(true);
-      try {
-        const q = query(
-          collection(db, "directory"),
-          where("role", "==", "doctor")
-        );
-        const querySnapshot = await getDocs(q);
-        const results: any[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          const name = data.name || "";
-          
-          if (name.toLowerCase().includes(doctorSearchQuery.toLowerCase())) {
-            results.push({ id: doc.id, name });
-          }
-        });
-        setSearchResults(results);
-      } catch (err) {
-        console.error("Error searching doctors:", err);
-      } finally {
-        setIsSearching(false);
-      }
-    };
-
-    const timeoutId = setTimeout(searchDoctors, 500); // debounce
-    return () => clearTimeout(timeoutId);
-  }, [doctorSearchQuery]);
-
-  const handleInviteDoctor = async (docObj: any, hospitalData: any) => {
-    if (!hospitalData?.id) return;
-    
-    // Write to hospital_affiliations collection
-    try {
-      await addDoc(collection(db, "hospital_affiliations"), {
-        hospitalId: hospitalData.id,
-        hospitalName: hospitalData.name || "Hospital",
-        doctorId: docObj.id,
-        doctorName: docObj.name,
-        status: "pending",
-        createdAt: new Date().toISOString()
-      });
-      setDoctorSearchQuery("");
-      alert("Invitation sent to doctor!");
-    } catch (err) {
-      console.error("Failed to send invite:", err);
-    }
-  };
 
 
   const customTabs: DashboardTab[] = [
@@ -140,45 +85,8 @@ export default function HospitalDashboard() {
     
     if (tabId === "roster") {
       return (
-        <div className="bg-white/30 backdrop-blur-[40px] rounded-[32px] p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1),inset_0_1px_3px_rgba(255,255,255,0.7)] border border-white/60 animate-in fade-in slide-in-from-bottom-4">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h3 className="text-xl font-bold text-slate-900">Manage Doctors Roster</h3>
-              <p className="text-sm text-slate-600 mt-1">Invite doctors to affiliate with your hospital.</p>
-            </div>
-          </div>
-          
-          <div className="bg-white/60 p-6 rounded-2xl border border-white shadow-sm mb-8">
-            <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-widest">Invite Doctor</h4>
-            <div className="relative">
-              <input 
-                type="text" 
-                value={doctorSearchQuery}
-                onChange={(e) => setDoctorSearchQuery(e.target.value)}
-                placeholder="Search registered doctors by name..."
-                className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl px-5 py-3.5 shadow-sm text-slate-900 focus:border-cyan-500 outline-none transition-all"
-              />
-              {isSearching && <div className="absolute right-4 top-4 text-slate-400">Searching...</div>}
-              
-              {searchResults.length > 0 && (
-                <div className="absolute z-50 w-full mt-2 bg-white rounded-xl shadow-xl border border-slate-200 max-h-60 overflow-y-auto">
-                  {searchResults.map(docObj => (
-                    <div key={docObj.id} className="flex justify-between items-center p-4 hover:bg-slate-50 border-b border-slate-100 last:border-0">
-                      <div>
-                        <p className="font-bold text-slate-900">{docObj.name}</p>
-                      </div>
-                      <button 
-                        onClick={() => handleInviteDoctor(docObj, entityData)}
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors"
-                      >
-                        Send Invite
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8">
+          <HospitalDoctorRoster entityData={entityData} />
         </div>
       );
     }
@@ -204,6 +112,56 @@ export default function HospitalDashboard() {
             </div>
           )}
           <HospitalLiveBedManager />
+        </div>
+      );
+    }
+    
+    if (tabId === "ot_scheduler") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_hospital_ipd_pro") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-100">
+                  <span className="text-3xl">🩺</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">IPD Pro Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Clinic & IPD Pro to unlock the Operation Theater Scheduler and manage surgery bookings.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(14,165,233,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <HospitalOTScheduler />
+        </div>
+      );
+    }
+
+    if (tabId === "ambulance_dispatch") {
+      return (
+        <div className="animate-in fade-in slide-in-from-bottom-4 max-w-6xl mx-auto py-8 relative">
+          {!(entityData?.activePlugins || []).includes("plugin_hospital_enterprise_os") && (
+            <div className="absolute inset-0 z-50 bg-slate-100/60 backdrop-blur-md rounded-[32px] flex items-center justify-center p-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
+                <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-100">
+                  <span className="text-3xl">🚑</span>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Enterprise OS Required</h3>
+                <p className="text-slate-600 text-sm mb-6">Upgrade to Enterprise Health OS to unlock Live Ambulance Dispatch and respond to SOS emergencies.</p>
+                <button onClick={() => {
+                  const evt = new CustomEvent('navigate-tab', { detail: 'plugin_store' });
+                  window.dispatchEvent(evt);
+                }} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          <HospitalAmbulanceDispatch />
         </div>
       );
     }
