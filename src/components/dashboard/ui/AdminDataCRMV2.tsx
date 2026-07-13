@@ -165,22 +165,24 @@ export default function AdminDataCRMV2() {
     },
     { 
       header: "Entity", 
+      className: "w-[250px] max-w-[250px]",
       cell: (item: any) => (
-        <div>
+        <div className="w-[250px]">
           <div className="font-bold text-sm text-slate-200 drop-shadow-sm flex items-center gap-2">
-            {item.name}
-            {item.isPublished === false && <span className="bg-slate-800 text-slate-400 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border border-slate-700">Hidden</span>}
+            <span className="truncate">{item.name}</span>
+            {item.isPublished === false && <span className="shrink-0 bg-slate-800 text-slate-400 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider border border-slate-700">Hidden</span>}
           </div>
-          <div className="text-xs font-semibold text-cyan-400 mt-0.5 uppercase tracking-wider">{item.category}</div>
+          <div className="text-xs font-semibold text-cyan-400 mt-0.5 uppercase tracking-wider truncate">{item.category}</div>
         </div>
       )
     },
     { 
       header: "Contact", 
+      className: "w-[200px] max-w-[200px]",
       cell: (item: any) => (
-        <div>
-          <div className="text-sm font-medium text-slate-300 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> {item.phone || "N/A"}</div>
-          <div className="text-[10px] text-slate-500 mt-1 max-w-[200px] truncate" title={item.city}>{item.city}, {item.district}</div>
+        <div className="w-[200px]">
+          <div className="text-sm font-medium text-slate-300 flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> <span className="truncate">{item.phone || "N/A"}</span></div>
+          <div className="text-[10px] text-slate-500 mt-1 w-full truncate" title={item.city}>{item.city}, {item.district}</div>
         </div>
       )
     },
