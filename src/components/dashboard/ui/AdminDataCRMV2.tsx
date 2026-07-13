@@ -341,7 +341,7 @@ export default function AdminDataCRMV2() {
       </div>
 
       {/* Main Data Table Wrapper */}
-      <div className="flex-1 overflow-hidden p-6 md:p-8">
+      <div className="flex-1 min-w-0 overflow-hidden p-6 md:p-8">
         <StandardDataTable 
           data={filteredData}
           columns={columns}
