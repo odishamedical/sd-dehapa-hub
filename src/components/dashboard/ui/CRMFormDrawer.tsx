@@ -100,7 +100,8 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
           to: cleanPhone, 
           messageType: 'template',
           templateName: 'claim_your_dehapa_profile',
-          parameters: [selectedListing.name, cleanPhone]
+          parameters: [selectedListing.name],
+          buttonUrlParameter: cleanPhone
         })
       });
       const data = await res.json();

@@ -84,7 +84,8 @@ export default function AdminDataCRMV2() {
           to: cleanPhone, 
           messageType: 'template',
           templateName: 'claim_your_dehapa_profile',
-          parameters: [item.name, cleanPhone]
+          parameters: [item.name],
+          buttonUrlParameter: cleanPhone
         })
       });
       const data = await res.json();

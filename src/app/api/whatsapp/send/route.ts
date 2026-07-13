@@ -4,7 +4,7 @@ import { BotService } from '@/services/bot.service';
 
 export async function POST(req: NextRequest) {
   try {
-    const { to, text, messageType, templateName, parameters } = await req.json();
+    const { to, text, messageType, templateName, parameters, buttonUrlParameter } = await req.json();
 
     if (!to || (!text && !templateName)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     let response;
     if (messageType === 'template' && templateName) {
-      response = await WhatsAppService.sendTemplateMessage(to, templateName, 'en', parameters);
+      response = await WhatsAppService.sendTemplateMessage(to, templateName, 'en', parameters, buttonUrlParameter);
       await BotService.logMessage(to, 'admin', `[TEMPLATE: ${templateName}]`);
     } else {
       response = await WhatsAppService.sendTextMessage(to, text);
