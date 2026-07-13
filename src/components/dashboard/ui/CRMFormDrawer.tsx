@@ -113,8 +113,9 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
   }, [isOpen, initialItem, isNew]);
 
   useEffect(() => {
-    if (isOpen && selectedListing?.phone) {
-      const firstPhone = String(selectedListing.phone).split(/[,/|&-]/)[0];
+    const targetPhone = selectedListing?.whatsappNumber || selectedListing?.phone;
+    if (isOpen && targetPhone) {
+      const firstPhone = String(targetPhone).split(/[,/|&-]/)[0];
       let cleanPhone = firstPhone.replace(/\D/g, '');
       if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
       const finalPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
@@ -137,17 +138,18 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
         if (unsub) unsub();
       };
     }
-  }, [isOpen, selectedListing?.phone]);
+  }, [isOpen, selectedListing?.phone, selectedListing?.whatsappNumber]);
 
   const handleSendWhatsAppInvite = async () => {
-    if (!selectedListing?.phone) {
-      alert("This listing has no phone number.");
+    const targetPhone = selectedListing?.whatsappNumber || selectedListing?.phone;
+    if (!targetPhone) {
+      alert("This listing has no phone number or WhatsApp number.");
       return;
     }
     
-    if (!confirm(`Send WhatsApp Invite to ${selectedListing.name} at ${selectedListing.phone}?`)) return;
+    if (!confirm(`Send WhatsApp Invite to ${selectedListing.name} at ${targetPhone}?`)) return;
 
-    const firstPhone = String(selectedListing.phone).split(/[,/|&-]/)[0];
+    const firstPhone = String(targetPhone).split(/[,/|&-]/)[0];
     let cleanPhone = firstPhone.replace(/\D/g, '');
     if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
     if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
@@ -603,9 +605,15 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
                 </div>
               </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1.5">Phone</label>
-                <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-teal-500" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1.5">Phone</label>
+                  <input type="text" value={selectedListing.phone || ""} onChange={e => setSelectedListing({...selectedListing, phone: e.target.value})} className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-teal-500" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1.5">WhatsApp Number</label>
+                  <input type="text" value={selectedListing.whatsappNumber || ""} onChange={e => setSelectedListing({...selectedListing, whatsappNumber: e.target.value})} placeholder="Same as Phone if empty" className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-teal-500" />
+                </div>
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1.5">Category</label>
