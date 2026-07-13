@@ -548,11 +548,11 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
                   return (
                     <button 
                       onClick={handleSendWhatsAppInvite} 
-                      disabled={sentInvite === 'sending' || isSent}
+                      disabled={sentInvite === 'sending'}
                       className={`w-full font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 py-3.5 rounded-xl shadow-lg transition-all border ${
                         isRead ? 'text-blue-400 bg-blue-500/10 border-blue-500/30' : 
                         isDelivered ? 'text-slate-300 bg-slate-700/50 border-slate-600' :
-                        isSent ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' :
+                        isSent ? 'text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30' :
                         'text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-600 border-emerald-500/30 hover:border-emerald-500'
                       }`}
                     >
