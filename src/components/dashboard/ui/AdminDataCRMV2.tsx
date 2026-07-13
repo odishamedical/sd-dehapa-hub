@@ -23,8 +23,10 @@ export default function AdminDataCRMV2() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [sentLeads, setSentLeads] = useState<Record<string, 'sending' | 'success' | 'error'>>({});
+  const [leadStatuses, setLeadStatuses] = useState<Record<string, any>>({});
 
   React.useEffect(() => {
+    // URL param parsing
     const params = new URLSearchParams(window.location.search);
     const editId = params.get('edit');
     if (editId && data.length > 0 && !isDrawerOpen) {
@@ -35,6 +37,30 @@ export default function AdminDataCRMV2() {
       }
     }
   }, [data]);
+
+  React.useEffect(() => {
+    // Real-time listener for WhatsApp delivery receipts
+    const setupListener = async () => {
+      const { collection, onSnapshot } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
+      
+      const unsubscribe = onSnapshot(collection(db, 'outreach_leads'), (snapshot) => {
+        const statuses: Record<string, any> = {};
+        snapshot.forEach((doc) => {
+          statuses[doc.id] = doc.data(); // doc.id is the phone number
+        });
+        setLeadStatuses(statuses);
+      });
+      return unsubscribe;
+    };
+    
+    let unsub: any = null;
+    setupListener().then(u => unsub = u);
+    
+    return () => {
+      if (unsub) unsub();
+    };
+  }, []);
 
   const handleRowClick = (item: any) => {
     setSelectedItem(item);
@@ -169,20 +195,48 @@ export default function AdminDataCRMV2() {
       className: "text-right",
       cell: (item: any) => (
         <div className="flex items-center justify-end gap-3">
-          {item.phone && (
-            <button 
-              onClick={(e) => handleSendWhatsAppInvite(e, item)} 
-              disabled={sentLeads[item.id] === 'sending'}
-              className="text-emerald-400 hover:text-emerald-300 font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/30 px-2 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all disabled:opacity-50"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-              <span className="hidden xl:inline">
-                {sentLeads[item.id] === 'success' ? 'Invite Sent' : 
-                 sentLeads[item.id] === 'sending' ? 'Sending...' : 
-                 'Send Invite'}
-              </span>
-            </button>
-          )}
+          {item.phone && (() => {
+            const cleanPhone = String(item.phone).replace(/\D/g, '');
+            const finalPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
+            const statusObj = leadStatuses[finalPhone];
+            const isRead = statusObj?.deliveryStatus === 'read';
+            const isDelivered = statusObj?.deliveryStatus === 'delivered';
+            const isSent = statusObj?.deliveryStatus === 'sent' || statusObj?.status === 'invited' || sentLeads[item.id] === 'success';
+            
+            return (
+              <button 
+                onClick={(e) => handleSendWhatsAppInvite(e, item)} 
+                disabled={sentLeads[item.id] === 'sending' || isSent}
+                className={`font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 px-2 py-1.5 rounded-lg shadow-sm transition-all disabled:opacity-70 ${
+                  isRead ? 'text-blue-400 bg-blue-500/10 border border-blue-500/30' : 
+                  isDelivered ? 'text-slate-300 bg-slate-700/50 border border-slate-600' :
+                  isSent ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' :
+                  'text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 hover:shadow-md'
+                }`}
+              >
+                {isRead ? (
+                  // Double Blue Ticks
+                  <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7M5 19l4 4L19 13" /></svg>
+                ) : isDelivered ? (
+                  // Double Gray Ticks
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7M5 19l4 4L19 13" /></svg>
+                ) : isSent ? (
+                  // Single Gray Tick
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                ) : (
+                  // Send Icon
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                )}
+                <span className="hidden xl:inline">
+                  {sentLeads[item.id] === 'sending' ? 'Sending...' : 
+                   isRead ? 'Read' : 
+                   isDelivered ? 'Delivered' : 
+                   isSent ? 'Sent' : 
+                   'Send Invite'}
+                </span>
+              </button>
+            );
+          })()}
           <Link href={generateUniversalSeoUrl(item, item.category?.toLowerCase() + 's' as any) || `/doctors/${item.customSlug || item.id}`} target="_blank" className="text-slate-400 hover:text-white font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 bg-slate-800 border border-slate-700 px-2 py-1.5 rounded-lg shadow-sm hover:shadow-md transition-all">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             <span className="hidden xl:inline">Cat URL</span>

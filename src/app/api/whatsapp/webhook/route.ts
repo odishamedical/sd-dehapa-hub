@@ -64,6 +64,22 @@ export async function POST(req: NextRequest) {
               // Send error to WhatsApp so user can see it
               await WhatsAppService.sendTextMessage(from, "Bot Crashed: " + err.message);
             }
+          } else if (change.value && change.value.statuses) {
+            // Delivery receipts (sent, delivered, read, failed)
+            const statusObj = change.value.statuses[0];
+            const recipient_id = statusObj.recipient_id; // Phone number
+            const status = statusObj.status;
+            
+            try {
+              // We'll update the outreach_leads document with the delivery status
+              const leadRef = doc(db, 'outreach_leads', recipient_id);
+              await setDoc(leadRef, {
+                deliveryStatus: status,
+                deliveryTimestamp: statusObj.timestamp
+              }, { merge: true });
+            } catch(e) {
+              console.error("Failed to update delivery status in DB:", e);
+            }
           }
         }
       }

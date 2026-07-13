@@ -54,23 +54,83 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
       setResearch(initialItem.research || []);
       setAwards(initialItem.awards || []);
       setDepartments(initialItem.departments || []);
-      setHealthPackages(initialItem.healthPackages || []);
-      setSlugAvailability({status: 'idle', message: ''});
-    }
-  }, [isOpen, initialItem]);
-
   // Prevent background scrolling when modal is open
+  const [leadStatus, setLeadStatus] = useState<any>(null);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      setSentInvite('idle');
+      // Load current item
+      if (initialItem) {
+        setSelectedListing(initialItem);
+        setActiveTab("basic");
+        setSentInvite('idle');
+        setDynamicFields(initialItem.customFields || []);
+        setLocations(initialItem.locations || []);
+        setExperiences(initialItem.experiences || []);
+        setQualificationsList(initialItem.qualificationsList || []);
+        setResearch(initialItem.research || []);
+        setAwards(initialItem.awards || []);
+        setDepartments(initialItem.departments || []);
+        setHealthPackages(initialItem.healthPackages || []);
+        setSlugAvailability({status: 'idle', message: ''});
+      } else if (isNew) {
+        setSelectedListing({
+          id: `NEW_${Date.now()}`,
+          name: '',
+          category: 'Doctor',
+          isPublished: false,
+          phone: '',
+          address: '',
+          city: '',
+          state: '',
+          pincode: ''
+        });
+        setActiveTab("basic");
+        setSentInvite('idle');
+        setDynamicFields([]);
+        setLocations([]);
+        setExperiences([]);
+        setQualificationsList([]);
+        setResearch([]);
+        setAwards([]);
+        setDepartments([]);
+        setHealthPackages([]);
+        setSlugAvailability({status: 'idle', message: ''});
+      }
     } else {
-      document.body.style.overflow = 'auto';
+      setLeadStatus(null);
     }
+    
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [isOpen]);
+  }, [isOpen, initialItem, isNew]);
+
+  useEffect(() => {
+    if (isOpen && selectedListing?.phone) {
+      const cleanPhone = String(selectedListing.phone).replace(/\D/g, '');
+      const finalPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
+      
+      let unsub: any = null;
+      const setupListener = async () => {
+        const { onSnapshot, doc } = await import('firebase/firestore');
+        const { db } = await import('@/lib/firebase');
+        unsub = onSnapshot(doc(db, 'outreach_leads', finalPhone), (docSnap) => {
+          if (docSnap.exists()) {
+            setLeadStatus(docSnap.data());
+          } else {
+            setLeadStatus(null);
+          }
+        });
+      };
+      setupListener();
+      
+      return () => {
+        if (unsub) unsub();
+      };
+    }
+  }, [isOpen, selectedListing?.phone]);
 
   const handleSendWhatsAppInvite = async () => {
     if (!selectedListing?.phone) {
@@ -469,18 +529,39 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
                   <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                   Copy Magic Invite Link
                 </button>
-                {selectedListing.phone && (
-                  <button 
-                    onClick={handleSendWhatsAppInvite}
-                    disabled={sentInvite === 'sending'}
-                    className="w-full mt-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 px-4 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-                    {sentInvite === 'success' ? 'WhatsApp Invite Sent!' : 
-                     sentInvite === 'sending' ? 'Sending Invite...' : 
-                     'Send WhatsApp Invite'}
-                  </button>
-                )}
+                {selectedListing.phone && (() => {
+                  const isRead = leadStatus?.deliveryStatus === 'read';
+                  const isDelivered = leadStatus?.deliveryStatus === 'delivered';
+                  const isSent = leadStatus?.deliveryStatus === 'sent' || leadStatus?.status === 'invited' || sentInvite === 'success';
+
+                  return (
+                    <button 
+                      onClick={handleSendWhatsAppInvite} 
+                      disabled={sentInvite === 'sending' || isSent}
+                      className={`w-full font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 py-3.5 rounded-xl shadow-lg transition-all border ${
+                        isRead ? 'text-blue-400 bg-blue-500/10 border-blue-500/30' : 
+                        isDelivered ? 'text-slate-300 bg-slate-700/50 border-slate-600' :
+                        isSent ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' :
+                        'text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-600 border-emerald-500/30 hover:border-emerald-500'
+                      }`}
+                    >
+                      {isRead ? (
+                        <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7M5 19l4 4L19 13" /></svg>
+                      ) : isDelivered ? (
+                        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7M5 19l4 4L19 13" /></svg>
+                      ) : isSent ? (
+                        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                      )}
+                      {sentInvite === 'sending' ? 'Sending...' : 
+                       isRead ? 'WhatsApp Invite Read' : 
+                       isDelivered ? 'WhatsApp Invite Delivered' : 
+                       isSent ? 'WhatsApp Invite Sent' : 
+                       'Send WhatsApp Invite'}
+                    </button>
+                  );
+                })()}
                 <p className="text-[10px] text-slate-500 mt-2 text-center">Ghost Onboarding: Send link via WhatsApp to auto-assign profile.</p>
               </div>
               <div className="relative">
