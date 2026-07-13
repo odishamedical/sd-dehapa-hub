@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const result = await WhatsAppService.sendTemplateMessage(
       cleanPhone,
       'claim_your_dehapa_profile',
-      'en_US',
+      'en',
       [businessName], // Body variables (Hi {{1}})
       cleanPhone // Button URL variable (https://www.dehapa.com/claim?phone={{1}})
     );

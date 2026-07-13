@@ -83,7 +83,7 @@ export class WhatsAppService {
     return this.sendRequest(payload);
   }
 
-  static async sendTemplateMessage(to: string, templateName: string, languageCode: string = 'en_US', bodyParameters?: string[], buttonUrlParameter?: string) {
+  static async sendTemplateMessage(to: string, templateName: string, languageCode: string = 'en', bodyParameters?: string[], buttonUrlParameter?: string) {
     const payload: any = {
       messaging_product: "whatsapp",
       recipient_type: "individual",

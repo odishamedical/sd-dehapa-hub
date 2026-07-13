@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     let response;
     if (messageType === 'template' && templateName) {
-      response = await WhatsAppService.sendTemplateMessage(to, templateName, 'en_US', parameters);
+      response = await WhatsAppService.sendTemplateMessage(to, templateName, 'en', parameters);
       await BotService.logMessage(to, 'admin', `[TEMPLATE: ${templateName}]`);
     } else {
       response = await WhatsAppService.sendTextMessage(to, text);
