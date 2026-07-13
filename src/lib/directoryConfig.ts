@@ -26,6 +26,17 @@ export const directoryConfig: Record<string, CategoryConfig> = {
     name: "Doctor",
     tabs: [
       {
+        id: "identity",
+        label: "Personal Identity",
+        fields: [
+          { key: "prefix", label: "Prefix (e.g. Dr.)", type: "text" },
+          { key: "firstName", label: "First Name", type: "text" },
+          { key: "lastName", label: "Last Name", type: "text" },
+          { key: "maritalStatus", label: "Marital Status (Optional)", type: "select", options: ["Single", "Married", "Divorced", "Widowed"] },
+          { key: "languages", label: "Spoken Languages", type: "string_array", placeholder: "e.g. English, Hindi, Odia" }
+        ]
+      },
+      {
         id: "professional",
         label: "Professional & Services",
         fields: [
@@ -39,6 +50,13 @@ export const directoryConfig: Record<string, CategoryConfig> = {
               { key: "institution", label: "Institution / University", type: "text" },
               { key: "year", label: "Passing Year", type: "text" }
             ]
+          },
+          {
+            key: "registrationNumber",
+            label: "Medical Registration No.",
+            type: "text",
+            mandatory: true,
+            placeholder: "e.g. 12345 (State Medical Council)"
           },
           {
             key: "primarySpecialty",
