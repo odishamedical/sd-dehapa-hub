@@ -92,7 +92,9 @@ export default function DoctorProfileView({ id, customSlug }: { id?: string, cus
           const notVerified = "Not available (Not verified)";
           const docData = {
             id: docId,
-            name: rawData.name || "Unknown Doctor",
+            name: rawData.firstName 
+                    ? [rawData.prefix, rawData.firstName, rawData.middleName, rawData.lastName].filter(Boolean).join(" ") 
+                    : (rawData.name || "Unknown Doctor"),
             specialty: rawData.subCategory || rawData.category || "Specialist",
             experience: rawData.experience || notVerified,
             qualification: rawData.qualification || notVerified,
