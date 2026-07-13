@@ -158,8 +158,8 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
       const docRef = doc(db, 'outreach_leads', cleanPhone);
       const snap = await getDoc(docRef);
       if (snap.exists()) {
-        alert("You have already sent an invite to this number!");
-        return;
+        const confirmResend = confirm("You have already sent an invite to this number in the past! Are you sure you want to resend it?");
+        if (!confirmResend) return;
       }
       
       setSentInvite('sending');

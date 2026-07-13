@@ -22,9 +22,15 @@ export default function ClaimDynamicPage({ params }: { params: { phone: string }
       const cleanPhone = phoneParam.replace(/\D/g, '');
 
       try {
-        // 2. Search the directory
-        const q = query(collection(db, 'directory'), where('phone', '==', cleanPhone), limit(1));
-        const querySnapshot = await getDocs(q);
+        // 2. Search the directory by phone
+        let q = query(collection(db, 'directory'), where('phone', '==', cleanPhone), limit(1));
+        let querySnapshot = await getDocs(q);
+
+        // If not found, search by whatsappNumber
+        if (querySnapshot.empty) {
+          const wq = query(collection(db, 'directory'), where('whatsappNumber', '==', cleanPhone), limit(1));
+          querySnapshot = await getDocs(wq);
+        }
 
         if (!querySnapshot.empty) {
           const docSnap = querySnapshot.docs[0];
@@ -40,8 +46,13 @@ export default function ClaimDynamicPage({ params }: { params: { phone: string }
             alternatePhone = '+91' + cleanPhone;
           }
 
-          const q2 = query(collection(db, 'directory'), where('phone', '==', alternatePhone), limit(1));
-          const querySnapshot2 = await getDocs(q2);
+          let q2 = query(collection(db, 'directory'), where('phone', '==', alternatePhone), limit(1));
+          let querySnapshot2 = await getDocs(q2);
+          
+          if (querySnapshot2.empty) {
+            const wq2 = query(collection(db, 'directory'), where('whatsappNumber', '==', alternatePhone), limit(1));
+            querySnapshot2 = await getDocs(wq2);
+          }
 
           if (!querySnapshot2.empty) {
             const docSnap = querySnapshot2.docs[0];
