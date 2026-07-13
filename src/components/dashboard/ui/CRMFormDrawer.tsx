@@ -54,6 +54,11 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
       setResearch(initialItem.research || []);
       setAwards(initialItem.awards || []);
       setDepartments(initialItem.departments || []);
+      setHealthPackages(initialItem.healthPackages || []);
+      setSlugAvailability({status: 'idle', message: ''});
+    }
+  }, [isOpen, initialItem]);
+
   // Prevent background scrolling when modal is open
   const [leadStatus, setLeadStatus] = useState<any>(null);
 
