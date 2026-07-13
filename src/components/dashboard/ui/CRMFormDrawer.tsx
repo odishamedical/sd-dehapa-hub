@@ -104,7 +104,10 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
         })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send WhatsApp message");
+      if (!res.ok) {
+        const detailMsg = data.details ? (typeof data.details === 'string' ? data.details : JSON.stringify(data.details)) : "";
+        throw new Error((data.error || "Failed to send WhatsApp message") + (detailMsg ? "\n\nDetails: " + detailMsg : ""));
+      }
       
       await setDoc(docRef, {
         businessName: selectedListing.name,

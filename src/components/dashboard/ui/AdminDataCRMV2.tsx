@@ -24,9 +24,29 @@ export default function AdminDataCRMV2() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [sentLeads, setSentLeads] = useState<Record<string, 'sending' | 'success' | 'error'>>({});
 
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get('edit');
+    if (editId && data.length > 0 && !isDrawerOpen) {
+      const item = data.find((d: any) => d.id === editId);
+      if (item) {
+        setSelectedItem(item);
+        setIsDrawerOpen(true);
+      }
+    }
+  }, [data]);
+
   const handleRowClick = (item: any) => {
     setSelectedItem(item);
     setIsDrawerOpen(true);
+    const newUrl = window.location.pathname + `?edit=${item.id}` + window.location.hash;
+    window.history.replaceState(null, '', newUrl);
+  };
+  
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+    const newUrl = window.location.pathname + window.location.hash;
+    window.history.replaceState(null, '', newUrl);
   };
 
   const handleSendWhatsAppInvite = async (e: React.MouseEvent, item: any) => {
@@ -68,7 +88,10 @@ export default function AdminDataCRMV2() {
         })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send");
+      if (!res.ok) {
+        const detailMsg = data.details ? (typeof data.details === 'string' ? data.details : JSON.stringify(data.details)) : "";
+        throw new Error((data.error || "Failed to send WhatsApp message") + (detailMsg ? "\n\nDetails: " + detailMsg : ""));
+      }
       
       await setDoc(docRef, {
         businessName: item.name,
@@ -262,14 +285,14 @@ export default function AdminDataCRMV2() {
       </div>
 
       {/* Reusable Form Drawer */}
-      <CRMFormDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+      <CRMFormDrawer 
+        isOpen={isDrawerOpen} 
+        onClose={closeDrawer} 
         selectedItem={selectedItem}
-        isNew={selectedItem?.id?.startsWith("NEW_")}
+        isNew={false}
         onSaveSuccess={() => {
-          setIsDrawerOpen(false);
           fetchData();
+          closeDrawer();
         }}
       />
     </AdminCard>
