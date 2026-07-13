@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
 export default function ClaimDynamicPage({ params }: { params: { phone: string } }) {
   const router = useRouter();
@@ -35,8 +36,25 @@ export default function ClaimDynamicPage({ params }: { params: { phone: string }
         if (!querySnapshot.empty) {
           const docSnap = querySnapshot.docs[0];
           const data = docSnap.data();
-          const urlBase = data.customSlug || docSnap.id;
-          router.replace(`/${urlBase}?action=claim`);
+          const typeMap: Record<string, 'doctors' | 'hospitals' | 'labs' | 'pharmacies' | 'ambulances'> = {
+            'Doctor': 'doctors',
+            'Hospital': 'hospitals',
+            'Diagnostic Center': 'labs',
+            'Lab': 'labs',
+            'Pharmacy': 'pharmacies',
+            'Ambulance': 'ambulances'
+          };
+          const catType = typeMap[data.category] || 'doctors';
+          const targetUrl = generateUniversalSeoUrl({
+            id: docSnap.id,
+            name: data.name,
+            country: data.country,
+            state: data.state,
+            district: data.district,
+            customSlug: data.customSlug
+          }, catType);
+          
+          router.replace(`${targetUrl}?action=claim`);
         } else {
           // Fallback formats
           let alternatePhone = cleanPhone;
@@ -57,8 +75,25 @@ export default function ClaimDynamicPage({ params }: { params: { phone: string }
           if (!querySnapshot2.empty) {
             const docSnap = querySnapshot2.docs[0];
             const data = docSnap.data();
-            const urlBase = data.customSlug || docSnap.id;
-            router.replace(`/${urlBase}?action=claim`);
+            const typeMap: Record<string, 'doctors' | 'hospitals' | 'labs' | 'pharmacies' | 'ambulances'> = {
+              'Doctor': 'doctors',
+              'Hospital': 'hospitals',
+              'Diagnostic Center': 'labs',
+              'Lab': 'labs',
+              'Pharmacy': 'pharmacies',
+              'Ambulance': 'ambulances'
+            };
+            const catType = typeMap[data.category] || 'doctors';
+            const targetUrl = generateUniversalSeoUrl({
+              id: docSnap.id,
+              name: data.name,
+              country: data.country,
+              state: data.state,
+              district: data.district,
+              customSlug: data.customSlug
+            }, catType);
+            
+            router.replace(`${targetUrl}?action=claim`);
           } else {
             setError('We could not find a business profile associated with this phone number.');
           }
