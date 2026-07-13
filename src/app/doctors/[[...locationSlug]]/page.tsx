@@ -70,41 +70,67 @@ export default async function DoctorsRoute({ params }: { params: Promise<{ locat
   const resolvedParams = await params;
   const slug = resolvedParams.locationSlug || [];
   
-  if (slug.length === 4) {
-    // It's a profile: /doctors/india/odisha/sambalpur/dr-milan-misra-A1B2C3D4
-    const doctorParam = slug[3];
-    let id;
-    const chijIndex = doctorParam.indexOf('-ChIJ');
-    if (chijIndex !== -1) {
-      id = doctorParam.substring(chijIndex + 1);
-    } else if (doctorParam.startsWith('ChIJ')) {
-      id = doctorParam;
-    } else {
-      const parts = doctorParam.split('-');
-      id = parts[parts.length - 1];
-    } // Extract the Firebase ID at the end
-    return <DoctorProfileView id={id} />;
+  // Check if the last slug element is a profile ID or custom slug
+  const lastParam = slug[slug.length - 1];
+  let isProfile = false;
+  let profileId = "";
+
+  if (lastParam) {
+    if (lastParam.indexOf('-ChIJ') !== -1) {
+      isProfile = true;
+      profileId = lastParam.substring(lastParam.indexOf('-ChIJ') + 1);
+    } else if (lastParam.startsWith('ChIJ') || (lastParam.length === 20 && !lastParam.includes('-'))) {
+      isProfile = true;
+      profileId = lastParam;
+    } else if (lastParam.includes('-') && slug.length > 2) {
+      // Possible fallback for old ID format at the end of a long slug
+      const parts = lastParam.split('-');
+      const potentialId = parts[parts.length - 1];
+      if (potentialId.length >= 15) { // Firebase ID or similar
+        isProfile = true;
+        profileId = potentialId;
+      }
+    }
   }
 
-  if (slug.length === 1 && !["india", "usa", "uae", "australia", "england"].includes(slug[0].toLowerCase())) {
-    // It could be a Google Place ID (starts with ChIJ) or a custom slug
-    if (slug[0].startsWith('ChIJ') || (slug[0].length === 20 && !slug[0].includes('-'))) {
-      return <DoctorProfileView id={slug[0]} />;
-    }
+  if (isProfile) {
+    return <DoctorProfileView id={profileId} />;
+  }
+
+  if (slug.length === 1 && !["ayush", "mbbs", "specialist", "super-specialist", "india", "usa", "uae"].includes(slug[0].toLowerCase())) {
     // Premium Custom Slug detected! (e.g., /doctors/dr-milan)
     return <DoctorProfileView customSlug={slug[0]} />;
   }
 
-  // It's a listing
-  const country = slug[0] || "";
-  const state = slug[1] || "";
-  const district = slug[2] || "";
+  // It's a listing! Parse the hierarchical SEO structure:
+  // /[taxonomy]/[specialty]/[state]/[district]/[block]
+  let taxonomy = "";
+  let specialty = "";
+  let state = "";
+  let district = "";
+  let block = "";
+
+  // This is a naive assignment based on the new route structure. 
+  // Depending on what exactly the user clicks, slug could have varying lengths.
+  if (["ayush", "mbbs", "specialist", "super-specialist"].includes((slug[0] || "").toLowerCase())) {
+    taxonomy = slug[0] || "";
+    specialty = slug[1] || "";
+    state = slug[2] || "";
+    district = slug[3] || "";
+    block = slug[4] || "";
+  } else {
+    // Fallback for old route: /[country]/[state]/[district]
+    state = slug[1] || "";
+    district = slug[2] || "";
+  }
 
   return (
     <DoctorListingView 
-      initialCountry={country} 
+      initialTaxonomy={taxonomy}
+      initialSpecialty={specialty}
       initialState={state} 
-      initialDistrict={district} 
+      initialDistrict={district}
+      initialBlock={block}
     />
   );
 }

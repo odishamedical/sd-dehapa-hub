@@ -6,20 +6,61 @@ export const platformCategories = [
   "Ambulance"
 ];
 
-export const subCategoriesByCategory: Record<string, string[]> = {
-  "Doctor": [
-    "Medicine Specialist",
-    "Cardiologist",
-    "Neurologist",
+export const DOCTOR_TAXONOMY = {
+  ayush: [
+    "Ayurvedic Doctor",
+    "Homeopath",
+    "Yoga and Naturopathy",
+    "Unani Specialist",
+    "Siddha Practitioner"
+  ],
+  mbbs: [
+    "General Physician",
+    "Family Medicine",
+    "General Practitioner"
+  ],
+  specialist: [
     "Pediatrician",
     "Gynecologist",
-    "Orthopedic",
+    "Orthopedic Surgeon",
     "Dermatologist",
-    "Psychiatrist",
-    "Dentist",
-    "Ophthalmologist",
     "ENT Specialist",
-    "General Physician"
+    "Ophthalmologist",
+    "Psychiatrist",
+    "Pulmonologist",
+    "General Surgeon",
+    "Medicine Specialist",
+    "Dentist"
+  ],
+  "super-specialist": [
+    "Cardiologist",
+    "Neurologist",
+    "Oncologist",
+    "Gastroenterologist",
+    "Endocrinologist",
+    "Nephrologist",
+    "Urologist",
+    "Rheumatologist",
+    "Neurosurgeon",
+    "Cardiothoracic Surgeon"
+  ]
+};
+
+export function getTaxonomyCategory(specialty: string): string | null {
+  for (const [category, specialties] of Object.entries(DOCTOR_TAXONOMY)) {
+    if (specialties.includes(specialty)) {
+      return category;
+    }
+  }
+  return null;
+}
+
+export const subCategoriesByCategory: Record<string, string[]> = {
+  "Doctor": [
+    ...DOCTOR_TAXONOMY.ayush,
+    ...DOCTOR_TAXONOMY.mbbs,
+    ...DOCTOR_TAXONOMY.specialist,
+    ...DOCTOR_TAXONOMY["super-specialist"]
   ],
   "Hospital": [
     "Multispecialty Hospital",

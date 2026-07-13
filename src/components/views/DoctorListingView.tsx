@@ -156,13 +156,19 @@ export function DoctorListingView({ data }: { data: any }) {
 export const dynamic = 'force-dynamic';
 
 export default function DoctorsDirectory({ 
+  initialTaxonomy = "",
+  initialSpecialty = "",
   initialCountry = "", 
   initialState = "", 
-  initialDistrict = "" 
+  initialDistrict = "",
+  initialBlock = ""
 }: { 
+  initialTaxonomy?: string;
+  initialSpecialty?: string;
   initialCountry?: string;
   initialState?: string;
   initialDistrict?: string;
+  initialBlock?: string;
 }) {
   const router = useRouter();
   const { activeTenant } = useTenant();
@@ -270,9 +276,14 @@ export default function DoctorsDirectory({
       return false;
     }
 
+    if (initialTaxonomy && doc.taxonomy?.toLowerCase() !== initialTaxonomy.toLowerCase()) return false;
+    // Map URL slug to the subCategory string by doing a simple slugify/unslugify check, or just simple lowercase inclusion
+    if (initialSpecialty && !(doc.subCategory || doc.specialty || "").toLowerCase().replace(/[^a-z0-9]/g, '').includes(initialSpecialty.toLowerCase().replace(/[^a-z0-9]/g, ''))) return false;
+
     if (initialCountry && doc.country?.toLowerCase() !== initialCountry.toLowerCase()) return false;
     if (initialState && doc.state?.toLowerCase() !== initialState.toLowerCase()) return false;
     if (initialDistrict && doc.district?.toLowerCase() !== initialDistrict.toLowerCase()) return false;
+    if (initialBlock && doc.block?.toLowerCase() !== initialBlock.toLowerCase()) return false;
 
     return searchMatch;
   });

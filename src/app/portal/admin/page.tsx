@@ -8,6 +8,7 @@ import { collection, writeBatch, doc, getDoc, serverTimestamp, getDocs, updateDo
 import { useTenant } from '@/components/TenantContext';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
+import { getTaxonomyCategory } from '@/lib/taxonomy';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import AdminDataCRM from '@/components/AdminDataCRM';
@@ -246,7 +247,9 @@ export default function AdminDashboard() {
           image: listing.image || "",
           category: crawlerCategory,
           subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
-          ...(crawlerCategory === "Doctor" && { tier: crawlerTier }),
+          ...(crawlerCategory === "Doctor" && { 
+            taxonomy: getTaxonomyCategory(crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory) || "specialist" 
+          }),
           country: crawlerAddress.country,
           state: crawlerAddress.state,
           district: crawlerAddress.district,
