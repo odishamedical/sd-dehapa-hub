@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
-import { collection, doc, updateDoc, setDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, updateDoc, setDoc, serverTimestamp, getDocs, getDoc, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import PremiumSlugModal from '@/components/PremiumSlugModal';
 import AddressBlock from '@/components/AddressBlock';
