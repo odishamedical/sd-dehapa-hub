@@ -265,7 +265,7 @@ export default function AdminDataCRMV2() {
   ];
 
   return (
-    <AdminCard noPadding className="flex flex-col h-[80vh]">
+    <AdminCard noPadding className="flex flex-col h-[80vh] max-w-full overflow-hidden">
       <AdminHeader 
         title="Directory Data CRM (V2)"
         description={`Modular Architecture Active - ${stats.totalEntities} Records`}
