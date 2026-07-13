@@ -84,7 +84,16 @@ export default function AdminDataCRMV2() {
     
     if (!confirm(`Send WhatsApp Invite to ${item.name} at ${item.phone}?`)) return;
 
-    let cleanPhone = String(item.phone).replace(/\D/g, '');
+    // If there are multiple numbers (separated by comma, slash, etc), just take the first one
+    const firstPhone = String(item.phone).split(/[,/|&-]/)[0];
+    let cleanPhone = firstPhone.replace(/\D/g, '');
+    
+    // Remove leading zero if it's an 11 digit Indian number
+    if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) {
+      cleanPhone = cleanPhone.substring(1);
+    }
+    
+    // Add country code if it's 10 digits
     if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
     
     try {
@@ -196,7 +205,9 @@ export default function AdminDataCRMV2() {
       cell: (item: any) => (
         <div className="flex items-center justify-end gap-3">
           {item.phone && (() => {
-            const cleanPhone = String(item.phone).replace(/\D/g, '');
+            const firstPhone = String(item.phone).split(/[,/|&-]/)[0];
+            let cleanPhone = firstPhone.replace(/\D/g, '');
+            if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
             const finalPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
             const statusObj = leadStatuses[finalPhone];
             const isRead = statusObj?.deliveryStatus === 'read';

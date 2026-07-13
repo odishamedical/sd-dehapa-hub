@@ -114,7 +114,9 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
 
   useEffect(() => {
     if (isOpen && selectedListing?.phone) {
-      const cleanPhone = String(selectedListing.phone).replace(/\D/g, '');
+      const firstPhone = String(selectedListing.phone).split(/[,/|&-]/)[0];
+      let cleanPhone = firstPhone.replace(/\D/g, '');
+      if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
       const finalPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
       
       let unsub: any = null;
@@ -145,7 +147,9 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
     
     if (!confirm(`Send WhatsApp Invite to ${selectedListing.name} at ${selectedListing.phone}?`)) return;
 
-    let cleanPhone = String(selectedListing.phone).replace(/\D/g, '');
+    const firstPhone = String(selectedListing.phone).split(/[,/|&-]/)[0];
+    let cleanPhone = firstPhone.replace(/\D/g, '');
+    if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
     if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
     
     try {
