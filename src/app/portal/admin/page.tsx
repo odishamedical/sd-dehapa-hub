@@ -177,11 +177,25 @@ export default function AdminDashboard() {
       }
 
       if (data.results && data.results.length > 0) {
+        const formattedResults = data.results.map((r: any) => {
+          let formattedPhone = r.phone || "";
+          if (formattedPhone) {
+            let digits = formattedPhone.replace(/\D/g, '');
+            if (digits.length === 11 && digits.startsWith('0')) digits = digits.substring(1);
+            if (digits.length === 10) {
+              formattedPhone = '+91' + digits;
+            } else if (digits.length === 12 && digits.startsWith('91')) {
+              formattedPhone = '+' + digits;
+            }
+          }
+          return { ...r, phone: formattedPhone };
+        });
+
         if (isNextPage) {
-          setStagedListings([...stagedListings, ...data.results]);
+          setStagedListings([...stagedListings, ...formattedResults]);
         } else {
-          setStagedListings(data.results);
-          setSelectedListingIds(data.results.map((d: any) => d.id));
+          setStagedListings(formattedResults);
+          setSelectedListingIds(formattedResults.map((d: any) => d.id));
         }
         setNextPageToken(data.nextPageToken || null);
       } else if (!isNextPage) {
