@@ -1183,18 +1183,36 @@ export default function UnifiedProfileLayout({
 
       {/* Unverified Modal */}
       {showUnverifiedModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
-            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-300 bg-white/10 hover:bg-white/15 p-2 rounded-full transition-colors">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-[#0A1128]/95 backdrop-blur-2xl rounded-3xl p-8 max-w-sm w-full relative text-center shadow-[0_0_50px_rgba(245,158,11,0.15)] border border-white/10 animate-in fade-in zoom-in-95">
+            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors">
               <X className="w-5 h-5" />
             </button>
-            <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6 border border-orange-200 shadow-sm mx-auto">
-              <Shield className="w-8 h-8 text-orange-500" />
+            
+            <div className="w-20 h-20 bg-amber-500/20 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+              <Shield className="w-10 h-10 text-amber-500" />
             </div>
-            <h3 className="text-2xl font-black text-slate-100 text-center mb-2">Unverified Profile</h3>
-            <p className="text-slate-400 text-center mb-8 font-medium">This profile is unverified, so the booking system is disabled. Are you the authorized representative for this institution?</p>
-            <button onClick={() => { setShowUnverifiedModal(false); setShowClaimModal(true); }} className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-sm py-4 rounded-xl transition-all shadow-lg shadow-orange-500/30 flex justify-center items-center gap-2">
-              Claim Profile to Unlock Features
+            
+            <h3 className="font-black text-2xl text-white mb-3">Profile Not Verified</h3>
+            <p className="text-sm text-slate-300 mb-6 leading-relaxed font-medium">
+              This profile is currently unverified. We are unable to facilitate bookings or connections until the provider completes the Dehapa verification process.
+            </p>
+            
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+              <p className="text-sm font-bold text-amber-500 mb-3">Are you the listing owner?</p>
+              <button 
+                onClick={() => { setShowUnverifiedModal(false); setShowClaimModal(true); }}
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-black py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] uppercase tracking-widest text-[11px] flex items-center justify-center gap-2 border-none"
+              >
+                Verify This Profile
+              </button>
+            </div>
+
+            <button 
+              onClick={() => setShowUnverifiedModal(false)}
+              className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3.5 rounded-xl transition-colors border border-white/10 uppercase tracking-widest text-xs"
+            >
+              Understood
             </button>
           </div>
         </div>
@@ -1239,31 +1257,7 @@ export default function UnifiedProfileLayout({
         </div>
       )}
 
-      {/* Unverified Modal */}
-      {showUnverifiedModal && (
-        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 max-w-sm w-full relative text-center shadow-2xl animate-in fade-in zoom-in-95 border border-amber-500/20">
-            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-400 to-orange-500 rounded-t-3xl"></div>
-            <button onClick={() => setShowUnverifiedModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-300 transition-colors">
-              <X className="w-6 h-6" />
-            </button>
-            
-            <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 mt-2">
-              <Shield className="w-8 h-8 text-amber-500" />
-            </div>
-            
-            <h3 className="font-black text-2xl text-white mb-2">Profile Not Verified</h3>
-            <p className="text-sm text-slate-400 mb-8 leading-relaxed">This profile is currently unverified. We are unable to facilitate bookings or connections until the provider completes the Dehapa verification process.</p>
-            
-            <button 
-              onClick={() => setShowUnverifiedModal(false)}
-              className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-cyan-500/25 border border-cyan-400/20 uppercase tracking-widest flex items-center justify-center gap-2"
-            >
-              Understood
-            </button>
-          </div>
-        </div>
-      )}
+
 
       {/* Modals */}
       {showEmergencyModal && (
