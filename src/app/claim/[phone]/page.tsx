@@ -1,18 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
-export default function ClaimDynamicPage({ params }: { params: { phone: string } }) {
+export default function ClaimDynamicPage({ params }: { params: Promise<{ phone: string }> }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const resolvedParams = use(params);
+  const phoneParam = resolvedParams.phone;
 
   useEffect(() => {
     const processClaim = async () => {
-      const phoneParam = params.phone;
       
       if (!phoneParam) {
         setError('No phone number provided in the link.');
