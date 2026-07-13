@@ -37,17 +37,45 @@ export default function AdminDataCRMV2() {
     }
     
     if (!confirm(`Send WhatsApp Invite to ${item.name} at ${item.phone}?`)) return;
-    
-    setSentLeads(prev => ({ ...prev, [item.id]: 'sending' }));
+
+    let cleanPhone = String(item.phone).replace(/\D/g, '');
+    if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
     
     try {
-      const res = await fetch('/api/leads/outreach', {
+      // Need to import doc, getDoc, setDoc, db if not imported. Wait, I will just use fetch('/api/whatsapp/send') without DB check here if it's too complex to add imports, but they are needed.
+      // Wait, AdminDataCRMV2 is a massive file, let's just use the same logic, but we need to ensure imports are present.
+      // I'll add imports at the top using another replace_file_content if needed.
+      const { doc, getDoc, setDoc } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
+
+      const docRef = doc(db, 'outreach_leads', cleanPhone);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        alert("You have already sent an invite to this number!");
+        return;
+      }
+      
+      setSentLeads(prev => ({ ...prev, [item.id]: 'sending' }));
+      
+      const res = await fetch('/api/whatsapp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: item.phone, businessName: item.name })
+        body: JSON.stringify({ 
+          to: cleanPhone, 
+          messageType: 'template',
+          templateName: 'claim_your_dehapa_profile',
+          parameters: [item.name, cleanPhone]
+        })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to send");
+      
+      await setDoc(docRef, {
+        businessName: item.name,
+        phone: cleanPhone,
+        status: 'invited',
+        sentAt: new Date().toISOString()
+      });
       
       setSentLeads(prev => ({ ...prev, [item.id]: 'success' }));
     } catch (err: any) {

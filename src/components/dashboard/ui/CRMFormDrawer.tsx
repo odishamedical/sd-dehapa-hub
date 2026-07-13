@@ -79,17 +79,39 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
     }
     
     if (!confirm(`Send WhatsApp Invite to ${selectedListing.name} at ${selectedListing.phone}?`)) return;
-    
-    setSentInvite('sending');
+
+    let cleanPhone = String(selectedListing.phone).replace(/\D/g, '');
+    if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
     
     try {
-      const res = await fetch('/api/leads/outreach', {
+      const docRef = doc(db, 'outreach_leads', cleanPhone);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        alert("You have already sent an invite to this number!");
+        return;
+      }
+      
+      setSentInvite('sending');
+      
+      const res = await fetch('/api/whatsapp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: selectedListing.phone, businessName: selectedListing.name })
+        body: JSON.stringify({ 
+          to: cleanPhone, 
+          messageType: 'template',
+          templateName: 'claim_your_dehapa_profile',
+          parameters: [selectedListing.name, cleanPhone]
+        })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send");
+      if (!res.ok) throw new Error(data.error || "Failed to send WhatsApp message");
+      
+      await setDoc(docRef, {
+        businessName: selectedListing.name,
+        phone: cleanPhone,
+        status: 'invited',
+        sentAt: new Date().toISOString()
+      });
       
       setSentInvite('success');
     } catch (err: any) {

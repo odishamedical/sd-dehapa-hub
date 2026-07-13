@@ -47,8 +47,8 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json({ error: 'Failed to send WhatsApp message', details: result }, { status: 500 });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Outreach error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
