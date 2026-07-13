@@ -40,9 +40,9 @@ export function StandardDataTable<T extends { id?: string }>({
   }
 
   return (
-    <div className="overflow-x-auto bg-slate-900 rounded-xl border border-slate-800">
-      <table className="w-full text-left text-sm text-slate-300">
-        <thead className="text-xs uppercase bg-slate-800/50 text-slate-400">
+    <div className="overflow-auto h-full bg-slate-900 rounded-xl border border-slate-800">
+      <table className="w-full text-left text-sm text-slate-300 relative">
+        <thead className="text-xs uppercase bg-slate-800 text-slate-400 sticky top-0 z-10 shadow-sm">
           <tr>
             {columns.map((col, i) => (
               <th key={i} scope="col" className={`px-6 py-4 font-medium tracking-wider ${col.className || ''}`}>
