@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { 
-  Star, MapPin, Clock, Phone, Globe, Shield, 
+  Star, MapPin, Clock, Phone, Globe, Shield, ShieldAlert,
   Activity, Video, HeartPulse, CheckCircle2, 
   User, GraduationCap, Briefcase, Share2, 
   Stethoscope, Building2, Calendar, FileText, ChevronRight, FileBadge2, X, ExternalLink, Lock
@@ -88,6 +88,31 @@ export default function HospitalProfileLayout({
           <span className="text-slate-900 truncate max-w-[400px]">{profile.name}</span>
         </div>
       </div>
+
+      {/* Unverified Disclaimer Banner */}
+      {!verified && (
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-30 mt-6 -mb-4">
+          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 backdrop-blur-md rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
+            <div className="flex items-start sm:items-center gap-4">
+              <div className="bg-amber-500/20 p-3 rounded-full shrink-0 mt-1 sm:mt-0">
+                <ShieldAlert className="w-6 h-6 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="text-amber-500 font-bold text-lg leading-tight mb-1">Unverified Profile</h3>
+                <p className="text-slate-600 text-sm leading-relaxed max-w-3xl">
+                  This profile has not yet been claimed. Although this data was collected from reliable sources, the provider has not verified it. If you are the owner, please verify your identity to manage this profile.
+                </p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowClaimModal(true)} 
+              className="w-full sm:w-auto shrink-0 bg-amber-500 hover:bg-amber-400 text-[#0A1128] font-black uppercase tracking-widest text-xs px-6 py-3.5 rounded-xl transition-all shadow-[0_4px_15px_rgba(245,158,11,0.3)] hover:shadow-[0_6px_25px_rgba(245,158,11,0.4)] hover:-translate-y-0.5 whitespace-nowrap"
+            >
+              Verify Now
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Container - Fluid Grid */}
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
