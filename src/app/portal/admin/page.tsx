@@ -8,7 +8,7 @@ import { collection, writeBatch, doc, getDoc, serverTimestamp, getDocs, updateDo
 import { useTenant } from '@/components/TenantContext';
 import { indianStates, districtsByState, blocksByDistrict } from '@/lib/locations';
 import { platformCategories, subCategoriesByCategory } from '@/lib/categories';
-import { getTaxonomyCategory } from '@/lib/taxonomy';
+import { getTaxonomyCategory, DOCTOR_TAXONOMY } from '@/lib/taxonomy';
 import AddressBlock, { AddressData } from '@/components/AddressBlock';
 import DashboardLayout, { DashboardTab } from '@/components/DashboardLayout';
 import AdminDataCRM from '@/components/AdminDataCRM';
@@ -478,25 +478,12 @@ export default function AdminDashboard() {
                       </select>
                     </div>
 
-                    <div>
-                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Sub-category</label>
-                      <select 
-                        value={crawlerSubCategory} 
-                        onChange={(e) => setCrawlerSubCategory(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all"
-                      >
-                        <option value="">Any {crawlerCategory}</option>
-                        {subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)}
-                        <option value="Other">Other (Add Custom)</option>
-                      </select>
-                    </div>
-
                     {crawlerCategory === "Doctor" && (
                       <div>
                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Doctor Tier</label>
                         <select 
                           value={crawlerTier} 
-                          onChange={(e) => setCrawlerTier(e.target.value)}
+                          onChange={(e) => { setCrawlerTier(e.target.value); setCrawlerSubCategory(""); setCustomSubCategory(""); }}
                           className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all"
                         >
                           <option value="Ayush">Ayush</option>
@@ -506,6 +493,22 @@ export default function AdminDashboard() {
                         </select>
                       </div>
                     )}
+
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Sub-category</label>
+                      <select 
+                        value={crawlerSubCategory} 
+                        onChange={(e) => setCrawlerSubCategory(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 text-slate-200 hover:border-slate-700 rounded-xl px-5 py-3.5 shadow-sm text-sm font-semibold focus:border-cyan-500 outline-none transition-all"
+                      >
+                        <option value="">Any {crawlerCategory}</option>
+                        {crawlerCategory === "Doctor" 
+                          ? DOCTOR_TAXONOMY[crawlerTier.toLowerCase().replace(' ', '-') as keyof typeof DOCTOR_TAXONOMY]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)
+                          : subCategoriesByCategory[crawlerCategory]?.map((sub: string) => <option key={sub} value={sub}>{sub}</option>)
+                        }
+                        <option value="Other">Other (Add Custom)</option>
+                      </select>
+                    </div>
 
                     {crawlerSubCategory === "Other" && (
                       <div className={crawlerCategory === "Doctor" ? "md:col-span-3" : ""}>
