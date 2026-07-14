@@ -197,17 +197,27 @@ export default function UnifiedProfileLayout({
   const heroBottomAd = getAdSlot('hero_bottom');
 
   const hasPlugin = (pluginId: string) => {
-    if (!verified) return true; // Show for lead gen when unverified
-    return profile.activePlugins?.includes(pluginId) || false;
+    // Phase 1 Launch Strategy: All Access Pass for ALL profiles
+    return true; 
   };
 
   return (
     <div className="min-h-screen bg-[#050B14] font-sans pb-[160px] selection:bg-teal-500/30">
       {/* MESH GRADIENT BACKGROUND */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-60 mix-blend-screen">
-        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-teal-600/30 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-600/30 rounded-full blur-[120px]"></div>
-        <div className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] bg-cyan-600/20 rounded-full blur-[100px]"></div>
+        {verified ? (
+          <>
+            <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-amber-600/20 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-orange-600/20 rounded-full blur-[120px]"></div>
+            <div className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] bg-yellow-600/10 rounded-full blur-[100px]"></div>
+          </>
+        ) : (
+          <>
+            <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-teal-600/30 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-600/30 rounded-full blur-[120px]"></div>
+            <div className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] bg-cyan-600/20 rounded-full blur-[100px]"></div>
+          </>
+        )}
       </div>
       {/* GRID OVERLAY */}
       <div className="fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
@@ -290,23 +300,38 @@ export default function UnifiedProfileLayout({
         {/* HERO CARD - FULL WIDTH (Mockup Style) */}
         <div id="overview" className={`bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] rounded-t-3xl shadow-sm ${verified ? 'border-t-amber-500 shadow-[0_-10px_40px_rgba(245,158,11,0.15)]' : 'border-t-[#D32F2F]'}`}>
           
-          {/* SVG Waves Background embedded inside the Hero Card */}
-          <div className="absolute inset-0 pointer-events-none z-0">
-           {/* Background Wave - Tall, Faint Cyan */}
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/10 fill-current opacity-10 translate-y-16">
-             <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-           </svg>
-           {/* Middle Wave - Sweeping Teal */}
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/5 fill-current opacity-[0.15] translate-y-8">
-             <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-           </svg>
-           {/* Foreground Wave - Deep, Rich Teal Mix */}
-           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-400/10 fill-current opacity-5">
-             <path d="M0,192L48,192C96,192,192,192,288,208C384,224,480,256,576,245.3C672,235,768,181,864,170.7C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-           </svg>
-           <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
-           <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-500/10 rounded-tr-full blur-3xl"></div>
-          </div>
+           {/* SVG Waves Background embedded inside the Hero Card */}
+           <div className="absolute inset-0 pointer-events-none z-0">
+             {verified ? (
+               <>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-amber-500/20 fill-current opacity-10 translate-y-16">
+                   <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                 </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-amber-400/20 fill-current opacity-[0.15] translate-y-8">
+                   <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                 </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-amber-500/30 fill-current opacity-10">
+                   <path d="M0,192L48,192C96,192,192,192,288,208C384,224,480,256,576,245.3C672,235,768,181,864,170.7C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                 </svg>
+                 <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-amber-500/10 to-transparent"></div>
+                 <div className="absolute bottom-0 left-0 w-96 h-32 bg-amber-500/15 rounded-tr-full blur-3xl"></div>
+               </>
+             ) : (
+               <>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/10 fill-current opacity-10 translate-y-16">
+                   <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                 </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/5 fill-current opacity-[0.15] translate-y-8">
+                   <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                 </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-400/10 fill-current opacity-5">
+                   <path d="M0,192L48,192C96,192,192,192,288,208C384,224,480,256,576,245.3C672,235,768,181,864,170.7C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                 </svg>
+                 <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
+                 <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-500/10 rounded-tr-full blur-3xl"></div>
+               </>
+             )}
+           </div>
               
               {/* Left: The Prestige Portrait */}
               <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 z-10">
@@ -362,20 +387,14 @@ export default function UnifiedProfileLayout({
                       if (!verified) {
                         setShowUnverifiedModal(true);
                       } else {
-                        // WhatsApp Booking Flow
-                        const message = encodeURIComponent(`Hi ${profile.name}, I found your verified profile on Dehapa and would like to book an appointment.`);
-                        window.open(`https://wa.me/${profile.phone?.replace(/[^0-9]/g, '') || ''}?text=${message}`, '_blank');
+                        router.push(`/portal/book?doctor=${profile.id}`);
                       }
                     }} 
                     className={`${verified ? 'bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.4)]' : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]'} w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none`}
                   >
                     <span className="flex items-center gap-2">
-                      {verified ? (
-                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                      ) : (
-                        <MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/>
-                      )}
-                      {verified ? 'Book via WhatsApp' : 'Book Appointment'}
+                      <MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/>
+                      Book Appointment
                     </span>
                     <span className="opacity-70 text-[10px]">▼</span>
                   </button>

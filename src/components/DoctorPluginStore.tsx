@@ -62,6 +62,7 @@ export default function DoctorPluginStore({ entityData }: { entityData: any }) {
   const [loading, setLoading] = useState<string | null>(null);
 
   const activePlugins = entityData?.activePlugins || [];
+  const isFounder = entityData?.founderStatus === true || entityData?.verified === true;
 
   // Determine current tier based on plugins (naive check)
   const isTierActive = (tierPlugins: string[]) => {
@@ -93,7 +94,7 @@ export default function DoctorPluginStore({ entityData }: { entityData: any }) {
 
   // Determine current highest tier
   let currentTierName = "Basic";
-  if (isTierActive(TIERS[2].plugins)) currentTierName = "Advanced OS";
+  if (isFounder || isTierActive(TIERS[2].plugins)) currentTierName = "Advanced OS";
   else if (isTierActive(TIERS[1].plugins)) currentTierName = "Telemedicine Pro";
 
   return (
@@ -121,8 +122,11 @@ export default function DoctorPluginStore({ entityData }: { entityData: any }) {
           </div>
           <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 shrink-0 min-w-[200px] text-center shadow-inner">
             <div className="text-slate-500 font-bold tracking-widest text-[10px] uppercase mb-1">Current Active Plan</div>
-            <div className="text-2xl font-black text-white flex justify-center items-end gap-1">
+            <div className="text-2xl font-black text-white flex flex-col justify-center items-center gap-1">
               {currentTierName}
+              {isFounder && (
+                <span className="text-[10px] bg-amber-500 text-amber-950 px-2 py-0.5 rounded-full mt-1">Founder Access</span>
+              )}
             </div>
             {currentTierName !== "Basic" ? (
               <div className="text-emerald-400 text-[10px] font-bold mt-2 uppercase tracking-widest flex items-center justify-center gap-1">
@@ -188,14 +192,28 @@ export default function DoctorPluginStore({ entityData }: { entityData: any }) {
                 <p className="text-slate-400 text-sm mb-6 h-10">{tier.description}</p>
                 
                 <div className="mb-8">
-                  <div className="flex items-end gap-2">
-                    <span className="text-4xl font-black text-white">₹{tier.price}</span>
-                    <span className="text-sm font-bold text-slate-500 mb-1">/mo</span>
-                  </div>
-                  {tier.originalPrice && (
-                    <div className="text-sm font-bold text-slate-500 line-through mt-1">
-                      ₹{tier.originalPrice}/mo
+                  {isFounder && tier.id === "advanced" ? (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-end gap-2">
+                        <span className="text-4xl font-black text-amber-400">₹0</span>
+                        <span className="text-sm font-bold text-slate-500 mb-1 line-through">₹{tier.price}/mo</span>
+                      </div>
+                      <div className="text-[11px] font-bold text-amber-500 tracking-widest uppercase mt-1">
+                        Lifetime Founder Grant
+                      </div>
                     </div>
+                  ) : (
+                    <>
+                      <div className="flex items-end gap-2">
+                        <span className="text-4xl font-black text-white">₹{tier.price}</span>
+                        <span className="text-sm font-bold text-slate-500 mb-1">/mo</span>
+                      </div>
+                      {tier.originalPrice && (
+                        <div className="text-sm font-bold text-slate-500 line-through mt-1">
+                          ₹{tier.originalPrice}/mo
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
                 

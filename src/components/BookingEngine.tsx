@@ -97,31 +97,24 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
   const renderButtons = () => {
     switch(entityType) {
       case 'doctor':
-        if (verified) {
-          return (
-            <div className="flex flex-col gap-3 mt-4">
-              <button 
-                onClick={() => {
-                  const message = encodeURIComponent(`Hi ${entityName}, I found your verified profile on Dehapa and would like to book an appointment.`);
-                  window.open(`https://wa.me/${phone?.replace(/[^0-9]/g, '') || ''}?text=${message}`, '_blank');
-                }}
-                className="w-full bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 group border-none"
-              >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                Book via WhatsApp
-              </button>
-            </div>
-          );
-        }
         return (
           <div className="flex flex-col gap-3 mt-4">
-            <button onClick={() => { setBookingMode('offline'); setShowModal(true); }} className="w-full bg-white border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50 text-[#0A1128] py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 group">
-              <MapPin className="w-4 h-4 text-slate-400 group-hover:text-cyan-500" /> Clinic Visit
+            <button 
+              onClick={() => { setBookingMode('offline'); setShowModal(true); }} 
+              className={`w-full py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 group ${verified ? 'bg-white border-2 border-amber-300 hover:border-amber-500 hover:bg-amber-50 text-slate-900 shadow-sm' : 'bg-white border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50 text-[#0A1128]'}`}
+            >
+              <MapPin className={`w-4 h-4 ${verified ? 'text-amber-500 group-hover:text-amber-600' : 'text-slate-400 group-hover:text-cyan-500'}`} /> Clinic Visit
             </button>
-            <button onClick={() => { setBookingMode('schedule_video'); setShowModal(true); }} className="w-full bg-slate-900 hover:bg-slate-800 text-white py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-900/20">
-              <Calendar className="w-4 h-4 text-cyan-400" /> Schedule Video Consult
+            <button 
+              onClick={() => { setBookingMode('schedule_video'); setShowModal(true); }} 
+              className={`w-full py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${verified ? 'bg-slate-900 hover:bg-black text-amber-400 shadow-lg shadow-slate-900/40 border border-slate-800' : 'bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-900/20'}`}
+            >
+              <Calendar className={`w-4 h-4 ${verified ? 'text-amber-500' : 'text-cyan-400'}`} /> Schedule Video Consult
             </button>
-            <button onClick={() => { setBookingMode('instant_video'); setShowModal(true); }} className="w-full bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5 animate-pulse">
+            <button 
+              onClick={() => { setBookingMode('instant_video'); setShowModal(true); }} 
+              className={`w-full py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 animate-pulse ${verified ? 'bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 shadow-[0_8px_20px_rgba(245,158,11,0.4)]' : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-[0_8px_20px_rgba(16,185,129,0.3)]'}`}
+            >
               <Video className="w-4 h-4" /> Connect Now (Instant)
             </button>
           </div>

@@ -123,18 +123,21 @@ export default function AdminVerificationCRM() {
     try {
       const batch = writeBatch(db);
       
-      // 1. Update Application Status
       if (app.collectionName === 'directory') {
          batch.update(doc(db, 'directory', app.id), {
            status: 'active',
            isPublished: true,
            verified: true,
+           founderStatus: true,
+           activePlugins: ['plugin_booking_physical', 'plugin_telemedicine_scheduled', 'plugin_telemedicine_urgent', 'plugin_featured_listing', 'plugin_vip_rx_pad'],
            updatedAt: serverTimestamp()
          });
       } else if (app.collectionName === 'profile_claims') {
          batch.update(doc(db, 'directory', app.entityId), {
            ownerEmail: app.email,
            verified: true,
+           founderStatus: true,
+           activePlugins: ['plugin_booking_physical', 'plugin_telemedicine_scheduled', 'plugin_telemedicine_urgent', 'plugin_featured_listing', 'plugin_vip_rx_pad'],
            updatedAt: serverTimestamp()
          });
          batch.update(doc(db, 'profile_claims', app.id), { status: 'approved' });
@@ -145,9 +148,10 @@ export default function AdminVerificationCRM() {
       // 2. Map data to generic directory schema based on type
       if (app.collectionName !== 'listing_claims' && app.collectionName !== 'directory' && app.collectionName !== 'profile_claims') {
         const newListingRef = doc(collection(db, 'directory'));
-        
         let directoryData: any = {
           verified: true,
+          founderStatus: true,
+          activePlugins: ['plugin_booking_physical', 'plugin_telemedicine_scheduled', 'plugin_telemedicine_urgent', 'plugin_featured_listing', 'plugin_vip_rx_pad'],
           isPublished: false,
           ownerEmail: app.userEmail,
           category: app.appType,
