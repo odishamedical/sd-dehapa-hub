@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { db, auth } from '@/lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
-import { UserCircle, Phone, MapPin, Activity, ArrowRight, ShieldCheck } from 'lucide-react';
+import { UserCircle, Phone, MapPin, Activity, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
 import GlobalHeader from '@/components/GlobalHeader';
 
-export default function SetupHealthPassport() {
+function SetupHealthPassportInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/portal';
@@ -183,5 +183,17 @@ export default function SetupHealthPassport() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function SetupHealthPassport() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0A1128] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+      </div>
+    }>
+      <SetupHealthPassportInner />
+    </Suspense>
   );
 }
