@@ -248,7 +248,7 @@ export default function AdminDashboard() {
           category: crawlerCategory,
           subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
           ...(crawlerCategory === "Doctor" && { 
-            taxonomy: getTaxonomyCategory(crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory) || "specialist" 
+            taxonomy: getTaxonomyCategory(crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory) || crawlerTier.toLowerCase().replace(' ', '-') 
           }),
           country: crawlerAddress.country,
           state: crawlerAddress.state,
