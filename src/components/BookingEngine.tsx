@@ -13,9 +13,11 @@ interface BookingEngineProps {
   entityName: string;
   isLoggedIn: boolean;
   onDispatchAction: () => void;
+  verified?: boolean;
+  phone?: string;
 }
 
-export default function BookingEngine({ entityType, entityId, entityName, isLoggedIn, onDispatchAction }: BookingEngineProps) {
+export default function BookingEngine({ entityType, entityId, entityName, isLoggedIn, onDispatchAction, verified, phone }: BookingEngineProps) {
   const [showModal, setShowModal] = useState(false);
   const [bookingMode, setBookingMode] = useState<string | null>(null);
   
@@ -95,6 +97,22 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
   const renderButtons = () => {
     switch(entityType) {
       case 'doctor':
+        if (verified) {
+          return (
+            <div className="flex flex-col gap-3 mt-4">
+              <button 
+                onClick={() => {
+                  const message = encodeURIComponent(`Hi ${entityName}, I found your verified profile on Dehapa and would like to book an appointment.`);
+                  window.open(`https://wa.me/${phone?.replace(/[^0-9]/g, '') || ''}?text=${message}`, '_blank');
+                }}
+                className="w-full bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 group border-none"
+              >
+                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                Book via WhatsApp
+              </button>
+            </div>
+          );
+        }
         return (
           <div className="flex flex-col gap-3 mt-4">
             <button onClick={() => { setBookingMode('offline'); setShowModal(true); }} className="w-full bg-white border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50 text-[#0A1128] py-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 group">
