@@ -137,7 +137,7 @@ function LoginContent() {
     // Notify GlobalHeader that auth state has changed
     window.dispatchEvent(new Event("sd_auth_change"));
     
-    return userRole;
+    return { role: userRole, isProfileComplete };
   };
 
   const getSmartRedirect = (role: string, currentRedirect: string) => {
@@ -156,8 +156,13 @@ function LoginContent() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const role = await saveUserToFirestore(result.user);
-      router.push(getSmartRedirect(role, redirectUrl));
+      const { role, isProfileComplete } = await saveUserToFirestore(result.user);
+      
+      if (!isProfileComplete) {
+        router.push(`/portal/setup?redirect=${encodeURIComponent(getSmartRedirect(role, redirectUrl))}`);
+      } else {
+        router.push(getSmartRedirect(role, redirectUrl));
+      }
     } catch (err: any) {
       setError(err.message || 'Google sign in failed');
       setLoading(false);
@@ -172,14 +177,24 @@ function LoginContent() {
       // Attempt login first
       try {
         const result = await signInWithEmailAndPassword(auth, email, password);
-        const role = await saveUserToFirestore(result.user);
-        router.push(getSmartRedirect(role, redirectUrl));
+        const { role, isProfileComplete } = await saveUserToFirestore(result.user);
+        
+        if (!isProfileComplete) {
+          router.push(`/portal/setup?redirect=${encodeURIComponent(getSmartRedirect(role, redirectUrl))}`);
+        } else {
+          router.push(getSmartRedirect(role, redirectUrl));
+        }
       } catch (loginErr: any) {
         // If user not found, create one
         if (loginErr.code === 'auth/user-not-found' || loginErr.code === 'auth/invalid-credential') {
             const result = await createUserWithEmailAndPassword(auth, email, password);
-            const role = await saveUserToFirestore(result.user);
-            router.push(getSmartRedirect(role, redirectUrl));
+            const { role, isProfileComplete } = await saveUserToFirestore(result.user);
+            
+            if (!isProfileComplete) {
+              router.push(`/portal/setup?redirect=${encodeURIComponent(getSmartRedirect(role, redirectUrl))}`);
+            } else {
+              router.push(getSmartRedirect(role, redirectUrl));
+            }
         } else {
             throw loginErr;
         }

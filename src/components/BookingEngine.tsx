@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Video, Calendar, MapPin, Upload, Ambulance, FileText, CheckCircle2, Phone, X, CreditCard, Activity } from 'lucide-react';
 import Link from 'next/link';
+import FrictionlessBookingDrawer from '@/components/FrictionlessBookingDrawer';
 
 import { db, auth } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -166,8 +167,8 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
     <>
       {renderButtons()}
 
-      {/* Unified Booking Modal */}
-      {showModal && (
+      {/* Unified Booking Modal for non-doctors */}
+      {showModal && entityType !== 'doctor' && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md z-10">
@@ -348,6 +349,18 @@ export default function BookingEngine({ entityType, entityId, entityName, isLogg
             </div>
           </div>
         </div>
+      )}
+
+      {/* New Frictionless Drawer for Doctors */}
+      {entityType === 'doctor' && (
+        <FrictionlessBookingDrawer 
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          entityId={entityId}
+          entityName={entityName}
+          entityType={entityType}
+          bookingMode={bookingMode as any}
+        />
       )}
     </>
   );
