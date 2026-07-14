@@ -288,7 +288,7 @@ export default function UnifiedProfileLayout({
         )}
 
         {/* HERO CARD - FULL WIDTH (Mockup Style) */}
-        <div id="overview" className="bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] border-t-[#D32F2F] rounded-t-3xl shadow-sm">
+        <div id="overview" className={`bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] rounded-t-3xl shadow-sm ${verified ? 'border-t-amber-500 shadow-[0_-10px_40px_rgba(245,158,11,0.15)]' : 'border-t-[#D32F2F]'}`}>
           
           {/* SVG Waves Background embedded inside the Hero Card */}
           <div className="absolute inset-0 pointer-events-none z-0">
@@ -346,9 +346,9 @@ export default function UnifiedProfileLayout({
                   </div>
                   
                   {verified && (
-                    <div className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-emerald-400/50 backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.3)] overflow-hidden relative group">
+                    <div className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-400/50 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.3)] overflow-hidden relative group">
                       <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_2s_infinite]"></div>
-                      <Shield className="w-3 h-3 fill-emerald-500 text-emerald-200 z-10" /> <span className="z-10">Verified</span>
+                      <Shield className="w-3 h-3 fill-amber-500 text-amber-200 z-10" /> <span className="z-10 uppercase tracking-widest text-[10px]">Verified Premium</span>
                     </div>
                   )}
                 </div>
@@ -362,12 +362,21 @@ export default function UnifiedProfileLayout({
                       if (!verified) {
                         setShowUnverifiedModal(true);
                       } else {
-                        router.push(`/portal/book?doctor=${profile.id}`);
+                        // WhatsApp Booking Flow
+                        const message = encodeURIComponent(`Hi ${profile.name}, I found your verified profile on Dehapa and would like to book an appointment.`);
+                        window.open(`https://wa.me/${profile.phone?.replace(/[^0-9]/g, '') || ''}?text=${message}`, '_blank');
                       }
                     }} 
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
+                    className={`${verified ? 'bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.4)]' : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]'} w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none`}
                   >
-                    <span className="flex items-center gap-2"><MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/> Book Appointment</span>
+                    <span className="flex items-center gap-2">
+                      {verified ? (
+                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                      ) : (
+                        <MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/>
+                      )}
+                      {verified ? 'Book via WhatsApp' : 'Book Appointment'}
+                    </span>
                     <span className="opacity-70 text-[10px]">▼</span>
                   </button>
                 )}

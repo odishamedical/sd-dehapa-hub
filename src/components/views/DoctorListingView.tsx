@@ -24,18 +24,26 @@ export function DoctorListingView({ data }: { data: any }) {
   const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}${generateUniversalSeoUrl(data, 'doctors')}` : '';
 
   return (
-    <Link href={generateUniversalSeoUrl(data, 'doctors')} className="relative h-[220px] rounded-[24px] shadow-xl hover:shadow-cyan-900/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border border-slate-300/60 bg-[#e2e8f0]">
+    <Link href={generateUniversalSeoUrl(data, 'doctors')} className={`relative h-[220px] rounded-[24px] shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group block border ${data.verified ? 'border-amber-500/50 shadow-[0_0_25px_rgba(245,158,11,0.2)] hover:shadow-[0_0_35px_rgba(245,158,11,0.4)] bg-[#0a1229]' : 'border-slate-300/60 bg-[#e2e8f0] hover:shadow-cyan-900/20'}`}>
       {/* Background Metal Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#ffffff] via-[#e2e8f0] to-[#94a3b8] opacity-90 transition-colors"></div>
+      <div className={`absolute inset-0 opacity-90 transition-colors ${data.verified ? 'bg-gradient-to-br from-[#0f172a] via-[#0a1229] to-[#1e1b4b]' : 'bg-gradient-to-br from-[#ffffff] via-[#e2e8f0] to-[#94a3b8]'}`}></div>
       
       {/* Subtle brushed texture */}
-      <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, #000 2px, #000 4px)' }}></div>
+      <div className={`absolute inset-0 mix-blend-overlay pointer-events-none ${data.verified ? 'opacity-[0.08]' : 'opacity-[0.04]'}`} style={{ backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, ${data.verified ? '#ffffff' : '#000000'} 2px, ${data.verified ? '#ffffff' : '#000000'} 4px)` }}></div>
 
       <div className="flex items-center h-full relative z-10 pr-2 sm:pr-3">
         
         {/* Left Side: Floating Vertical Image */}
-        <div className="w-[110px] sm:w-[32%] h-[90%] sm:h-[86%] ml-2 sm:ml-3 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-[3px] sm:border-4 border-[#f8fafc] bg-slate-200 group-hover:scale-[1.03] transition-transform duration-300 z-40">
+        <div className={`w-[110px] sm:w-[32%] h-[90%] sm:h-[86%] ml-2 sm:ml-3 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-[3px] sm:border-4 group-hover:scale-[1.03] transition-transform duration-300 z-40 ${data.verified ? 'border-amber-400/80 bg-slate-800' : 'border-[#f8fafc] bg-slate-200'}`}>
            <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
+           {data.verified && (
+             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 flex justify-center">
+               <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-1">
+                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                 Available
+               </span>
+             </div>
+           )}
         </div>
         
         {/* Right Side: Data Content */}
@@ -43,21 +51,28 @@ export function DoctorListingView({ data }: { data: any }) {
           
           {/* Top Row: Name and Icon */}
           <div className="flex justify-between items-start mb-0.5">
-            <h3 className="text-[15px] sm:text-lg md:text-xl font-bold text-slate-800 tracking-tight truncate drop-shadow-sm pr-1">{data.name}</h3>
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 drop-shadow-sm shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14h-2v-4H5v-2h4V7h2v4h4v2h-4v4z"/></svg>
+            <h3 className={`text-[15px] sm:text-lg md:text-xl font-bold tracking-tight truncate drop-shadow-sm pr-1 ${data.verified ? 'text-white' : 'text-slate-800'}`}>{data.name}</h3>
+            {data.verified ? (
+              <div className="flex items-center gap-1 bg-amber-500/20 border border-amber-500/50 px-2 py-0.5 rounded-full shrink-0">
+                <svg className="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span className="text-[8px] font-black text-amber-400 uppercase tracking-widest hidden sm:inline-block">Verified</span>
+              </div>
+            ) : (
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 drop-shadow-sm shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14h-2v-4H5v-2h4V7h2v4h4v2h-4v4z"/></svg>
+            )}
           </div>
           
-          <p className="text-slate-600 text-xs font-semibold mb-2 truncate">{data.specialty}</p>
+          <p className={`text-xs font-semibold mb-2 truncate ${data.verified ? 'text-slate-300' : 'text-slate-600'}`}>{data.specialty}</p>
           
           {/* Board Certifications (Medals) */}
           <div className="flex items-center gap-2 mb-2.5">
-            <span className="text-[10px] font-bold text-slate-700">Board Certifications</span>
+            <span className={`text-[10px] font-bold ${data.verified ? 'text-slate-400' : 'text-slate-700'}`}>Board Certifications</span>
             <div className="flex gap-1">
                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 border border-yellow-200 shadow-sm flex items-center justify-center">
                  <span className="text-[8px] text-white font-bold">★</span>
                </div>
                {data.verified && (
-                 <div className="w-5 h-5 rounded-full bg-gradient-to-br from-slate-300 to-slate-500 border border-slate-200 shadow-sm flex items-center justify-center">
+                 <div className="w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 border border-amber-300 shadow-sm flex items-center justify-center">
                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
                  </div>
                )}
@@ -66,17 +81,17 @@ export function DoctorListingView({ data }: { data: any }) {
           
           {/* Clinic & Location */}
           <div className="mb-2.5">
-            <p className="text-slate-800 text-xs font-bold truncate drop-shadow-sm">{data.hospital || "Independent Practitioner"}</p>
-            <p className="text-slate-600 text-[10px] flex items-center gap-1">
+            <p className={`text-xs font-bold truncate drop-shadow-sm ${data.verified ? 'text-slate-200' : 'text-slate-800'}`}>{data.hospital || "Independent Practitioner"}</p>
+            <p className={`text-[10px] flex items-center gap-1 ${data.verified ? 'text-slate-400' : 'text-slate-600'}`}>
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
               {data.district || "Angul"}
             </p>
           </div>
           
           {/* Ratings */}
-          <div className="flex items-center gap-2 sm:gap-4 text-[9px] sm:text-[10px] font-bold text-slate-600 mb-auto drop-shadow-sm">
+          <div className={`flex items-center gap-2 sm:gap-4 text-[9px] sm:text-[10px] font-bold mb-auto drop-shadow-sm ${data.verified ? 'text-slate-400' : 'text-slate-600'}`}>
              <span className="flex items-center gap-1 text-amber-500 shrink-0">
-               ⭐⭐⭐⭐⭐ <span className="text-slate-700 ml-0.5 sm:ml-1">{data.rating}</span>
+               ⭐⭐⭐⭐⭐ <span className={data.verified ? 'text-slate-300 ml-0.5 sm:ml-1' : 'text-slate-700 ml-0.5 sm:ml-1'}>{data.rating}</span>
              </span>
              <span className="flex items-center gap-1 shrink-0 truncate">
                <svg className="w-3 h-3 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
@@ -85,22 +100,29 @@ export function DoctorListingView({ data }: { data: any }) {
           </div>
           
           {/* Bottom Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 mt-auto pt-2 sm:pt-3 border-t border-slate-400/30">
+          <div className={`flex items-center gap-1.5 sm:gap-2 mt-auto pt-2 sm:pt-3 border-t ${data.verified ? 'border-slate-700/50' : 'border-slate-400/30'}`}>
             <button 
               onClick={(e) => {
                 e.preventDefault();
                 setShowQR(true);
               }}
-              className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-2 rounded-md border border-slate-400 transition-colors shadow-sm flex items-center justify-center shrink-0"
+              className={`font-bold py-1.5 px-2 rounded-md border transition-colors shadow-sm flex items-center justify-center shrink-0 ${data.verified ? 'bg-transparent text-slate-300 border-slate-600 hover:bg-slate-800' : 'bg-transparent hover:bg-slate-300 text-slate-700 border-slate-400'}`}
             >
               <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
-            <div className="bg-transparent hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-2 sm:px-4 rounded-md border border-slate-400 text-[9px] sm:text-[10px] transition-colors whitespace-nowrap shadow-sm text-center">
+            <div className={`font-bold py-1.5 px-2 sm:px-4 rounded-md border text-[9px] sm:text-[10px] transition-colors whitespace-nowrap shadow-sm text-center ${data.verified ? 'bg-transparent text-slate-300 border-slate-600 hover:bg-slate-800' : 'bg-transparent hover:bg-slate-300 text-slate-700 border-slate-400'}`}>
               Contact
             </div>
-            <div className="bg-teal-700 hover:bg-teal-800 text-white font-bold py-1.5 px-2 sm:px-4 rounded-md text-[9px] sm:text-[10px] transition-all shadow-lg shadow-teal-900/20 whitespace-nowrap text-center flex-1 truncate">
-              Book Appt
-            </div>
+            {data.verified ? (
+              <div className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 font-black py-1.5 px-2 sm:px-4 rounded-md text-[9px] sm:text-[10px] transition-all shadow-[0_0_15px_rgba(245,158,11,0.4)] whitespace-nowrap text-center flex-1 truncate flex items-center justify-center gap-1.5">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                Book via WhatsApp
+              </div>
+            ) : (
+              <div className="bg-teal-700 hover:bg-teal-800 text-white font-bold py-1.5 px-2 sm:px-4 rounded-md text-[9px] sm:text-[10px] transition-all shadow-lg shadow-teal-900/20 whitespace-nowrap text-center flex-1 truncate">
+                View Details
+              </div>
+            )}
           </div>
           
         </div>
