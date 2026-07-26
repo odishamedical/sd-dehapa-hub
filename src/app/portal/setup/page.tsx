@@ -66,7 +66,6 @@ function SetupHealthPassportInner() {
 
   return (
     <div className="min-h-screen bg-[#0A1128] font-sans selection:bg-teal-500/30 selection:text-teal-200">
-      <GlobalHeader />
       
       <main className="pt-24 pb-20 px-4 flex justify-center items-center min-h-screen relative overflow-hidden">
         {/* Background Gradients */}
