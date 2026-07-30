@@ -339,7 +339,7 @@ export default function UnifiedProfileLayout({
                 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[5px] border-white bg-white/10">
                   <div className="relative w-full h-full object-cover"><Image src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
                     alt={profile.name}
-                   fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                   fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=0f766e&color=fff&size=800`; }} /></div>
                 </div>
               </div>
 
@@ -849,7 +849,7 @@ export default function UnifiedProfileLayout({
                         <div key={i} className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-6 shadow-md border border-white/10 flex flex-col md:flex-row gap-8">
                           {v.vehicleImage && (
                             <div className="w-full md:w-48 h-48 rounded-2xl overflow-hidden shrink-0 bg-white/10 border border-white/10">
-                              <div className="relative w-full h-full object-cover"><Image src={v.vehicleImage} alt={v.registrationNumber}  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                              <div className="relative w-full h-full object-cover"><Image src={v.vehicleImage} alt={v.registrationNumber}  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
                             </div>
                           )}
                           <div className="flex-1">
@@ -882,7 +882,7 @@ export default function UnifiedProfileLayout({
                             {driver && (
                               <div className="border-t border-white/5 pt-4 flex items-center gap-4">
                                 {driver.driverPhoto ? (
-                                  <div className="relative w-10 h-10 rounded-full border border-white/10 object-cover"><Image src={driver.driverPhoto} alt={driver.driverName}  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                                  <div className="relative w-10 h-10 rounded-full border border-white/10 object-cover"><Image src={driver.driverPhoto} alt={driver.driverName}  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
                                 ) : (
                                   <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
                                     <User className="w-5 h-5 text-slate-400" />
@@ -964,7 +964,7 @@ export default function UnifiedProfileLayout({
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
                     {[...(profile.galleryImages || []), ...(profile.rawImages || [])].slice(0, 6).map((img: string, idx: number) => (
                       <div key={idx} className="aspect-square rounded-[2rem] overflow-hidden bg-white/10 shadow-sm">
-                        <div className="relative w-full h-full object-cover hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"><Image src={img} alt="Gallery"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                        <div className="relative w-full h-full object-cover hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"><Image src={img} alt="Gallery"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
                       </div>
                     ))}
                   </div>
@@ -976,7 +976,7 @@ export default function UnifiedProfileLayout({
                         const videoId = link.split('v=')[1]?.split('&')[0] || link.split('youtu.be/')[1];
                         return videoId ? (
                           <div key={idx} className="w-[320px] shrink-0 snap-center rounded-[2rem] overflow-hidden bg-slate-900 aspect-video relative group shadow-lg">
-                            <div className="relative w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"><Image src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} alt="Video thumbnail"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                            <div className="relative w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"><Image src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} alt="Video thumbnail"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
                             <div className="absolute inset-0 flex items-center justify-center">
                               <div className="w-16 h-16 bg-white/5 backdrop-blur-xl/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform">
                                 <Video className="w-6 h-6 text-white" />
@@ -1050,12 +1050,12 @@ export default function UnifiedProfileLayout({
               <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center min-h-[250px]">
                 {heroRightAd.type === 'image' ? (
                   <a href={heroRightAd.linkUrl} target="_blank" rel="noreferrer" className="w-full flex items-center justify-center p-2">
-                    <div className="relative w-full h-auto object-contain"><Image src={heroRightAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                    <div className="relative w-full h-auto object-contain"><Image src={heroRightAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
                   </a>
                 ) : heroRightAd.type === 'split' ? (
                   <div className="flex flex-col w-full">
                     <div className="w-full flex items-center justify-center p-4 bg-white/5">
-                      <div className="relative w-full h-auto max-h-[200px] object-contain"><Image src={heroRightAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                      <div className="relative w-full h-auto max-h-[200px] object-contain"><Image src={heroRightAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
                     </div>
                     <div className="w-full flex flex-col items-center text-center p-6 bg-gradient-to-t from-slate-900 to-transparent">
                       <h3 className="text-xl font-black text-white mb-2 leading-tight">{heroRightAd.headline}</h3>
@@ -1089,7 +1089,7 @@ export default function UnifiedProfileLayout({
                     
                     return (
                       <Link key={idx} href={`${routePath}/${sim.id}`} className="group flex items-center gap-4 bg-white/5 hover:bg-white/5 backdrop-blur-xl rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md shrink-0">
-                        <div className="relative "><Image src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Provider")}&background=0f766e&color=fff`} alt={sim.name} className={`w-14 h-14 object-cover border border-white/10 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'}`}  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                        <div className="relative "><Image src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || "Provider")}&background=0f766e&color=fff`} alt={sim.name} fill sizes="(max-width: 768px) 100vw, 33vw" className={`w-14 h-14 object-cover border border-white/10 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'} object-cover`}  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=0f766e&color=fff&size=800`; }} /></div>
                         <div className="min-w-0 flex-1">
                           <h4 className="font-bold text-sm text-white truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
                           <div className="flex items-center gap-1 mt-1">
@@ -1122,12 +1122,12 @@ export default function UnifiedProfileLayout({
                   </a>
                 </div>
                 <div className="w-1/2 h-full">
-                  <div className="relative w-full h-full object-cover"><Image src={heroBottomAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                  <div className="relative w-full h-full object-cover"><Image src={heroBottomAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
                 </div>
               </div>
             ) : heroBottomAd.type === 'image' ? (
               <a href={heroBottomAd.linkUrl} target="_blank" rel="noreferrer" className="w-full h-full block">
-                <div className="relative w-full h-full object-cover"><Image src={heroBottomAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
+                <div className="relative w-full h-full object-cover"><Image src={heroBottomAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = "/placeholder.png"; }} /></div>
               </a>
             ) : (
               <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: heroBottomAd.htmlCode }} />
