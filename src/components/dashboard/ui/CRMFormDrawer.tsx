@@ -483,11 +483,14 @@ export function CRMFormDrawer({ isOpen, onClose, selectedItem: initialItem, isNe
                   <h4 className="font-bold text-white mb-2">Scraped Images (Crawler)</h4>
                   <p className="text-xs text-slate-400 mb-4">Click any image to crop it and set as Primary or add to Gallery.</p>
                   <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
-                    {selectedListing.rawImages.map((rawUrl: string, idx: number) => (
-                      <div key={idx} onClick={() => handleRawImageClick(rawUrl)} className="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-slate-700 hover:border-teal-500 cursor-pointer shadow-sm transition-all hover:scale-105">
-                        <Image src={rawUrl} alt={`Scraped ${idx}`} fill sizes="96px" className="object-cover" />
-                      </div>
-                    ))}
+                    {selectedListing.rawImages.map((rawUrl: string, idx: number) => {
+                      const proxiedUrl = rawUrl.includes('places.googleapis.com') ? `/api/image-proxy?url=${encodeURIComponent(rawUrl)}` : rawUrl;
+                      return (
+                        <div key={idx} onClick={() => handleRawImageClick(rawUrl)} className="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-slate-700 hover:border-teal-500 cursor-pointer shadow-sm transition-all hover:scale-105">
+                          <Image src={proxiedUrl} alt={`Scraped ${idx}`} fill sizes="96px" className="object-cover" />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -22,7 +22,14 @@ import { QrCode, X } from 'lucide-react';
 
 export function DoctorListingView({ data }: { data: any }) {
   const [showQR, setShowQR] = useState(false);
-  const [imgSrc, setImgSrc] = useState(data.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || "Dr")}&background=0f172a&color=fff&size=150`);
+  
+  // Wrap Google Places images with our proxy to bypass Next.js redirect errors
+  let initialImg = data.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || "Dr")}&background=0f172a&color=fff&size=150`;
+  if (initialImg.includes('places.googleapis.com')) {
+     initialImg = `/api/image-proxy?url=${encodeURIComponent(initialImg)}`;
+  }
+  
+  const [imgSrc, setImgSrc] = useState(initialImg);
   const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}${generateUniversalSeoUrl(data, 'doctors')}` : '';
 
   return (

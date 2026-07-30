@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, limit } from 'firebase/firestore';
 
 export async function GET() {
   try {
-    const snap = await getDocs(collection(db, 'directory'));
-    let updatedCount = 0;
+    const snap = await getDocs(query(collection(db, 'directory'), limit(10)));
+    let results = [];
     for (const d of snap.docs) {
       const data = d.data();
-      if (data.customSlug && typeof data.customSlug === 'string' && data.customSlug !== data.customSlug.trim()) {
-        await updateDoc(doc(db, 'directory', d.id), { customSlug: data.customSlug.trim() });
-        updatedCount++;
+      if (data.rawImages && data.rawImages.length > 0) {
+         results.push({ name: data.name, images: data.rawImages });
       }
     }
-    return NextResponse.json({ success: true, updatedCount });
+    return NextResponse.json({ success: true, results });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
