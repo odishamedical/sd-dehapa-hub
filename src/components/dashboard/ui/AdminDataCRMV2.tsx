@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdminData } from '@/hooks/useAdminData';
 import { StandardDataTable } from '@/components/dashboard/ui/StandardDataTable';
 import { CRMFormDrawer } from '@/components/dashboard/ui/CRMFormDrawer';
+import { deleteDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { Edit } from 'lucide-react';
 import Link from 'next/link';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
@@ -12,7 +14,7 @@ import { indianStates, districtsByState, blocksByDistrict } from '@/lib/location
 
 export default function AdminDataCRMV2() {
   const { 
-    data, 
+    data: rawData, 
     loading, 
     filteredData, 
     stats,
@@ -24,6 +26,9 @@ export default function AdminDataCRMV2() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [sentLeads, setSentLeads] = useState<Record<string, 'sending' | 'success' | 'error'>>({});
   const [leadStatuses, setLeadStatuses] = useState<Record<string, any>>({});
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBulking, setIsBulking] = useState(false);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
 
   React.useEffect(() => {
     // URL param parsing
@@ -73,6 +78,82 @@ export default function AdminDataCRMV2() {
     setIsDrawerOpen(false);
     const newUrl = window.location.pathname + window.location.hash;
     window.history.replaceState(null, '', newUrl);
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(filteredData.map((d: any) => d.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  const handleBulkUpdate = async (updateField: string, updateValue: any) => {
+    if (selectedIds.length === 0) return;
+    const actionName = updateField === 'verified' && updateValue ? "Verify" : updateField === 'verified' && !updateValue ? "Unverify" : updateField === 'isPublished' && updateValue ? "Publish" : "Unpublish";
+    if (!confirm(`Are you sure you want to ${actionName} ${selectedIds.length} selected listings?`)) return;
+    setIsBulking(true);
+    try {
+      await Promise.all(selectedIds.map(id => updateDoc(doc(db, 'directory', id), { [updateField]: updateValue, updatedAt: serverTimestamp() })));
+      await fetchData();
+      setSelectedIds([]);
+    } catch (e) {
+      console.error(e);
+      alert(`Failed to ${actionName} selected listings.`);
+    }
+    setIsBulking(false);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    if (!confirm(`Are you sure you want to permanently delete ${selectedIds.length} selected listings?`)) return;
+    setIsDeletingBulk(true);
+    try {
+      await Promise.all(selectedIds.map(id => deleteDoc(doc(db, 'directory', id))));
+      await fetchData();
+      setSelectedIds([]);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to delete selected listings.");
+    }
+    setIsDeletingBulk(false);
+  };
+
+  const handleExportCSV = () => {
+    const dataToExport = selectedIds.length > 0 
+      ? rawData.filter((d: any) => selectedIds.includes(d.id)) 
+      : filteredData;
+      
+    if (dataToExport.length === 0) return alert("No data to export.");
+    const headers = ["ID", "Name", "Category", "Phone", "City", "District", "Verified", "Visible"];
+    const csvRows = [headers.join(",")];
+    for (const row of dataToExport) {
+      const values = [
+        row.id,
+        `"${(row.name || "").replace(/"/g, '""')}"`,
+        `"${(row.category || "").replace(/"/g, '""')}"`,
+        `"${row.phone || ""}"`,
+        `"${row.city || ""}"`,
+        `"${row.district || ""}"`,
+        row.verified ? "Yes" : "No",
+        row.isPublished !== false ? "Yes" : "No"
+      ];
+      csvRows.push(values.join(","));
+    }
+    const blob = new Blob([csvRows.join("\n")], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `directory_export_${Date.now()}.csv`);
+    a.click();
   };
 
   const handleSendWhatsAppInvite = async (e: React.MouseEvent, item: any) => {
@@ -145,9 +226,28 @@ export default function AdminDataCRMV2() {
 
   const columns = [
     { 
-      header: <input type="checkbox" className="w-4 h-4 text-cyan-500 rounded border-slate-700 bg-slate-800 focus:ring-cyan-500" />,
-      className: "w-10",
-      cell: (item: any) => <input type="checkbox" className="w-4 h-4 text-cyan-500 rounded border-slate-700 bg-slate-800 focus:ring-cyan-500" />
+      header: (
+        <div className="flex items-center gap-2">
+          <input 
+            type="checkbox" 
+            checked={filteredData.length > 0 && selectedIds.length === filteredData.length} 
+            onChange={handleSelectAll} 
+            className="w-4 h-4 text-cyan-500 rounded border-slate-700 bg-slate-800 focus:ring-cyan-500 cursor-pointer" 
+          />
+          <span className="text-[10px] uppercase font-bold tracking-widest hidden md:inline">Select All</span>
+        </div>
+      ),
+      className: "w-32",
+      cell: (item: any) => (
+        <div onClick={(e) => e.stopPropagation()}>
+          <input 
+            type="checkbox" 
+            checked={selectedIds.includes(item.id)} 
+            onChange={() => handleSelectOne(item.id)} 
+            className="w-4 h-4 text-cyan-500 rounded border-slate-700 bg-slate-800 focus:ring-cyan-500 cursor-pointer" 
+          />
+        </div>
+      )
     },
     { 
       header: "Image",
@@ -277,17 +377,36 @@ export default function AdminDataCRMV2() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
               Reset
             </button>
-            <button className="bg-amber-600 hover:bg-amber-500 text-white border border-amber-500 px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
+            <button onClick={() => alert("Please use the original CRM (V1) for legacy migration. It is safer to use V1 for imports.")} className="bg-amber-600 hover:bg-amber-500 text-white border border-amber-500 px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
               Migrate Legacy Data
             </button>
-            <button className="bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-              Export CSV
-            </button>
+            {selectedIds.length === 0 && (
+              <button onClick={handleExportCSV} className="bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                Export CSV
+              </button>
+            )}
           </div>
         }
       />
+      
+      {/* Action Bar for Bulk Selection */}
+      {selectedIds.length > 0 && (
+        <div className="px-6 py-4 bg-cyan-900/30 border-b border-cyan-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 z-20 backdrop-blur-md">
+          <div className="text-sm font-bold text-cyan-400">{selectedIds.length} listings selected</div>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={handleExportCSV} className="text-xs bg-indigo-600 text-white border border-indigo-500 hover:bg-indigo-500 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Export Selected CSV</button>
+            <div className="w-px h-6 bg-slate-700 hidden md:block mx-1"></div>
+            <button onClick={() => handleBulkUpdate('verified', true)} disabled={isBulking} className="text-xs bg-slate-800 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Verify</button>
+            <button onClick={() => handleBulkUpdate('verified', false)} disabled={isBulking} className="text-xs bg-slate-800 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Unverify</button>
+            <button onClick={() => handleBulkUpdate('isPublished', true)} disabled={isBulking} className="text-xs bg-slate-800 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/20 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Publish</button>
+            <button onClick={() => handleBulkUpdate('isPublished', false)} disabled={isBulking} className="text-xs bg-slate-800 text-slate-300 border border-slate-600 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Unpublish</button>
+            <div className="w-px h-6 bg-slate-700 hidden md:block mx-1"></div>
+            <button onClick={handleBulkDelete} disabled={isDeletingBulk} className="text-xs bg-rose-600 hover:bg-rose-500 text-white border border-rose-500 px-4 py-1.5 rounded-lg font-bold transition-all shadow-sm">Delete Selected</button>
+          </div>
+        </div>
+      )}
       
       {/* Sub-Filters */}
       <div className="px-6 py-4 bg-slate-900/40 backdrop-blur-xl border-b border-white/5 flex flex-wrap items-center gap-4">
