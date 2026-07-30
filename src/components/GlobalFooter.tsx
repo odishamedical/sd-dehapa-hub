@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ShieldCheck, ArrowRight, HeartPulse, PhoneCall, Youtube, Instagram, Facebook, Twitter, Linkedin, Users, Stethoscope, HelpCircle, Mail, MessageCircle, ArrowUp } from 'lucide-react';
+import Image from 'next/image';
 
 export default function GlobalFooter() {
   const scrollToTop = () => {
@@ -54,8 +55,8 @@ export default function GlobalFooter() {
           {/* Brand & Contact Column (Drops to bottom on mobile) */}
           <div className="order-last lg:order-first mt-8 lg:mt-0 pt-8 lg:pt-0 border-t border-slate-800 lg:border-none pr-0 lg:pr-8">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-white rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] p-1 flex items-center justify-center shrink-0">
-                <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain" />
+              <div className="w-12 h-12 bg-white rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.3)] p-1 flex items-center justify-center shrink-0 relative">
+                <Image src="/logo.png" alt="DehaPa Logo" fill sizes="48px" className="object-contain" />
               </div>
               <div>
                 <h3 className="font-serif font-black text-2xl text-white tracking-tight leading-none mb-1">
@@ -202,7 +203,7 @@ export default function GlobalFooter() {
               {/* Premium Transparent Logo (Matches Header) */}
               <div className="flex items-center gap-3 shrink-0">
                 <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center">
-                  <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain relative z-10" />
+                  <Image src="/logo.png" alt="DehaPa Logo" fill sizes="48px" className="object-contain relative z-10" />
                   <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-lg pointer-events-none"></div>
                 </div>
                 <div className="flex flex-col justify-center text-left">
