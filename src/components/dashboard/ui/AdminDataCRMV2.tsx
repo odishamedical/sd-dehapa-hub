@@ -34,14 +34,14 @@ export default function AdminDataCRMV2() {
     // URL param parsing
     const params = new URLSearchParams(window.location.search);
     const editId = params.get('edit');
-    if (editId && data.length > 0 && !isDrawerOpen) {
-      const item = data.find((d: any) => d.id === editId);
+    if (editId && rawData && rawData.length > 0 && !isDrawerOpen) {
+      const item = rawData.find((d: any) => d.id === editId);
       if (item) {
         setSelectedItem(item);
         setIsDrawerOpen(true);
       }
     }
-  }, [data]);
+  }, [rawData]);
 
   React.useEffect(() => {
     // Real-time listener for WhatsApp delivery receipts
