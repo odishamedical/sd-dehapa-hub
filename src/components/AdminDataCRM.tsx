@@ -533,69 +533,71 @@ export default function AdminDataCRM() {
         }
         description={`Manage all ${data.length} records in the ecosystem`}
         actions={
-          <button onClick={() => { setCountryFilter(""); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); setSearch(""); setCategoryFilter(""); }} className="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-3 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2 whitespace-nowrap">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            Reset
-          </button>
-          <button onClick={handleMigrateLegacy} disabled={isBulking} className="bg-amber-600 hover:bg-amber-500 text-white border border-amber-500 px-4 py-3 rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
-            {isBulking ? "Migrating..." : "Migrate Legacy Data"}
-          </button>
-          <select 
-            value={countryFilter} 
-            onChange={e => { setCountryFilter(e.target.value); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); }}
-            className="border border-slate-700 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-2 outline-none w-full md:w-32 form-select bg-slate-800/80 text-white backdrop-blur-sm font-medium"
-          >
-            <option value="">All Countries</option>
-            <option value="India">India</option>
-            <option value="USA">USA</option>
-            <option value="UAE">UAE</option>
-            <option value="Australia">Australia</option>
-            <option value="England">England</option>
-          </select>
-          {countryFilter === "India" && (
+          <>
+            <button onClick={() => { setCountryFilter(""); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); setSearch(""); setCategoryFilter(""); }} className="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-3 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-2 whitespace-nowrap">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+              Reset
+            </button>
+            <button onClick={handleMigrateLegacy} disabled={isBulking} className="bg-amber-600 hover:bg-amber-500 text-white border border-amber-500 px-4 py-3 rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+              {isBulking ? "Migrating..." : "Migrate Legacy Data"}
+            </button>
             <select 
-              value={stateFilter} 
-              onChange={e => { setStateFilter(e.target.value); setDistrictFilter(""); setBlockFilter(""); }}
-              className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-32 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
+              value={countryFilter} 
+              onChange={e => { setCountryFilter(e.target.value); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); }}
+              className="border border-slate-700 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-2 outline-none w-full md:w-32 form-select bg-slate-800/80 text-white backdrop-blur-sm font-medium"
             >
-              <option value="">All States</option>
-              {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
+              <option value="">All Countries</option>
+              <option value="India">India</option>
+              <option value="USA">USA</option>
+              <option value="UAE">UAE</option>
+              <option value="Australia">Australia</option>
+              <option value="England">England</option>
             </select>
-          )}
-          {stateFilter && districtsByState[stateFilter] && (
-            <select 
-              value={districtFilter} 
-              onChange={e => { setDistrictFilter(e.target.value); setBlockFilter(""); }}
-              className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
-            >
-              <option value="">All Districts</option>
-              {districtsByState[stateFilter].map(d => <option key={d} value={d}>{d}</option>)}
-            </select>
-          )}
-          {districtFilter && blocksByDistrict[districtFilter] && (
-            <select 
-              value={blockFilter} 
-              onChange={e => setBlockFilter(e.target.value)}
-              className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
-            >
-              <option value="">All Blocks</option>
-              {blocksByDistrict[districtFilter].map(b => <option key={b} value={b}>{b}</option>)}
-            </select>
-          )}
-          <input 
-            type="text" 
-            placeholder="Search name or phone..." 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 md:w-64 border border-slate-700 hover:border-teal-500/50 rounded-xl px-5 py-3 shadow-sm text-white focus:outline-none focus:border-teal-400 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-500 bg-slate-800/80 backdrop-blur-sm"
-          />
-          <button onClick={handleCreateNew} className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-900 px-5 py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(20,184,166,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2 whitespace-nowrap">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-            Create Record
-          </button>
-        </div>
-      } />
+            {countryFilter === "India" && (
+              <select 
+                value={stateFilter} 
+                onChange={e => { setStateFilter(e.target.value); setDistrictFilter(""); setBlockFilter(""); }}
+                className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-32 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
+              >
+                <option value="">All States</option>
+                {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            )}
+            {stateFilter && districtsByState[stateFilter] && (
+              <select 
+                value={districtFilter} 
+                onChange={e => { setDistrictFilter(e.target.value); setBlockFilter(""); }}
+                className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
+              >
+                <option value="">All Districts</option>
+                {districtsByState[stateFilter].map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            )}
+            {districtFilter && blocksByDistrict[districtFilter] && (
+              <select 
+                value={blockFilter} 
+                onChange={e => setBlockFilter(e.target.value)}
+                className="border border-white/10 rounded-xl px-4 py-3 shadow-sm text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none w-full md:w-36 form-select bg-slate-800/50 backdrop-blur-sm font-medium text-slate-200"
+              >
+                <option value="">All Blocks</option>
+                {blocksByDistrict[districtFilter].map(b => <option key={b} value={b}>{b}</option>)}
+              </select>
+            )}
+            <input 
+              type="text" 
+              placeholder="Search name or phone..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="flex-1 md:w-64 border border-slate-700 hover:border-teal-500/50 rounded-xl px-5 py-3 shadow-sm text-white focus:outline-none focus:border-teal-400 focus:ring-4 focus:ring-teal-500/10 transition-all font-medium placeholder:text-slate-500 bg-slate-800/80 backdrop-blur-sm"
+            />
+            <button onClick={handleCreateNew} className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-900 px-5 py-3 rounded-xl text-sm font-bold shadow-[0_4px_15px_rgba(20,184,166,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2 whitespace-nowrap">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+              Create Record
+            </button>
+          </>
+        } 
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-slate-900/40 border-b border-slate-800 shrink-0 relative z-10">
         <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-5 border border-white/10 shadow-sm flex items-center gap-4">
