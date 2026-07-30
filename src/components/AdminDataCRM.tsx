@@ -444,10 +444,14 @@ export default function AdminDataCRM() {
   };
 
   const handleExportCSV = () => {
-    if (filteredData.length === 0) return alert("No data to export.");
+    const dataToExport = selectedIds.length > 0 
+      ? data.filter(d => selectedIds.includes(d.id)) 
+      : filteredData;
+      
+    if (dataToExport.length === 0) return alert("No data to export.");
     const headers = ["ID", "Name", "Category", "Phone", "City", "District", "Verified", "Visible"];
     const csvRows = [headers.join(",")];
-    for (const row of filteredData) {
+    for (const row of dataToExport) {
       const values = [
         row.id,
         `"${(row.name || "").replace(/"/g, '""')}"`,
@@ -537,14 +541,6 @@ export default function AdminDataCRM() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
             {isBulking ? "Migrating..." : "Migrate Legacy Data"}
           </button>
-          <button onClick={handleExportCSV} className="bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 px-5 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            Export CSV
-          </button>
-          <button onClick={handleDeleteAllFiltered} disabled={isDeletingBulk} className="bg-rose-600 hover:bg-rose-500 text-white border border-rose-500 px-5 py-3 rounded-xl text-sm font-bold shadow-lg shadow-rose-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-            Delete All
-          </button>
           <select 
             value={countryFilter} 
             onChange={e => { setCountryFilter(e.target.value); setStateFilter(""); setDistrictFilter(""); setBlockFilter(""); }}
@@ -633,14 +629,17 @@ export default function AdminDataCRM() {
       
       {/* Action Bar for Bulk Selection */}
       {selectedIds.length > 0 && (
-        <div className="px-6 py-3 bg-teal-900/30 border-b border-teal-500/30 flex flex-wrap items-center justify-between gap-4 z-10 backdrop-blur-md">
+        <div className="px-6 py-4 bg-teal-900/30 border-b border-teal-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 z-10 backdrop-blur-md">
           <div className="text-sm font-bold text-teal-400">{selectedIds.length} listings selected</div>
           <div className="flex flex-wrap gap-2">
+            <button onClick={handleExportCSV} className="text-xs bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/20 hover:text-white px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Export Selected CSV</button>
+            <div className="w-px h-6 bg-slate-700 hidden md:block mx-1"></div>
             <button onClick={() => handleBulkUpdate('verified', true)} disabled={isBulking} className="text-xs bg-slate-800 text-teal-400 border border-teal-500/30 hover:bg-teal-500/20 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Verify</button>
             <button onClick={() => handleBulkUpdate('verified', false)} disabled={isBulking} className="text-xs bg-slate-800 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Unverify</button>
             <button onClick={() => handleBulkUpdate('isPublished', true)} disabled={isBulking} className="text-xs bg-slate-800 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/20 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Publish</button>
             <button onClick={() => handleBulkUpdate('isPublished', false)} disabled={isBulking} className="text-xs bg-slate-800 text-slate-300 border border-slate-600 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Unpublish</button>
-            <button onClick={handleBulkDelete} disabled={isDeletingBulk} className="text-xs bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm ml-2">Delete</button>
+            <div className="w-px h-6 bg-slate-700 hidden md:block mx-1"></div>
+            <button onClick={handleBulkDelete} disabled={isDeletingBulk} className="text-xs bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm">Delete Selected</button>
           </div>
         </div>
       )}
@@ -678,6 +677,23 @@ export default function AdminDataCRM() {
       )}
 
       <div className="flex-1 overflow-auto bg-[#0B1121] relative z-10">
+        
+        {/* Mobile Select All Bar */}
+        <div className="md:hidden px-4 py-3 bg-slate-800/80 border-b border-slate-700 flex justify-between items-center sticky top-0 z-20 backdrop-blur-md">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input 
+              type="checkbox" 
+              checked={filteredData.length > 0 && selectedIds.length === filteredData.length} 
+              onChange={handleSelectAll} 
+              className="w-5 h-5 text-teal-500 rounded border-slate-600 bg-slate-900 focus:ring-teal-500" 
+            />
+            <span className="text-sm font-bold text-slate-300">
+              {selectedIds.length === filteredData.length && filteredData.length > 0 ? "Deselect All" : "Select All"}
+            </span>
+          </label>
+          <span className="text-xs font-medium text-slate-500">{filteredData.length} items</span>
+        </div>
+
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
@@ -688,7 +704,10 @@ export default function AdminDataCRM() {
           <table className="w-full text-left border-collapse block md:table">
             <thead className="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-20 shadow-sm border-b border-slate-800 hidden md:table-header-group">
               <tr>
-                <th className="px-6 py-4"><input type="checkbox" onChange={handleSelectAll} className="w-4 h-4 text-teal-500 rounded border-slate-700 bg-slate-800 focus:ring-teal-500" /></th>
+                <th className="px-6 py-4 flex items-center gap-2">
+                  <input type="checkbox" checked={filteredData.length > 0 && selectedIds.length === filteredData.length} onChange={handleSelectAll} className="w-4 h-4 text-teal-500 rounded border-slate-700 bg-slate-800 focus:ring-teal-500 cursor-pointer" />
+                  <span className="text-xs font-bold text-slate-400 uppercase">Select All</span>
+                </th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Image</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Entity</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Contact</th>
