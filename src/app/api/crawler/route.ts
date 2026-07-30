@@ -2,6 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
+async function resolvePhotoUri(photoName: string, maxDim: number): Promise<string | null> {
+  if (!GOOGLE_PLACES_API_KEY) return null;
+  try {
+    const url = `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=${maxDim}&maxWidthPx=${maxDim}&skipHttpRedirect=true&key=${GOOGLE_PLACES_API_KEY}`;
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      return data.photoUri || null;
+    }
+  } catch (e) {
+    console.error('Error resolving photo URI:', e);
+  }
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     if (!GOOGLE_PLACES_API_KEY) {
@@ -106,7 +121,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Transform into our StagedListing format dynamically
-    const results = placesToMap.map((place: any) => {
+    const results = await Promise.all(placesToMap.map(async (place: any) => {
       const name = place.displayName?.text || 'Unknown Name';
       const phone = place.nationalPhoneNumber || '';
       
@@ -114,14 +129,20 @@ export async function POST(req: NextRequest) {
       let rawImages: string[] = [];
       
       if (place.photos && place.photos.length > 0) {
-        // Construct media url for the first photo as the default thumbnail
-        imageUrl = `https://places.googleapis.com/v1/${place.photos[0].name}/media?maxHeightPx=400&maxWidthPx=400&key=${GOOGLE_PLACES_API_KEY}`;
+        // Resolve first photo for thumbnail
+        const thumbUri = await resolvePhotoUri(place.photos[0].name, 400);
+        if (thumbUri) imageUrl = thumbUri;
         
-        // Extract up to 10 photos for the rawImages array (high res for cropping)
-        rawImages = place.photos.slice(0, 10).map((p: any) => 
-          `https://places.googleapis.com/v1/${p.name}/media?maxHeightPx=1200&maxWidthPx=1200&key=${GOOGLE_PLACES_API_KEY}`
-        );
-      } else {
+        // Resolve up to 5 photos for the rawImages array (high res for cropping)
+        const photoPromises = place.photos.slice(0, 5).map((p: any) => resolvePhotoUri(p.name, 1200));
+        const resolvedUris = await Promise.all(photoPromises);
+        rawImages = resolvedUris.filter((uri: any) => uri !== null) as string[];
+        
+        // Fallback if all resolutions failed
+        if (!imageUrl && rawImages.length > 0) imageUrl = rawImages[0];
+      }
+      
+      if (!imageUrl) {
         // Fallback UI avatar
         imageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f766e&color=fff&size=150`;
       }
@@ -173,9 +194,13 @@ export async function POST(req: NextRequest) {
           businessStatus: place.businessStatus || undefined
         })
       };
-    });
+    }));
 
-    return NextResponse.json({ results, query: finalQuery, nextPageToken: data.nextPageToken || null });
+    return NextResponse.json({ 
+      results, 
+      query: finalQuery,
+      nextPageToken: data.nextPageToken || null 
+    });
 
   } catch (error: any) {
     console.error("Crawler Error:", error);
