@@ -254,7 +254,7 @@ export default function UnifiedProfileLayout({
           <span>/</span>
           <Link href={`/${type}s`} className="hover:text-teal-600 transition-colors">{type}s</Link>
           <span>/</span>
-          <span className="text-slate-900 truncate max-w-[200px]">{profile.name}</span>
+          <span className="text-slate-100 truncate max-w-[200px]">{profile.name}</span>
         </div>
       </div>
 
@@ -280,7 +280,7 @@ export default function UnifiedProfileLayout({
           <div className="col-span-1 md:col-span-8 flex flex-col w-full min-w-0">
             
             {/* HERO CARD */}
-            <div id="overview" className={`bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] rounded-3xl shadow-sm ${verified ? 'border-t-amber-500 shadow-[0_-10px_40px_rgba(245,158,11,0.15)]' : 'border-t-[#D32F2F]'}`}>
+            <div id="overview" className={`bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col relative overflow-hidden group border-t-[6px] rounded-3xl shadow-sm ${verified ? 'border-t-amber-500 shadow-[0_-10px_40px_rgba(245,158,11,0.15)]' : 'border-t-[#D32F2F]'}`}>
               
                {/* SVG Waves Background embedded inside the Hero Card */}
                <div className="absolute inset-0 pointer-events-none z-0">
@@ -303,61 +303,85 @@ export default function UnifiedProfileLayout({
                  )}
                </div>
                   
-               {/* Left: The Prestige Portrait */}
-               <div className="relative w-40 h-40 md:w-48 md:h-48 shrink-0 z-10">
-                 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[4px] border-white/80 bg-white/10">
-                   <div className="relative w-full h-full object-cover">
-                     <Image src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
-                      alt={profile.name}
-                      fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=0f766e&color=fff&size=800`; }} />
+               <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start relative z-10 w-full mb-8">
+                 {/* Left: The Prestige Portrait */}
+                 <div className="relative w-32 h-32 md:w-40 md:h-40 shrink-0">
+                   <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[4px] border-white/80 bg-white/10">
+                     <div className="relative w-full h-full object-cover">
+                       <Image src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
+                        alt={profile.name}
+                        fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=0f766e&color=fff&size=800`; }} />
+                     </div>
                    </div>
                  </div>
-               </div>
 
-               {/* Center: Details */}
-               <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col justify-center py-2 md:py-4">
-                 <h1 className="text-3xl md:text-4xl lg:text-[40px] font-black text-white tracking-tight leading-tight mb-1">
-                   {profile.name}
-                 </h1>
-                 
-                 <div className="text-slate-300 text-lg font-medium mb-4">
-                   {profile.specialties && profile.specialties.length > 0 ? (
-                     <span>{profile.specialties.join(", ")}</span>
-                   ) : profile.category ? (
-                     <span>{profile.category}</span>
-                   ) : null}
-                   {profile.education && profile.education.length > 0 && (
-                     <span>, {profile.education[0]?.degree || "MBBS, MD"}</span>
-                   )}
-                 </div>
+                 {/* Center: Details */}
+                 <div className="flex-1 text-center md:text-left w-full flex flex-col justify-center py-2">
+                   <h1 className="text-3xl md:text-4xl lg:text-[40px] font-black text-white tracking-tight leading-tight mb-1">
+                     {profile.name}
+                   </h1>
+                   
+                   <div className="text-slate-300 text-lg font-medium mb-4">
+                     {profile.specialties && profile.specialties.length > 0 ? (
+                       <span>{profile.specialties.join(", ")}</span>
+                     ) : profile.category ? (
+                       <span>{profile.category}</span>
+                     ) : null}
+                     {profile.education && profile.education.length > 0 && (
+                       <span>, {profile.education[0]?.degree || "MBBS, MD"}</span>
+                     )}
+                   </div>
 
-                 {/* Simple Stars and Verified */}
-                 <div className="flex items-center justify-center md:justify-start gap-4">
-                   <div className="flex items-center">
-                     <div className="flex gap-0.5">
-                       {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
+                   {/* Simple Stars and Verified */}
+                   <div className="flex items-center justify-center md:justify-start gap-4">
+                     <div className="flex items-center">
+                       <div className="flex gap-0.5">
+                         {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
+                       </div>
+                       <span className="text-sm font-medium text-slate-300 ml-2">{profile.reviews || "4,325"} Reviews)</span>
                      </div>
-                     <span className="text-sm font-medium text-slate-300 ml-2">{profile.reviews || "4,325"} Reviews)</span>
+                     
+                     {verified && (
+                       <div className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-400/50 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.3)] overflow-hidden relative group">
+                         <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_2s_infinite]"></div>
+                         <Shield className="w-3 h-3 fill-amber-500 text-amber-200 z-10" /> <span className="z-10 uppercase tracking-widest text-[10px]">Verified Premium</span>
+                       </div>
+                     )}
                    </div>
                    
-                   {verified && (
-                     <div className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-400/50 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.3)] overflow-hidden relative group">
-                       <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_2s_infinite]"></div>
-                       <Shield className="w-3 h-3 fill-amber-500 text-amber-200 z-10" /> <span className="z-10 uppercase tracking-widest text-[10px]">Verified Premium</span>
-                     </div>
-                   )}
-                 </div>
-                 
-                 <div className="mt-4 flex items-center justify-center md:justify-start gap-2 text-slate-400 text-sm">
-                   <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
-                   <span className="truncate max-w-[300px] md:max-w-md">{profile.clinic?.address || profile.address || "Location unavailable"}</span>
+                   <div className="mt-4 flex items-center justify-center md:justify-start gap-2 text-slate-400 text-sm">
+                     <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
+                     <span className="truncate max-w-[300px] md:max-w-md">{profile.clinic?.address || profile.address || "Location unavailable"}</span>
+                   </div>
                  </div>
                </div>
+
+               {/* Tightly Packed Image Collage (5-Image Bento Box) */}
+               <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-2 rounded-2xl overflow-hidden border border-white/5 shadow-2xl w-full">
+                 {Array.from({ length: 5 }).map((_, i) => {
+                   const allImgs = [...(profile.rawImages || []), ...(profile.galleryImages || [])];
+                   const img = allImgs[i] || "https://placehold.co/600x400/0A0F1C/333333.png?text=Add+Photo";
+                   return (
+                     <div key={i} className={`bg-[#0A0F1C] relative group overflow-hidden ${i === 0 ? 'col-span-2 row-span-2 aspect-square' : 'col-span-1 row-span-1 aspect-square'}`}>
+                       <Image src={img} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" alt={`${profile.name} image ${i+1}`}   onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = `https://placehold.co/600x400/0A0F1C/333333.png?text=Add+Photo`; }} />
+                       {!allImgs[i] && !verified && (
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 cursor-pointer" onClick={() => setShowClaimModal(true)}>
+                            <span className="text-cyan-400 text-xs font-bold uppercase tracking-widest px-4 py-2 border border-cyan-400 rounded-full backdrop-blur-md">Upload Image</span>
+                          </div>
+                       )}
+                     </div>
+                   );
+                 })}
+               </div>
+
             </div>
 
-            {/* MASONRY GALLERY */}
-            {(profile.rawImages && profile.rawImages.length > 0) || (profile.galleryImages && profile.galleryImages.length > 0) ? (
-              <ProfileMasonryGallery images={profile.rawImages?.length > 0 ? profile.rawImages : profile.galleryImages} />
+            {/* MASONRY GALLERY (For additional images beyond the first 5) */}
+            {((profile.rawImages && profile.rawImages.length > 5) || (profile.galleryImages && profile.galleryImages.length > 5)) ? (
+              <div className="mt-8">
+                <h3 className="text-xl font-black text-white mb-4">More Photos</h3>
+                <ProfileMasonryGallery images={(profile.rawImages?.length > 0 ? profile.rawImages : profile.galleryImages).slice(5)} />
+              </div>
             ) : null}
 
           </div>
