@@ -35,7 +35,15 @@ export function DoctorListingView({ data }: { data: any }) {
         
         {/* Left Side: Floating Vertical Image */}
         <div className={`w-[110px] sm:w-[32%] h-[90%] sm:h-[86%] ml-2 sm:ml-3 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-[3px] sm:border-4 group-hover:scale-[1.03] transition-transform duration-300 z-40 ${data.verified ? 'border-amber-400/80 bg-slate-800' : 'border-[#f8fafc] bg-slate-200'}`}>
-           <img src={data.image} alt={data.name} className="w-full h-full object-cover" />
+           <img 
+             src={data.image} 
+             alt={data.name} 
+             className="w-full h-full object-cover" 
+             onError={(e) => {
+               (e.target as HTMLImageElement).onerror = null;
+               (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || "Dr")}&background=0f172a&color=fff&size=150`;
+             }}
+           />
            {data.verified && (
              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 flex justify-center">
                <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest flex items-center gap-1">
