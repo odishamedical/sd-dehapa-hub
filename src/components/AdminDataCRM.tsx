@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { db, storage } from '@/lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, where, setDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { UploadCloud, CheckCircle2, ShieldCheck, ArrowRight, ArrowLeft, Loader2, Save, X, Phone, Mail, Image as ImageIcon, Briefcase, Info, Settings, AlertTriangle, Calendar, Star, TrendingUp, Search, Lock, Edit3 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import PremiumSlugModal from './PremiumSlugModal';
 import AddressBlock from './AddressBlock';
 import ImageCropper from './ImageCropper';
@@ -843,8 +845,8 @@ export default function AdminDataCRM() {
                       <p className="text-xs text-slate-400 mb-4">Click any image to crop it and set as Primary or add to Gallery.</p>
                       <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
                         {selectedListing.rawImages.map((rawUrl: string, idx: number) => (
-                          <div key={idx} onClick={() => handleRawImageClick(rawUrl)} className="w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-slate-700 hover:border-teal-500 cursor-pointer shadow-sm transition-all hover:scale-105">
-                            <img src={rawUrl} alt={`Scraped ${idx}`} className="w-full h-full object-cover" />
+                          <div key={idx} onClick={() => handleRawImageClick(rawUrl)} className="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-slate-700 hover:border-teal-500 cursor-pointer shadow-sm transition-all hover:scale-105">
+                            <Image src={rawUrl} alt={`Scraped ${idx}`} fill sizes="96px" className="object-cover" />
                           </div>
                         ))}
                       </div>

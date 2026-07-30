@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import EcosystemSwitcher from '@/components/EcosystemSwitcher';
 import ProfileBlockerModal from '@/components/ProfileBlockerModal';
@@ -36,10 +37,12 @@ export function DoctorListingView({ data }: { data: any }) {
         
         {/* Left Side: Floating Vertical Image */}
         <div className={`w-[110px] sm:w-[32%] h-[90%] sm:h-[86%] ml-2 sm:ml-3 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.2)] border-[3px] sm:border-4 group-hover:scale-[1.03] transition-transform duration-300 z-40 ${data.verified ? 'border-amber-400/80 bg-slate-800' : 'border-[#f8fafc] bg-slate-200'}`}>
-           <img 
+           <Image 
              src={imgSrc} 
              alt={data.name} 
-             className="w-full h-full object-cover" 
+             fill
+             sizes="(max-width: 768px) 100vw, 33vw"
+             className="object-cover" 
              onError={() => {
                setImgSrc(`https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || "Dr")}&background=0f172a&color=fff&size=150`);
              }}
