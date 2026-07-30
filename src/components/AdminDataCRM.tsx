@@ -402,6 +402,31 @@ export default function AdminDataCRM() {
     setIsDeletingBulk(false);
   };
 
+  const handleDeleteAllFiltered = async () => {
+    if (filteredData.length === 0) return alert("No records to delete.");
+    const isWiping = filteredData.length === data.length;
+    
+    if (isWiping) {
+      const check = prompt(`DANGER: You are about to PERMANENTLY wipe ALL ${data.length} records in the database!\n\nType "DELETE" to confirm:`);
+      if (check !== "DELETE") return;
+    } else {
+      if (!confirm(`Are you sure you want to PERMANENTLY delete all ${filteredData.length} filtered records?`)) return;
+    }
+    
+    setIsDeletingBulk(true);
+    try {
+      const idsToDelete = filteredData.map(d => d.id);
+      await Promise.all(idsToDelete.map(id => deleteDoc(doc(db, 'directory', id))));
+      setData(data.filter(d => !idsToDelete.includes(d.id)));
+      setSelectedIds([]);
+      alert(`Successfully deleted ${idsToDelete.length} records.`);
+    } catch (e) {
+      console.error(e);
+      alert("Failed to delete records.");
+    }
+    setIsDeletingBulk(false);
+  };
+
   const handleBulkUpdate = async (updateField: string, updateValue: any) => {
     if (selectedIds.length === 0) return;
     const actionName = updateField === 'verified' && updateValue ? "Verify" : updateField === 'verified' && !updateValue ? "Unverify" : updateField === 'isPublished' && updateValue ? "Publish" : "Unpublish";
@@ -515,6 +540,10 @@ export default function AdminDataCRM() {
           <button onClick={handleExportCSV} className="bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 px-5 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             Export CSV
+          </button>
+          <button onClick={handleDeleteAllFiltered} disabled={isDeletingBulk} className="bg-rose-600 hover:bg-rose-500 text-white border border-rose-500 px-5 py-3 rounded-xl text-sm font-bold shadow-lg shadow-rose-500/20 transition-all flex items-center gap-2 whitespace-nowrap">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            Delete All
           </button>
           <select 
             value={countryFilter} 
