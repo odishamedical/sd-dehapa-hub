@@ -22,6 +22,7 @@ import InlineEditField from '@/components/InlineEditField';
 import EmergencyIntakeModal from '@/components/EmergencyIntakeModal';
 import ClaimProfileModal from '@/components/ClaimProfileModal';
 import BookingEngine from '@/components/BookingEngine';
+import ProfileMasonryGallery from '@/components/ProfileMasonryGallery';
 
 interface UnifiedProfileProps {
   profile: any;
@@ -259,33 +260,7 @@ export default function UnifiedProfileLayout({
 
 
 
-      {/* Unverified Disclaimer Banner */}
-      {!verified && (
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-30 mt-6 -mb-4">
-          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 backdrop-blur-md rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
-            <div className="flex items-start sm:items-center gap-4">
-              <div className="bg-amber-500/20 p-3 rounded-full shrink-0 mt-1 sm:mt-0">
-                <ShieldAlert className="w-6 h-6 text-amber-500" />
-              </div>
-              <div>
-                <h3 className="text-amber-500 font-bold text-lg leading-tight mb-1">Unverified Profile</h3>
-                <p className="text-slate-400 text-sm leading-relaxed max-w-3xl">
-                  This profile has not yet been claimed. Although this data was collected from reliable sources, the provider has not verified it. If you are the owner, please verify your identity to manage this profile.
-                </p>
-              </div>
-            </div>
-            <button 
-              onClick={() => setShowClaimModal(true)} 
-              className="w-full sm:w-auto shrink-0 bg-amber-500 hover:bg-amber-400 text-[#0A1128] font-black uppercase tracking-widest text-xs px-6 py-3.5 rounded-xl transition-all shadow-[0_4px_15px_rgba(245,158,11,0.3)] hover:shadow-[0_6px_25px_rgba(245,158,11,0.4)] hover:-translate-y-0.5 whitespace-nowrap"
-            >
-              Verify Now
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content Container - Fluid Grid */}
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-12 mb-20">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-20 mt-6 mb-20">
         
         {/* TOP HERO AD */}
         {heroTopAd && (
@@ -298,147 +273,183 @@ export default function UnifiedProfileLayout({
           </div>
         )}
 
-        {/* HERO CARD - FULL WIDTH (Mockup Style) */}
-        <div id="overview" className={`bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] rounded-t-3xl shadow-sm ${verified ? 'border-t-amber-500 shadow-[0_-10px_40px_rgba(245,158,11,0.15)]' : 'border-t-[#D32F2F]'}`}>
+        {/* 2-COLUMN LAYOUT STRUCTURE */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 relative items-start">
           
-           {/* SVG Waves Background embedded inside the Hero Card */}
-           <div className="absolute inset-0 pointer-events-none z-0">
-             {verified ? (
-               <>
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-amber-500/20 fill-current opacity-10 translate-y-16">
-                   <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                 </svg>
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-amber-400/20 fill-current opacity-[0.15] translate-y-8">
-                   <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                 </svg>
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-amber-500/30 fill-current opacity-10">
-                   <path d="M0,192L48,192C96,192,192,192,288,208C384,224,480,256,576,245.3C672,235,768,181,864,170.7C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                 </svg>
-                 <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-amber-500/10 to-transparent"></div>
-                 <div className="absolute bottom-0 left-0 w-96 h-32 bg-amber-500/15 rounded-tr-full blur-3xl"></div>
-               </>
-             ) : (
-               <>
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/10 fill-current opacity-10 translate-y-16">
-                   <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                 </svg>
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/5 fill-current opacity-[0.15] translate-y-8">
-                   <path d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,149.3C672,117,768,75,864,80C960,85,1056,139,1152,160C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                 </svg>
-                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-teal-400/10 fill-current opacity-5">
-                   <path d="M0,192L48,192C96,192,192,192,288,208C384,224,480,256,576,245.3C672,235,768,181,864,170.7C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                 </svg>
-                 <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
-                 <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-500/10 rounded-tr-full blur-3xl"></div>
-               </>
-             )}
-           </div>
+          {/* LEFT COLUMN: Main Content & Masonry Grid */}
+          <div className="col-span-1 md:col-span-8 flex flex-col w-full min-w-0">
+            
+            {/* HERO CARD */}
+            <div id="overview" className={`bg-white/10 backdrop-blur-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden group border-t-[6px] rounded-3xl shadow-sm ${verified ? 'border-t-amber-500 shadow-[0_-10px_40px_rgba(245,158,11,0.15)]' : 'border-t-[#D32F2F]'}`}>
               
-              {/* Left: The Prestige Portrait */}
-              <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 z-10">
-                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[5px] border-white bg-white/10">
-                  <div className="relative w-full h-full object-cover"><Image src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
-                    alt={profile.name}
-                   fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=0f766e&color=fff&size=800`; }} /></div>
-                </div>
-              </div>
-
-              {/* Center: Details */}
-              <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col justify-center py-2 md:py-4">
-                <h1 className="text-3xl md:text-4xl lg:text-[42px] font-black text-white tracking-tight leading-tight mb-1">
-                  {profile.name}
-                </h1>
-                
-                <div className="text-slate-300 text-lg md:text-xl font-medium mb-4">
-                  {profile.specialties && profile.specialties.length > 0 ? (
-                    <span>{profile.specialties.join(", ")}</span>
-                  ) : profile.category ? (
-                    <span>{profile.category}</span>
-                  ) : null}
-                  {profile.education && profile.education.length > 0 && (
-                    <span>, {profile.education[0]?.degree || "MBBS, MD"}</span>
-                  )}
-                </div>
-
-                {/* Simple Stars and Verified (Mockup Style) */}
-                <div className="flex items-center justify-center md:justify-start gap-4">
-                  <div className="flex items-center">
-                    <div className="flex gap-0.5">
-                      {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
-                    </div>
-                    <span className="text-sm font-medium text-slate-300 ml-2">{profile.reviews || "4,325"} Reviews)</span>
-                  </div>
+               {/* SVG Waves Background embedded inside the Hero Card */}
+               <div className="absolute inset-0 pointer-events-none z-0">
+                 {verified ? (
+                   <>
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-amber-500/20 fill-current opacity-10 translate-y-16">
+                       <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                     </svg>
+                     <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-amber-500/10 to-transparent"></div>
+                     <div className="absolute bottom-0 left-0 w-96 h-32 bg-amber-500/15 rounded-tr-full blur-3xl"></div>
+                   </>
+                 ) : (
+                   <>
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white/10 fill-current opacity-10 translate-y-16">
+                       <path d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                     </svg>
+                     <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-white/5 to-transparent"></div>
+                     <div className="absolute bottom-0 left-0 w-96 h-32 bg-cyan-500/10 rounded-tr-full blur-3xl"></div>
+                   </>
+                 )}
+               </div>
                   
-                  {verified && (
-                    <div className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-400/50 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.3)] overflow-hidden relative group">
-                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_2s_infinite]"></div>
-                      <Shield className="w-3 h-3 fill-amber-500 text-amber-200 z-10" /> <span className="z-10 uppercase tracking-widest text-[10px]">Verified Premium</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+               {/* Left: The Prestige Portrait */}
+               <div className="relative w-40 h-40 md:w-48 md:h-48 shrink-0 z-10">
+                 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[4px] border-white/80 bg-white/10">
+                   <div className="relative w-full h-full object-cover">
+                     <Image src={profile.image || profile.avatar || "https://ui-avatars.com/api/?name=Doc&background=0f766e&color=fff&size=800"} 
+                      alt={profile.name}
+                      fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover"  onError={(e) => { (e.target as HTMLImageElement).srcset = ""; (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name || "User")}&background=0f766e&color=fff&size=800`; }} />
+                   </div>
+                 </div>
+               </div>
 
-              {/* Right: Action Stack (Mockup Style) */}
-              <div className="flex flex-col gap-3 w-full lg:w-[280px] shrink-0 justify-center">
-                {hasPlugin('plugin_booking_physical') && (
-                  <button 
-                    onClick={() => {
-                      if (!verified) {
-                        setShowUnverifiedModal(true);
-                      } else {
-                        router.push(`/portal/book?doctor=${profile.id}`);
-                      }
-                    }} 
-                    className={`${verified ? 'bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.4)]' : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]'} w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/>
-                      Book Appointment
-                    </span>
-                    <span className="opacity-70 text-[10px]">▼</span>
-                  </button>
-                )}
-                
-                {hasPlugin('plugin_telemedicine_urgent') && (
-                  <button 
-                    onClick={() => {
-                      if (verified) {
-                        window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }));
-                      } else {
-                        setShowUnverifiedModal(true);
-                      }
-                    }}
-                    className="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
-                  >
-                    <span className="flex items-center gap-2"><Video className="w-5 h-5 group-hover:scale-110 transition-transform"/> Urgent Video Call</span>
-                    <span className="opacity-70 text-[10px]">▼</span>
-                  </button>
-                )}
-                
-                {hasPlugin('plugin_telemedicine_scheduled') && (
-                  <button 
-                    onClick={() => {
-                      if (!verified) {
-                        setShowUnverifiedModal(true);
-                      } else {
-                        window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
-                      }
-                    }} 
-                    className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
-                  >
-                    <span className="flex items-center gap-2"><Stethoscope className="w-5 h-5 group-hover:scale-110 transition-transform"/> Schedule Telemedicine</span>
-                    <span className="opacity-70 text-[10px]">▼</span>
-                  </button>
-                )}
-                
+               {/* Center: Details */}
+               <div className="flex-1 text-center md:text-left z-10 w-full flex flex-col justify-center py-2 md:py-4">
+                 <h1 className="text-3xl md:text-4xl lg:text-[40px] font-black text-white tracking-tight leading-tight mb-1">
+                   {profile.name}
+                 </h1>
+                 
+                 <div className="text-slate-300 text-lg font-medium mb-4">
+                   {profile.specialties && profile.specialties.length > 0 ? (
+                     <span>{profile.specialties.join(", ")}</span>
+                   ) : profile.category ? (
+                     <span>{profile.category}</span>
+                   ) : null}
+                   {profile.education && profile.education.length > 0 && (
+                     <span>, {profile.education[0]?.degree || "MBBS, MD"}</span>
+                   )}
+                 </div>
+
+                 {/* Simple Stars and Verified */}
+                 <div className="flex items-center justify-center md:justify-start gap-4">
+                   <div className="flex items-center">
+                     <div className="flex gap-0.5">
+                       {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
+                     </div>
+                     <span className="text-sm font-medium text-slate-300 ml-2">{profile.reviews || "4,325"} Reviews)</span>
+                   </div>
+                   
+                   {verified && (
+                     <div className="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-400/50 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.3)] overflow-hidden relative group">
+                       <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_2s_infinite]"></div>
+                       <Shield className="w-3 h-3 fill-amber-500 text-amber-200 z-10" /> <span className="z-10 uppercase tracking-widest text-[10px]">Verified Premium</span>
+                     </div>
+                   )}
+                 </div>
+                 
+                 <div className="mt-4 flex items-center justify-center md:justify-start gap-2 text-slate-400 text-sm">
+                   <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
+                   <span className="truncate max-w-[300px] md:max-w-md">{profile.clinic?.address || profile.address || "Location unavailable"}</span>
+                 </div>
+               </div>
+            </div>
+
+            {/* MASONRY GALLERY */}
+            {(profile.rawImages && profile.rawImages.length > 0) || (profile.galleryImages && profile.galleryImages.length > 0) ? (
+              <ProfileMasonryGallery images={profile.rawImages?.length > 0 ? profile.rawImages : profile.galleryImages} />
+            ) : null}
+
+          </div>
+
+          {/* RIGHT COLUMN: Action Stack & Sticky Panel */}
+          <div className="col-span-1 md:col-span-4 sticky top-24 flex flex-col gap-6 w-full">
+            
+            {/* Unverified Disclaimer Banner (Moved to sidebar) */}
+            {!verified && (
+              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 backdrop-blur-md rounded-2xl p-5 shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-amber-500/20 p-2 rounded-full shrink-0">
+                    <ShieldAlert className="w-5 h-5 text-amber-500" />
+                  </div>
+                  <h3 className="text-amber-500 font-bold text-lg leading-tight">Unverified Profile</h3>
+                </div>
+                <p className="text-slate-400 text-xs leading-relaxed mb-4">
+                  This profile has not yet been claimed. If you are the owner, please verify your identity to manage this profile.
+                </p>
                 <button 
-                  onClick={handleShare} 
-                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 w-full py-3.5 rounded-xl font-bold text-[15px] transition-all duration-300 shadow-sm backdrop-blur-md flex items-center justify-center gap-2 hover:-translate-y-0.5 group"
+                  onClick={() => setShowClaimModal(true)} 
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-[#0A1128] font-black uppercase tracking-widest text-xs px-6 py-3.5 rounded-xl transition-all shadow-[0_4px_15px_rgba(245,158,11,0.3)] hover:shadow-[0_6px_25px_rgba(245,158,11,0.4)] hover:-translate-y-0.5"
                 >
-                  <Share2 className="w-4 h-4 group-hover:rotate-12 transition-transform"/> Share & Connect
+                  Verify Now
                 </button>
               </div>
+            )}
+
+            {/* Action Stack (Mockup Style) */}
+            <div className="flex flex-col gap-3 w-full justify-center bg-white/5 backdrop-blur-xl p-5 rounded-3xl border border-white/10 shadow-sm">
+              {hasPlugin('plugin_booking_physical') && (
+                <button 
+                  onClick={() => {
+                    if (!verified) {
+                      setShowUnverifiedModal(true);
+                    } else {
+                      router.push(`/portal/book?doctor=${profile.id}`);
+                    }
+                  }} 
+                  className={`${verified ? 'bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.4)]' : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]'} w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none`}
+                >
+                  <span className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 group-hover:scale-110 transition-transform"/>
+                    Book Appointment
+                  </span>
+                  <span className="opacity-70 text-[10px]">▼</span>
+                </button>
+              )}
+              
+              {hasPlugin('plugin_telemedicine_urgent') && (
+                <button 
+                  onClick={() => {
+                    if (verified) {
+                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'urgent', doctorId: profile.id, doctorName: profile.name } }));
+                    } else {
+                      setShowUnverifiedModal(true);
+                    }
+                  }}
+                  className="bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
+                >
+                  <span className="flex items-center gap-2"><Video className="w-5 h-5 group-hover:scale-110 transition-transform"/> Urgent Video Call</span>
+                  <span className="opacity-70 text-[10px]">▼</span>
+                </button>
+              )}
+              
+              {hasPlugin('plugin_telemedicine_scheduled') && (
+                <button 
+                  onClick={() => {
+                    if (!verified) {
+                      setShowUnverifiedModal(true);
+                    } else {
+                      window.dispatchEvent(new CustomEvent('open-telemedicine-fab', { detail: { action: 'schedule', doctorId: profile.id, doctorName: profile.name } }));
+                    }
+                  }} 
+                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white w-full py-3.5 rounded-xl font-black text-[15px] transition-all duration-300 shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.6)] hover:-translate-y-1 group flex items-center justify-between px-5 border-none"
+                >
+                  <span className="flex items-center gap-2"><Stethoscope className="w-5 h-5 group-hover:scale-110 transition-transform"/> Schedule Telemedicine</span>
+                  <span className="opacity-70 text-[10px]">▼</span>
+                </button>
+              )}
+              
+              <button 
+                onClick={handleShare} 
+                className="bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 w-full py-3.5 rounded-xl font-bold text-[15px] transition-all duration-300 shadow-sm backdrop-blur-md flex items-center justify-center gap-2 hover:-translate-y-0.5 group"
+              >
+                <Share2 className="w-4 h-4 group-hover:rotate-12 transition-transform"/> Share & Connect
+              </button>
             </div>
+
+          </div>
+        </div>
+
 
             {/* Scroll-Spy Sticky Navigation (Mockup Folder Style) - Flush with Hero Banner */}
             <div className="sticky top-[73px] z-40 bg-white/5 backdrop-blur-xl/95 backdrop-blur-md shadow-[0_4px_10px_rgba(0,0,0,0.02)] border-b border-white/10 px-4 rounded-b-3xl">
