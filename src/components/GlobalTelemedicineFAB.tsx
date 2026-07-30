@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, collection, query, where, getDocs, addDoc, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import Image from "next/image";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
@@ -487,7 +488,9 @@ export default function GlobalTelemedicineFAB() {
               <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
               <div className="relative z-10">
                 <h2 className="text-2xl font-black tracking-wider uppercase flex items-center gap-3">
-                  <img src="/logo.png" alt="Dehapa Logo" className="h-12 object-contain drop-shadow-md" />
+                  <div className="relative h-12 w-12 shrink-0 drop-shadow-md">
+                    <Image src="/logo.png" alt="Dehapa Logo" fill sizes="48px" className="object-contain" />
+                  </div>
                   {urgencyMode === 'schedule' ? 'DehaPa Schedule Consult' : 'DehaPa Instant Consult'}
                 </h2>
                 <p className="text-xs font-bold uppercase tracking-widest mt-1 opacity-80 pl-11">
@@ -668,8 +671,8 @@ export default function GlobalTelemedicineFAB() {
                       {doctorsList.map(doctor => (
                         <div key={doctor.id} className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex gap-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
                           {/* Doctor Avatar */}
-                          <div className="w-16 h-16 rounded-full bg-slate-100 shrink-0 border border-slate-200 overflow-hidden">
-                            <img src={doctor.photo} alt={doctor.name} className="w-full h-full object-cover" />
+                          <div className="relative w-16 h-16 rounded-full bg-slate-100 shrink-0 border border-slate-200 overflow-hidden">
+                            <Image src={doctor.photo} alt={doctor.name} fill sizes="64px" className="object-cover" />
                           </div>
                           
                           {/* Doctor Info */}

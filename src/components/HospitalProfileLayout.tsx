@@ -147,11 +147,9 @@ export default function HospitalProfileLayout({
 
           <div className="relative w-40 h-40 md:w-52 md:h-52 shrink-0 z-10">
             <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-sm border-[5px] border-white bg-slate-100">
-              <img 
-                src={profile.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=0f766e&color=fff&size=800`} 
-                className="w-full h-full object-cover" 
+              <div className="relative w-full h-full object-cover"><Image src={profile.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=0f766e&color=fff&size=800`} 
                 alt={profile.name} 
-              />
+               fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
               {verified && (
                 <div className="absolute -bottom-2 -right-2 bg-emerald-500 p-1.5 rounded-full border-4 border-white shadow-md" title="Verified Institution">
                   <CheckCircle2 className="w-4 h-4 text-white" />
@@ -416,7 +414,7 @@ export default function HospitalProfileLayout({
                       {profile.rosterDoctors.map((doc: any, i: number) => (
                          <div key={i} className="bg-gradient-to-br from-slate-50 to-slate-100/80 rounded-3xl border border-white shadow-sm p-5 flex flex-col hover:border-cyan-200 hover:shadow-md transition-all">
                             <div className="flex gap-4 items-center mb-5">
-                               <img src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} className="w-16 h-16 rounded-2xl object-cover shadow-sm" alt={doc.name} />
+                               <div className="relative w-16 h-16 rounded-2xl object-cover shadow-sm"><Image src={doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=e2e8f0`} alt={doc.name}  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
                                <div className="overflow-hidden">
                                   <h4 className="font-bold text-slate-800 text-[15px] leading-tight truncate" title={doc.name}>{doc.name}</h4>
                                   <p className="text-[13px] text-cyan-600 font-bold mt-1 truncate" title={doc.specialty}>{doc.specialty}</p>
@@ -473,7 +471,7 @@ export default function HospitalProfileLayout({
                <section id="reviews" className="bg-gradient-to-br from-rose-50/80 to-orange-50/80 rounded-3xl border border-orange-100 shadow-sm p-6 md:p-8 flex flex-col justify-between">
                   <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2"><User className="w-5 h-5 text-cyan-600"/> Patient Testimonials</h2>
                   <div className="flex items-start gap-4">
-                     <img src="https://ui-avatars.com/api/?name=Patient&background=e2e8f0" className="w-12 h-12 rounded-full shadow-sm" alt="Patient" />
+                     <div className="relative w-12 h-12 rounded-full shadow-sm"><Image src="https://ui-avatars.com/api/?name=Patient&background=e2e8f0" alt="Patient"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
                      <div>
                         <p className="font-bold text-sm text-slate-800">Excellent medical care and staff!</p>
                         <div className="flex gap-1 mt-1 mb-2">
@@ -541,12 +539,12 @@ export default function HospitalProfileLayout({
                 <div className="w-full rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white flex items-center justify-center min-h-[250px]">
                  {heroRightAd.type === 'image' ? (
                    <a href={heroRightAd.linkUrl || '#'} target="_blank" rel="noreferrer" className="w-full flex items-center justify-center p-2">
-                     <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-auto object-contain" />
+                     <div className="relative w-full h-auto object-contain"><Image src={heroRightAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
                    </a>
                  ) : heroRightAd.type === 'split' ? (
                    <div className="flex flex-col w-full">
                      <div className="w-full flex items-center justify-center p-4 bg-slate-50">
-                       <img src={heroRightAd.imageUrl} alt="Advertisement" className="w-full h-auto max-h-[200px] object-contain" />
+                       <div className="relative w-full h-auto max-h-[200px] object-contain"><Image src={heroRightAd.imageUrl} alt="Advertisement"  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
                      </div>
                      <div className="w-full flex flex-col items-center text-center p-6 bg-gradient-to-t from-slate-100 to-white">
                        <h3 className="text-xl font-black text-[#0A1128] mb-2 leading-tight">{heroRightAd.headline}</h3>
@@ -579,7 +577,7 @@ export default function HospitalProfileLayout({
                      
                      return (
                        <Link key={idx} href={`${routePath}/${sim.id}`} className="group flex items-center gap-4 bg-slate-50 hover:bg-white rounded-2xl p-3 transition-all border border-transparent hover:border-cyan-500/30 hover:shadow-md shrink-0">
-                         <img src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || 'Entity')}&background=0f766e&color=fff`} alt={sim.name || 'Entity'} className={`w-14 h-14 object-cover border border-slate-200 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'}`} />
+                         <div className="relative "><Image src={sim.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(sim.name || 'Entity')}&background=0f766e&color=fff`} alt={sim.name || 'Entity'} className={`w-14 h-14 object-cover border border-slate-200 shrink-0 ${isHospitalOrLab ? 'rounded-lg' : 'rounded-xl'}`}  fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></div>
                          <div className="min-w-0 flex-1">
                            <h4 className="font-bold text-sm text-[#0A1128] truncate group-hover:text-cyan-600 transition-colors">{sim.name}</h4>
                            <div className="flex items-center gap-1 mt-1">

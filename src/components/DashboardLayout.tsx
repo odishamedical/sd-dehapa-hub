@@ -2,7 +2,8 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import ContextHelpDrawer from './ContextHelpDrawer';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import Image from "next/image";
 import { db } from '@/lib/firebase';
 
 export type DashboardTab = {
@@ -269,7 +270,9 @@ export default function DashboardLayout({
             {userProfile && (
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/10">
                 {userProfile.image ? (
-                  <img src={userProfile.image} alt={userProfile.name} className="w-12 h-12 rounded-full object-cover shrink-0 border border-white/20" />
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-white/20">
+                    <Image src={userProfile.image} alt={userProfile.name} fill sizes="48px" className="object-cover" />
+                  </div>
                 ) : (
                   <div className="w-12 h-12 bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 rounded-full flex items-center justify-center font-bold text-xl shrink-0">
                     {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : "U"}
@@ -379,7 +382,9 @@ export default function DashboardLayout({
                   </div>
                   {userProfile?.image && (
                     <div className="w-20 h-20 rounded-full border-4 border-white/20 shadow-lg overflow-hidden shrink-0 hidden md:block">
-                      <img src={userProfile.image} alt={userProfile.name} className="w-full h-full object-cover" />
+                    <div className="relative w-full h-full">
+                      <Image src={userProfile.image} alt={userProfile.name} fill sizes="(max-width: 768px) 33vw, 10vw" className="object-cover" />
+                    </div>
                     </div>
                   )}
                 </div>

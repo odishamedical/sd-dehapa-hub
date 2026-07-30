@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import CategoryNav from '@/components/CategoryNav';
 import Breadcrumb from '@/components/Breadcrumb';
+import { Calendar, Phone, MapPin, Star, Shield, Activity, Clock, CheckCircle2, ChevronRight, Share2, HeartPulse, Stethoscope, Video, Heart, Syringe, Eye, Brain } from 'lucide-react';
+import BookingEngine from '@/components/BookingEngine';
 
 export default function PremiumHospitalLayout({ profile, unwrappedParams }: { profile: any, unwrappedParams: any }) {
   const [activeTab, setActiveTab] = useState('overview');
@@ -35,7 +38,9 @@ export default function PremiumHospitalLayout({ profile, unwrappedParams }: { pr
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-[#040815] p-2 shadow-2xl border border-slate-700 shrink-0">
             <div className="w-full h-full rounded-2xl overflow-hidden flex items-center justify-center bg-slate-800 border border-slate-600">
                {profile.image ? (
-                 <img src={profile.image} alt="Logo" className="w-full h-full object-cover" />
+                 <div className="relative w-full h-full">
+                   <Image src={profile.image} alt="Logo" fill sizes="(max-width: 768px) 128px, 160px" className="object-cover" />
+                 </div>
                ) : (
                  <span className="text-4xl">🏥</span>
                )}
@@ -98,7 +103,9 @@ export default function PremiumHospitalLayout({ profile, unwrappedParams }: { pr
                        {profile.rawImages.map((img: string, idx: number) => (
                          <div key={idx} className="relative group overflow-hidden rounded-2xl shadow-md border border-slate-700">
                            <div className="absolute inset-0 bg-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none mix-blend-overlay"></div>
-                           <img src={img} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer" alt="Facility" />
+                           <div className="relative w-full h-48">
+                             <Image src={img} fill sizes="(max-width: 768px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer" alt="Facility" />
+                           </div>
                          </div>
                        ))}
                      </div>

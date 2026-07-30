@@ -6,6 +6,7 @@ import { getFirestore, collection, addDoc, onSnapshot, query, where, getDocs } f
 import GlobalAvatarWidget from "./GlobalAvatarWidget";
 import DoctorStatusToggle from "./DoctorStatusToggle";
 import GlobalNotifications from "./GlobalNotifications";
+import Image from "next/image";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
@@ -344,8 +345,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
       <div className="flex items-center gap-2 md:gap-4 shrink-0">
         <a href="/" className="flex items-center gap-2 md:gap-4 group">
           <div className="relative w-10 h-10 md:w-16 md:h-16 flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
-            {/* Added unoptimized tag or use a regular img tag to prevent Next.js from breaking the path if not configured */}
-            <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain relative z-10" />
+            <Image src="/logo.png" alt="DehaPa Logo" fill sizes="64px" className="object-contain relative z-10" priority />
             <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-xl group-hover:bg-teal-400/40 transition-colors pointer-events-none"></div>
           </div>
           <div className="flex flex-col justify-center">
@@ -388,7 +388,9 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
               className="flex items-center gap-2 focus:outline-none cursor-pointer bg-slate-800/50 hover:bg-slate-700/80 border border-slate-700 hover:border-teal-500/50 rounded-full py-1 px-1.5 md:py-1.5 md:px-2 md:pr-4 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] group"
             >
               {userAvatar ? (
-                <img src={userAvatar} alt="Profile" className="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover border border-teal-500/50 group-hover:shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all shrink-0" />
+                <div className="relative w-7 h-7 md:w-8 md:h-8 rounded-full border border-teal-500/50 group-hover:shadow-[0_0_10px_rgba(20,184,166,0.5)] transition-all overflow-hidden shrink-0">
+                  <Image src={userAvatar} alt="Profile" fill sizes="32px" className="object-cover" />
+                </div>
               ) : (
                 <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-teal-600 to-cyan-600 text-white flex items-center justify-center font-black text-[10px] md:text-xs shadow-[0_0_10px_rgba(20,184,166,0.5)] shrink-0">
                   {userName ? userName.charAt(0).toUpperCase() : userEmail.charAt(0).toUpperCase()}

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { TicketConfigEntry } from '@/lib/ticketConfig';
 import InlineEditField from '@/components/InlineEditField';
 import ShareButtons from '@/components/ShareButtons';
+import Image from 'next/image';
 
 type Props = {
   entity: any;
@@ -36,7 +37,9 @@ export default function TicketCard({ entity, config, isEditMode = false, onSave 
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 hover:opacity-100 hover:translate-x-full duration-1000 transition-all -skew-x-12 transform scale-150 z-0 pointer-events-none"></div>
       {/* Profile Image */}
       <div className="w-full max-w-[260px] aspect-square sm:w-64 sm:h-64 md:w-48 md:h-48 rounded-[2rem] bg-white p-2 shadow-xl border border-slate-200 shrink-0 relative z-10 group">
-        <img src={entity.image} alt={entity.name} className="w-full h-full object-cover rounded-[1.5rem]" />
+        <div className="relative w-full h-full rounded-[1.5rem] overflow-hidden">
+          <Image src={entity.image || 'https://ui-avatars.com/api/?name=User'} alt={entity.name} fill sizes="(max-width: 768px) 260px, 192px" className="object-cover" />
+        </div>
         {isEditMode && (
           <div className="absolute inset-0 bg-black/60 rounded-3xl flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity">
             <input 

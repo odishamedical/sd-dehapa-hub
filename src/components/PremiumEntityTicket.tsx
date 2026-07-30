@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { generateUniversalSeoUrl } from '@/lib/urlHelpers';
 
 export default function PremiumEntityTicket({ data, type }: { data: any, type: 'doctors' | 'hospitals' | 'labs' | 'pharmacies' | 'ambulances' }) {
@@ -122,7 +123,7 @@ export default function PremiumEntityTicket({ data, type }: { data: any, type: '
         
         {/* Left Side: Floating Vertical Image */}
         <div className="w-full sm:w-[32%] h-[160px] sm:h-[86%] sm:ml-3 mb-3 sm:mb-0 relative shrink-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-[6px_0_15px_rgba(0,0,0,0.5)] border-[3px] sm:border-4 border-slate-800 bg-[#0f172a] group-hover:scale-[1.03] transition-transform duration-300 z-40 flex items-center justify-center">
-           <img src={imageSrc} alt={data.name} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'H')}&background=random` }} />
+           <Image src={imageSrc || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'H')}&background=random`} alt={data.name || 'Entity'} fill sizes="(max-width: 640px) 100vw, 32vw" className="object-cover" />
         </div>
         
         {/* Right Side: Data Content */}
