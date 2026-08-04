@@ -137,18 +137,15 @@ export default function DehapaHome() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-black/40 to-black/60 md:bg-gradient-to-l md:from-[#050B14] md:via-[#050B14]/80 md:to-transparent"></div>
         </div>
 
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-24 flex flex-col md:flex-row md:justify-end mt-8">
-          <div className="w-full max-w-xl xl:max-w-2xl text-center md:text-right">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-32 flex flex-col md:flex-row md:justify-end mt-12 md:mt-16">
+          <div className="w-full max-w-2xl xl:max-w-3xl 2xl:max-w-[1000px] text-center md:text-left">
             
             {/* Hero Text */}
-            <div className="mb-8 flex flex-col items-center md:items-end">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-300 font-bold text-xs uppercase tracking-widest mb-4 backdrop-blur-md">
-                <Activity className="w-4 h-4" /> Sovereign Health Network
-              </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-cyan-400 to-teal-500 font-bold tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] mb-3 leading-tight">
+            <div className="mb-10 flex flex-col items-center md:items-start">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl 2xl:text-[5.5rem] font-serif text-transparent bg-clip-text bg-gradient-to-r from-teal-100 via-cyan-400 to-teal-500 font-bold tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] mb-4 leading-tight">
                 Instant Video Consults
               </h1>
-              <h2 className="text-lg md:text-xl text-white/90 font-light tracking-[0.1em] mb-2 drop-shadow-md">
+              <h2 className="text-xl md:text-2xl 2xl:text-3xl text-white/90 font-light tracking-[0.15em] mb-2 drop-shadow-lg">
                 Connect with Top Doctors Worldwide
               </h2>
             </div>
