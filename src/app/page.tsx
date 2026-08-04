@@ -119,81 +119,79 @@ export default function DehapaHome() {
   return (
     <main className="min-h-screen bg-[#050B14] font-sans text-white selection:bg-teal-500/30 overflow-x-hidden">
 
-      {/* MESH GRADIENT BACKGROUND */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-60 mix-blend-screen">
-        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-teal-600/30 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-600/30 rounded-full blur-[120px]"></div>
-        <div className="absolute top-[40%] left-[20%] w-[40vw] h-[40vw] bg-cyan-600/20 rounded-full blur-[100px]"></div>
+      {/* Ambient Glassmorphism Background (Global) */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Image src="/stock/ambient-bg.png" alt="Ambient Background" fill unoptimized={true} className="object-cover opacity-20 mix-blend-screen" />
       </div>
-      
-      {/* GRID OVERLAY */}
-      <div className="fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
-      <div className="relative z-10 pb-20">
-        
-        {/* HERO & COMMAND CENTER (COMPACT & SEO OPTIMIZED) */}
-        <section className="pt-10 pb-6 px-4 sm:px-6 max-w-[1400px] mx-auto flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-teal-300 font-bold text-xs uppercase tracking-widest mb-4 backdrop-blur-md">
-            <Activity className="w-4 h-4" /> Sovereign Health Network
-          </div>
+      {/* Luxury Telemedicine Hero Section */}
+      <section className="relative pt-24 pb-16 z-10 flex flex-col items-center justify-center min-h-[55vh] lg:min-h-[600px] mb-12">
+        <div className="absolute inset-0 z-[-1] overflow-hidden rounded-b-[2rem] md:rounded-b-[4rem] shadow-2xl border-b border-white/10">
+          {/* Desktop Image */}
+          <Image src="/stock/home-hero-pc.png" alt="Telemedicine Consulting" fill priority unoptimized={true} className="hidden md:block object-cover object-left" />
+          {/* Mobile Image */}
+          <Image src="/stock/home-hero-phone.jfif" alt="Telemedicine Consulting" fill priority unoptimized={true} className="block md:hidden object-cover object-top" />
           
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-3 tracking-tight drop-shadow-lg leading-tight">
-            The World's Most Advanced <br className="hidden sm:block"/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-300">Medical Network.</span>
-          </h1>
-          
-          {/* Dynamic SEO Typing Text */}
-          <div className="h-8 mb-6 flex items-center justify-center">
-            <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-medium">
-              {displayText}<span className="inline-block w-0.5 h-5 ml-1 bg-teal-400 animate-pulse"></span>
-            </p>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-black/40 to-black/60 md:bg-gradient-to-l md:from-[#050B14] md:via-[#050B14]/80 md:to-transparent"></div>
+        </div>
 
-          {/* Search Console Container */}
-          <div className="w-full max-w-3xl mb-4 flex flex-col sm:flex-row gap-3">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:justify-end mt-8">
+          <div className="w-full max-w-xl text-center md:text-right">
             
-            {/* Master Search Bar (Glass) */}
-            <form onSubmit={handleSearch} className="flex-1 bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_0_40px_rgba(20,184,166,0.15)] rounded-2xl sm:rounded-full p-2 flex items-center relative transition-all focus-within:bg-white/15 focus-within:border-teal-400/50 focus-within:shadow-[0_0_50px_rgba(45,212,191,0.25)]">
-              <div className="pl-4 pr-3 text-teal-400">
-                <Search className="w-5 h-5 sm:w-6 sm:h-6" />
+            {/* Hero Text */}
+            <div className="mb-8 flex flex-col items-center md:items-end">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-300 font-bold text-xs uppercase tracking-widest mb-4 backdrop-blur-md">
+                <Activity className="w-4 h-4" /> Sovereign Health Network
               </div>
-              <input 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="What kind of care do you need today?" 
-                className="flex-1 bg-transparent border-none outline-none text-white text-base sm:text-lg placeholder:text-slate-400 focus:ring-0 min-w-0" 
-              />
-              <button 
-                type="submit" 
-                className="ml-2 px-5 py-3 sm:py-3.5 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-bold rounded-xl sm:rounded-full shadow-lg shrink-0 transition-all text-sm sm:text-base"
-              >
-                Search
-              </button>
-            </form>
-            
-            {/* Separate QR Scanner Button */}
-            <button 
-              onClick={() => setIsScannerOpen(true)} 
-              className="h-14 sm:h-[68px] aspect-square bg-white/10 border border-white/20 text-white rounded-2xl sm:rounded-full hover:bg-white/20 hover:border-cyan-400 transition-all flex items-center justify-center backdrop-blur-md shrink-0 shadow-lg mx-auto sm:mx-0" 
-              title="Scan QR Identity"
-            >
-              <QrCode className="w-6 h-6 sm:w-7 sm:h-7" />
-            </button>
-          </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-teal-200 via-cyan-400 to-teal-500 font-bold tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] mb-3 leading-tight">
+                Instant Video Consults
+              </h1>
+              <h2 className="text-lg md:text-xl text-white/90 font-light tracking-[0.1em] mb-2 drop-shadow-md">
+                Connect with Top Doctors Worldwide
+              </h2>
+            </div>
 
-          {/* Global Trust Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm font-semibold text-slate-300">
-            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
-              <span>🇮🇳</span> Access World-Renowned Indian Doctors
-            </div>
-            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
-              <Globe2 className="w-4 h-4 text-cyan-400" /> Available in 150+ Countries
-            </div>
-            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
-              <Zap className="w-4 h-4 text-amber-400" /> Instant Live Consults
+            {/* Telemedicine Hub Glass Panel */}
+            <div className="bg-white/5 backdrop-blur-2xl border-2 border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-col gap-4 text-left">
+              
+              <form onSubmit={handleSearch} className="w-full relative group">
+                <div className="relative flex items-center bg-black/40 border border-white/20 rounded-xl p-1.5 shadow-inner focus-within:border-teal-500/50 transition-colors">
+                  <input 
+                    type="text" 
+                    placeholder="Search Doctors, Specialties or Symptoms..." 
+                    className="flex-1 bg-transparent border-none outline-none text-white px-4 placeholder-gray-400 font-light text-base min-w-0"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <button type="submit" className="p-3 rounded-lg bg-teal-600 hover:bg-teal-500 text-white transition-colors shrink-0">
+                    <Search className="w-5 h-5" />
+                  </button>
+                </div>
+              </form>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                <Link href="/urgent-care" className="col-span-1 sm:col-span-2 flex items-center justify-center gap-3 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.4)] transition-all transform hover:scale-[1.02]">
+                  <Video className="w-6 h-6 animate-pulse" />
+                  Start Instant Video Call
+                </Link>
+                <button onClick={() => setIsScannerOpen(true)} className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 py-3 rounded-xl text-sm font-medium transition-colors">
+                  <QrCode className="w-4 h-4 text-teal-400" /> Scan Health ID
+                </button>
+                <Link href="/appointments" className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 py-3 rounded-xl text-sm font-medium transition-colors">
+                  <Calendar className="w-4 h-4 text-cyan-400" /> Book Clinic Visit
+                </Link>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-white/10 text-center">
+                <Link href="/portal/login" className="text-sm text-teal-400 hover:text-teal-300 font-medium tracking-wide flex items-center justify-center gap-2 transition-colors">
+                  <ShieldCheck className="w-4 h-4" /> Patient Login / Health Vault
+                </Link>
+              </div>
+
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* --- AD SLOT: CAROUSEL --- */}
         {platformAds['ad_slot_home_carousel'] && platformAds['ad_slot_home_carousel'].length > 0 && (
