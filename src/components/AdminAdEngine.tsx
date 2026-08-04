@@ -76,8 +76,19 @@ export default function AdminAdEngine() {
   const [slotId, setSlotId] = useState(AD_SLOTS[0].id);
   const [targetType, setTargetType] = useState<'global' | 'category' | 'specific_profile'>('global');
   const [targetId, setTargetId] = useState('');
-  const [adType, setAdType] = useState<'image' | 'adsense' | 'split' | 'slider'>('image');
+  const [adType, setAdType] = useState<'image' | 'adsense' | 'split' | 'slider' | 'youtube'>('image');
   const [animationStyle, setAnimationStyle] = useState<'fade' | 'slide-left' | 'slide-right' | 'slide-up' | 'slide-down' | 'zoom'>('fade');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+  
+  // Geographic Targeting State
+  const [targetCountry, setTargetCountry] = useState("all");
+  const [targetState, setTargetState] = useState("all");
+  const [targetDistrict, setTargetDistrict] = useState("all");
+  const [targetCity, setTargetCity] = useState("all");
+  
+  // Layout State
+  const [layoutSize, setLayoutSize] = useState<'full' | 'half' | 'third' | 'quarter'>('full');
+  const [impressionLimitStr, setImpressionLimitStr] = useState("");
   
   // Image Upload State
   const [uploadMode, setUploadMode] = useState<'new' | 'vault'>('new');
@@ -157,6 +168,8 @@ export default function AdminAdEngine() {
           if (!vaultImageUrl) throw new Error("Please select an image from the vault.");
           finalImageUrl = vaultImageUrl;
         }
+      } else if (adType === 'youtube') {
+        if (!youtubeUrl) throw new Error("Please provide a YouTube URL.");
       } else {
         if (!htmlCode) throw new Error("Please paste the AdSense HTML code.");
       }
@@ -168,6 +181,12 @@ export default function AdminAdEngine() {
         slotId,
         targetType,
         targetId: targetType === 'global' ? 'all' : targetId,
+        targetCountry,
+        targetState,
+        targetDistrict,
+        targetCity,
+        layoutSize,
+        impressionLimit: impressionLimitStr ? parseInt(impressionLimitStr) : null,
         type: adType,
         active: true,
         updatedAt: serverTimestamp(),
@@ -180,6 +199,8 @@ export default function AdminAdEngine() {
       } else if (adType === 'image' || adType === 'split') {
         adData.imageUrl = finalImageUrl;
         adData.linkUrl = linkUrl;
+      } else if (adType === 'youtube') {
+        adData.youtubeUrl = youtubeUrl;
       } else {
         adData.htmlCode = htmlCode;
       }
@@ -202,6 +223,13 @@ export default function AdminAdEngine() {
       setSubtext('');
       setButtonText('Learn More');
       setLinkUrl('');
+      setYoutubeUrl('');
+      setTargetCountry('all');
+      setTargetState('all');
+      setTargetDistrict('all');
+      setTargetCity('all');
+      setLayoutSize('full');
+      setImpressionLimitStr('');
       
       // Navigate to library after short delay
       setTimeout(() => {
@@ -398,6 +426,27 @@ export default function AdminAdEngine() {
                       </div>
                     )}
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target Country</label>
+                      <select value={targetCountry} onChange={(e) => setTargetCountry(e.target.value)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 outline-none">
+                        <option value="all">Global / All Countries</option>
+                        <option value="India">India</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target State</label>
+                      <input type="text" value={targetState} onChange={(e) => setTargetState(e.target.value)} placeholder="e.g. Odisha or 'all'" className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target District</label>
+                      <input type="text" value={targetDistrict} onChange={(e) => setTargetDistrict(e.target.value)} placeholder="e.g. Khordha or 'all'" className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Target City</label>
+                      <input type="text" value={targetCity} onChange={(e) => setTargetCity(e.target.value)} placeholder="e.g. Bhubaneswar or 'all'" className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 outline-none" />
+                    </div>
+                  </div>
                 </div>
 
                 <hr className="border-white/10" />
@@ -409,7 +458,7 @@ export default function AdminAdEngine() {
                     Ad Format & Creative
                   </h4>
                   
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
                     <label className={`flex flex-col items-center justify-center text-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${adType === 'image' ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
                       <input type="radio" name="adType" value="image" checked={adType === 'image'} onChange={() => setAdType('image')} className="sr-only" />
                       <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -425,12 +474,48 @@ export default function AdminAdEngine() {
                       <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                       <span className="font-bold text-[10px] leading-tight">Animated Slider</span>
                     </label>
+                    <label className={`flex flex-col items-center justify-center text-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${adType === 'youtube' ? 'border-red-500 bg-red-500/10 text-red-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                      <input type="radio" name="adType" value="youtube" checked={adType === 'youtube'} onChange={() => setAdType('youtube')} className="sr-only" />
+                      <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <span className="font-bold text-xs">YouTube</span>
+                    </label>
                     <label className={`flex flex-col items-center justify-center text-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all ${adType === 'adsense' ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
                       <input type="radio" name="adType" value="adsense" checked={adType === 'adsense'} onChange={() => setAdType('adsense')} className="sr-only" />
                       <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                       <span className="font-bold text-xs">AdSense</span>
                     </label>
                   </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Layout Size / Screen Width</label>
+                      <select value={layoutSize} onChange={(e) => setLayoutSize(e.target.value as any)} className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 outline-none">
+                        <option value="full">Full Width (100%)</option>
+                        <option value="half">Half Width (50%)</option>
+                        <option value="third">One Third (33%)</option>
+                        <option value="quarter">One Quarter (25%)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">Impression Limit (Optional)</label>
+                      <input type="number" value={impressionLimitStr} onChange={(e) => setImpressionLimitStr(e.target.value)} placeholder="e.g. 10000 views (Leave empty for infinite)" className="w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-teal-500 outline-none" />
+                    </div>
+                  </div>
+
+                  {adType === 'youtube' && (
+                    <div className="animate-in fade-in slide-in-from-top-2">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">YouTube Video URL</label>
+                      <input 
+                        type="url" 
+                        required
+                        value={youtubeUrl}
+                        onChange={(e) => setYoutubeUrl(e.target.value)}
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white focus:border-red-500 outline-none"
+                      />
+                      <p className="text-[10px] text-slate-500 mt-2">Paste the full YouTube link. It will automatically be embedded securely.</p>
+                    </div>
+                  )}
 
                   {adType === 'slider' && (
                     <div className="animate-in fade-in slide-in-from-top-2 mb-6 bg-fuchsia-500/5 border border-fuchsia-500/20 rounded-2xl p-6">

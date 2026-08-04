@@ -678,6 +678,10 @@ export default function AdminDashboard() {
               )}
             </AdminCard>
           )}
+          {activeTab === "ads" && (
+            <AdminAdEngine />
+          )}
+
           {activeTab === "staff" && (
             <AdminStaffManagement />
           )}

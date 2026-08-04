@@ -196,19 +196,17 @@ export function DoctorListingView({ data }: { data: any }) {
 export const dynamic = 'force-dynamic';
 
 export default function DoctorsDirectory({ 
-  initialTaxonomy = "",
-  initialSpecialty = "",
-  initialCountry = "", 
+  initialCountry = "",
   initialState = "", 
   initialDistrict = "",
-  initialBlock = ""
+  initialCity = "",
+  initialSpecialty = ""
 }: { 
-  initialTaxonomy?: string;
-  initialSpecialty?: string;
   initialCountry?: string;
   initialState?: string;
   initialDistrict?: string;
-  initialBlock?: string;
+  initialCity?: string;
+  initialSpecialty?: string;
 }) {
   const router = useRouter();
   const { activeTenant } = useTenant();
@@ -220,8 +218,10 @@ export default function DoctorsDirectory({
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
   const [searchCountry, setSearchCountry] = useState(initialCountry || "");
   const [searchState, setSearchState] = useState(initialState || "");
-  const [searchDistrict, setSearchDistrict] = useState(initialDistrict);
-  const [searchType, setSearchType] = useState("");
+  const [searchDistrict, setSearchDistrict] = useState(initialDistrict || "");
+  const [searchCity, setSearchCity] = useState(initialCity || "");
+  const [searchSpecialty, setSearchSpecialty] = useState(initialSpecialty || "");
+  const [searchType, setSearchType] = useState(""); // Holds the taxonomy/category mapping
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [selectedTiers, setSelectedTiers] = useState<string[]>([]);
   const [platformAds, setPlatformAds] = useState<any>({});
@@ -308,22 +308,24 @@ export default function DoctorsDirectory({
     }
     
     if (selectedTiers.length > 0) {
-      const docTier = doc.tier || "Specialist"; // Default legacy data to Specialist
-      if (!selectedTiers.includes(docTier)) return false;
+      const docTier = (doc.tier || doc.taxonomy || "specialist").toLowerCase(); 
+      let isTierMatch = false;
+      if (selectedTiers.includes("general") && (docTier === "ayush" || docTier === "mbbs" || docTier === "general")) isTierMatch = true;
+      if (selectedTiers.includes("specialist") && (docTier === "specialist" || docTier === "speciality")) isTierMatch = true;
+      if (selectedTiers.includes("super-specialist") && docTier === "super-specialist") isTierMatch = true;
+      
+      if (!isTierMatch) return false;
     }
     
     if (searchDistrict && doc.district?.toLowerCase() !== searchDistrict.toLowerCase()) {
       return false;
     }
 
-    if (initialTaxonomy && doc.taxonomy?.toLowerCase() !== initialTaxonomy.toLowerCase()) return false;
-    // Map URL slug to the subCategory string by doing a simple slugify/unslugify check, or just simple lowercase inclusion
-    if (initialSpecialty && !(doc.subCategory || doc.specialty || "").toLowerCase().replace(/[^a-z0-9]/g, '').includes(initialSpecialty.toLowerCase().replace(/[^a-z0-9]/g, ''))) return false;
-
     if (initialCountry && doc.country?.toLowerCase() !== initialCountry.toLowerCase()) return false;
     if (initialState && doc.state?.toLowerCase() !== initialState.toLowerCase()) return false;
     if (initialDistrict && doc.district?.toLowerCase() !== initialDistrict.toLowerCase()) return false;
-    if (initialBlock && doc.block?.toLowerCase() !== initialBlock.toLowerCase()) return false;
+    if (initialCity && doc.city?.toLowerCase() !== initialCity.toLowerCase()) return false;
+    if (initialSpecialty && !(doc.subCategory || doc.specialty || "").toLowerCase().replace(/[^a-z0-9]/g, '').includes(initialSpecialty.toLowerCase().replace(/[^a-z0-9]/g, ''))) return false;
 
     return searchMatch;
   });
@@ -331,6 +333,13 @@ export default function DoctorsDirectory({
   const uniqueCountries = Array.from(new Set(doctors.map((d: any) => d.country).filter(Boolean)));
   const uniqueStates = Array.from(new Set(doctors.map((d: any) => d.state).filter(Boolean)));
   const uniqueDistricts = Array.from(new Set(doctors.map(d => d.district).filter(d => d !== "Unknown"))).sort();
+
+  // Dynamic SEO Hero Construction
+  const activeLocation = initialCity || initialDistrict || initialState || initialCountry || "Odisha";
+  const formattedLocation = activeLocation.charAt(0).toUpperCase() + activeLocation.slice(1).replace(/-/g, ' ');
+  const activeSpecialty = initialSpecialty ? (initialSpecialty.charAt(0).toUpperCase() + initialSpecialty.slice(1).replace(/-/g, ' ')) + (initialSpecialty.toLowerCase().endsWith('s') ? '' : 's') : "Doctors";
+  
+  const seoTitleHighlight = `${activeSpecialty} in ${formattedLocation}`;
 
   return (
     <div className="min-h-screen bg-[#040815] text-slate-200 font-sans selection:bg-cyan-500/30">
@@ -350,7 +359,7 @@ export default function DoctorsDirectory({
 
       <PremiumHeroSearch 
         titlePrefix="Find Top"
-        titleHighlight="Specialists in Odisha"
+        titleHighlight={seoTitleHighlight}
         description="Connect with renowned medical experts through secure video consultations or physical appointments."
         searchPlaceholder="e.g. Dr Abhishek, Kalinga Hospital..."
         search={search}
@@ -411,18 +420,22 @@ export default function DoctorsDirectory({
               <div className="pt-6 border-t border-slate-800">
                 <label className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest block mb-3">Provider Tier</label>
                 <div className="flex flex-col gap-3">
-                  {["Ayush", "MBBS", "Specialist", "Super Specialist"].map((tier: string) => (
-                    <label key={tier} className="flex items-center gap-3 cursor-pointer group">
+                  {[
+                    { label: "General Doctors", value: "general" },
+                    { label: "Specialists", value: "specialist" },
+                    { label: "Surgeons / Super Specialists", value: "super-specialist" }
+                  ].map((tier) => (
+                    <label key={tier.value} className="flex items-center gap-3 cursor-pointer group">
                       <input 
                         type="checkbox" 
                         className="w-4 h-4 rounded border-slate-700 bg-[#040815] text-cyan-500 focus:ring-cyan-500 cursor-pointer shadow-sm" 
-                        checked={selectedTiers.includes(tier)}
+                        checked={selectedTiers.includes(tier.value)}
                         onChange={(e) => {
-                          if (e.target.checked) setSelectedTiers([...selectedTiers, tier]);
-                          else setSelectedTiers(selectedTiers.filter(t => t !== tier));
+                          if (e.target.checked) setSelectedTiers([...selectedTiers, tier.value]);
+                          else setSelectedTiers(selectedTiers.filter(t => t !== tier.value));
                         }}
                       />
-                      <span className="text-sm font-bold text-slate-300 group-hover:text-cyan-400 transition-colors">{tier} Doctor</span>
+                      <span className="text-sm font-bold text-slate-300 group-hover:text-cyan-400 transition-colors">{tier.label}</span>
                     </label>
                   ))}
                 </div>

@@ -103,34 +103,20 @@ export default async function DoctorsRoute({ params }: { params: Promise<{ locat
   }
 
   // It's a listing! Parse the hierarchical SEO structure:
-  // /[taxonomy]/[specialty]/[state]/[district]/[block]
-  let taxonomy = "";
-  let specialty = "";
-  let state = "";
-  let district = "";
-  let block = "";
-
-  // This is a naive assignment based on the new route structure. 
-  // Depending on what exactly the user clicks, slug could have varying lengths.
-  if (["ayush", "mbbs", "specialist", "super-specialist"].includes((slug[0] || "").toLowerCase())) {
-    taxonomy = slug[0] || "";
-    specialty = slug[1] || "";
-    state = slug[2] || "";
-    district = slug[3] || "";
-    block = slug[4] || "";
-  } else {
-    // Fallback for old route: /[country]/[state]/[district]
-    state = slug[1] || "";
-    district = slug[2] || "";
-  }
+  // /[country]/[state]/[district]/[city]/[specialty]
+  let country = slug[0] || "";
+  let state = slug[1] || "";
+  let district = slug[2] || "";
+  let city = slug[3] || "";
+  let specialty = slug[4] || "";
 
   return (
     <DoctorListingView 
-      initialTaxonomy={taxonomy}
-      initialSpecialty={specialty}
+      initialCountry={country}
       initialState={state} 
       initialDistrict={district}
-      initialBlock={block}
+      initialCity={city}
+      initialSpecialty={specialty}
     />
   );
 }
