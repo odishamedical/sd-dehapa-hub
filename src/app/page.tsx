@@ -18,10 +18,10 @@ const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
 });
 
 const SEO_PHRASES = [
-  "Consult Top Indian Doctors from Anywhere.",
-  "Instantly Book ICU Beds in Emergencies.",
-  "Secure Your Lifetime Health Records.",
-  "Access the Best Specialists Globally."
+  "Find top Specialist Doctors in Odisha & India.",
+  "Consult experts in Cardiology & Nephrology.",
+  "Book Hospital & Diagnostic X-Ray services.",
+  "Access advanced Surgical & Routine Care instantly."
 ];
 
 export default function DehapaHome() {
@@ -148,6 +148,13 @@ export default function DehapaHome() {
               <h2 className="text-xl md:text-2xl 2xl:text-3xl text-white/90 font-light tracking-[0.15em] mb-2 drop-shadow-lg">
                 Connect with Top Doctors Worldwide
               </h2>
+              
+              {/* Dynamic SEO Typing Text */}
+              <div className="h-8 mt-4 flex items-center justify-start">
+                <p className="text-base sm:text-lg lg:text-xl text-teal-300 font-mono tracking-tight drop-shadow-md">
+                  {displayText}<span className="inline-block w-0.5 h-5 ml-1 bg-teal-400 animate-pulse"></span>
+                </p>
+              </div>
             </div>
 
             {/* Telemedicine Hub Glass Panel */}
