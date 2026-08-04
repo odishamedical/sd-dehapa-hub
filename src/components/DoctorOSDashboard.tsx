@@ -18,6 +18,7 @@ import BillingInvoice from '@/components/BillingInvoice';
 import DoctorPluginStore from '@/components/DoctorPluginStore';
 import DoctorAppointments from '@/components/DoctorAppointments';
 import DoctorDocumentVault from '@/components/DoctorDocumentVault';
+import PostJobModal from '@/app/jobs/components/PostJobModal';
 
 const faqData = [
   {
@@ -314,8 +315,6 @@ export default function DoctorOSDashboard() {
     return () => window.removeEventListener('open-chat', handleOpenChat);
   }, []);
 
-  const [userUid, setUserUid] = useState<string | null>(null);
-
   // Calculate Profile Completion
   const getProfileProgress = () => {
     if (!entityData || !entityData.id) return 0;
@@ -430,6 +429,12 @@ export default function DoctorOSDashboard() {
       label: "Inbox",
       section: "SYSTEM & SETTINGS",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+    },
+    {
+      id: "ats_hiring",
+      label: "Job Postings & ATS",
+      section: "SYSTEM & SETTINGS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
     },
     {
       id: "plugin_store",
@@ -1099,35 +1104,40 @@ export default function DoctorOSDashboard() {
         )}
 
         {activeTab === "document_vault" && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto relative">
-             {/* Soft-lock overlay for Advanced OS (Document Vault) */}
-             {!(entityData?.activePlugins || []).includes("plugin_vip_rx_pad") && (
-               <div className="absolute inset-0 z-50 bg-slate-900/80 backdrop-blur-sm rounded-[32px] flex items-center justify-center p-6">
-                 <div className="bg-slate-900 border border-slate-700 p-8 rounded-2xl shadow-2xl text-center max-w-md animate-in zoom-in-95">
-                   <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/20">
-                     <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                   </div>
-                   <h3 className="text-2xl font-black text-white mb-2">Advanced OS Required</h3>
-                   <p className="text-slate-400 text-sm mb-6">Upgrade to Advanced OS to unlock the Document Vault and manage clinic compliance certificates.</p>
-                   <button onClick={() => handleTabChange("plugin_store")} className="bg-purple-500 hover:bg-purple-400 text-white font-bold py-3 px-6 rounded-xl w-full shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all">
-                     Unlock Advanced OS
-                   </button>
-                 </div>
-               </div>
-             )}
-             <DoctorDocumentVault />
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+             <DoctorDocumentVault doctorId={entityData?.id || ""} doctorName={entityData?.name || ""} />
           </div>
         )}
 
-        {activeTab === "faq" && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
-            <SupportDashboard userRole="doctor" userName={entityData?.name} faqData={faqData} />
+        {activeTab === "ats_hiring" && (
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+              <h3 className="text-xl font-bold text-white">Job Postings & ATS</h3>
+              <button 
+                onClick={() => setShowPostJobModal(true)}
+                className="bg-teal-500 hover:bg-teal-400 text-slate-900 px-6 py-2 rounded-xl text-sm font-bold shadow-md transition-colors shadow-teal-500/20"
+              >
+                + Post a Job
+              </button>
+            </div>
+            
+            <div className="text-center py-12 bg-black/20 rounded-2xl border border-white/5">
+              <svg className="w-16 h-16 text-slate-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              <h4 className="text-lg font-bold text-white mb-2">No Active Jobs</h4>
+              <p className="text-slate-400 text-sm max-w-md mx-auto">You haven't posted any jobs yet. Post a job to hire nurses, lab technicians, pharmacists, and staff directly through Dehapa Hub.</p>
+            </div>
           </div>
         )}
 
         {activeTab === "plugin_store" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <DoctorPluginStore entityData={entityData} />
+          </div>
+        )}
+
+        {activeTab === "faq" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
+            <SupportDashboard userRole="doctor" userName={entityData?.name} faqData={faqData} />
           </div>
         )}
           </div>
@@ -1197,6 +1207,24 @@ export default function DoctorOSDashboard() {
           patient={billingPatient}
           provider={entityData}
           onClose={() => setBillingPatient(null)}
+        />
+      )}
+      {showPostJobModal && (
+        <PostJobModal 
+          profile={{
+            id: entityData?.id || "doctor_123",
+            role: "doctor",
+            companyName: entityData?.name,
+            address: entityData?.clinicAddress,
+            name: entityData?.name,
+            email: userEmail,
+            phone: entityData?.phone
+          }}
+          onClose={() => setShowPostJobModal(false)}
+          onSuccess={() => {
+            setShowPostJobModal(false);
+            alert("Job posted successfully! It will be live on the Dehapa Job Board once approved by an admin.");
+          }}
         />
       )}
     </DashboardLayout>

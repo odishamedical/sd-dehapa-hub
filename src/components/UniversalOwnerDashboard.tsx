@@ -22,6 +22,7 @@ import UniversalPersonalForm from '@/components/UniversalPersonalForm';
 import WalletDashboard from '@/components/payments/WalletDashboard';
 import MyNetworkHub from '@/components/network/MyNetworkHub';
 import SupportDashboard from '@/components/SupportDashboard';
+import PostJobModal from '@/app/jobs/components/PostJobModal';
 
 interface UniversalOwnerDashboardProps {
   expectedRole: string; // e.g. "pharmacy", "lab", "ambulance", "doctor", "hospital"
@@ -40,6 +41,7 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
   const [origin, setOrigin] = useState("https://dehapa.com");
   const [userEmail, setUserEmail] = useState("");
   const [activeTab, setActiveTab] = useState("home");
+  const [showPostJobModal, setShowPostJobModal] = useState(false);
 
   // Sync tab with URL Hash
   useEffect(() => {
@@ -339,69 +341,74 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
     {
       id: "owner_kyc",
       label: "Owner KYC & Verification",
-      section: "CORE SETUP",
+      section: "BASIC: DIRECTORY LISTING",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
-    },
-    {
-      id: "staff_management",
-      label: "Staff & Team Access",
-      section: "ADMINISTRATION",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
       id: "personal",
       label: "Personal Information",
-      section: "CORE SETUP",
+      section: "BASIC: DIRECTORY LISTING",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
     },
     {
       id: "identity",
       label: "Property Identity & Info",
-      section: "CORE SETUP",
+      section: "BASIC: DIRECTORY LISTING",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
     },
-
     {
       id: "bank_details",
       label: "Bank & Payout Details",
-      section: "FINANCE",
+      section: "PRO: CLOUD SERVICES",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-    },
-    {
-      id: "document_vault",
-      label: "Document Vault",
-      section: "ADMINISTRATION",
-      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
     },
     {
       id: "patients",
       label: "My Patients",
-      section: "CONNECTIONS & NETWORK",
+      section: "PRO: CLOUD SERVICES",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
     },
     {
       id: "b2b_network",
       label: "B2B Network",
-      section: "CONNECTIONS & NETWORK",
+      section: "PRO: CLOUD SERVICES",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
     },
     {
       id: "inbox",
       label: "Inbox",
-      section: "CONNECTIONS & NETWORK",
+      section: "PRO: CLOUD SERVICES",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
     },
     {
       id: "medical_vault",
       label: "Medical Vault",
-      section: "CONNECTIONS & NETWORK",
+      section: "PRO: CLOUD SERVICES",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
     },
     {
       id: "wallet",
       label: "Wallet & Payouts",
-      section: "FINANCE",
+      section: "PRO: CLOUD SERVICES",
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    },
+    {
+      id: "staff_management",
+      label: "Staff & Team Access",
+      section: "PRO ADVANCE: OPERATING SYSTEM",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    },
+    {
+      id: "document_vault",
+      label: "Document Vault",
+      section: "PRO ADVANCE: OPERATING SYSTEM",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+    },
+    {
+      id: "ats_hiring",
+      label: "Job Postings & ATS",
+      section: "PRO ADVANCE: OPERATING SYSTEM",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
     }
   ];
 
@@ -409,7 +416,7 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
   const schemaTabs: DashboardTab[] = directoryConfig[capitalizedRole as keyof typeof directoryConfig]?.tabs.map(tab => ({
     id: tab.id,
     label: tab.label,
-    section: "CORE SETUP",
+    section: "BASIC: DIRECTORY LISTING",
     icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
   })) || [];
 
@@ -1149,6 +1156,26 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
           return null;
         })}
 
+        {activeTab === "ats_hiring" && (
+          <div className="bg-slate-700/80 backdrop-blur-xl border border-white/10 rounded-[32px] p-6 md:p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+              <h3 className="text-xl font-bold text-white">Job Postings & ATS</h3>
+              <button 
+                onClick={() => setShowPostJobModal(true)}
+                className="bg-teal-500 hover:bg-teal-400 text-slate-900 px-6 py-2 rounded-xl text-sm font-bold shadow-md transition-colors shadow-teal-500/20"
+              >
+                + Post a Job
+              </button>
+            </div>
+            
+            <div className="text-center py-12 bg-black/20 rounded-2xl border border-white/5">
+              <svg className="w-16 h-16 text-slate-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+              <h4 className="text-lg font-bold text-white mb-2">No Active Jobs</h4>
+              <p className="text-slate-400 text-sm max-w-md mx-auto">You haven't posted any jobs yet. Post a job to hire nurses, lab technicians, pharmacists, and staff directly through Dehapa Hub.</p>
+            </div>
+          </div>
+        )}
+
         {/* CUSTOM TABS RENDERER */}
         {renderCustomTab && renderCustomTab(activeTab, entityData)}
 
@@ -1229,6 +1256,24 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
         )}
 
       </div>
+      {showPostJobModal && (
+        <PostJobModal 
+          profile={{
+            id: entityData.id || "provider_123",
+            role: expectedRole,
+            companyName: entityData.name,
+            address: entityData.address,
+            name: entityData.ownerName,
+            email: userEmail,
+            phone: entityData.phone
+          }}
+          onClose={() => setShowPostJobModal(false)}
+          onSuccess={() => {
+            setShowPostJobModal(false);
+            alert("Job posted successfully! It will be live on the Dehapa Job Board once approved by an admin.");
+          }}
+        />
+      )}
     </DashboardLayout>
   );
 }
