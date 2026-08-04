@@ -124,6 +124,8 @@ export default function DehapaHome() {
         <Image src="/stock/ambient-bg.png" alt="Ambient Background" fill unoptimized={true} className="object-cover opacity-20 mix-blend-screen" />
       </div>
 
+      <div className="relative z-10 pb-20">
+      
       {/* Luxury Telemedicine Hero Section */}
       <section className="relative pt-24 pb-16 z-10 flex flex-col items-center justify-center min-h-[55vh] lg:min-h-[600px] mb-12">
         <div className="absolute inset-0 z-[-1] overflow-hidden rounded-b-[2rem] md:rounded-b-[4rem] shadow-2xl border-b border-white/10">
