@@ -787,9 +787,25 @@ export default function AdminDataCRM() {
                       )}
                       
                       <div className="md:hidden flex items-center gap-2">
-                        <Link href={generateUniversalSeoUrl(item, item.category?.toLowerCase() + 's' as any) || `/doctors/${item.customSlug || item.id}`} target="_blank" className="text-slate-400 hover:text-white font-bold text-[9px] uppercase tracking-widest flex items-center justify-center bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg shadow-sm">
+                        <Link href={generateUniversalSeoUrl(item, item.category?.toLowerCase() + 's' as any) || `/doctors/${item.customSlug || item.id}`} target="_blank" className="text-slate-400 hover:text-white font-bold text-[9px] uppercase tracking-widest flex items-center justify-center bg-slate-800 border border-slate-700 w-8 h-8 rounded-lg shadow-sm" title="View Live">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                         </Link>
+                        
+                        {item.ownerEmail && (
+                          <button 
+                            onClick={() => {
+                              localStorage.setItem("admin_impersonating_provider", localStorage.getItem("sd_current_user_email") || "admin");
+                              localStorage.setItem("sd_current_user_email", item.ownerEmail);
+                              localStorage.setItem("sd_current_user_role", item.category?.toLowerCase() || "provider");
+                              window.open(`/portal/${item.category?.toLowerCase() || 'doctor'}`, "_blank");
+                            }}
+                            className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/20 font-bold text-[9px] uppercase tracking-widest px-2 h-8 rounded-lg shadow-sm flex items-center justify-center"
+                            title="Impersonate User"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                          </button>
+                        )}
+                        
                         <button onClick={() => openDrawer(item)} className="bg-gradient-to-r from-teal-500 to-teal-600 text-slate-900 font-bold text-[9px] uppercase tracking-widest px-3 py-1.5 h-8 rounded-lg shadow-sm flex items-center gap-1">
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                           Edit
@@ -803,6 +819,22 @@ export default function AdminDataCRM() {
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                         View Live
                       </Link>
+                      
+                      {item.ownerEmail && (
+                        <button 
+                          onClick={() => {
+                            localStorage.setItem("admin_impersonating_provider", localStorage.getItem("sd_current_user_email") || "admin");
+                            localStorage.setItem("sd_current_user_email", item.ownerEmail);
+                            localStorage.setItem("sd_current_user_role", item.category?.toLowerCase() || "provider");
+                            window.open(`/portal/${item.category?.toLowerCase() || 'doctor'}`, "_blank");
+                          }}
+                          className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/20 font-bold text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-sm transition-all flex items-center gap-1"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                          Impersonate
+                        </button>
+                      )}
+
                       <button onClick={() => openDrawer(item)} className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-slate-900 font-bold text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-[0_2px_10px_rgba(20,184,166,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-1">
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                         Edit Data

@@ -218,6 +218,26 @@ export default function DashboardLayout({
   return (
     <div className="dark min-h-screen bg-slate-950 text-slate-200 font-sans relative overflow-x-hidden flex flex-col">
       
+      {typeof window !== "undefined" && localStorage.getItem("admin_impersonating_provider") && (
+        <div className="bg-amber-500 text-slate-900 px-4 py-2 text-xs md:text-sm font-bold flex flex-col sm:flex-row justify-between items-center gap-2 z-[100] relative sticky top-0 shadow-lg border-b border-amber-600">
+          <div className="flex items-center gap-2 text-center sm:text-left">
+            <span className="text-lg">👀</span> You are currently viewing this user as an Admin (Impersonation Mode)
+          </div>
+          <button 
+            onClick={() => {
+              const adminEmail = localStorage.getItem("admin_impersonating_provider");
+              if (adminEmail) localStorage.setItem("sd_current_user_email", adminEmail);
+              localStorage.setItem("sd_current_user_role", "super_admin");
+              localStorage.removeItem("admin_impersonating_provider");
+              window.location.href = "/portal/os";
+            }}
+            className="bg-black/10 hover:bg-black/20 px-4 py-1.5 rounded-full transition-colors whitespace-nowrap shadow-sm border border-black/10"
+          >
+            Exit Impersonation
+          </button>
+        </div>
+      )}
+
       {/* Premium Soft-Light Background Orbs */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-500/20 blur-[120px] animate-pulse"></div>
