@@ -359,6 +359,10 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
 
       {/* 2. Menu */}
       <nav className="hidden md:flex items-center gap-3">
+        <a href="/jobs" className="relative group bg-slate-900 border border-indigo-500/30 hover:border-indigo-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-indigo-300 hover:text-indigo-200 transition-all shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:shadow-[0_0_25px_rgba(99,102,241,0.3)] overflow-hidden">
+          <span className="relative z-10">Job Board</span>
+          <div className="absolute inset-0 h-full w-full bg-indigo-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+        </a>
         <a href="/doctors" className="relative group bg-slate-900 border border-teal-500/30 hover:border-cyan-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-teal-300 hover:text-cyan-200 transition-all shadow-[0_0_15px_rgba(20,184,166,0.1)] hover:shadow-[0_0_25px_rgba(34,211,238,0.3)] overflow-hidden">
           <span className="relative z-10">Find Specialists</span>
           <div className="absolute inset-0 h-full w-full bg-cyan-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
