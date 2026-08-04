@@ -35,5 +35,45 @@ export interface Job {
   createdAt: any;
 }
 
+export interface MedicalJobSeeker {
+  uid: string;
+  email: string;
+  fullName: string;
+  dob: string;
+  gender: string;
+  phone: string;
+  whatsapp: string;
+  
+  country: string;
+  state: string;
+  district: string;
+  block: string;
+  localAddress: string;
+  pincode: string;
+  
+  primaryQualification: string;
+  institution: string;
+  passingYear: string;
+  medicalRegNumber: string;
+  medicalCouncil: string;
+  additionalCerts: string[];
+  
+  isFresher: boolean;
+  totalExperience: string;
+  specialization: string;
+  workHistory: { employer: string, role: string, duration: string, responsibilities: string }[];
+  
+  preferredJobType: string;
+  expectedSalary: string;
+  preferredLocation: string;
+  
+  profileImage: string;
+  cvFileUrl?: string; // NEW: PDF Upload URL
+  declarationSigned: boolean;
+  isLookingForJob: boolean;
+  createdAt: any;
+}
+
 export const jobsCollection = collection(db, "dehapa_jobs");
 export const jobApplicationsCollection = collection(db, "dehapa_job_applications");
+export const jobSeekersCollection = collection(db, "dehapa_job_seekers");

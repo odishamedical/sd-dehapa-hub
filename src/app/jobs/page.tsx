@@ -175,9 +175,9 @@ export default function JobsPage() {
                     )}
                   </div>
 
-                  <button className="w-full py-3 bg-white/5 hover:bg-teal-500 hover:text-slate-950 text-white font-bold rounded-xl transition-all border border-white/10 hover:border-transparent mt-auto text-sm">
+                  <a href="/jobs/profile" className="w-full text-center py-3 bg-white/5 hover:bg-teal-500 hover:text-slate-950 text-white font-bold rounded-xl transition-all border border-white/10 hover:border-transparent mt-auto text-sm block">
                     View Details & Apply
-                  </button>
+                  </a>
                 </div>
               ))}
             </div>
