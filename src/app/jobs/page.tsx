@@ -6,7 +6,7 @@ import { db } from "@/lib/firebase";
 import { Job, jobsCollection } from "@/lib/jobs";
 import PostJobModal from "./components/PostJobModal";
 import GlobalHeader from "@/components/GlobalHeader";
-import Footer from "@/components/Footer";
+import Footer from "@/components/GlobalFooter";
 import { MapPin, Briefcase, IndianRupee, Clock, Search, Filter } from "lucide-react";
 import Image from "next/image";
 
