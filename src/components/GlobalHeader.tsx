@@ -7,6 +7,7 @@ import GlobalAvatarWidget from "./GlobalAvatarWidget";
 import DoctorStatusToggle from "./DoctorStatusToggle";
 import GlobalNotifications from "./GlobalNotifications";
 import Image from "next/image";
+import { Menu, X } from "lucide-react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
@@ -63,6 +64,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
   const [userName, setUserName] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [isAuthLoaded, setIsAuthLoaded] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [ecosystemMenuOpen, setEcosystemMenuOpen] = useState(false);
@@ -87,6 +89,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
         sessionStorage.clear();
         setUserEmail(null); setUserName(null); setUserAvatar(null); setUserRole(null);
         window.history.replaceState({}, document.title, window.location.pathname);
+        setIsAuthLoaded(true);
         return;
       }
       // ─────────────────────────────────────────────────────────────────────
@@ -144,6 +147,7 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
                    path.startsWith("/weaver") || 
                    path.startsWith("/store");
       setIsAdminMode(isAd);
+      setIsAuthLoaded(true);
     }
   };
 
@@ -357,23 +361,37 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
         </a>
       </div>
 
-      {/* 2. Menu */}
-      <nav className="hidden md:flex items-center gap-3">
-        <a href="/jobs" className="relative group bg-slate-900 border border-indigo-500/30 hover:border-indigo-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-indigo-300 hover:text-indigo-200 transition-all shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:shadow-[0_0_25px_rgba(99,102,241,0.3)] overflow-hidden">
-          <span className="relative z-10">Job Board</span>
-          <div className="absolute inset-0 h-full w-full bg-indigo-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
-        </a>
-        <a href="/doctors" className="relative group bg-slate-900 border border-teal-500/30 hover:border-cyan-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-teal-300 hover:text-cyan-200 transition-all shadow-[0_0_15px_rgba(20,184,166,0.1)] hover:shadow-[0_0_25px_rgba(34,211,238,0.3)] overflow-hidden">
-          <span className="relative z-10">Find Specialists</span>
-          <div className="absolute inset-0 h-full w-full bg-cyan-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
-        </a>
-        {(!userRole || userRole === 'user' || userRole === 'patient') && (
-          <a href="/join" className="relative group bg-slate-900 border border-amber-500/30 hover:border-orange-400 px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-amber-300 hover:text-orange-200 transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] overflow-hidden">
-            <span className="relative z-10">Join as Provider</span>
-            <div className="absolute inset-0 h-full w-full bg-orange-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+      {/* 2. Desktop Navigation */}
+      <nav className="hidden xl:flex items-center gap-4 xl:gap-6 flex-1 justify-center px-4">
+        <div className="flex items-center gap-3 xl:gap-5 bg-slate-800/40 backdrop-blur-md px-5 py-2.5 rounded-full border border-slate-700/50">
+          <a href="/doctors" className="text-slate-300 hover:text-cyan-400 font-bold text-[11px] xl:text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5"><span className="text-base">🩺</span> Doctors</a>
+          <a href="/hospitals" className="text-slate-300 hover:text-cyan-400 font-bold text-[11px] xl:text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5"><span className="text-base">🏥</span> Hospitals</a>
+          <a href="/labs" className="text-slate-300 hover:text-cyan-400 font-bold text-[11px] xl:text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5"><span className="text-base">🔬</span> Labs</a>
+          <a href="/pharmacies" className="text-slate-300 hover:text-cyan-400 font-bold text-[11px] xl:text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5"><span className="text-base">💊</span> Pharmacies</a>
+          <a href="/ambulances" className="text-slate-300 hover:text-cyan-400 font-bold text-[11px] xl:text-xs uppercase tracking-widest transition-colors flex items-center gap-1.5"><span className="text-base">🚑</span> Ambulances</a>
+        </div>
+        <div className="flex items-center gap-3">
+          <a href="/jobs" className="relative group bg-slate-900 border border-indigo-500/30 hover:border-indigo-400 px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-indigo-300 hover:text-indigo-200 transition-all shadow-[0_0_15px_rgba(99,102,241,0.1)] hover:shadow-[0_0_25px_rgba(99,102,241,0.3)] overflow-hidden shrink-0">
+            <span className="relative z-10">Job Board</span>
+            <div className="absolute inset-0 h-full w-full bg-indigo-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
           </a>
-        )}
+          {isAuthLoaded && (!userRole || userRole === 'user' || userRole === 'patient') && (
+            <a href="/join" className="relative group bg-slate-900 border border-amber-500/30 hover:border-orange-400 px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest text-amber-300 hover:text-orange-200 transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] overflow-hidden shrink-0">
+              <span className="relative z-10">Join as Provider</span>
+              <div className="absolute inset-0 h-full w-full bg-orange-400/10 -skew-x-12 translate-x-[-150%] group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            </a>
+          )}
+        </div>
       </nav>
+
+      <div className="flex-1 xl:hidden"></div>
+
+      {/* Mobile Hamburger Toggle */}
+      <div className="flex xl:hidden items-center mr-2">
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-slate-300 hover:text-cyan-400 p-2">
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
 
       {/* 3. User Menu / Auth */}
       <div className="flex items-center gap-1 md:gap-4 relative shrink-0" ref={dropdownRef}>
@@ -503,7 +521,24 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
         )}
       </div>
 
-
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden absolute top-[100%] left-0 right-0 bg-[#020810]/95 backdrop-blur-3xl border-b border-teal-500/20 shadow-[0_20px_50px_rgba(0,0,0,0.7)] p-4 flex flex-col gap-2 z-[90]">
+          <a href="/doctors" className="text-slate-300 hover:text-cyan-400 hover:bg-cyan-900/20 px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3"><span className="text-xl">🩺</span> Doctors</a>
+          <a href="/hospitals" className="text-slate-300 hover:text-cyan-400 hover:bg-cyan-900/20 px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3"><span className="text-xl">🏥</span> Hospitals</a>
+          <a href="/labs" className="text-slate-300 hover:text-cyan-400 hover:bg-cyan-900/20 px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3"><span className="text-xl">🔬</span> Labs</a>
+          <a href="/pharmacies" className="text-slate-300 hover:text-cyan-400 hover:bg-cyan-900/20 px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3"><span className="text-xl">💊</span> Pharmacies</a>
+          <a href="/ambulances" className="text-slate-300 hover:text-cyan-400 hover:bg-cyan-900/20 px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3"><span className="text-xl">🚑</span> Ambulances</a>
+          
+          <div className="h-px bg-slate-800 my-2"></div>
+          
+          <a href="/jobs" className="text-indigo-300 hover:text-indigo-200 hover:bg-indigo-900/20 px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3"><span className="text-xl">💼</span> Job Board</a>
+          
+          {isAuthLoaded && (!userRole || userRole === 'user' || userRole === 'patient') && (
+            <a href="/join" className="text-amber-300 hover:text-amber-200 hover:bg-amber-900/20 px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3"><span className="text-xl">🌟</span> Join as Provider</a>
+          )}
+        </div>
+      )}
     </header>
   );
 }
