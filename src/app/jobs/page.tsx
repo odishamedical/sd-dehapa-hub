@@ -7,7 +7,7 @@ import { Job, jobsCollection } from "@/lib/jobs";
 import PostJobModal from "./components/PostJobModal";
 import GlobalHeader from "@/components/GlobalHeader";
 import Footer from "@/components/GlobalFooter";
-import { MapPin, Briefcase, IndianRupee, Clock, Search, Filter } from "lucide-react";
+import { MapPin, Briefcase, IndianRupee, Clock, Search, Filter, User } from "lucide-react";
 import Image from "next/image";
 
 export default function JobsPage() {
@@ -69,6 +69,9 @@ export default function JobsPage() {
               <button onClick={() => setShowPostModal(true)} className="bg-teal-500 hover:bg-teal-400 text-slate-950 px-8 py-4 rounded-2xl font-bold shadow-lg shadow-teal-500/20 transition-all flex items-center gap-2 text-lg w-full sm:w-auto justify-center">
                 <Briefcase className="w-5 h-5" /> Post a Medical Job
               </button>
+              <a href="/jobs/profile" className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 hover:border-slate-600 px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-2 text-lg w-full sm:w-auto justify-center">
+                <User className="w-5 h-5" /> Create Seeker Profile
+              </a>
             </div>
           </div>
         </div>
