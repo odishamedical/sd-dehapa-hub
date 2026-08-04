@@ -317,13 +317,59 @@ export default function DashboardLayout({
                 Dashboard FAQ
               </button>
               
-              {userRole === 'super_admin' && onToggleGodMode && (
-                <button 
-                  onClick={onToggleGodMode}
-                  className={`mt-4 w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm border ${godMode ? 'bg-rose-500 text-white border-rose-500' : 'bg-white/5 text-rose-400 border-rose-500/20 hover:bg-rose-500 hover:text-white'}`}
-                >
-                  {godMode ? 'Disable God Mode' : 'Enable God Mode'}
-                </button>
+              {userRole === 'super_admin' && (
+                <>
+                  {onToggleGodMode && (
+                    <button 
+                      onClick={onToggleGodMode}
+                      className={`mt-4 w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-sm border ${godMode ? 'bg-rose-500 text-white border-rose-500' : 'bg-white/5 text-rose-400 border-rose-500/20 hover:bg-rose-500 hover:text-white'}`}
+                    >
+                      {godMode ? 'Disable God Mode' : 'Enable God Mode'}
+                    </button>
+                  )}
+                  
+                  <div className="mt-6 pt-6 border-t border-white/10">
+                    <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 px-2">Demo Dashboards</h4>
+                    <div className="space-y-2">
+                      <button 
+                        onClick={() => {
+                          localStorage.setItem("admin_impersonating_provider", localStorage.getItem("sd_current_user_email") || "admin");
+                          localStorage.setItem("sd_current_user_email", "demo@dehapa.com");
+                          localStorage.setItem("sd_current_user_role", "doctor");
+                          window.open("/portal/doctor", "_blank");
+                        }}
+                        className="w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-400 border border-transparent hover:border-cyan-500/30 transition-all flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Demo Doctor
+                      </button>
+                      <button 
+                        onClick={() => {
+                          localStorage.setItem("admin_impersonating_provider", localStorage.getItem("sd_current_user_email") || "admin");
+                          localStorage.setItem("sd_current_user_email", "demo@dehapa.com");
+                          localStorage.setItem("sd_current_user_role", "hospital");
+                          window.open("/portal/hospital", "_blank");
+                        }}
+                        className="w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-400 border border-transparent hover:border-cyan-500/30 transition-all flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        Demo Hospital
+                      </button>
+                      <button 
+                        onClick={() => {
+                          localStorage.setItem("admin_impersonating_provider", localStorage.getItem("sd_current_user_email") || "admin");
+                          localStorage.setItem("sd_current_user_email", "demo@dehapa.com");
+                          localStorage.setItem("sd_current_user_role", "pharmacy");
+                          window.open("/portal/pharmacy", "_blank");
+                        }}
+                        className="w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm bg-white/5 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-400 border border-transparent hover:border-cyan-500/30 transition-all flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        Demo Pharmacy
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>
