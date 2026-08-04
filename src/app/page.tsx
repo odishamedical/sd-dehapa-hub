@@ -137,8 +137,8 @@ export default function DehapaHome() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-black/40 to-black/60 md:bg-gradient-to-l md:from-[#050B14] md:via-[#050B14]/80 md:to-transparent"></div>
         </div>
 
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:justify-end mt-8">
-          <div className="w-full max-w-xl text-center md:text-right">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-24 flex flex-col md:flex-row md:justify-end mt-8">
+          <div className="w-full max-w-xl xl:max-w-2xl text-center md:text-right">
             
             {/* Hero Text */}
             <div className="mb-8 flex flex-col items-center md:items-end">
@@ -197,7 +197,7 @@ export default function DehapaHome() {
 
         {/* --- AD SLOT: CAROUSEL --- */}
         {platformAds['ad_slot_home_carousel'] && platformAds['ad_slot_home_carousel'].length > 0 && (
-          <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mb-10">
+          <section className="px-4 sm:px-8 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto w-full mb-10">
             <div className="w-full h-auto min-h-[120px] md:min-h-[250px] bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 flex items-center justify-center relative group">
               {platformAds['ad_slot_home_carousel'][0].type === 'image' ? (
                 <a href={platformAds['ad_slot_home_carousel'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
@@ -227,7 +227,7 @@ export default function DehapaHome() {
         )}
 
         {/* THE MASTER BENTO BOX GRID */}
-        <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full">
+        <section className="px-4 sm:px-8 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto w-full">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 auto-rows-[250px]">
             
