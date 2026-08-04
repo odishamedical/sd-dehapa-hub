@@ -53,9 +53,17 @@ export default function JobsPage() {
 
       <main className="flex-1">
         {/* Premium Hero Section */}
-        <div className="relative py-20 px-4 md:px-8 overflow-hidden bg-slate-900 border-b border-white/10">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/20 rounded-full blur-[80px]"></div>
+        <div className="relative py-20 px-4 md:px-8 overflow-hidden bg-slate-950 border-b border-white/10">
+          <Image 
+            src="/stock/hero-jobs.png" 
+            alt="Dehapa Medical Careers" 
+            fill 
+            className="object-cover absolute inset-0 z-0" 
+            priority={true}
+            quality={85}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/50 z-0"></div>
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/20 rounded-full blur-[80px] z-0"></div>
           
           <div className="max-w-6xl mx-auto relative z-10 text-center">
             <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-6">
