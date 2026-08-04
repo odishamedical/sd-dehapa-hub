@@ -18,10 +18,12 @@ const QRScannerModal = dynamic(() => import('@/components/QRScannerModal'), {
 });
 
 const SEO_PHRASES = [
-  "Find top Specialist Doctors in Odisha & India.",
-  "Consult experts in Cardiology & Nephrology.",
-  "Book Hospital & Diagnostic X-Ray services.",
-  "Access advanced Surgical & Routine Care instantly."
+  "Find top Specialist Doctors across India & Odisha.",
+  "Consult experts in Cardiology, Neurology & Oncology.",
+  "Book top-rated Orthopedics, Pediatrics & Gynecology.",
+  "Access Urology, Dermatology, Nephrology and many more specialists.",
+  "Book Hospital ICU beds & advanced Diagnostic X-Ray services.",
+  "Access world-class Surgical & Routine Care instantly."
 ];
 
 export default function DehapaHome() {
