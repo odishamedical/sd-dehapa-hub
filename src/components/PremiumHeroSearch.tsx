@@ -2,6 +2,7 @@
 
 import React from 'react';
 import CustomDropdown from '@/components/CustomDropdown';
+import Image from 'next/image';
 
 interface PremiumHeroSearchProps {
   titlePrefix: string;
@@ -21,6 +22,7 @@ interface PremiumHeroSearchProps {
   searchType: string;
   setSearchType: (val: string) => void;
   uniqueDistricts: string[];
+  bgImage?: string;
 }
 
 export default function PremiumHeroSearch({
@@ -40,12 +42,31 @@ export default function PremiumHeroSearch({
   setSearchDistrict,
   searchType,
   setSearchType,
-  uniqueDistricts
+  uniqueDistricts,
+  bgImage
 }: PremiumHeroSearchProps) {
   return (
-    <div className="pt-10 pb-20 px-6 relative bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f766e] shadow-[0_10px_30px_rgba(0,0,0,0.15)] z-30">
+    <div className="pt-10 pb-20 px-6 relative bg-[#0a1229] shadow-[0_10px_30px_rgba(0,0,0,0.15)] z-30 overflow-hidden">
+      {bgImage && (
+        <>
+          <Image 
+            src={bgImage} 
+            alt="Medical Hero Background" 
+            fill 
+            className="object-cover absolute inset-0 z-0" 
+            priority={true}
+            quality={85}
+          />
+          {/* Dark gradient overlay so text remains readable */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a1229] via-[#0a1229]/80 to-[#0a1229]/50 z-0"></div>
+          <div className="absolute inset-0 bg-cyan-900/10 mix-blend-color z-0"></div>
+        </>
+      )}
+      {!bgImage && (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f766e] opacity-80 z-0"></div>
+      )}
       {/* Subtle grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+      <div className="absolute inset-0 opacity-[0.03] z-0" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
 
       <div className="max-w-7xl mx-auto text-center relative z-10">
         <h1 className="text-2xl md:text-5xl font-serif font-black text-white mb-3 md:mb-4 drop-shadow-lg tracking-tight md:whitespace-nowrap">

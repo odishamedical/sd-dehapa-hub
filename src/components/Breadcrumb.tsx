@@ -13,11 +13,11 @@ export default function Breadcrumb({ paths }: BreadcrumbProps) {
       {paths.map((path, idx) => (
         <React.Fragment key={idx}>
           {path.href ? (
-            <Link href={path.href} className="text-teal-600 hover:text-teal-800 transition-colors font-bold">
+            <Link href={path.href} className="text-cyan-400 hover:text-cyan-300 transition-colors font-bold">
               {path.name}
             </Link>
           ) : (
-            <span className="text-slate-500 font-bold">{path.name}</span>
+            <span className="text-slate-300 font-bold">{path.name}</span>
           )}
           {idx < paths.length - 1 && (
             <svg className="w-3 h-3 text-slate-300 mx-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

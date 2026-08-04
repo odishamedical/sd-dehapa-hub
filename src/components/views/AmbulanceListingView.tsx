@@ -221,6 +221,7 @@ export default function AmbulancesDirectory({
         setSearchState={setSearchState}
         uniqueStates={uniqueStates as string[]}
         uniqueDistricts={uniqueDistricts as string[]}
+        bgImage="/stock/hero-ambulances.png"
       />
 
       <main className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 xl:px-16 py-12 relative z-10 -mt-12">
