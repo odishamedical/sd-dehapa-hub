@@ -119,7 +119,7 @@ export default function DoctorOSDashboard() {
     }
   }, []);
 
-  const fetchEntity = async (email: string) => {
+  async function fetchEntity(email: string) {
     try {
       const q = query(collection(db, "directory"), where("ownerEmail", "==", email));
       const snap = await getDocs(q);
@@ -131,7 +131,7 @@ export default function DoctorOSDashboard() {
     } catch (err) {
       console.error("Error fetching entity:", err);
     }
-  };
+  }
 
   // Autosave for Settings (DoctorV2Forms)
   useEffect(() => {
