@@ -78,7 +78,7 @@ export default function DoctorOSDashboard() {
   const [showAddWalkIn, setShowAddWalkIn] = useState(false);
   const [activeConsult, setActiveConsult] = useState<any>(null);
   const [godMode, setGodMode] = useState(false);
-  
+  const [showPostJobModal, setShowPostJobModal] = useState(false);  
   // Walk-in form state
   const [walkInName, setWalkInName] = useState("");
   const [walkInAge, setWalkInAge] = useState("");
