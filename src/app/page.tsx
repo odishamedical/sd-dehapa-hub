@@ -122,12 +122,12 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-24 lg:pt-32 pb-32 lg:pb-40 z-10 flex flex-col items-center justify-start overflow-visible bg-gradient-to-b from-blue-50/50 to-white">
+      <section className="relative pt-24 lg:pt-32 pb-10 md:pb-20 lg:pb-24 z-10 flex flex-col items-center justify-start overflow-visible bg-gradient-to-b from-blue-50/50 to-white">
         
         {/* Constrained Background Image Container */}
         <div className="absolute inset-0 w-full flex justify-center z-0 pointer-events-none">
           <div className="relative w-full max-w-[1400px] h-full">
-            <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-contain object-bottom opacity-90" priority />
+            <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-cover md:object-contain object-bottom opacity-90" priority />
           </div>
         </div>
         
@@ -161,41 +161,41 @@ export default function DehapaHome() {
           </form>
 
           {/* Search Toggles */}
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-20 z-10 relative">
-            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600 text-lg">🩺</span> Doctors
+          <div className="grid grid-cols-2 md:flex justify-center gap-3 md:gap-4 mb-8 md:mb-16 z-10 relative w-full px-2 max-w-3xl">
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-3 md:px-8 py-2 md:py-3 text-xs md:text-sm font-bold text-slate-700 flex items-center justify-center gap-1 md:gap-2 transition-all">
+              <span className="text-blue-600 text-base md:text-lg">🩺</span> Doctors
             </button>
-            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600 text-lg">🏥</span> Hospitals
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-3 md:px-8 py-2 md:py-3 text-xs md:text-sm font-bold text-slate-700 flex items-center justify-center gap-1 md:gap-2 transition-all">
+              <span className="text-blue-600 text-base md:text-lg">🏥</span> Hospitals
             </button>
-            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600 text-lg">💊</span> Pharmacies
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-3 md:px-8 py-2 md:py-3 text-xs md:text-sm font-bold text-slate-700 flex items-center justify-center gap-1 md:gap-2 transition-all">
+              <span className="text-blue-600 text-base md:text-lg">💊</span> Pharmacies
             </button>
-            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600 text-lg">🔬</span> Labs Ambulances
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-3 md:px-8 py-2 md:py-3 text-xs md:text-sm font-bold text-slate-700 flex items-center justify-center gap-1 md:gap-2 transition-all">
+              <span className="text-blue-600 text-base md:text-lg">🔬</span> Labs
             </button>
           </div>
 
-          {/* Floating CTAs - Pulled up with negative margin to overlap */}
-          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full max-w-5xl z-20 absolute -bottom-10 md:-bottom-12 px-4">
-            <Link href="/join" className="flex-1 bg-gradient-to-r from-[#e74c3c] to-[#c0392b] hover:from-[#c0392b] hover:to-[#a93226] text-white rounded-[2rem] p-5 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(231,76,60,0.3)] hover:shadow-[0_25px_50px_rgba(231,76,60,0.4)] hover:-translate-y-1 transition-all group">
-               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Stethoscope className="w-5 h-5 text-white" /></div>
-               <span className="font-bold text-lg md:text-2xl">Join as Doctor</span>
+          {/* Floating CTAs - Relative positioning with transform to overlap correctly on all devices */}
+          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full max-w-5xl z-20 relative translate-y-12 md:translate-y-24 lg:translate-y-32 px-4 mt-6 md:mt-0">
+            <Link href="/join" className="flex-1 bg-gradient-to-r from-[#e74c3c] to-[#c0392b] hover:from-[#c0392b] hover:to-[#a93226] text-white rounded-[2rem] p-4 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(231,76,60,0.3)] hover:shadow-[0_25px_50px_rgba(231,76,60,0.4)] hover:-translate-y-1 transition-all group">
+               <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Stethoscope className="w-4 h-4 md:w-5 md:h-5 text-white" /></div>
+               <span className="font-bold text-base md:text-2xl">Join as Doctor</span>
             </Link>
-            <Link href="/join" className="flex-1 bg-gradient-to-r from-[#097deb] to-[#0461be] hover:from-[#0461be] hover:to-[#0351a0] text-white rounded-[2rem] p-5 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(9,125,235,0.3)] hover:shadow-[0_25px_50px_rgba(9,125,235,0.4)] hover:-translate-y-1 transition-all group">
-               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Building2 className="w-5 h-5 text-white" /></div>
-               <span className="font-bold text-lg md:text-2xl">List Your Hospital</span>
+            <Link href="/join" className="flex-1 bg-gradient-to-r from-[#097deb] to-[#0461be] hover:from-[#0461be] hover:to-[#0351a0] text-white rounded-[2rem] p-4 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(9,125,235,0.3)] hover:shadow-[0_25px_50px_rgba(9,125,235,0.4)] hover:-translate-y-1 transition-all group">
+               <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Building2 className="w-4 h-4 md:w-5 md:h-5 text-white" /></div>
+               <span className="font-bold text-base md:text-2xl">List Your Hospital</span>
             </Link>
-            <Link href="/claim" className="flex-1 bg-gradient-to-r from-[#f39c12] to-[#d68910] hover:from-[#d68910] hover:to-[#b9770e] text-white rounded-[2rem] p-5 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(243,156,18,0.3)] hover:shadow-[0_25px_50px_rgba(243,156,18,0.4)] hover:-translate-y-1 transition-all group">
-               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><ShieldCheck className="w-5 h-5 text-white" /></div>
-               <span className="font-bold text-lg md:text-2xl">Claim Your Listing</span>
+            <Link href="/claim" className="flex-1 bg-gradient-to-r from-[#f39c12] to-[#d68910] hover:from-[#d68910] hover:to-[#b9770e] text-white rounded-[2rem] p-4 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(243,156,18,0.3)] hover:shadow-[0_25px_50px_rgba(243,156,18,0.4)] hover:-translate-y-1 transition-all group">
+               <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-white" /></div>
+               <span className="font-bold text-base md:text-2xl">Claim Your Listing</span>
             </Link>
           </div>
 
         </div>
       </section>
 
-      <div className="relative z-10 pb-20 bg-white pt-20 md:pt-24">
+      <div className="relative z-10 pb-20 bg-white pt-24 md:pt-36 lg:pt-48">
 
         {/* DIRECTORY CATEGORIES */}
         <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full">
