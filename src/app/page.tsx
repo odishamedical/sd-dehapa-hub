@@ -122,14 +122,17 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-24 lg:pt-32 pb-32 lg:pb-40 z-10 flex flex-col items-center justify-start min-h-[500px] lg:min-h-[600px] overflow-visible">
-        {/* Background Image */}
-        <div className="absolute inset-0 w-full h-full z-0 bg-blue-50/30">
-          <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-cover object-[center_top]" priority />
+      <section className="relative pt-24 lg:pt-32 pb-32 lg:pb-40 z-10 flex flex-col items-center justify-start overflow-visible bg-gradient-to-b from-blue-50/50 to-white">
+        
+        {/* Constrained Background Image Container */}
+        <div className="absolute inset-0 w-full flex justify-center z-0 pointer-events-none">
+          <div className="relative w-full max-w-[1400px] h-full">
+            <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-contain object-bottom opacity-90" priority />
+          </div>
         </div>
         
         {/* Overlay gradient to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-transparent z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/40 to-transparent z-0 pointer-events-none"></div>
 
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 flex flex-col items-center text-center relative z-10">
           
