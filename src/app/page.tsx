@@ -122,28 +122,28 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-24 pb-32 z-10 flex flex-col items-center justify-start min-h-[70vh] border-b border-slate-100 overflow-hidden">
+      <section className="relative pt-32 lg:pt-40 pb-48 z-10 flex flex-col items-center justify-start min-h-[600px] lg:min-h-[750px] overflow-visible">
         {/* Background Image */}
-        <div className="absolute inset-0 w-full h-full object-cover z-0">
-          <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-cover object-top opacity-90" priority />
+        <div className="absolute inset-0 w-full h-full z-0 bg-blue-50/30">
+          <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-cover object-[center_top]" priority />
         </div>
         
-        {/* Overlay gradient to ensure text readability if needed */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/40 to-transparent z-0"></div>
+        {/* Overlay gradient to ensure text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-transparent z-0"></div>
 
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 flex flex-col items-center text-center relative z-10 mt-8">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 flex flex-col items-center text-center relative z-10">
           
-          <h1 className="text-4xl md:text-5xl lg:text-[54px] font-bold text-slate-800 tracking-tight mb-4 drop-shadow-sm">
+          <h1 className="text-4xl md:text-5xl lg:text-[56px] font-bold text-slate-800 tracking-tight mb-4 drop-shadow-sm">
             Connecting You to Better Health
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-600 mb-10 font-medium">
+          <p className="text-lg md:text-xl text-slate-600 mb-10 font-medium max-w-2xl">
             Find the best healthcare services near you.
           </p>
 
           {/* Pill Search Bar */}
-          <form onSubmit={handleSearch} className="w-full max-w-4xl relative shadow-xl rounded-full bg-white border border-slate-200 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-2 mb-6">
-            <Search className="w-6 h-6 text-blue-500 ml-4 mr-2 shrink-0" />
+          <form onSubmit={handleSearch} className="w-full max-w-4xl relative shadow-[0_20px_50px_rgba(0,0,0,0.08)] rounded-full bg-white/95 backdrop-blur-xl border border-white/60 focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-2 mb-6">
+            <Search className="w-6 h-6 text-blue-500 ml-5 mr-2 shrink-0" />
             <input 
               type="text" 
               placeholder="Search doctors, hospitals, labs, pharmacies..." 
@@ -152,125 +152,96 @@ export default function DehapaHome() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             {/* Mockup has a mic icon */}
-            <button type="button" className="p-3 hover:bg-slate-50 rounded-full transition-colors mr-2">
+            <button type="button" className="p-3 hover:bg-slate-100 rounded-full transition-colors mr-2">
               <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
             </button>
           </form>
 
           {/* Search Toggles */}
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-16">
-            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600">🩺</span> Doctors
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-20 z-10 relative">
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600 text-lg">🩺</span> Doctors
             </button>
-            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600">🏥</span> Hospitals
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600 text-lg">🏥</span> Hospitals
             </button>
-            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600">💊</span> Pharmacies
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600 text-lg">💊</span> Pharmacies
             </button>
-            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
-              <span className="text-blue-600">🔬</span> Labs Ambulances
+            <button className="bg-white/95 backdrop-blur-md hover:bg-white border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.05)] rounded-full px-5 md:px-8 py-3 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600 text-lg">🔬</span> Labs Ambulances
             </button>
           </div>
 
-          {/* Floating CTAs */}
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-12 w-full max-w-5xl">
-            <Link href="/join" className="flex-1 min-w-[200px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl p-4 md:p-5 flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(220,38,38,0.2)] hover:shadow-[0_15px_25px_rgba(220,38,38,0.3)] transition-all group">
-               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><Stethoscope className="w-5 h-5 text-white" /></div>
-               <span className="font-bold text-lg md:text-xl">Join as Doctor</span>
+          {/* Floating CTAs - Pulled up with negative margin to overlap */}
+          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full max-w-5xl z-20 absolute -bottom-16 md:-bottom-24 px-4">
+            <Link href="/join" className="flex-1 bg-gradient-to-r from-[#e74c3c] to-[#c0392b] hover:from-[#c0392b] hover:to-[#a93226] text-white rounded-[2rem] p-5 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(231,76,60,0.3)] hover:shadow-[0_25px_50px_rgba(231,76,60,0.4)] hover:-translate-y-1 transition-all group">
+               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Stethoscope className="w-5 h-5 text-white" /></div>
+               <span className="font-bold text-lg md:text-2xl">Join as Doctor</span>
             </Link>
-            <Link href="/join" className="flex-1 min-w-[200px] bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white rounded-2xl p-4 md:p-5 flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(29,78,216,0.2)] hover:shadow-[0_15px_25px_rgba(29,78,216,0.3)] transition-all group">
-               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><Building2 className="w-5 h-5 text-white" /></div>
-               <span className="font-bold text-lg md:text-xl">List Your Hospital</span>
+            <Link href="/join" className="flex-1 bg-gradient-to-r from-[#097deb] to-[#0461be] hover:from-[#0461be] hover:to-[#0351a0] text-white rounded-[2rem] p-5 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(9,125,235,0.3)] hover:shadow-[0_25px_50px_rgba(9,125,235,0.4)] hover:-translate-y-1 transition-all group">
+               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Building2 className="w-5 h-5 text-white" /></div>
+               <span className="font-bold text-lg md:text-2xl">List Your Hospital</span>
             </Link>
-            <Link href="/claim" className="flex-1 min-w-[200px] bg-gradient-to-r from-orange-500 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white rounded-2xl p-4 md:p-5 flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(249,115,22,0.2)] hover:shadow-[0_15px_25px_rgba(249,115,22,0.3)] transition-all group">
-               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><ShieldCheck className="w-5 h-5 text-white" /></div>
-               <span className="font-bold text-lg md:text-xl">Claim Your Listing</span>
+            <Link href="/claim" className="flex-1 bg-gradient-to-r from-[#f39c12] to-[#d68910] hover:from-[#d68910] hover:to-[#b9770e] text-white rounded-[2rem] p-5 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(243,156,18,0.3)] hover:shadow-[0_25px_50px_rgba(243,156,18,0.4)] hover:-translate-y-1 transition-all group">
+               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><ShieldCheck className="w-5 h-5 text-white" /></div>
+               <span className="font-bold text-lg md:text-2xl">Claim Your Listing</span>
             </Link>
           </div>
 
         </div>
       </section>
 
-      <div className="relative z-10 pb-20 bg-white">
-
-        {/* --- AD SLOT: CAROUSEL --- */}
-        {platformAds['ad_slot_home_carousel'] && platformAds['ad_slot_home_carousel'].length > 0 && (
-          <section className="px-4 sm:px-8 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto w-full mb-10">
-            <div className="w-full h-auto min-h-[120px] md:min-h-[250px] bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 flex items-center justify-center relative group">
-              {platformAds['ad_slot_home_carousel'][0].type === 'image' ? (
-                <a href={platformAds['ad_slot_home_carousel'][0].linkUrl} target="_blank" rel="noreferrer" className="w-full h-full flex items-center justify-center">
-                  <img src={platformAds['ad_slot_home_carousel'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[300px] object-contain" />
-                </a>
-              ) : platformAds['ad_slot_home_carousel'][0].type === 'split' ? (
-                <div className="flex flex-col md:flex-row w-full h-full items-stretch">
-                  <div className="w-full md:w-1/2 flex items-center justify-center p-6 bg-slate-900/50">
-                    <img src={platformAds['ad_slot_home_carousel'][0].imageUrl} alt="Advertisement" className="w-full h-auto max-h-[250px] object-contain" />
-                  </div>
-                  <div className="w-full md:w-1/2 flex flex-col justify-center p-8 lg:p-12 bg-gradient-to-br from-slate-800 to-slate-900 border-l border-white/5">
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-4 leading-tight">{platformAds['ad_slot_home_carousel'][0].headline}</h2>
-                    <p className="text-slate-300 md:text-lg mb-8">{platformAds['ad_slot_home_carousel'][0].subtext}</p>
-                    <a href={platformAds['ad_slot_home_carousel'][0].linkUrl} target="_blank" rel="noreferrer" className="bg-teal-500 hover:bg-teal-400 text-white font-bold py-3 px-8 rounded-full transition-colors w-fit shadow-[0_0_20px_rgba(20,184,166,0.3)] text-sm uppercase tracking-widest">
-                      {platformAds['ad_slot_home_carousel'][0].buttonText}
-                    </a>
-                  </div>
-                </div>
-              ) : platformAds['ad_slot_home_carousel'][0].type === 'slider' ? (
-                <AdSliderRenderer images={platformAds['ad_slot_home_carousel'][0].sliderImages || []} linkUrl={platformAds['ad_slot_home_carousel'][0].linkUrl} animationStyle={platformAds['ad_slot_home_carousel'][0].animationStyle || 'fade'} />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-slate-900" dangerouslySetInnerHTML={{ __html: platformAds['ad_slot_home_carousel'][0].htmlCode }} />
-              )}
-              <span className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] uppercase font-bold text-slate-400">Sponsored</span>
-            </div>
-          </section>
-        )}
+      <div className="relative z-10 pb-20 bg-white pt-32 lg:pt-40">
 
         {/* DIRECTORY CATEGORIES */}
-        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-24">
+        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full">
           
           {/* Tabs */}
-          <div className="flex items-center gap-8 border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
-            <button className="pb-4 border-b-4 border-blue-600 text-blue-700 font-black text-lg whitespace-nowrap px-4">
+          <div className="flex items-center justify-center md:justify-start gap-4 md:gap-8 border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
+            <button className="relative pb-4 text-white bg-[#0461be] font-bold text-lg whitespace-nowrap px-8 py-3 rounded-t-2xl">
               Browse Directory
+              {/* Little down arrow for the active tab */}
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#0461be] rotate-45"></div>
             </button>
-            <button className="pb-4 text-slate-500 hover:text-slate-700 font-bold text-lg whitespace-nowrap px-4">
+            <button className="pb-4 text-slate-500 hover:text-slate-700 font-bold text-lg whitespace-nowrap px-4 py-3">
               Book Health Services
             </button>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
             
-            <Link href="/doctors" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
-              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
-                <Image src="/home/directory-doctor.png" alt="Doctors" fill className="object-contain drop-shadow-md" />
+            <Link href="/doctors" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-100 hover:border-blue-200 shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] rounded-[2rem] p-6 md:p-8 transition-all group">
+              <div className="relative w-28 h-28 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-doctor.png" alt="Doctors" fill className="object-contain drop-shadow-lg" />
               </div>
               <span className="font-bold text-lg text-slate-800">Doctors</span>
             </Link>
 
-            <Link href="/hospitals" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
-              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
-                <Image src="/home/directory-hospital.png" alt="Hospitals" fill className="object-contain drop-shadow-md" />
+            <Link href="/hospitals" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-100 hover:border-blue-200 shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] rounded-[2rem] p-6 md:p-8 transition-all group">
+              <div className="relative w-28 h-28 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-hospital.png" alt="Hospitals" fill className="object-contain drop-shadow-lg" />
               </div>
               <span className="font-bold text-lg text-slate-800">Hospitals</span>
             </Link>
 
-            <Link href="/pharmacies" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
-              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
-                <Image src="/home/directory-pharmacy.png" alt="Pharmacies" fill className="object-contain drop-shadow-md" />
+            <Link href="/pharmacies" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-100 hover:border-blue-200 shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] rounded-[2rem] p-6 md:p-8 transition-all group">
+              <div className="relative w-28 h-28 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-pharmacy.png" alt="Pharmacies" fill className="object-contain drop-shadow-lg" />
               </div>
               <span className="font-bold text-lg text-slate-800">Pharmacies</span>
             </Link>
 
-            <Link href="/labs" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
-              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
-                <Image src="/home/directory-lab.png" alt="Laboratories" fill className="object-contain drop-shadow-md" />
+            <Link href="/labs" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-100 hover:border-blue-200 shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] rounded-[2rem] p-6 md:p-8 transition-all group">
+              <div className="relative w-28 h-28 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-lab.png" alt="Laboratories" fill className="object-contain drop-shadow-lg" />
               </div>
               <span className="font-bold text-lg text-slate-800">Laboratories</span>
             </Link>
 
-            <Link href="/ambulances" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
-              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
-                <Image src="/home/directory-ambulance.png" alt="Ambulances" fill className="object-contain drop-shadow-md" />
+            <Link href="/ambulances" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-100 hover:border-blue-200 shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] rounded-[2rem] p-6 md:p-8 transition-all group">
+              <div className="relative w-28 h-28 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-ambulance.png" alt="Ambulances" fill className="object-contain drop-shadow-lg" />
               </div>
               <span className="font-bold text-lg text-slate-800">Ambulances</span>
             </Link>
@@ -378,46 +349,53 @@ export default function DehapaHome() {
         )}
 
         {/* B2B PROVIDER CARDS */}
-        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-24 mb-10">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-32 mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {/* Doctor Card */}
-            <div className="bg-slate-50/80 border border-slate-200 rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-xl transition-all">
-               <div className="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden bg-white/50">
-                  <Image src="/home/provider-doctor-.png" alt="For Doctors" fill className="object-cover object-center scale-110" />
+            <div className="bg-gradient-to-br from-[#eef7ff] to-white border-0 rounded-[2rem] overflow-hidden flex flex-col sm:flex-row shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all">
+               <div className="w-full sm:w-[45%] h-56 sm:h-auto relative overflow-hidden">
+                  {/* Pull image down slightly to bleed off edges */}
+                  <div className="absolute inset-x-0 bottom-[-10%] h-[120%]">
+                    <Image src="/home/provider-doctor-.png" alt="For Doctors" fill className="object-cover object-bottom" />
+                  </div>
                </div>
-               <div className="w-full sm:w-3/5 p-6 md:p-8 flex flex-col justify-center">
-                  <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-2">For Doctors</h3>
-                  <p className="text-slate-600 text-sm mb-6 leading-relaxed">Register your practice and connect with more patients.</p>
-                  <Link href="/join" className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-2.5 px-6 rounded-full w-fit shadow-md hover:shadow-lg transition-all text-sm">
+               <div className="w-full sm:w-[55%] p-6 md:p-10 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-3xl font-black text-slate-800 mb-3">For Doctors</h3>
+                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed">Register your practice and connect with more patients.</p>
+                  <Link href="/join" className="bg-gradient-to-r from-[#097deb] to-[#0461be] text-white font-bold py-3 px-8 rounded-full w-fit shadow-[0_10px_20px_rgba(9,125,235,0.3)] hover:shadow-[0_15px_30px_rgba(9,125,235,0.4)] transition-all text-sm uppercase tracking-wider">
                     Get Started
                   </Link>
                </div>
             </div>
 
             {/* Hospital Card */}
-            <div className="bg-orange-50/50 border border-orange-100 rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-xl transition-all">
-               <div className="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden bg-white/50">
-                  <Image src="/home/provider-hospital.png" alt="For Hospitals" fill className="object-cover object-center scale-110" />
+            <div className="bg-gradient-to-br from-[#fff4e5] to-white border-0 rounded-[2rem] overflow-hidden flex flex-col sm:flex-row shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all">
+               <div className="w-full sm:w-[45%] h-56 sm:h-auto relative overflow-hidden">
+                  <div className="absolute inset-x-0 bottom-[-10%] h-[120%]">
+                    <Image src="/home/provider-hospital.png" alt="For Hospitals" fill className="object-cover object-bottom" />
+                  </div>
                </div>
-               <div className="w-full sm:w-3/5 p-6 md:p-8 flex flex-col justify-center">
-                  <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-2">For Hospitals</h3>
-                  <p className="text-slate-600 text-sm mb-6 leading-relaxed">List your hospital and manage your profile easily.</p>
-                  <Link href="/join" className="bg-gradient-to-r from-blue-700 to-blue-600 text-white font-bold py-2.5 px-6 rounded-full w-fit shadow-md hover:shadow-lg transition-all text-sm">
+               <div className="w-full sm:w-[55%] p-6 md:p-10 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-3xl font-black text-slate-800 mb-3">For Hospitals</h3>
+                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed">List your hospital and manage your profile easily.</p>
+                  <Link href="/join" className="bg-gradient-to-r from-[#0461be] to-[#034d98] text-white font-bold py-3 px-8 rounded-full w-fit shadow-[0_10px_20px_rgba(4,97,190,0.3)] hover:shadow-[0_15px_30px_rgba(4,97,190,0.4)] transition-all text-sm uppercase tracking-wider">
                     Learn More
                   </Link>
                </div>
             </div>
 
             {/* Already Listed Card */}
-            <div className="bg-amber-50/50 border border-amber-100 rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-xl transition-all">
-               <div className="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden bg-white/50">
-                  <Image src="/home/provider-alredylisted.png" alt="Already Listed" fill className="object-cover object-center scale-110" />
+            <div className="bg-gradient-to-br from-[#fff7dd] to-white border-0 rounded-[2rem] overflow-hidden flex flex-col sm:flex-row shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all">
+               <div className="w-full sm:w-[45%] h-56 sm:h-auto relative overflow-hidden">
+                  <div className="absolute inset-x-0 bottom-[-10%] h-[120%]">
+                    <Image src="/home/provider-alredylisted.png" alt="Already Listed" fill className="object-cover object-bottom" />
+                  </div>
                </div>
-               <div className="w-full sm:w-3/5 p-6 md:p-8 flex flex-col justify-center">
-                  <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-2">Already Listed?</h3>
-                  <p className="text-slate-600 text-sm mb-6 leading-relaxed">Claim your existing profile and update your details.</p>
-                  <Link href="/claim" className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-2.5 px-6 rounded-full w-fit shadow-md hover:shadow-lg transition-all text-sm">
+               <div className="w-full sm:w-[55%] p-6 md:p-10 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-3xl font-black text-slate-800 mb-3">Already Listed?</h3>
+                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed">Claim your existing profile and update your details.</p>
+                  <Link href="/claim" className="bg-gradient-to-r from-[#f39c12] to-[#d68910] text-white font-bold py-3 px-8 rounded-full w-fit shadow-[0_10px_20px_rgba(243,156,18,0.3)] hover:shadow-[0_15px_30px_rgba(243,156,18,0.4)] transition-all text-sm uppercase tracking-wider">
                     Claim Now
                   </Link>
                </div>
