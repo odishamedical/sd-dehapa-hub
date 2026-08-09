@@ -14,17 +14,17 @@
 }
 
 :root {
-  --background: #ffffff; /* Clean white */
+  --background: #f8fafc; /* slate-50 for Clinical Light */
   --foreground: #0f172a; /* Slate 900 for text */
   --sd-cyan: #06b6d4;
   --sd-teal: #0d9488;
   --sd-gold: #D4AF37;
 
   /* Tenant Dynamic Variables - default to General Teal/Cyan */
-  --tenant-accent: #0d9488;
-  --tenant-accent-glow: rgba(13, 148, 136, 0.15);
-  --tenant-gradient-from: #0d9488;
-  --tenant-gradient-to: #0f766e;
+  --tenant-accent: #0284c7; /* sky-600 */
+  --tenant-accent-glow: rgba(2, 132, 199, 0.05);
+  --tenant-gradient-from: #38bdf8;
+  --tenant-gradient-to: #0284c7;
 }
 
 @theme inline {
@@ -45,8 +45,6 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  background-image: radial-gradient(circle at top right, var(--tenant-accent-glow), transparent 45%),
-                    radial-gradient(circle at bottom left, rgba(6, 182, 212, 0.05), transparent 45%);
   min-height: 100vh;
   overflow-x: hidden;
   max-width: 100vw;
@@ -126,11 +124,24 @@ html {
   }
   
   .sd-btn-primary {
-    @apply bg-indigo-600 text-white border border-indigo-700 hover:bg-indigo-500 hover:shadow-indigo-600/30;
+    @apply bg-blue-600 text-white border border-blue-700 hover:bg-blue-500 hover:shadow-blue-600/30;
   }
 
   .sd-btn-success {
     @apply bg-emerald-500 text-white border border-emerald-600 hover:bg-emerald-400 hover:shadow-emerald-500/30;
+  }
+
+  /* Clinical Light UI Buttons */
+  .sd-btn-urgent {
+    @apply bg-red-500 text-white border border-red-600 hover:bg-red-400 hover:shadow-red-500/30 font-bold px-6 py-3 rounded-full transition-all transform hover:-translate-y-0.5 active:scale-95 shadow-md;
+  }
+
+  .sd-btn-book {
+    @apply bg-green-500 text-white border border-green-600 hover:bg-green-400 hover:shadow-green-500/30 font-bold px-6 py-3 rounded-full transition-all transform hover:-translate-y-0.5 active:scale-95 shadow-md;
+  }
+
+  .sd-btn-nav {
+    @apply bg-blue-600 text-white border border-blue-700 hover:bg-blue-500 hover:shadow-blue-600/30 font-bold px-6 py-3 rounded-full transition-all transform hover:-translate-y-0.5 active:scale-95 shadow-md;
   }
 
   /* Visual Color Zones */

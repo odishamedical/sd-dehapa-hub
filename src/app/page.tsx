@@ -118,88 +118,47 @@ export default function DehapaHome() {
     router.push(`/search?${params.toString()}`);
   };
 
-  return (
-    <main className="min-h-screen bg-[#050B14] font-sans text-white selection:bg-teal-500/30 overflow-x-hidden">
-
-      {/* Ambient Glassmorphism Background (Global) */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <Image src="/stock/ambient-bg.png" alt="Ambient Background" fill unoptimized={true} className="object-cover opacity-20 mix-blend-screen" />
-      </div>
-
-      <div className="relative z-10 pb-20">
+    <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
-      {/* Luxury Telemedicine Hero Section */}
-      <section className="relative pt-24 pb-16 z-10 flex flex-col items-center justify-center min-h-[55vh] lg:min-h-[600px] mb-12">
-        <div className="absolute inset-0 z-[-1] overflow-hidden rounded-b-[2rem] md:rounded-b-[4rem] shadow-2xl border-b border-white/10">
-          {/* Desktop Image */}
-          <Image src="/stock/home-hero-pc.png" alt="Telemedicine Consulting" fill priority unoptimized={true} className="hidden md:block object-cover object-left" />
-          {/* Mobile Image */}
-          <Image src="/stock/home-hero-phone.jfif" alt="Telemedicine Consulting" fill priority unoptimized={true} className="block md:hidden object-cover object-top" />
+      {/* Search Hero Section */}
+      <section className="relative pt-12 pb-16 z-10 flex flex-col items-center justify-center min-h-[40vh] border-b border-slate-100 bg-slate-50">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-32 flex flex-col items-center text-center mt-8">
           
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-black/40 to-black/60 md:bg-gradient-to-l md:from-[#050B14] md:via-[#050B14]/80 md:to-transparent"></div>
-        </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight mb-4">
+            Find the Best Doctors in India
+          </h1>
+          
+          {/* Dynamic SEO Typing Text */}
+          <div className="h-8 mb-8 flex items-center justify-center">
+            <p className="text-base sm:text-lg lg:text-xl text-blue-600 font-medium tracking-tight">
+              {displayText}<span className="inline-block w-0.5 h-5 ml-1 bg-blue-600 animate-pulse"></span>
+            </p>
+          </div>
 
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-32 flex flex-col md:flex-row md:justify-end mt-12 md:mt-16">
-          <div className="w-full max-w-2xl xl:max-w-3xl 2xl:max-w-[1000px] text-center md:text-left">
-            
-            {/* Hero Text */}
-            <div className="mb-10 flex flex-col items-center md:items-start">
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl 2xl:text-[5.5rem] font-serif text-transparent bg-clip-text bg-gradient-to-r from-teal-100 via-cyan-400 to-teal-500 font-bold tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] mb-4 leading-tight">
-                Instant Video Consults
-              </h1>
-              <h2 className="text-xl md:text-2xl 2xl:text-3xl text-white/90 font-light tracking-[0.15em] mb-2 drop-shadow-lg">
-                Connect with Top Doctors Worldwide
-              </h2>
-              
-              {/* Dynamic SEO Typing Text */}
-              <div className="h-8 mt-4 flex items-center justify-start">
-                <p className="text-base sm:text-lg lg:text-xl text-teal-300 font-mono tracking-tight drop-shadow-md">
-                  {displayText}<span className="inline-block w-0.5 h-5 ml-1 bg-teal-400 animate-pulse"></span>
-                </p>
-              </div>
+          <form onSubmit={handleSearch} className="w-full max-w-3xl relative group shadow-lg rounded-2xl bg-white border border-slate-200 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/20 transition-all">
+            <div className="relative flex items-center p-2">
+              <Search className="w-6 h-6 text-slate-400 ml-4 mr-2" />
+              <input 
+                type="text" 
+                placeholder="Search Doctors, Hospitals, Specialties..." 
+                className="flex-1 bg-transparent border-none outline-none text-slate-900 px-2 py-4 placeholder-slate-400 font-medium text-lg min-w-0"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="sd-btn-nav hidden md:block mr-2">
+                Search Directory
+              </button>
             </div>
-
-            {/* Telemedicine Hub Glass Panel */}
-            <div className="bg-white/5 backdrop-blur-2xl border-2 border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex flex-col gap-4 text-left">
-              
-              <form onSubmit={handleSearch} className="w-full relative group">
-                <div className="relative flex items-center bg-black/40 border border-white/20 rounded-xl p-1.5 shadow-inner focus-within:border-teal-500/50 transition-colors">
-                  <input 
-                    type="text" 
-                    placeholder="Search Doctors, Specialties or Symptoms..." 
-                    className="flex-1 bg-transparent border-none outline-none text-white px-4 placeholder-gray-400 font-light text-base min-w-0"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <button type="submit" className="p-3 rounded-lg bg-teal-600 hover:bg-teal-500 text-white transition-colors shrink-0">
-                    <Search className="w-5 h-5" />
-                  </button>
-                </div>
-              </form>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-                <Link href="/urgent-care" className="col-span-1 sm:col-span-2 flex items-center justify-center gap-3 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.4)] transition-all transform hover:scale-[1.02]">
-                  <Video className="w-6 h-6 animate-pulse" />
-                  Start Instant Video Call
-                </Link>
-                <button onClick={() => setIsScannerOpen(true)} className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 py-3 rounded-xl text-sm font-medium transition-colors">
-                  <QrCode className="w-4 h-4 text-teal-400" /> Scan Health ID
-                </button>
-                <Link href="/appointments" className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 py-3 rounded-xl text-sm font-medium transition-colors">
-                  <Calendar className="w-4 h-4 text-cyan-400" /> Book Clinic Visit
-                </Link>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-white/10 text-center">
-                <Link href="/portal/login" className="text-sm text-teal-400 hover:text-teal-300 font-medium tracking-wide flex items-center justify-center gap-2 transition-colors">
-                  <ShieldCheck className="w-4 h-4" /> Patient Login / Health Vault
-                </Link>
-              </div>
-
-            </div>
+          </form>
+          <div className="mt-8 flex gap-4">
+             <Link href="/services" className="text-blue-600 font-bold hover:underline flex items-center gap-2">
+                Looking to Book an Appointment or Service? Click Here <Zap className="w-4 h-4"/>
+             </Link>
           </div>
         </div>
       </section>
+
+      <div className="relative z-10 pb-20 bg-white">
 
         {/* --- AD SLOT: CAROUSEL --- */}
         {platformAds['ad_slot_home_carousel'] && platformAds['ad_slot_home_carousel'].length > 0 && (
@@ -232,101 +191,44 @@ export default function DehapaHome() {
           </section>
         )}
 
-        {/* THE MASTER BENTO BOX GRID */}
-        <section className="px-4 sm:px-8 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto w-full">
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 auto-rows-[250px]">
+        {/* DIRECTORY CATEGORIES */}
+        <section className="px-4 sm:px-8 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto w-full mt-10">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 px-2">Browse Directory</h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             
-            {/* URGENT CARE BENTO */}
-            {/* 1. Large Hero Video Consult (2x2) */}
-            <Link href="/urgent-care" className="col-span-1 md:col-span-2 lg:col-span-2 row-span-2 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_video_consult.png" alt="Video Consult" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/40 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-cyan-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute top-6 left-6 z-30 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/50 text-rose-400 font-bold text-xs uppercase tracking-widest backdrop-blur-md">
-                <AlertCircle className="w-4 h-4 animate-pulse" /> Emergency Line
+            <Link href="/doctors" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-blue-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
+              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Stethoscope className="w-8 h-8 text-blue-600" />
               </div>
-              <div className="absolute bottom-0 left-0 w-full p-8 z-30">
-                <div className="w-16 h-16 rounded-3xl bg-cyan-500/30 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-6 backdrop-blur-xl">
-                  <Video className="w-8 h-8" />
-                </div>
-                <h3 className="text-4xl font-black text-white mb-2 leading-tight">Instant Video<br/>Consult</h3>
-                <p className="text-slate-200 text-lg font-medium">Join the Live Queue and see a doctor right now.</p>
-              </div>
+              <span className="font-bold text-slate-800">Doctors</span>
             </Link>
 
-            {/* 2. Vertical Ambulance (1x2) */}
-            <button onClick={handlePingAmbulance} className="text-left col-span-1 md:col-span-1 lg:col-span-1 row-span-2 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_ambulance.png" alt="Ambulance" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-rose-500 shadow-[0_0_30px_rgba(225,29,72,0.3)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 z-30">
-                <div className="w-14 h-14 rounded-2xl bg-rose-600 border border-rose-400 shadow-[0_0_20px_rgba(225,29,72,0.6)] flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
-                  {isPinging ? <Activity className="w-7 h-7 animate-spin" /> : <Ambulance className="w-7 h-7" />}
-                </div>
-                <h3 className="text-3xl font-black text-white mb-2 leading-tight">Live<br/>Ambulance</h3>
-                <p className="text-slate-200 text-sm font-medium">Ping SOS & track units.</p>
+            <Link href="/hospitals" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
+              <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Building2 className="w-8 h-8 text-indigo-600" />
               </div>
-            </button>
-
-            {/* 3. Urgent Doctor (1x1 Square) */}
-            <Link href="/search?type=doctor&urgent=true" className="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_urgent_doctor.png" alt="Urgent Doctor" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-rose-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 z-30">
-                <div className="w-12 h-12 rounded-2xl bg-rose-500/30 border border-rose-400/50 flex items-center justify-center text-rose-300 mb-3 backdrop-blur-xl">
-                  <Stethoscope className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-black text-white leading-tight">Doctor Callback</h3>
-              </div>
+              <span className="font-bold text-slate-800">Hospitals</span>
             </Link>
 
-            {/* 4. Urgent ICU Book (1x1 Square) */}
-            <Link href="/search?type=hospital&beds=icu" className="col-span-1 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_icu_bed.png" alt="ICU Bed" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-blue-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 z-30">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500/30 border border-blue-400/50 flex items-center justify-center text-blue-300 mb-3 backdrop-blur-xl">
-                  <HeartPulse className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-black text-white leading-tight">ICU Bed Search</h3>
+            <Link href="/pharmacies" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
+              <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Pill className="w-8 h-8 text-emerald-600" />
               </div>
+              <span className="font-bold text-slate-800">Pharmacies</span>
             </Link>
 
-
-            {/* ROUTINE CARE BENTO */}
-            {/* 5. Search Directory (2x1 Wide) */}
-            <Link href="/search" className="col-span-1 md:col-span-2 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_search_directory.png" alt="Search Directory" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-teal-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-teal-500/30 border border-teal-400/50 flex items-center justify-center text-teal-300 backdrop-blur-xl shrink-0">
-                  <Search className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-white mb-1">Search Directory</h3>
-                  <p className="text-slate-200 text-sm font-medium">Find verified doctors, clinics, and hospitals.</p>
-                </div>
+            <Link href="/labs" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-violet-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
+              <div className="w-16 h-16 rounded-full bg-violet-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <TestTube2 className="w-8 h-8 text-violet-600" />
               </div>
+              <span className="font-bold text-slate-800">Laboratories</span>
             </Link>
 
-            {/* 6. Clinic Visit (2x1 Wide) */}
-            <Link href="/search?type=doctor" className="col-span-1 md:col-span-2 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_clinic_visit.png" alt="Clinic Visit" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-emerald-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/30 border border-emerald-400/50 flex items-center justify-center text-emerald-300 backdrop-blur-xl shrink-0">
-                  <Calendar className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-white mb-1">Schedule Clinic Visit</h3>
-                  <p className="text-slate-200 text-sm font-medium">Book physical appointments with smart tokens.</p>
-                </div>
+            <Link href="/ambulances" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-rose-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
+              <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Ambulance className="w-8 h-8 text-rose-600" />
               </div>
+              <span className="font-bold text-slate-800">Ambulances</span>
             </Link>
 
           </div>
@@ -398,60 +300,7 @@ export default function DehapaHome() {
           </section>
         )}
 
-        {/* DIAGNOSTICS BENTO */}
-        <section className="px-4 sm:px-6 max-w-[1400px] mx-auto w-full mt-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 auto-rows-[250px]">
-            {/* 7. Order Medicines (2x1 Wide) */}
-            <Link href="/pharmacies" className="col-span-1 md:col-span-2 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_medicines.png" alt="Order Medicines" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-amber-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-amber-500/30 border border-amber-400/50 flex items-center justify-center text-amber-300 backdrop-blur-xl shrink-0">
-                  <Pill className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-white mb-1">Order Medicines</h3>
-                  <p className="text-slate-200 text-sm font-medium">Forward your digital Rx to local pharmacies.</p>
-                </div>
-              </div>
-            </Link>
 
-            {/* 8. Book Lab Tests (2x1 Wide) */}
-            <Link href="/search?type=lab" className="col-span-1 md:col-span-2 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_lab_test.png" alt="Lab Test" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/60 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-violet-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 z-30 flex items-center gap-5">
-                <div className="w-14 h-14 rounded-2xl bg-violet-500/30 border border-violet-400/50 flex items-center justify-center text-violet-300 backdrop-blur-xl shrink-0">
-                  <Syringe className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-white mb-1">Book Lab Tests</h3>
-                  <p className="text-slate-200 text-sm font-medium">Schedule home sample collection instantly.</p>
-                </div>
-              </div>
-            </Link>
-
-            {/* IDENTITY BENTO */}
-            {/* 9. Health Vault (Full Width Banner 4x1) */}
-            <Link href="/portal" className="col-span-1 md:col-span-2 lg:col-span-4 row-span-1 relative rounded-[2rem] overflow-hidden group shadow-lg mt-4">
-              <Image src="/images/cards/card_health_vault.png" alt="Health Vault" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/70 to-[#050B14]/30 z-10"></div>
-              <div className="absolute inset-0 border border-white/20 rounded-[2rem] z-20 group-hover:border-purple-400 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-8 z-30 flex flex-col sm:flex-row sm:items-center gap-6">
-                <div className="w-20 h-20 rounded-[2rem] bg-purple-500/30 border border-purple-400/50 flex items-center justify-center text-purple-300 backdrop-blur-xl shrink-0">
-                  <ShieldCheck className="w-10 h-10" />
-                </div>
-                <div>
-                  <h3 className="text-4xl font-black text-white mb-2">My Health Vault</h3>
-                  <p className="text-slate-200 text-lg font-medium max-w-2xl">Access your secure Sovereign ID, scan QR codes at clinics, and view all your lifetime medical records in one protected place.</p>
-                </div>
-              </div>
-            </Link>
-
-          </div>
-        </section>
 
         {/* --- AD SLOT: DISTRIBUTED 2 --- */}
         {platformAds['ad_slot_home_distributed_2'] && platformAds['ad_slot_home_distributed_2'].length > 0 && (
@@ -487,69 +336,17 @@ export default function DehapaHome() {
         {/* B2B PROVIDER SECTION */}
         <section className="pt-16 px-4 sm:px-6 max-w-[1400px] mx-auto w-full">
           <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white mb-3">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-3">
               For Healthcare Providers
             </h2>
-            <p className="text-slate-400">Manage your practice with the most advanced OS in the world.</p>
+            <p className="text-slate-600">Join India's most trusted healthcare network.</p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            
-            {/* Provider Cards (Small elegant squares) */}
-            <Link href="/login?redirect=/portal/doctor" className="h-[200px] relative rounded-3xl overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_doctor_os.png" alt="Doctor OS" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/80 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/10 rounded-3xl z-20 group-hover:border-indigo-400 transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-5 z-30">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 mb-3 backdrop-blur-md">
-                  <Stethoscope className="w-5 h-5" />
-                </div>
-                <h3 className="text-lg font-black text-white">Doctor OS</h3>
-              </div>
-            </Link>
-
-            <Link href="/login?redirect=/portal/hospital" className="h-[200px] relative rounded-3xl overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_hospital_admin.png" alt="Hospital Admin" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/80 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/10 rounded-3xl z-20 group-hover:border-blue-400 transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-5 z-30">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 mb-3 backdrop-blur-md">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <h3 className="text-lg font-black text-white">Hospital Admin</h3>
-              </div>
-            </Link>
-
-            <Link href="/login?redirect=/portal/pharmacy" className="h-[200px] relative rounded-3xl overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_pharmacy_network.png" alt="Pharmacy Network" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/80 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/10 rounded-3xl z-20 group-hover:border-fuchsia-400 transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-5 z-30">
-                <div className="w-10 h-10 rounded-xl bg-fuchsia-500/20 border border-fuchsia-400/30 flex items-center justify-center text-fuchsia-300 mb-3 backdrop-blur-md">
-                  <Pill className="w-5 h-5" />
-                </div>
-                <h3 className="text-lg font-black text-white">Pharmacy OS</h3>
-              </div>
-            </Link>
-
-            <Link href="/login?redirect=/portal/lab" className="h-[200px] relative rounded-3xl overflow-hidden group shadow-lg">
-              <Image src="/images/cards/card_pathology_lab.png" alt="Pathology Labs" fill className="object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/80 to-transparent z-10"></div>
-              <div className="absolute inset-0 border border-white/10 rounded-3xl z-20 group-hover:border-violet-400 transition-colors"></div>
-              <div className="absolute bottom-0 left-0 w-full p-5 z-30">
-                <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-400/30 flex items-center justify-center text-violet-300 mb-3 backdrop-blur-md">
-                  <TestTube2 className="w-5 h-5" />
-                </div>
-                <h3 className="text-lg font-black text-white">Pathology Labs</h3>
-              </div>
-            </Link>
-          </div>
-          
           <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register" className="px-10 py-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-white font-bold transition-colors text-center backdrop-blur-xl">
+            <Link href="/register" className="px-10 py-4 rounded-full bg-white border border-slate-300 text-slate-800 font-bold hover:bg-slate-50 transition-colors text-center shadow-sm">
               Join the Network
             </Link>
-            <Link href="/login" className="px-10 py-4 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white font-black transition-all shadow-[0_0_30px_rgba(45,212,191,0.4)] text-center">
+            <Link href="/login" className="px-10 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-black transition-all shadow-md text-center">
               Partner Login
             </Link>
           </div>

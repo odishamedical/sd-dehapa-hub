@@ -35,6 +35,7 @@ import GlobalFooter from "@/components/GlobalFooter";
 import GlobalTelemedicineFAB from "@/components/GlobalTelemedicineFAB";
 import DoctorCommandDock from "@/components/DoctorCommandDock";
 import UserPresenceProvider from "@/components/UserPresenceProvider";
+import GlobalBreadcrumbs from "@/components/GlobalBreadcrumbs";
 
 export default function RootLayout({
   children,
@@ -58,7 +59,8 @@ export default function RootLayout({
           <PluginEngineProvider>
             <UserPresenceProvider />
             <GlobalHeader activeProject="Telemedicine" />
-            <div className="flex-1 pt-20 md:pt-24">
+            <div className="flex-1 pt-20 md:pt-24 flex flex-col">
+              <GlobalBreadcrumbs />
               {children}
             </div>
             <GlobalFooter />

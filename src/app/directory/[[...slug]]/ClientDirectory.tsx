@@ -138,26 +138,26 @@ export default function ClientDirectory({
   };
 
   return (
-    <main className="min-h-screen bg-[#F9FAFB] font-sans pb-24">
+    <main className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header Area */}
-      <div className="bg-teal-900 text-white pt-24 pb-12 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 150%, #14b8a6 0%, transparent 50%)' }}></div>
+      <div className="bg-blue-600 text-white pt-12 pb-12 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 150%, #60a5fa 0%, transparent 50%)' }}></div>
         <div className="max-w-7xl mx-auto relative z-10">
           <Link href="/" className="inline-flex items-center gap-2 text-teal-200 hover:text-white text-sm font-bold uppercase tracking-widest mb-4 transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {getHeading()}
           </h1>
           <div className="flex flex-wrap items-center gap-3">
-            <div className="bg-teal-800/50 border border-teal-700/50 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-              <Activity className="w-4 h-4 text-teal-300" />
+            <div className="bg-blue-700/50 border border-blue-500/50 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+              <Activity className="w-4 h-4 text-blue-200" />
               <span className="capitalize">{category === 'all' ? 'All Services' : category}</span>
             </div>
             {country !== 'global' && (
-              <div className="bg-teal-800/50 border border-teal-700/50 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-teal-300" />
+              <div className="bg-blue-700/50 border border-blue-500/50 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-blue-200" />
                 <span className="capitalize">{district && district !== 'any' ? district + ', ' : ''}{state ? state + ', ' : ''}{country}</span>
               </div>
             )}
@@ -250,22 +250,22 @@ export default function ClientDirectory({
             ) : filteredResults.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredResults.map((item) => (
-                  <Link href={`/profile/${item.type}/${item.id}`} key={item.id} className="block group">
-                    <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 hover:shadow-xl hover:shadow-teal-900/10 hover:border-teal-300 transition-all duration-300">
+                  <div key={item.id} className="bg-white rounded-3xl p-5 shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+                    <Link href={`/profile/${item.type}/${item.id}`} className="block group flex-1">
                       <div className="flex gap-4">
                         <div className="w-24 h-24 rounded-2xl overflow-hidden relative shrink-0">
                           <Image src={item.profileImage} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                         </div>
                         <div className="flex-1 min-w-0 py-1">
                           <div className="flex items-start justify-between mb-1">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
                               {item.type}
                             </span>
                             {item.verified && (
-                              <ShieldCheck className="w-4 h-4 text-teal-500" />
+                              <ShieldCheck className="w-4 h-4 text-green-500" />
                             )}
                           </div>
-                          <h4 className="font-bold text-slate-900 text-lg truncate group-hover:text-teal-700 transition-colors">
+                          <h4 className="font-bold text-slate-900 text-lg truncate group-hover:text-blue-600 transition-colors">
                             {item.name}
                           </h4>
                           <p className="text-xs text-slate-500 mb-2 truncate">{item.subtitle}</p>
@@ -277,8 +277,13 @@ export default function ClientDirectory({
                           </div>
                         </div>
                       </div>
+                    </Link>
+                    <div className="mt-4 pt-4 border-t border-slate-100">
+                      <Link href={`/profile/${item.type}/${item.id}?action=book`} className="sd-btn-book w-full text-center block">
+                        Book Appointment
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             ) : (
