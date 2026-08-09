@@ -122,40 +122,73 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-12 pb-16 z-10 flex flex-col items-center justify-center min-h-[40vh] border-b border-slate-100 bg-slate-50">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-32 flex flex-col items-center text-center mt-8">
+      <section className="relative pt-24 pb-32 z-10 flex flex-col items-center justify-start min-h-[70vh] border-b border-slate-100 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full h-full object-cover z-0">
+          <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-cover object-top opacity-90" priority />
+        </div>
+        
+        {/* Overlay gradient to ensure text readability if needed */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/40 to-transparent z-0"></div>
+
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 flex flex-col items-center text-center relative z-10 mt-8">
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight mb-4">
-            Find the Best Doctors in India
+          <h1 className="text-4xl md:text-5xl lg:text-[54px] font-bold text-slate-800 tracking-tight mb-4 drop-shadow-sm">
+            Connecting You to Better Health
           </h1>
           
-          {/* Dynamic SEO Typing Text */}
-          <div className="h-8 mb-8 flex items-center justify-center">
-            <p className="text-base sm:text-lg lg:text-xl text-blue-600 font-medium tracking-tight">
-              {displayText}<span className="inline-block w-0.5 h-5 ml-1 bg-blue-600 animate-pulse"></span>
-            </p>
+          <p className="text-lg md:text-xl text-slate-600 mb-10 font-medium">
+            Find the best healthcare services near you.
+          </p>
+
+          {/* Pill Search Bar */}
+          <form onSubmit={handleSearch} className="w-full max-w-4xl relative shadow-xl rounded-full bg-white border border-slate-200 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-2 mb-6">
+            <Search className="w-6 h-6 text-blue-500 ml-4 mr-2 shrink-0" />
+            <input 
+              type="text" 
+              placeholder="Search doctors, hospitals, labs, pharmacies..." 
+              className="flex-1 bg-transparent border-none outline-none text-slate-800 px-2 py-3 md:py-4 placeholder-slate-400 font-medium text-lg md:text-xl min-w-0"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {/* Mockup has a mic icon */}
+            <button type="button" className="p-3 hover:bg-slate-50 rounded-full transition-colors mr-2">
+              <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+            </button>
+          </form>
+
+          {/* Search Toggles */}
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-16">
+            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600">🩺</span> Doctors
+            </button>
+            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600">🏥</span> Hospitals
+            </button>
+            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600">💊</span> Pharmacies
+            </button>
+            <button className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm rounded-lg px-4 md:px-6 py-2.5 text-sm font-bold text-slate-700 flex items-center gap-2 transition-all">
+              <span className="text-blue-600">🔬</span> Labs Ambulances
+            </button>
           </div>
 
-          <form onSubmit={handleSearch} className="w-full max-w-3xl relative group shadow-lg rounded-2xl bg-white border border-slate-200 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/20 transition-all">
-            <div className="relative flex items-center p-2">
-              <Search className="w-6 h-6 text-slate-400 ml-4 mr-2" />
-              <input 
-                type="text" 
-                placeholder="Search Doctors, Hospitals, Specialties..." 
-                className="flex-1 bg-transparent border-none outline-none text-slate-900 px-2 py-4 placeholder-slate-400 font-medium text-lg min-w-0"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button type="submit" className="sd-btn-nav hidden md:block mr-2">
-                Search Directory
-              </button>
-            </div>
-          </form>
-          <div className="mt-8 flex gap-4">
-             <Link href="/services" className="text-blue-600 font-bold hover:underline flex items-center gap-2">
-                Looking to Book an Appointment or Service? Click Here <Zap className="w-4 h-4"/>
-             </Link>
+          {/* Floating CTAs */}
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-12 w-full max-w-5xl">
+            <Link href="/join" className="flex-1 min-w-[200px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl p-4 md:p-5 flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(220,38,38,0.2)] hover:shadow-[0_15px_25px_rgba(220,38,38,0.3)] transition-all group">
+               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><Stethoscope className="w-5 h-5 text-white" /></div>
+               <span className="font-bold text-lg md:text-xl">Join as Doctor</span>
+            </Link>
+            <Link href="/join" className="flex-1 min-w-[200px] bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white rounded-2xl p-4 md:p-5 flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(29,78,216,0.2)] hover:shadow-[0_15px_25px_rgba(29,78,216,0.3)] transition-all group">
+               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><Building2 className="w-5 h-5 text-white" /></div>
+               <span className="font-bold text-lg md:text-xl">List Your Hospital</span>
+            </Link>
+            <Link href="/claim" className="flex-1 min-w-[200px] bg-gradient-to-r from-orange-500 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white rounded-2xl p-4 md:p-5 flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(249,115,22,0.2)] hover:shadow-[0_15px_25px_rgba(249,115,22,0.3)] transition-all group">
+               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><ShieldCheck className="w-5 h-5 text-white" /></div>
+               <span className="font-bold text-lg md:text-xl">Claim Your Listing</span>
+            </Link>
           </div>
+
         </div>
       </section>
 
@@ -193,43 +226,53 @@ export default function DehapaHome() {
         )}
 
         {/* DIRECTORY CATEGORIES */}
-        <section className="px-4 sm:px-8 lg:px-16 2xl:px-24 max-w-[1920px] mx-auto w-full mt-10">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6 px-2">Browse Directory</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-24">
+          
+          {/* Tabs */}
+          <div className="flex items-center gap-8 border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
+            <button className="pb-4 border-b-4 border-blue-600 text-blue-700 font-black text-lg whitespace-nowrap px-4">
+              Browse Directory
+            </button>
+            <button className="pb-4 text-slate-500 hover:text-slate-700 font-bold text-lg whitespace-nowrap px-4">
+              Book Health Services
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
             
-            <Link href="/doctors" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-blue-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
-              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Stethoscope className="w-8 h-8 text-blue-600" />
+            <Link href="/doctors" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
+              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-doctor.png" alt="Doctors" fill className="object-contain drop-shadow-md" />
               </div>
-              <span className="font-bold text-slate-800">Doctors</span>
+              <span className="font-bold text-lg text-slate-800">Doctors</span>
             </Link>
 
-            <Link href="/hospitals" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
-              <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Building2 className="w-8 h-8 text-indigo-600" />
+            <Link href="/hospitals" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
+              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-hospital.png" alt="Hospitals" fill className="object-contain drop-shadow-md" />
               </div>
-              <span className="font-bold text-slate-800">Hospitals</span>
+              <span className="font-bold text-lg text-slate-800">Hospitals</span>
             </Link>
 
-            <Link href="/pharmacies" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
-              <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Pill className="w-8 h-8 text-emerald-600" />
+            <Link href="/pharmacies" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
+              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-pharmacy.png" alt="Pharmacies" fill className="object-contain drop-shadow-md" />
               </div>
-              <span className="font-bold text-slate-800">Pharmacies</span>
+              <span className="font-bold text-lg text-slate-800">Pharmacies</span>
             </Link>
 
-            <Link href="/labs" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-violet-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
-              <div className="w-16 h-16 rounded-full bg-violet-50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <TestTube2 className="w-8 h-8 text-violet-600" />
+            <Link href="/labs" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
+              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-lab.png" alt="Laboratories" fill className="object-contain drop-shadow-md" />
               </div>
-              <span className="font-bold text-slate-800">Laboratories</span>
+              <span className="font-bold text-lg text-slate-800">Laboratories</span>
             </Link>
 
-            <Link href="/ambulances" className="flex flex-col items-center justify-center gap-3 bg-white border border-slate-200 hover:border-rose-400 hover:shadow-lg rounded-2xl p-6 transition-all group">
-              <div className="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Ambulance className="w-8 h-8 text-rose-600" />
+            <Link href="/ambulances" className="flex flex-col items-center justify-center gap-4 bg-white border border-slate-200 hover:border-blue-300 hover:shadow-xl rounded-3xl p-6 md:p-8 transition-all group">
+              <div className="relative w-24 h-24 group-hover:-translate-y-2 transition-transform duration-300">
+                <Image src="/home/directory-ambulance.png" alt="Ambulances" fill className="object-contain drop-shadow-md" />
               </div>
-              <span className="font-bold text-slate-800">Ambulances</span>
+              <span className="font-bold text-lg text-slate-800">Ambulances</span>
             </Link>
 
           </div>
@@ -334,23 +377,131 @@ export default function DehapaHome() {
           </section>
         )}
 
-        {/* B2B PROVIDER SECTION */}
-        <section className="pt-16 px-4 sm:px-6 max-w-[1400px] mx-auto w-full">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-3">
-              For Healthcare Providers
+        {/* B2B PROVIDER CARDS */}
+        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-24 mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Doctor Card */}
+            <div className="bg-slate-50/80 border border-slate-200 rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-xl transition-all">
+               <div className="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden bg-white/50">
+                  <Image src="/home/provider-doctor-.png" alt="For Doctors" fill className="object-cover object-center scale-110" />
+               </div>
+               <div className="w-full sm:w-3/5 p-6 md:p-8 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-2">For Doctors</h3>
+                  <p className="text-slate-600 text-sm mb-6 leading-relaxed">Register your practice and connect with more patients.</p>
+                  <Link href="/join" className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold py-2.5 px-6 rounded-full w-fit shadow-md hover:shadow-lg transition-all text-sm">
+                    Get Started
+                  </Link>
+               </div>
+            </div>
+
+            {/* Hospital Card */}
+            <div className="bg-orange-50/50 border border-orange-100 rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-xl transition-all">
+               <div className="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden bg-white/50">
+                  <Image src="/home/provider-hospital.png" alt="For Hospitals" fill className="object-cover object-center scale-110" />
+               </div>
+               <div className="w-full sm:w-3/5 p-6 md:p-8 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-2">For Hospitals</h3>
+                  <p className="text-slate-600 text-sm mb-6 leading-relaxed">List your hospital and manage your profile easily.</p>
+                  <Link href="/join" className="bg-gradient-to-r from-blue-700 to-blue-600 text-white font-bold py-2.5 px-6 rounded-full w-fit shadow-md hover:shadow-lg transition-all text-sm">
+                    Learn More
+                  </Link>
+               </div>
+            </div>
+
+            {/* Already Listed Card */}
+            <div className="bg-amber-50/50 border border-amber-100 rounded-3xl overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-xl transition-all">
+               <div className="w-full sm:w-2/5 h-48 sm:h-auto relative overflow-hidden bg-white/50">
+                  <Image src="/home/provider-alredylisted.png" alt="Already Listed" fill className="object-cover object-center scale-110" />
+               </div>
+               <div className="w-full sm:w-3/5 p-6 md:p-8 flex flex-col justify-center">
+                  <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-2">Already Listed?</h3>
+                  <p className="text-slate-600 text-sm mb-6 leading-relaxed">Claim your existing profile and update your details.</p>
+                  <Link href="/claim" className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-2.5 px-6 rounded-full w-fit shadow-md hover:shadow-lg transition-all text-sm">
+                    Claim Now
+                  </Link>
+               </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* HOW IT WORKS SECTION */}
+        <section id="how-it-works" className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-32 mb-20 relative">
+          <div className="text-center mb-16 relative">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-800">
+              How <span className="font-serif italic text-blue-600 font-normal">dehapa</span> Works
             </h2>
-            <p className="text-slate-600">Join India's most trusted healthcare network.</p>
+            {/* Ask AI Bubble */}
+            <div className="hidden md:flex absolute right-0 top-0 items-center gap-3 bg-white border border-slate-200 shadow-md rounded-full pl-6 pr-2 py-2 cursor-pointer hover:shadow-lg transition-all">
+               <span className="font-bold text-slate-700 text-sm">Ask dehapa AI</span>
+               <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden border border-blue-200">
+                 <img src="/logo.png" alt="AI" className="w-8 h-8 object-contain" />
+               </div>
+            </div>
           </div>
 
-          <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register" className="px-10 py-4 rounded-full bg-white border border-slate-300 text-slate-800 font-bold hover:bg-slate-50 transition-colors text-center shadow-sm">
-              Join the Network
-            </Link>
-            <Link href="/login" className="px-10 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-black transition-all shadow-md text-center">
-              Partner Login
-            </Link>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-4 relative">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center text-center relative z-10 group">
+              <span className="text-2xl font-black text-slate-800 absolute top-0 left-[20%] z-20">1.</span>
+              <div className="w-40 h-40 rounded-full bg-blue-50/50 flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                <Image src="/home/how-step-1.png" alt="Sign Up" fill className="object-contain p-2" />
+              </div>
+              <h4 className="text-lg font-bold text-slate-800 mb-2">Sign Up & Create Profile</h4>
+              <p className="text-slate-500 text-sm max-w-[250px]">Easy registration for doctors & hospitals.</p>
+            </div>
+
+            {/* Arrow 1 (Desktop) */}
+            <div className="hidden md:block absolute top-20 left-[30%] w-[10%] text-slate-300">
+              <svg className="w-full h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+            </div>
+
+            {/* Step 2 */}
+            <div className="flex flex-col items-center text-center relative z-10 group">
+              <span className="text-2xl font-black text-slate-800 absolute top-0 left-[20%] z-20">2.</span>
+              <div className="w-40 h-40 rounded-full bg-blue-50/50 flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                <Image src="/home/how-step-2.png" alt="Get Verified" fill className="object-contain p-2" />
+              </div>
+              <h4 className="text-lg font-bold text-slate-800 mb-2">Get Verified & Listed</h4>
+              <p className="text-slate-500 text-sm max-w-[250px]">Quick verification to get you online fast.</p>
+            </div>
+
+            {/* Arrow 2 (Desktop) */}
+            <div className="hidden md:block absolute top-20 right-[30%] w-[10%] text-slate-300">
+              <svg className="w-full h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+            </div>
+
+            {/* Step 3 */}
+            <div className="flex flex-col items-center text-center relative z-10 group">
+              <span className="text-2xl font-black text-slate-800 absolute top-0 left-[20%] z-20">3.</span>
+              <div className="w-40 h-40 rounded-full bg-blue-50/50 flex items-center justify-center mb-6 relative overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                <Image src="/home/how-step-3.png" alt="Connect with Patients" fill className="object-contain p-2" />
+              </div>
+              <h4 className="text-lg font-bold text-slate-800 mb-2">Connect with Patients</h4>
+              <p className="text-slate-500 text-sm max-w-[250px]">Start receiving bookings & inquiries.</p>
+            </div>
           </div>
+        </section>
+
+        {/* READY TO JOIN FOOTER CTA */}
+        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-24 mb-16 text-center">
+           <div className="flex items-center justify-center gap-4 mb-10">
+             <div className="h-px bg-slate-200 w-32"></div>
+             <h2 className="text-2xl font-black text-slate-800">Ready to Join <span className="font-serif italic text-blue-600 font-normal">dehapa</span>?</h2>
+             <div className="h-px bg-slate-200 w-32"></div>
+           </div>
+           
+           <div className="flex flex-col sm:flex-row justify-center gap-4">
+             <Link href="/join" className="bg-blue-700 hover:bg-blue-600 text-white rounded-xl px-10 py-4 font-bold flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all">
+                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center"><Stethoscope className="w-4 h-4 text-white" /></div>
+                Register as Doctor
+             </Link>
+             <Link href="/join" className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white rounded-xl px-10 py-4 font-bold flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all">
+                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center"><Building2 className="w-4 h-4 text-white" /></div>
+                Add Your Hospital
+             </Link>
+           </div>
         </section>
 
         {/* --- AD SLOT: DISTRIBUTED 3 (ABOVE FOOTER) --- */}
