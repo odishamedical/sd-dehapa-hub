@@ -118,6 +118,7 @@ export default function DehapaHome() {
     router.push(`/search?${params.toString()}`);
   };
 
+  return (
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
