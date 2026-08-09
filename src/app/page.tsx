@@ -122,7 +122,7 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-32 lg:pt-40 pb-48 z-10 flex flex-col items-center justify-start min-h-[600px] lg:min-h-[750px] overflow-visible">
+      <section className="relative pt-24 lg:pt-32 pb-32 lg:pb-40 z-10 flex flex-col items-center justify-start min-h-[500px] lg:min-h-[600px] overflow-visible">
         {/* Background Image */}
         <div className="absolute inset-0 w-full h-full z-0 bg-blue-50/30">
           <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-cover object-[center_top]" priority />
@@ -174,7 +174,7 @@ export default function DehapaHome() {
           </div>
 
           {/* Floating CTAs - Pulled up with negative margin to overlap */}
-          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full max-w-5xl z-20 absolute -bottom-16 md:-bottom-24 px-4">
+          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full max-w-5xl z-20 absolute -bottom-10 md:-bottom-12 px-4">
             <Link href="/join" className="flex-1 bg-gradient-to-r from-[#e74c3c] to-[#c0392b] hover:from-[#c0392b] hover:to-[#a93226] text-white rounded-[2rem] p-5 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(231,76,60,0.3)] hover:shadow-[0_25px_50px_rgba(231,76,60,0.4)] hover:-translate-y-1 transition-all group">
                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Stethoscope className="w-5 h-5 text-white" /></div>
                <span className="font-bold text-lg md:text-2xl">Join as Doctor</span>
@@ -192,7 +192,7 @@ export default function DehapaHome() {
         </div>
       </section>
 
-      <div className="relative z-10 pb-20 bg-white pt-32 lg:pt-40">
+      <div className="relative z-10 pb-20 bg-white pt-20 md:pt-24">
 
         {/* DIRECTORY CATEGORIES */}
         <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full">
