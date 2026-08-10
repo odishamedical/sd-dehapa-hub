@@ -7,6 +7,7 @@ import Image from "next/image";
 import SquareTicket from "./components/SquareTicket";
 import WideTicket from "./components/WideTicket";
 import PortraitTicket from "./components/PortraitTicket";
+import V2Hero from "./components/V2Hero";
 
 export default function V2GlassHomepage() {
   const [searchSpecialty, setSearchSpecialty] = useState("");
@@ -15,49 +16,15 @@ export default function V2GlassHomepage() {
   return (
     <div className="flex flex-col w-full min-h-screen text-slate-800 font-sans pb-24">
       
-      {/* --- HERO SECTION --- */}
-      <section className="w-full pt-16 pb-12 flex flex-col items-center justify-center px-4 relative z-10">
-        <h1 className="text-4xl md:text-5xl lg:text-[56px] font-black text-slate-900 tracking-tight text-center leading-tight mb-2">
-          Find & Book <br className="md:hidden" />
-          <span className="text-blue-700">Premium Healthcare.</span>
-        </h1>
-        <p className="text-slate-600 text-lg font-medium mb-12 text-center">
-          The most trusted medical professionals, instantly available near you.
-        </p>
-
-        {/* PILL-SHAPED GLASS SEARCH BAR (Matching Reference Image) */}
-        <div className="w-full max-w-4xl bg-white/10 backdrop-blur-3xl border-t-[2px] border-l-[2px] border-white/70 border-r border-b border-white/20 shadow-[inset_0_2px_10px_rgba(255,255,255,0.4),0_15px_40px_rgba(0,100,200,0.2)] rounded-full p-2 flex flex-col md:flex-row items-center gap-2 transition-all hover:bg-white/20">
-          
-          {/* Main Input (e.g., Search doctors...) */}
-          <div className="flex items-center w-full md:flex-1 px-6 py-2 border-b md:border-b-0 md:border-r border-slate-400/20">
-            <Search className="w-6 h-6 text-slate-500 shrink-0 mr-3" />
-            <input 
-              type="text" 
-              placeholder="Search doctors, clinics, specialties..." 
-              className="bg-transparent border-none outline-none text-slate-800 placeholder-slate-600 font-medium w-full text-lg"
-              value={searchSpecialty}
-              onChange={(e) => setSearchSpecialty(e.target.value)}
-            />
-          </div>
-
-          {/* Location Input */}
-          <div className="flex items-center w-full md:w-1/3 px-6 py-2">
-            <MapPin className="w-6 h-6 text-slate-500 shrink-0 mr-3" />
-            <input 
-              type="text" 
-              placeholder="Enter location" 
-              className="bg-transparent border-none outline-none text-slate-800 placeholder-slate-600 font-medium w-full text-lg"
-              value={searchLocation}
-              onChange={(e) => setSearchLocation(e.target.value)}
-            />
-          </div>
-
-          {/* 3D Search Button */}
-          <button className="w-full md:w-auto bg-gradient-to-b from-[#4294ff] to-[#1a65d6] text-white font-bold text-lg py-3.5 px-10 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_6px_15px_rgba(26,101,214,0.4)] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.5),0_8px_20px_rgba(26,101,214,0.5)] transition-all flex items-center justify-center shrink-0">
-            Search
-          </button>
-        </div>
-      </section>
+      {/* --- REUSABLE HERO SECTION --- */}
+      <V2Hero 
+        titleStart="Find & Book"
+        highlight="Premium Healthcare."
+        subtitle="The most trusted medical professionals, instantly available near you."
+        showSearch={true}
+        desktopBgImage="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=2000&h=600"
+        mobileBgImage="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800&h=800"
+      />
 
       {/* =========================================
           ROW 1: FEATURED DOCTORS (Portrait & Square Mix)

@@ -5,6 +5,7 @@ import Link from "next/link";
 import SquareTicket from "../components/SquareTicket";
 import PortraitTicket from "../components/PortraitTicket";
 import AdBanner from "../components/AdBanner";
+import V2Hero from "../components/V2Hero";
 import { getTaxonomyGroup } from "../../../data/taxonomy";
 
 // Dummy data to simulate the massive SEO database
@@ -84,19 +85,22 @@ export default function DoctorsDirectoryHub() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center pt-24 pb-20 px-4 md:px-8 relative z-10">
+    <div className="w-full min-h-screen flex flex-col items-center pb-20 relative z-10">
       
-      {/* Directory SEO Header */}
-      <div className="w-full max-w-7xl mb-12 text-center">
-         <h1 className="text-5xl font-black text-[#0a2540] tracking-tight drop-shadow-sm mb-4">Doctor Directory</h1>
-         <p className="text-lg text-slate-600 font-medium max-w-2xl mx-auto">Browse the largest network of verified healthcare professionals, categorized by specialty for your convenience.</p>
-         
-         {/* 5-Tier Geo Link Example */}
-         <div className="mt-6">
-            <Link href="/v2/doctors/india/odisha" className="text-blue-600 font-bold hover:underline bg-white/40 px-4 py-2 rounded-full border border-white/50 backdrop-blur-md inline-block shadow-sm">
-               📍 View Doctors in Odisha →
-            </Link>
-         </div>
+      {/* --- REUSABLE HERO SECTION --- */}
+      <V2Hero 
+        titleStart="Doctor"
+        highlight="Directory"
+        subtitle="Browse the largest network of verified healthcare professionals, categorized by specialty for your convenience."
+        showSearch={false}
+        desktopBgImage="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=2000&h=600"
+        mobileBgImage="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=800&h=800"
+      />
+
+      <div className="w-full flex justify-center px-4 mt-6 mb-12">
+        <Link href="/v2/doctors/india/odisha" className="text-blue-600 font-bold hover:underline bg-white/40 px-4 py-2 rounded-full border border-white/50 backdrop-blur-md shadow-sm">
+           📍 View Doctors in Odisha →
+        </Link>
       </div>
 
       {/* Row 1: Super Specialists */}
