@@ -92,7 +92,7 @@ export default function DoctorsDirectoryHub() {
         titleStart="Doctor"
         highlight="Directory"
         subtitle="Browse the largest network of verified healthcare professionals, categorized by specialty for your convenience."
-        showSearch={false}
+        showSearch={true}
         desktopBgImage="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=2000&h=600"
         mobileBgImage="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=800&h=800"
       />
