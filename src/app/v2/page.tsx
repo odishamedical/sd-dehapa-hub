@@ -96,7 +96,7 @@ export default function V2GlassHomepage() {
           {/* Right Side: 50% Ad Banner */}
           <div className="flex flex-col">
             <h2 className="text-sm font-bold text-slate-500 tracking-widest uppercase mb-6 opacity-0 hidden lg:block">Sponsored</h2>
-            <div className="flex-1 bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] relative overflow-hidden flex items-center justify-center min-h-[260px]">
+            <div className="flex-1 bg-white/40 backdrop-blur-2xl border border-white rounded-3xl p-1 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] relative overflow-hidden flex items-center justify-center min-h-[260px]">
                {/* Placeholder dashed box for AdSense */}
                <div className="w-[90%] h-[90%] border-2 border-dashed border-slate-400/50 rounded-xl flex items-center justify-center bg-white/20">
                   <span className="text-slate-500 font-bold tracking-widest uppercase">[ 50% AD INJECTION ZONE ]</span>
@@ -131,7 +131,7 @@ export default function V2GlassHomepage() {
           ROW 5: PROVIDER GUIDE (How it Works)
           ========================================= */}
       <section className="relative z-10 w-full px-4 md:px-8 py-16 mt-8 max-w-7xl mx-auto">
-        <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[40px] p-12 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_20px_50px_rgba(0,100,200,0.15)] flex flex-col items-center text-center">
+        <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-12 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] flex flex-col items-center text-center">
           
           <h2 className="text-4xl font-black text-[#0a2540] tracking-tight mb-4">Grow Your Medical Practice</h2>
           <p className="text-lg text-slate-600 font-medium mb-12 max-w-2xl">Join the largest healthcare network in the region. Reach thousands of patients, manage appointments, and grow your digital presence.</p>
@@ -166,7 +166,7 @@ export default function V2GlassHomepage() {
           ROW 6: GLOBAL BOTTOM AD BANNER
           ========================================= */}
       <section className="relative z-10 w-full px-4 md:px-8 py-12 pb-24 max-w-7xl mx-auto">
-        <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[40px] p-2 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] w-full h-[120px] flex items-center justify-center">
+        <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-2 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] w-full h-[120px] flex items-center justify-center">
            {/* Placeholder for standard 728x90 Leaderboard Ad */}
            <div className="w-[95%] h-[90%] border-2 border-dashed border-slate-400/50 rounded-2xl flex items-center justify-center bg-white/20">
               <span className="text-slate-500 font-bold tracking-widest uppercase text-sm">[ GLOBAL 100% AD INJECTION ZONE ]</span>

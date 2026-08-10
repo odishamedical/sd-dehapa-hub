@@ -27,7 +27,7 @@ export default function V2Hero({
     <section className="relative z-10 w-full px-4 md:px-8 pt-8 pb-12 flex justify-center">
       
       {/* The Constrained Hero Container */}
-      <div className="relative w-full max-w-7xl rounded-[40px] overflow-hidden shadow-[0_20px_50px_rgba(0,100,200,0.15)] border border-white/50 bg-white/20 backdrop-blur-md flex flex-col items-center justify-center py-20 px-4">
+      <div className="relative w-full max-w-7xl rounded-[40px] overflow-hidden shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] border border-white bg-white/40 backdrop-blur-2xl flex flex-col items-center justify-center py-20 px-4">
         
         {/* Desktop Background Image (Hidden on mobile) */}
         <div 

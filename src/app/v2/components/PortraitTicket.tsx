@@ -15,7 +15,7 @@ interface PortraitTicketProps {
 export default function PortraitTicket({ title, subtitle, rating, imageSrc, href, actionText }: PortraitTicketProps) {
   return (
     <Link href={href} className="block w-full h-full">
-      <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all group relative overflow-hidden min-h-[380px] h-full">
+      <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-3xl p-1 flex flex-col shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] hover:-translate-y-2 hover:shadow-[0_25px_50px_-10px_rgba(0,20,60,0.2)] transition-all group relative overflow-hidden min-h-[380px] h-full">
         
         {/* The Edge-to-Edge Hero Background */}
         <div 
