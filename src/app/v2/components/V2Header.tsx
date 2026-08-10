@@ -37,9 +37,20 @@ export default function V2Header() {
         <Link href="/v2" className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors">
           Homepage
         </Link>
-        <Link href="/v2/doctors" className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors">
-          SEO Directory
-        </Link>
+        
+        <div className="relative group">
+          <button className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors py-2 flex items-center">
+            SEO Hubs ▾
+          </button>
+          <div className="absolute top-full left-0 w-48 bg-white/80 backdrop-blur-xl border border-white/50 shadow-xl rounded-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+            <Link href="/v2/doctors" className="block px-4 py-2 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Doctors</Link>
+            <Link href="/v2/hospitals" className="block px-4 py-2 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Hospitals</Link>
+            <Link href="/v2/labs" className="block px-4 py-2 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Labs</Link>
+            <Link href="/v2/pharmacies" className="block px-4 py-2 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Pharmacies</Link>
+            <Link href="/v2/ambulances" className="block px-4 py-2 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Ambulances</Link>
+          </div>
+        </div>
+
         <Link href="/v2/search" className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors bg-white/50 px-4 py-2 rounded-full border border-white/60 shadow-sm">
           Live Search Engine
         </Link>
