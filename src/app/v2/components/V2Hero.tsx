@@ -39,9 +39,9 @@ export default function V2Hero({
   return (
     <section className="relative z-10 w-full px-4 md:px-8 pt-8 pb-12 flex justify-center">
       
-      {/* The Constrained Widescreen Hero Container (21:9) */}
+      {/* The Constrained Widescreen Hero Container (21:9 PC) & Tall Portrait (Mobile) */}
       {/* Removed overflow-hidden from here so the dropdown menu doesn't get clipped */}
-      <div className="relative w-full max-w-[1600px] aspect-auto md:aspect-[21/9] rounded-[40px] shadow-[0_20px_50px_-10px_rgba(0,30,80,0.2)] border border-white/60 flex flex-col justify-center">
+      <div className="relative w-full max-w-[1600px] aspect-auto min-h-[750px] md:min-h-0 md:aspect-[21/9] rounded-[40px] shadow-[0_20px_50px_-10px_rgba(0,30,80,0.2)] border border-white/60 flex flex-col justify-end md:justify-center pb-8 md:pb-0">
         
         {/* Background Layer with Overflow Hidden to preserve rounded corners */}
         <div className="absolute inset-0 z-0 rounded-[40px] overflow-hidden bg-slate-50">
@@ -69,13 +69,15 @@ export default function V2Hero({
             />
           </div>
 
-          {/* Very subtle gradient ONLY to guarantee text readability, without ruining the image's native glass effect */}
-          <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent hidden md:block" />
-          <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/90 via-white/70 to-transparent block md:hidden" />
+          {/* PC Gradient: Left-to-Right to hide empty hallway */}
+          <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/90 via-white/50 to-transparent hidden md:block" />
+          
+          {/* Mobile Gradient: Bottom-to-Top to preserve faces at the top of portrait image */}
+          <div className="absolute inset-0 z-0 bg-gradient-to-t from-white via-white/90 to-transparent block md:hidden" />
         </div>
 
-        {/* Text Content - strictly 70% on left */}
-        <div className="relative z-10 flex flex-col items-start w-full md:w-[70%] p-8 md:p-12 lg:p-20">
+        {/* Text Content - strictly 70% on left (PC), 100% bottom-anchored (Mobile) */}
+        <div className="relative z-10 flex flex-col items-start w-full md:w-[70%] p-6 md:p-12 lg:p-20 mt-auto md:mt-0">
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-[#0a2540] tracking-tight mb-4 md:mb-6 drop-shadow-sm leading-tight">
             {titleStart} <span className="text-blue-600">{highlight}</span> {titleEnd}
           </h1>
@@ -141,7 +143,7 @@ export default function V2Hero({
               </div>
 
               {/* Search Button */}
-              <Link href={`/v2/search?category=${selectedCategory.id}`} className="w-full md:w-auto">
+              <Link href={`/v2/search?category=${selectedCategory.id}`} className="w-full md:w-auto mt-2 md:mt-0">
                 <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-10 rounded-2xl md:rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_4px_10px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center text-xl hover:scale-105">
                   Search
                 </button>
@@ -149,16 +151,16 @@ export default function V2Hero({
             </div>
           )}
 
-          {/* Quick Action Buttons */}
-          <div className="flex flex-wrap items-center gap-3 md:gap-5 w-full">
-            <Link href="/join/apply?role=doctor" className="flex-1 min-w-[160px] md:flex-none flex items-center justify-center gap-3 bg-[#0a2540] hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-lg">
-              <Stethoscope className="w-5 h-5" /> Join as Doctor
+          {/* Quick Action Buttons (2x1 Grid on Mobile, Row on PC) */}
+          <div className="grid grid-cols-2 md:flex md:flex-row items-center gap-3 w-full">
+            <Link href="/join/apply?role=doctor" className="col-span-1 md:flex-none flex items-center justify-center gap-2 bg-[#0a2540] hover:bg-slate-800 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
+              <Stethoscope className="w-4 h-4 md:w-5 md:h-5" /> <span className="hidden sm:inline">Join as </span>Doctor
             </Link>
-            <Link href="/join/apply?role=hospital" className="flex-1 min-w-[160px] md:flex-none flex items-center justify-center gap-3 bg-rose-600 hover:bg-rose-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-lg">
-              <Building2 className="w-5 h-5" /> List Hospital
+            <Link href="/join/apply?role=hospital" className="col-span-1 md:flex-none flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
+              <Building2 className="w-4 h-4 md:w-5 md:h-5" /> <span className="hidden sm:inline">List </span>Hospital
             </Link>
-            <Link href="/claim" className="flex-1 min-w-[160px] md:flex-none flex items-center justify-center gap-3 bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-lg">
-              <CheckCircle className="w-5 h-5" /> Claim Listing
+            <Link href="/claim" className="col-span-2 md:col-span-1 md:flex-none flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
+              <CheckCircle className="w-4 h-4 md:w-5 md:h-5" /> Claim Listing
             </Link>
           </div>
 
