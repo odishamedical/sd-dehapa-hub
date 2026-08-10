@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Search, MapPin, Video, Building2, Pill, TestTube2, Ambulance, Star, Calendar, MessageCircle, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import SquareTicket from "./components/SquareTicket";
+import WideTicket from "./components/WideTicket";
+import PortraitTicket from "./components/PortraitTicket";
 
 export default function V2GlassHomepage() {
   const [searchSpecialty, setSearchSpecialty] = useState("");
@@ -56,176 +59,152 @@ export default function V2GlassHomepage() {
         </div>
       </section>
 
-      {/* --- SERVICES ROW (True 3D Glassmorphism Cards) --- */}
-      <section className="w-full flex flex-col items-center px-4 lg:px-8 mt-16 z-10">
-        <div className="w-full max-w-[1400px]">
+      {/* =========================================
+          ROW 1: FEATURED DOCTORS (Portrait & Square Mix)
+          ========================================= */}
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-16 pt-24 max-w-7xl mx-auto">
+        <div className="w-full flex justify-between items-end mb-8">
+          <div>
+            <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Featured Professionals</h2>
+            <p className="text-slate-600 font-medium mt-1">Top-rated doctors available for consultation</p>
+          </div>
+          <Link href="/v2/search/doctors" className="text-blue-600 font-bold hover:underline">View All →</Link>
+        </div>
+        
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* 1 Portrait (VIP) */}
+          <div className="lg:col-span-1">
+             <PortraitTicket 
+               title="Dr. Sarah Jenkins" 
+               subtitle="Senior Cardiologist" 
+               rating="4.9" 
+               imageSrc="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400&h=600" 
+               href="/v2/doctor/sarah-jenkins" 
+               actionText="Book Consultation" 
+             />
+          </div>
           
-          <div className="flex justify-center md:justify-center lg:justify-center w-full">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 w-full max-w-6xl">
-              
-              {/* Card 1: Doctors */}
-              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
-                <div className="flex-1 flex items-center justify-center pt-4">
-                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">👨‍⚕️</div>
-                </div>
-                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
-                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Doctors</h3>
-                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Find Specialists</p>
-                </div>
-              </div>
-
-              {/* Card 2: Hospitals */}
-              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
-                <div className="flex-1 flex items-center justify-center pt-4">
-                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">🏥</div>
-                </div>
-                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
-                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Hospitals</h3>
-                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Nearby Clinics</p>
-                </div>
-              </div>
-
-              {/* Card 3: Pharmacies */}
-              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
-                <div className="flex-1 flex items-center justify-center pt-4">
-                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">💊</div>
-                </div>
-                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
-                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Pharmacies</h3>
-                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Get Medicines</p>
-                </div>
-              </div>
-
-              {/* Card 4: Lab Tests */}
-              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
-                <div className="flex-1 flex items-center justify-center pt-4">
-                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">🔬</div>
-                </div>
-                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
-                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Lab Tests</h3>
-                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Diagnostic Services</p>
-                </div>
-              </div>
-
-              {/* Card 5: Ambulance */}
-              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group col-span-2 md:col-span-1 lg:col-span-1 min-h-[220px] relative overflow-hidden">
-                <div className="flex-1 flex items-center justify-center pt-4">
-                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">🚑</div>
-                </div>
-                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
-                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Ambulance</h3>
-                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Emergency Help</p>
-                </div>
-              </div>
-              
-            </div>
+          {/* 3 Squares */}
+          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+             <SquareTicket title="Dr. Rahul Sharma" subtitle="Neurologist" rating="4.8" icon="👨‍⚕️" href="/v2/doctor/rahul" actionText="Book Now" />
+             <SquareTicket title="Dr. Priya Patel" subtitle="Dermatologist" rating="5.0" icon="👩‍⚕️" href="/v2/doctor/priya" actionText="Book Now" />
+             <SquareTicket title="Dr. Amit Kumar" subtitle="Pediatrician" rating="4.7" icon="👨‍⚕️" href="/v2/doctor/amit" actionText="Book Now" />
           </div>
         </div>
       </section>
 
-      {/* --- FEATURED PROFESSIONALS ROW --- */}
-      <section className="w-full flex flex-col items-center px-4 lg:px-8 mt-20 z-10">
-        <div className="w-full max-w-[1400px]">
-          <div className="flex items-center justify-between mb-8 px-2">
-            <h2 className="text-2xl font-black text-slate-900">Featured Professionals</h2>
-            <div className="flex gap-2">
-               <button className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-md border border-white flex items-center justify-center text-slate-700 hover:bg-white/80 transition-colors shadow-sm">&lt;</button>
-               <button className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-md border border-white flex items-center justify-center text-slate-700 hover:bg-white/80 transition-colors shadow-sm">&gt;</button>
-            </div>
+      {/* =========================================
+          ROW 2: HOSPITALS (Wide Tickets)
+          ========================================= */}
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+        <div className="w-full flex justify-between items-end mb-8">
+          <div>
+            <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Top Hospitals</h2>
+            <p className="text-slate-600 font-medium mt-1">Multi-specialty facilities near you</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {/* Doctor Card 1 */}
-            <div className="bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-6 shadow-[0_10px_40px_rgba(0,50,100,0.08)] flex flex-col relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-100/50 to-transparent"></div>
-              
-              <div className="flex items-center gap-4 relative z-10 mb-6">
-                <div className="w-20 h-20 rounded-2xl bg-blue-200 border-4 border-white shadow-md flex-shrink-0 overflow-hidden">
-                  <div className="w-full h-full bg-slate-200 flex items-center justify-center text-xs text-slate-400">Photo</div>
-                </div>
-                <div>
-                  <div className="flex items-center gap-1 text-amber-500 mb-1">
-                    <Star className="w-4 h-4 fill-current" /><span className="text-sm font-bold text-slate-700">4.9</span>
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 leading-tight">Dr. Sarah Jenkins</h3>
-                  <p className="text-blue-700 font-medium text-sm">Senior Cardiologist</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 relative z-10">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.3)] transition-all">
-                  Book Appointment
-                </button>
-                <button className="w-full bg-white/50 hover:bg-white border border-white text-slate-700 font-bold py-3.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
-                  <MessageCircle className="w-4 h-4" /> Get Quote
-                </button>
-              </div>
-            </div>
-
-            {/* Doctor Card 2 */}
-            <div className="bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-6 shadow-[0_10px_40px_rgba(0,50,100,0.08)] flex flex-col relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-teal-100/50 to-transparent"></div>
-              
-              <div className="flex items-center gap-4 relative z-10 mb-6">
-                <div className="w-20 h-20 rounded-2xl bg-teal-200 border-4 border-white shadow-md flex-shrink-0 overflow-hidden">
-                  <div className="w-full h-full bg-slate-200 flex items-center justify-center text-xs text-slate-400">Photo</div>
-                </div>
-                <div>
-                  <div className="flex items-center gap-1 text-amber-500 mb-1">
-                    <Star className="w-4 h-4 fill-current" /><span className="text-sm font-bold text-slate-700">4.8</span>
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 leading-tight">Dr. Rahul Sharma</h3>
-                  <p className="text-teal-700 font-medium text-sm">Neurologist</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 relative z-10">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.3)] transition-all">
-                  Book Appointment
-                </button>
-                <button className="w-full bg-white/50 hover:bg-white border border-white text-slate-700 font-bold py-3.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
-                  <MessageCircle className="w-4 h-4" /> Get Quote
-                </button>
-              </div>
-            </div>
-
-            {/* Hospital Card */}
-            <div className="bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-6 shadow-[0_10px_40px_rgba(0,50,100,0.08)] flex flex-col relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-emerald-100/50 to-transparent"></div>
-              
-              <div className="flex items-center gap-4 relative z-10 mb-6">
-                <div className="w-20 h-20 rounded-2xl bg-emerald-200 border-4 border-white shadow-md flex-shrink-0 overflow-hidden flex items-center justify-center">
-                   <Building2 className="w-10 h-10 text-emerald-600" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1 text-amber-500 mb-1">
-                    <Star className="w-4 h-4 fill-current" /><span className="text-sm font-bold text-slate-700">5.0</span>
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 leading-tight">Apollo City Hospital</h3>
-                  <p className="text-emerald-700 font-medium text-sm">Multi-Specialty</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 relative z-10">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.3)] transition-all">
-                  Book Facility
-                </button>
-                <button className="w-full bg-white/50 hover:bg-white border border-white text-slate-700 font-bold py-3.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
-                  <MapPin className="w-4 h-4" /> Get Directions
-                </button>
-              </div>
-            </div>
-
-          </div>
+          <Link href="/v2/search/hospitals" className="text-blue-600 font-bold hover:underline">View All →</Link>
+        </div>
+        
+        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+           <WideTicket title="Apollo City Hospital" subtitle="Multi-Specialty Facility" rating="5.0" icon="🏥" href="/v2/hospital/apollo" actionText="View Services" stats="450 Beds • 24/7 ER" />
+           <WideTicket title="Caremax General" subtitle="Advanced Care Center" rating="4.6" icon="🏨" href="/v2/hospital/caremax" actionText="View Services" stats="200 Beds • Level 1 Trauma" />
         </div>
       </section>
 
-      {/* --- ADVERT AREA --- */}
-      <section className="w-full flex justify-center mt-20 px-4 z-10">
-         <div className="w-full max-w-[1400px] h-32 bg-white/30 backdrop-blur-md border border-white/50 rounded-3xl flex items-center justify-center shadow-inner">
-            <span className="text-slate-500/70 font-black tracking-widest uppercase text-lg">[ Advertisement Space ]</span>
-         </div>
+      {/* =========================================
+          ROW 3: LABS/PHARMACY + 50% AD BANNER
+          ========================================= */}
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Left Side: 50% Tickets */}
+          <div>
+            <h2 className="text-2xl font-black text-[#0a2540] tracking-tight mb-6">Labs & Pharmacies</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <SquareTicket title="MediCare Pharmacy" subtitle="24/7 Delivery" rating="4.9" icon="💊" href="/v2/pharmacy/medicare" actionText="Order Meds" />
+              <SquareTicket title="AccuPath Labs" subtitle="Home Collection" rating="4.8" icon="🔬" href="/v2/lab/accupath" actionText="Book Test" />
+            </div>
+          </div>
+
+          {/* Right Side: 50% Ad Banner */}
+          <div className="flex flex-col">
+            <h2 className="text-sm font-bold text-slate-500 tracking-widest uppercase mb-6 opacity-0 hidden lg:block">Sponsored</h2>
+            <div className="flex-1 bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] relative overflow-hidden flex items-center justify-center min-h-[260px]">
+               {/* Placeholder dashed box for AdSense */}
+               <div className="w-[90%] h-[90%] border-2 border-dashed border-slate-400/50 rounded-xl flex items-center justify-center bg-white/20">
+                  <span className="text-slate-500 font-bold tracking-widest uppercase">[ 50% AD INJECTION ZONE ]</span>
+               </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* =========================================
+          ROW 4: AMBULANCES (Square Grid)
+          ========================================= */}
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+        <div className="w-full flex justify-between items-end mb-8">
+          <div>
+            <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Emergency Services</h2>
+            <p className="text-slate-600 font-medium mt-1">Instant ambulance dispatch</p>
+          </div>
+          <Link href="/v2/search/ambulances" className="text-blue-600 font-bold hover:underline">View All →</Link>
+        </div>
+        
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+             <SquareTicket title="City Rescue ALS" subtitle="Advanced Life Support" rating="5.0" icon="🚑" href="/v2/ambulance/city-rescue" actionText="Call Now" />
+             <SquareTicket title="Metro BLS" subtitle="Basic Life Support" rating="4.7" icon="🚑" href="/v2/ambulance/metro" actionText="Call Now" />
+             <SquareTicket title="AeroMed Evac" subtitle="Air Ambulance" rating="4.9" icon="🚁" href="/v2/ambulance/aero" actionText="Call Now" />
+             <SquareTicket title="Care Transport" subtitle="Patient Transfer" rating="4.8" icon="🚐" href="/v2/ambulance/care" actionText="Call Now" />
+        </div>
+      </section>
+
+      {/* =========================================
+          ROW 5: PROVIDER GUIDE (How it Works)
+          ========================================= */}
+      <section className="relative z-10 w-full px-4 md:px-8 py-16 mt-8 max-w-7xl mx-auto">
+        <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[40px] p-12 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_20px_50px_rgba(0,100,200,0.15)] flex flex-col items-center text-center">
+          
+          <h2 className="text-4xl font-black text-[#0a2540] tracking-tight mb-4">Grow Your Medical Practice</h2>
+          <p className="text-lg text-slate-600 font-medium mb-12 max-w-2xl">Join the largest healthcare network in the region. Reach thousands of patients, manage appointments, and grow your digital presence.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mb-12">
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 bg-white/40 border border-white/60 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">1️⃣</div>
+              <h4 className="font-bold text-[#0a2540] text-xl mb-2">Create Profile</h4>
+              <p className="text-slate-600 text-sm">Add your specialties, timing, and clinic details to our directory.</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 bg-white/40 border border-white/60 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">2️⃣</div>
+              <h4 className="font-bold text-[#0a2540] text-xl mb-2">Get Verified</h4>
+              <p className="text-slate-600 text-sm">Our team verifies your credentials to grant the Trust Badge.</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 bg-white/40 border border-white/60 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm">3️⃣</div>
+              <h4 className="font-bold text-[#0a2540] text-xl mb-2">Receive Patients</h4>
+              <p className="text-slate-600 text-sm">Start accepting online appointments directly through your portal.</p>
+            </div>
+          </div>
+
+          <Link href="/v2/join">
+             <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-12 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-transform hover:-translate-y-1">
+                Start Onboarding Now
+             </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* =========================================
+          ROW 6: GLOBAL BOTTOM AD BANNER
+          ========================================= */}
+      <section className="relative z-10 w-full px-4 md:px-8 py-12 pb-24 max-w-7xl mx-auto">
+        <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[40px] p-2 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] w-full h-[120px] flex items-center justify-center">
+           {/* Placeholder for standard 728x90 Leaderboard Ad */}
+           <div className="w-[95%] h-[90%] border-2 border-dashed border-slate-400/50 rounded-2xl flex items-center justify-center bg-white/20">
+              <span className="text-slate-500 font-bold tracking-widest uppercase text-sm">[ GLOBAL 100% AD INJECTION ZONE ]</span>
+           </div>
+        </div>
       </section>
 
     </div>
