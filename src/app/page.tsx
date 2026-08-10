@@ -369,8 +369,9 @@ export default function DehapaHome() {
                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-blue-100/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                
                <div className="w-full sm:w-[45%] lg:w-full h-64 sm:h-auto lg:h-72 relative overflow-hidden flex items-end justify-center z-10 p-6">
-                  <div className="relative w-full h-[110%] group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
-                    <Image src="/home/provider-doctor-.png" alt="For Doctors" fill className="object-contain object-bottom drop-shadow-xl" />
+                  {/* Precise CSS Framing to crop out the 2nd AI figure */}
+                  <div className="relative w-full h-[120%] group-hover:scale-105 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
+                    <Image src="/home/provider-doctor-.png" alt="For Doctors" fill className="object-cover object-[20%_100%] scale-[1.3] drop-shadow-xl" />
                   </div>
                </div>
                
@@ -391,8 +392,9 @@ export default function DehapaHome() {
                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-indigo-100/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                
                <div className="w-full sm:w-[45%] lg:w-full h-64 sm:h-auto lg:h-72 relative overflow-hidden flex items-end justify-center z-10 p-6">
-                  <div className="relative w-full h-[110%] group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
-                    <Image src="/home/provider-hospital.png" alt="For Hospitals" fill className="object-contain object-bottom drop-shadow-xl" />
+                  {/* Precise CSS Framing to crop out the 2nd AI figure */}
+                  <div className="relative w-full h-[120%] group-hover:scale-105 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
+                    <Image src="/home/provider-hospital.png" alt="For Hospitals" fill className="object-cover object-[20%_100%] scale-[1.3] drop-shadow-xl" />
                   </div>
                </div>
                
@@ -413,8 +415,9 @@ export default function DehapaHome() {
                <div className="absolute inset-0 bg-gradient-to-br from-orange-50/80 via-orange-100/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                
                <div className="w-full sm:w-[45%] lg:w-full h-64 sm:h-auto lg:h-72 relative overflow-hidden flex items-end justify-center z-10 p-6">
-                  <div className="relative w-full h-[110%] group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
-                    <Image src="/home/provider-alredylisted.png" alt="Already Listed" fill className="object-contain object-bottom drop-shadow-xl" />
+                  {/* Precise CSS Framing to isolate the middle AI figure from the 3 figures */}
+                  <div className="relative w-full h-[120%] group-hover:scale-105 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
+                    <Image src="/home/provider-alredylisted.png" alt="Already Listed" fill className="object-cover object-[50%_100%] scale-[1.5] drop-shadow-xl" />
                   </div>
                </div>
                
