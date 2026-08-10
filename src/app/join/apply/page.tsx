@@ -9,7 +9,7 @@ import GlobalHeader from '@/components/GlobalHeader';
 import GlobalFooter from '@/components/GlobalFooter';
 import Link from 'next/link';
 import { CheckCircle2, ChevronRight, Phone, FileText, Building2, User, MapPin } from 'lucide-react';
-
+import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from '@/constants/locations';
 function ApplyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -43,7 +43,14 @@ function ApplyContent() {
 
   // Shared Form Fields
   const [registrationNumber, setRegistrationNumber] = useState('');
-  const [address, setAddress] = useState('');
+  
+  // 5-Tier Location Schema
+  const [country, setCountry] = useState('India');
+  const [addressState, setAddressState] = useState('Odisha');
+  const [district, setDistrict] = useState('');
+  const [block, setBlock] = useState('');
+  const [localAddress, setLocalAddress] = useState('');
+
   const [file, setFile] = useState<File | null>(null);
 
   const [submitted, setSubmitted] = useState(false);
@@ -134,6 +141,21 @@ function ApplyContent() {
       }
     }
     
+    if (step === 2) {
+      if (isDoctor && (!firstName || !lastName || !passingYear || !college || !registrationNumber)) {
+        setError("Please fill out all required professional fields.");
+        return;
+      }
+      if (!isDoctor && (!ownerName || !orgName || !yearEstablished || !registrationNumber)) {
+        setError("Please fill out all required organization fields.");
+        return;
+      }
+      if (!file) {
+        setError("Please upload your official document proof.");
+        return;
+      }
+    }
+    
     setError('');
     setStep(step + 1);
   };
@@ -149,20 +171,9 @@ function ApplyContent() {
       setError("Authentication lost. Please log in again.");
       return;
     }
-    
-    if (!registrationNumber || !address || !file) {
-      setError("Please fill out all required fields and attach a proof document.");
+    if (!country || !addressState || !district || !localAddress) {
+      setError("Please fill out your complete location details.");
       return;
-    }
-
-    if (isDoctor && (!firstName || !lastName || !passingYear || !college)) {
-        setError("Please fill out all doctor required fields.");
-        return;
-    }
-
-    if (!isDoctor && (!ownerName || !orgName || !yearEstablished)) {
-        setError("Please fill out all organization required fields.");
-        return;
     }
 
     setLoading(true);
@@ -178,12 +189,15 @@ function ApplyContent() {
       const downloadUrl = await getDownloadURL(uploadResult.ref);
 
       // 2. Prepare Final Data
-      const finalPrefix = prefix === 'Custom' ? customPrefix : prefix;
       const applicationData = {
         role,
         status: 'pending',
         registrationNumber,
-        address,
+        country,
+        state: addressState,
+        district,
+        block,
+        localAddress,
         proofUrl: downloadUrl,
         lastUpdated: serverTimestamp(),
         ...(isDoctor ? {
@@ -286,7 +300,14 @@ function ApplyContent() {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 2 ? 'border-teal-400 bg-teal-400/10' : 'border-slate-700 bg-slate-800'}`}>
                 <FileText className="w-5 h-5" />
               </div>
-              <span className="font-bold hidden sm:block">2. Verification</span>
+              <span className="font-bold hidden sm:block">2. Identity</span>
+            </div>
+            <div className={`h-1 flex-1 mx-4 rounded-full ${step >= 3 ? 'bg-teal-500/50' : 'bg-slate-800'}`}></div>
+            <div className={`flex items-center gap-3 ${step >= 3 ? 'text-teal-400' : 'text-slate-500'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 3 ? 'border-teal-400 bg-teal-400/10' : 'border-slate-700 bg-slate-800'}`}>
+                <MapPin className="w-5 h-5" />
+              </div>
+              <span className="font-bold hidden sm:block">3. Location</span>
             </div>
           </div>
 
@@ -307,7 +328,7 @@ function ApplyContent() {
               </div>
             )}
 
-            <form onSubmit={step === 2 ? handleSubmit : (e) => e.preventDefault()} className="space-y-6">
+            <form onSubmit={step === 3 ? handleSubmit : (e) => e.preventDefault()} className="space-y-6">
               
               {/* STEP 1: CONTACT */}
               {step === 1 && (
@@ -436,14 +457,7 @@ function ApplyContent() {
                     </>
                   )}
 
-                  {/* Shared Global Address */}
-                  <div className="bg-slate-800/30 p-6 rounded-2xl border border-slate-700/50 space-y-4">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2"><MapPin className="w-5 h-5 text-teal-400"/> Location</h3>
-                    <div>
-                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Complete Global Address *</label>
-                        <textarea required value={address} onChange={(e) => setAddress(e.target.value)} rows={3} className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none resize-none" placeholder="Enter complete address..." />
-                    </div>
-                  </div>
+                  {/* Shared Global Address Removed from Step 2 */}
 
                   {/* Document Upload */}
                   <div className="bg-slate-800/30 p-6 rounded-2xl border border-slate-700/50 space-y-4">
@@ -477,6 +491,90 @@ function ApplyContent() {
                           <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">Click to replace</p>
                         </>
                       )}
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-slate-700/50 flex gap-4 mt-8">
+                    <button type="button" onClick={handlePreviousStep} disabled={loading} className="w-1/3 bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 py-4 rounded-xl transition-all disabled:opacity-50">
+                      Back
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={handleNextStep}
+                      disabled={loading}
+                      className="w-2/3 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-900 font-black text-lg px-6 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      Location Details <ChevronRight className="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3: LOCATION DETAILS (5-TIER) */}
+              {step === 3 && (
+                <div className="space-y-8 animate-in fade-in slide-in-from-right-4">
+                  <div className="bg-slate-800/30 p-6 rounded-2xl border border-slate-700/50 space-y-6">
+                    <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2"><MapPin className="w-5 h-5 text-teal-400"/> Clinic/Facility Location</h3>
+                    <p className="text-slate-400 text-sm mb-6">This strict location format helps patients find you easily and powers our Directory SEO.</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Country *</label>
+                        <select value={country} onChange={(e) => setCountry(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none appearance-none">
+                          <option value="India">India</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+
+                      {country === 'India' ? (
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">State *</label>
+                          <select value={addressState} onChange={(e) => setAddressState(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none appearance-none">
+                            <option value="">Select State</option>
+                            {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">State / Province *</label>
+                          <input type="text" value={addressState} onChange={(e) => setAddressState(e.target.value)} className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none" required />
+                        </div>
+                      )}
+
+                      {country === 'India' && addressState === 'Odisha' ? (
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">District *</label>
+                          <select value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none appearance-none">
+                            <option value="">Select District</option>
+                            {ODISHA_DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                          </select>
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">District / City *</label>
+                          <input type="text" value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none" required />
+                        </div>
+                      )}
+
+                      {country === 'India' && addressState === 'Odisha' && district && ODISHA_DISTRICT_BLOCKS[district] ? (
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Block / Municipality</label>
+                          <select value={block} onChange={(e) => setBlock(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none appearance-none">
+                            <option value="">Select Block</option>
+                            {ODISHA_DISTRICT_BLOCKS[district].map(b => <option key={b} value={b}>{b}</option>)}
+                          </select>
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Block / Area</label>
+                          <input type="text" value={block} onChange={(e) => setBlock(e.target.value)} className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-4">
+                      <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Local Address & Pincode *</label>
+                      <textarea required value={localAddress} onChange={(e) => setLocalAddress(e.target.value)} rows={3} className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-teal-500 outline-none resize-none" placeholder="Building name, street, pincode..." />
                     </div>
                   </div>
 
