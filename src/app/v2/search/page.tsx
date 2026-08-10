@@ -19,6 +19,9 @@ function SearchEngineContent() {
   const [state, setState] = useState(searchParams.get('state') || '');
   const [district, setDistrict] = useState(searchParams.get('district') || '');
 
+  // Mobile Filter Modal State
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
   // Firebase Data States
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,6 +88,7 @@ function SearchEngineContent() {
     if (district) params.append('district', district);
     
     router.push(`/v2/search?${params.toString()}`);
+    setIsMobileFilterOpen(false); // Close modal on apply
   };
 
   // Client-Side Filtering Engine
@@ -101,6 +105,84 @@ function SearchEngineContent() {
 
     return true;
   });
+
+  // Extracted Filter UI to reuse in both Sidebar and Mobile Modal
+  const renderFilters = () => (
+    <div className="space-y-6">
+      {/* Keyword Search */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Search</label>
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input 
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Names, specialties..."
+            className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl pl-9 pr-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
+          />
+        </div>
+      </div>
+
+      {/* Listing Type Dropdown */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Type</label>
+        <select 
+          value={type} 
+          onChange={(e) => setType(e.target.value)} 
+          className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl px-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner appearance-none"
+        >
+          <option value="all">All Services</option>
+          <option value="doctor">Doctors</option>
+          <option value="hospital">Hospitals</option>
+          <option value="ambulance">Ambulances</option>
+          <option value="pharmacy">Pharmacies</option>
+          <option value="lab">Pathology Labs</option>
+        </select>
+      </div>
+
+      {/* 5-Tier Location: State */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">State</label>
+        <div className="relative">
+          <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <select 
+            value={state} 
+            onChange={(e) => setState(e.target.value)}
+            className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl pl-9 pr-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner appearance-none"
+          >
+            <option value="">All States</option>
+            <option value="Odisha">Odisha</option>
+          </select>
+        </div>
+      </div>
+
+      {/* 5-Tier Location: District */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">District</label>
+        <select 
+          value={district} 
+          onChange={(e) => setDistrict(e.target.value)}
+          disabled={!state}
+          className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl px-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner disabled:opacity-50 appearance-none"
+        >
+          <option value="">All Districts</option>
+          <option value="Khordha">Khordha</option>
+          <option value="Cuttack">Cuttack</option>
+          <option value="Ganjam">Ganjam</option>
+          <option value="Puri">Puri</option>
+        </select>
+      </div>
+
+      {/* Apply Filter Button */}
+      <button 
+        onClick={handleUpdateFilter}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.3)] transition-all mt-4"
+      >
+        Apply Filters
+      </button>
+    </div>
+  );
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -119,9 +201,9 @@ function SearchEngineContent() {
       <div className="w-full max-w-[1400px] px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8 relative z-10">
         
         {/* ==============================
-            LEFT: THE GLASS SIDEBAR 
+            LEFT: THE GLASS SIDEBAR (Hidden on Mobile)
             ============================== */}
-        <div className="w-full lg:w-1/4 flex-shrink-0">
+        <div className="hidden lg:block w-1/4 flex-shrink-0">
           <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.2)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-6 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.08)] sticky top-24">
             
             <div className="flex items-center justify-between mb-6 border-b border-white/40 pb-4">
@@ -129,82 +211,7 @@ function SearchEngineContent() {
               <Filter className="w-5 h-5 text-blue-600" />
             </div>
             
-            <div className="space-y-6">
-              
-              {/* Keyword Search */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Search</label>
-                <div className="relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input 
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Names, specialties..."
-                    className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl pl-9 pr-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
-                  />
-                </div>
-              </div>
-
-              {/* Listing Type Dropdown */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Type</label>
-                <select 
-                  value={type} 
-                  onChange={(e) => setType(e.target.value)} 
-                  className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl px-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner appearance-none"
-                >
-                  <option value="all">All Services</option>
-                  <option value="doctor">Doctors</option>
-                  <option value="hospital">Hospitals</option>
-                  <option value="ambulance">Ambulances</option>
-                  <option value="pharmacy">Pharmacies</option>
-                  <option value="lab">Pathology Labs</option>
-                </select>
-              </div>
-
-              {/* 5-Tier Location: State */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">State</label>
-                <div className="relative">
-                  <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <select 
-                    value={state} 
-                    onChange={(e) => setState(e.target.value)}
-                    className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl pl-9 pr-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner appearance-none"
-                  >
-                    <option value="">All States</option>
-                    <option value="Odisha">Odisha</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* 5-Tier Location: District */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">District</label>
-                <select 
-                  value={district} 
-                  onChange={(e) => setDistrict(e.target.value)}
-                  disabled={!state}
-                  className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl px-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner disabled:opacity-50 appearance-none"
-                >
-                  <option value="">All Districts</option>
-                  <option value="Khordha">Khordha</option>
-                  <option value="Cuttack">Cuttack</option>
-                  <option value="Ganjam">Ganjam</option>
-                  <option value="Puri">Puri</option>
-                </select>
-              </div>
-
-              {/* Apply Filter Button */}
-              <button 
-                onClick={handleUpdateFilter}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.3)] transition-all mt-4"
-              >
-                Apply Filters
-              </button>
-
-            </div>
+            {renderFilters()}
           </div>
         </div>
 
@@ -251,6 +258,56 @@ function SearchEngineContent() {
         </div>
 
       </div>
+
+      {/* ==============================
+          MOBILE FLOATING FILTER BUTTON
+          ============================== */}
+      <div className="fixed bottom-6 right-6 lg:hidden z-40">
+        <button 
+          onClick={() => setIsMobileFilterOpen(true)}
+          className="bg-blue-600 text-white rounded-full p-4 shadow-[0_10px_25px_rgba(37,99,235,0.5)] flex items-center justify-center hover:scale-105 transition-transform"
+        >
+          <Filter className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* ==============================
+          MOBILE BOTTOM SHEET MODAL
+          ============================== */}
+      {isMobileFilterOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end lg:hidden">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            onClick={() => setIsMobileFilterOpen(false)}
+          />
+          
+          {/* Bottom Sheet */}
+          <div className="relative w-full bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.7)_100%)] backdrop-blur-3xl border-t border-white/80 rounded-t-3xl p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] pb-12 max-h-[85vh] overflow-y-auto slide-up-animation">
+            
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+            </div>
+
+            <div className="flex items-center justify-between mb-6 border-b border-white/40 pb-4">
+              <h3 className="font-black text-[#0a2540] text-2xl">Refine Search</h3>
+              <button onClick={() => setIsMobileFilterOpen(false)} className="text-slate-500 font-bold bg-white/50 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
+            </div>
+            
+            {renderFilters()}
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .slide-up-animation {
+          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
