@@ -25,9 +25,22 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
   const isAmbulance = type === 'ambulance';
 
   const [showPhone, setShowPhone] = useState(false);
+  const [mainImageIndex, setMainImageIndex] = useState(0);
 
   // Parse images
   const allImgs = [...(profile.rawImages || []), ...(profile.galleryImages || [])];
+  
+  // Ensure we have exactly 5 images for the bento grid with unique IDs
+  const bentoImgs = Array.from({ length: 5 }).map((_, i) => ({
+    id: i,
+    src: allImgs[i] || `https://placehold.co/600x400/e2e8f0/64748b.png?text=Photo+${i+1}`
+  }));
+
+  // Reorder so the selected mainImageIndex is first (span 2x2)
+  const displayImgs = [
+    bentoImgs[mainImageIndex],
+    ...bentoImgs.filter((img) => img.id !== mainImageIndex)
+  ];
   
   const getMetrics = () => {
     switch(type) {
@@ -140,14 +153,17 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                  </div>
                </div>
 
-               {/* 5-Image Glassmorphism Bento Gallery */}
+               {/* 5-Image Glassmorphism Bento Gallery (Interactive) */}
                <div className="grid grid-cols-4 grid-rows-2 gap-2 h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden border-4 border-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] w-full relative z-10 bg-white/50">
-                 {Array.from({ length: 5 }).map((_, i) => {
-                   const img = allImgs[i] || `https://placehold.co/600x400/e2e8f0/64748b.png?text=Photo+${i+1}`;
+                 {displayImgs.map((imgObj, idx) => {
                    return (
-                     <div key={i} className={`relative bg-white/50 overflow-hidden group/img h-full w-full ${i === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}`}>
+                     <div 
+                       key={imgObj.id} 
+                       onClick={() => setMainImageIndex(imgObj.id)}
+                       className={`relative bg-white/50 overflow-hidden group/img h-full w-full cursor-pointer ${idx === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}`}
+                     >
                        <Image 
-                         src={img} 
+                         src={imgObj.src} 
                          fill 
                          className="object-cover opacity-90 group-hover/img:opacity-100 group-hover/img:scale-105 transition-all duration-700" 
                          alt="Gallery Image" 
