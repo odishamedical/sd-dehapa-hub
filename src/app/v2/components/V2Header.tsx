@@ -27,11 +27,23 @@ export default function V2Header() {
 
   return (
     <header 
-      className={`fixed top-0 w-full z-50 bg-white/30 backdrop-blur-xl border-b border-white/40 h-20 flex items-center px-8 shadow-[0_4px_30px_rgba(0,0,0,0.05)] transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
+      className={`fixed top-0 w-full z-50 bg-white/30 backdrop-blur-xl border-b border-white/40 h-20 flex items-center justify-between px-8 shadow-[0_4px_30px_rgba(0,0,0,0.05)] transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
     >
       <Link href="/v2" className="font-black text-2xl tracking-tight text-slate-900">
         dehapa<span className="text-blue-600">.v2</span>
       </Link>
+
+      <nav className="hidden md:flex gap-6 items-center">
+        <Link href="/v2" className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors">
+          Homepage
+        </Link>
+        <Link href="/v2/doctors" className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors">
+          SEO Directory
+        </Link>
+        <Link href="/v2/search" className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors bg-white/50 px-4 py-2 rounded-full border border-white/60 shadow-sm">
+          Live Search Engine
+        </Link>
+      </nav>
     </header>
   );
 }

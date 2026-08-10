@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Search, MapPin } from "lucide-react";
+import Link from "next/link";
 
 interface V2HeroProps {
   titleStart: string;
@@ -71,9 +72,11 @@ export default function V2Hero({
                 />
               </div>
 
-              <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_4px_10px_rgba(37,99,235,0.3)] transition-all">
-                Search
-              </button>
+              <Link href="/v2/search">
+                <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_4px_10px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center">
+                  Search
+                </button>
+              </Link>
             </div>
           )}
         </div>
