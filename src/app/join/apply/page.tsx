@@ -8,6 +8,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import { CheckCircle2, ChevronRight, Phone, FileText, Building2, User, MapPin, Image as ImageIcon, UploadCloud, AlertCircle } from 'lucide-react';
 import { INDIAN_STATES, ODISHA_DISTRICTS, ODISHA_DISTRICT_BLOCKS } from '@/constants/locations';
+import V2GlassBackground from '@/components/V2GlassBackground';
 
 function ApplyContent() {
   const router = useRouter();
@@ -230,15 +231,9 @@ function ApplyContent() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      {/* GLOBAL PAGE BACKGROUND */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center" 
-        style={{ backgroundImage: `url(https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&q=80&w=2000&h=1000)` }} 
-      />
-      <div className="absolute inset-0 z-0 bg-slate-50/50 backdrop-blur-sm" />
-
-      <div className="bg-white/40 backdrop-blur-2xl border border-white/60 p-12 rounded-[40px] shadow-[0_20px_50px_rgba(0,30,80,0.15)] max-w-2xl w-full text-center relative z-10">
+      <V2GlassBackground>
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          <div className="bg-white/60 backdrop-blur-3xl border border-white p-12 rounded-[40px] shadow-[0_20px_50px_rgba(0,30,80,0.15)] max-w-2xl w-full text-center relative z-10">
             <CheckCircle2 className="w-20 h-20 text-emerald-500 mx-auto mb-6" />
             <h2 className="text-4xl font-black text-[#0a2540] mb-4 font-serif tracking-tight">Application Received!</h2>
             <p className="text-slate-600 text-lg mb-8 font-medium">Your premium V2 profile request has been securely submitted. Our team will verify your details shortly.</p>
@@ -247,27 +242,17 @@ function ApplyContent() {
             </Link>
           </div>
         </div>
-      </div>
+      </V2GlassBackground>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-slate-800 relative selection:bg-blue-500/30">
-      
-      {/* GLOBAL PAGE BACKGROUND */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center"
-          style={{ backgroundImage: `url(https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=2000&h=1000)` }}
-        />
-        <div className="absolute inset-0 bg-slate-100/60 backdrop-blur-sm"></div>
-      </div>
-
+    <V2GlassBackground>
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 py-12 relative z-10 w-full">
         <div className="w-full max-w-4xl flex justify-center">
           
           {/* THE TRUE GLASSMORPHISM FORM CONTAINER */}
-          <div className="relative w-full rounded-[40px] shadow-[0_30px_60px_-15px_rgba(0,30,80,0.15)] border-2 border-white/60 bg-white/40 backdrop-blur-3xl flex flex-col py-10 px-6 sm:px-12 ring-1 ring-white/20">
+          <div className="relative w-full rounded-[40px] shadow-[0_30px_60px_-15px_rgba(0,100,200,0.15)] border border-white/80 bg-white/50 backdrop-blur-2xl flex flex-col py-10 px-6 sm:px-12">
               {/* Progress Header */}
               <div className="flex items-center justify-between mb-10 px-2 sm:px-4">
                 {[
@@ -553,10 +538,9 @@ function ApplyContent() {
               </form>
             </div>
           </div>
-
         </div>
       </div>
-    </div>
+    </V2GlassBackground>
   );
 }
 
