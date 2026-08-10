@@ -269,7 +269,7 @@ function SearchResultsContent() {
               <p className="text-slate-500 font-medium">Found {loading ? "..." : filteredResults.length} result(s) for your search.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-6">
               
               {loading ? (
                 <div className="col-span-full py-20 flex justify-center items-center">
@@ -293,9 +293,14 @@ function SearchResultsContent() {
                 </div>
               ) : (
                 filteredResults.map(result => (
-                  <div key={result.id} className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl shadow-slate-200/50 border border-slate-100 transition-all duration-300 group flex flex-col">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="w-16 h-16 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600 text-2xl shadow-inner">
+                  <div key={result.id} className="bg-white rounded-3xl p-4 sm:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] border border-slate-100 transition-all duration-300 group flex flex-col md:flex-row gap-6 relative overflow-hidden items-stretch">
+                    
+                    {/* Hover Glow Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-teal-50/0 via-teal-50/30 to-teal-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                    {/* Column 1: Image / Avatar (20-30%) */}
+                    <div className="w-full md:w-48 shrink-0 flex flex-col items-center justify-center relative">
+                      <div className="w-full h-48 md:h-full min-h-[120px] rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 flex items-center justify-center text-4xl shadow-inner relative overflow-hidden group-hover:scale-[1.02] transition-transform">
                         {result.type === 'doctor' && '👨‍⚕️'}
                         {result.type === 'hospital' && '🏥'}
                         {result.type === 'lab' && '🔬'}
@@ -303,35 +308,40 @@ function SearchResultsContent() {
                         {result.type === 'ambulance' && '🚑'}
                         {result.type === 'unknown' && '✨'}
                       </div>
-                      <div className="bg-amber-50 text-amber-600 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-amber-100">
-                        <Star className="w-3 h-3 fill-current" /> {result.rating}
-                      </div>
-                    </div>
-                    
-                    <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-teal-600 transition-colors">{result.name}</h3>
-                    <p className="text-teal-600 font-bold text-xs uppercase tracking-wider mb-4">{result.subtitle}</p>
-                    
-                    <div className="space-y-2 mb-6 mt-auto">
-                      <div className="flex items-center gap-2 text-slate-500 text-sm">
-                        <MapPin className="w-4 h-4" />
-                        <span>{result.location}</span>
-                      </div>
-                      {result.verified ? (
-                        <div className="flex items-center gap-2 text-slate-500 text-sm">
-                          <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                          <span className="text-emerald-600 font-medium">DehaPa Verified</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 text-slate-500 text-sm">
-                           <Activity className="w-4 h-4 text-slate-400" />
-                           <span className="text-slate-500 font-medium">Standard Listing</span>
-                        </div>
-                      )}
                     </div>
 
-                    <Link href={`/profile/${result.type}/${result.id}`} className="w-full py-3 bg-teal-50 text-teal-700 hover:bg-teal-600 hover:text-white text-center font-bold text-sm uppercase tracking-widest rounded-xl transition-all block shadow-sm hover:shadow-md">
-                      View Profile
-                    </Link>
+                    {/* Column 2: Details (50%) */}
+                    <div className="flex-1 flex flex-col justify-center relative z-10 py-2">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="bg-amber-50 text-amber-600 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-amber-200 shadow-sm">
+                          <Star className="w-3 h-3 fill-current" /> {result.rating || 'New'}
+                        </div>
+                        {result.verified && (
+                          <div className="bg-emerald-50 text-emerald-600 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-emerald-200 shadow-sm">
+                            <ShieldCheck className="w-3 h-3" /> Verified
+                          </div>
+                        )}
+                      </div>
+                      
+                      <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-1 group-hover:text-teal-600 transition-colors">{result.name}</h3>
+                      <p className="text-teal-600 font-bold text-sm uppercase tracking-wider mb-4">{result.subtitle}</p>
+                      
+                      <div className="flex flex-wrap items-center gap-4 text-slate-500 text-sm mt-auto">
+                        <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                          <MapPin className="w-4 h-4 text-teal-500" />
+                          <span className="font-medium">{result.location}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Column 3: CTA Button (20%) */}
+                    <div className="w-full md:w-48 shrink-0 flex flex-col items-center justify-center relative z-10 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6">
+                      <Link href={`/profile/${result.type}/${result.id}`} className="w-full py-4 bg-white border-2 border-teal-500 text-teal-600 hover:bg-teal-500 hover:text-white text-center font-bold text-sm uppercase tracking-widest rounded-xl transition-all shadow-sm hover:shadow-[0_10px_20px_rgba(20,184,166,0.3)] hover:-translate-y-1">
+                        View Profile
+                      </Link>
+                      <p className="text-xs text-slate-400 font-medium mt-3 text-center">Available Online</p>
+                    </div>
+
                   </div>
                 ))
               )}
