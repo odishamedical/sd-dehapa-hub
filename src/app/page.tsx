@@ -122,7 +122,7 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-24 lg:pt-32 pb-10 md:pb-20 lg:pb-24 z-10 flex flex-col items-center justify-start overflow-visible bg-gradient-to-b from-blue-50/50 to-white">
+      <section className="relative pt-24 lg:pt-32 pb-10 md:pb-20 lg:pb-24 z-20 flex flex-col items-center justify-start overflow-visible bg-gradient-to-b from-blue-50/50 to-white">
         
         {/* Constrained Background Image Container */}
         <div className="absolute inset-0 w-full flex justify-center z-0 pointer-events-none">
