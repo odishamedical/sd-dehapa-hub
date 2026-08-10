@@ -539,10 +539,9 @@ function ApplyContent() {
             </div>
           </div>
         </div>
-      </div>
-    </V2GlassBackground>
-  );
-}
+      </V2GlassBackground>
+    );
+  }
 
 export default function ApplyPage() {
   return (
