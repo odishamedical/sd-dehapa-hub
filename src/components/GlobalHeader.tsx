@@ -8,6 +8,7 @@ import DoctorStatusToggle from "./DoctorStatusToggle";
 import GlobalNotifications from "./GlobalNotifications";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBz0OIk4xmOZras83es5HmJc03Ae60sMg8",
@@ -60,6 +61,7 @@ interface GlobalHeaderProps {
 }
 
 export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
+  const pathname = usePathname();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
@@ -342,6 +344,10 @@ export default function GlobalHeader({ activeProject }: GlobalHeaderProps) {
     }
     return url.toString();
   };
+
+  if (pathname?.startsWith('/v2')) {
+    return null;
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 w-full z-[100] bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm flex items-center justify-between px-3 md:px-6 lg:px-12 h-20 md:h-24 transition-all duration-300">
