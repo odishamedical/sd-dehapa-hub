@@ -3,6 +3,7 @@
 import React from "react";
 import { Search, MapPin, Stethoscope, Building2, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface V2HeroProps {
   titleStart: string;
@@ -29,17 +30,29 @@ export default function V2Hero({
       {/* The Constrained Widescreen Hero Container (21:9) */}
       <div className="relative w-full max-w-[1600px] aspect-auto md:aspect-[21/9] rounded-[40px] overflow-hidden shadow-[0_20px_50px_-10px_rgba(0,30,80,0.2)] border border-white/60 bg-slate-50 flex flex-col justify-center">
         
-        {/* Desktop Background Image - 100% Native 21:9 Widescreen */}
-        <div 
-          className="absolute inset-0 z-0 hidden md:block bg-cover bg-center"
-          style={{ backgroundImage: `url(${desktopBgImage})` }}
-        />
+        {/* Desktop Background Image - Next.js Optimized */}
+        <div className="absolute inset-0 z-0 hidden md:block">
+          <Image 
+            src={desktopBgImage}
+            alt="Medical Hero Background"
+            fill
+            priority
+            quality={90}
+            className="object-cover object-center"
+          />
+        </div>
         
-        {/* Mobile Background Image */}
-        <div 
-          className="absolute inset-0 z-0 block md:hidden bg-cover bg-center"
-          style={{ backgroundImage: `url(${mobileBgImage})` }}
-        />
+        {/* Mobile Background Image - Next.js Optimized */}
+        <div className="absolute inset-0 z-0 block md:hidden">
+          <Image 
+            src={mobileBgImage}
+            alt="Medical Hero Background Mobile"
+            fill
+            priority
+            quality={90}
+            className="object-cover object-center"
+          />
+        </div>
 
         {/* Very subtle gradient ONLY to guarantee text readability, without ruining the image's native glass effect */}
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent hidden md:block" />
