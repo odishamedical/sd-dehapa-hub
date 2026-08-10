@@ -20,7 +20,7 @@ export default function V2Hero({
   titleEnd, 
   subtitle, 
   showSearch = true,
-  desktopBgImage = "/v2/hero-desktop.png",
+  desktopBgImage = "/v2/v2-heropc.png",
   mobileBgImage = "/v2/hero-mobile.png"
 }: V2HeroProps) {
   return (
