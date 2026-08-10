@@ -122,40 +122,46 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-24 lg:pt-32 pb-16 md:pb-24 z-20 flex justify-center bg-white overflow-hidden">
+      <section className="relative pt-12 lg:pt-16 pb-8 md:pb-12 z-20 flex justify-center bg-white overflow-hidden">
         
         {/* The Master Container that perfectly aligns with the bottom area */}
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
           
           {/* The "Contained Hero Banner" - The image is the background of THIS box, not the whole screen */}
-          <div className="relative w-full min-h-[500px] lg:min-h-[600px] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] bg-gradient-to-br from-[#f8faff] to-blue-50 border border-slate-100/50 flex flex-col justify-center px-6 md:px-12 lg:px-16 py-12">
+          <div className="relative w-full min-h-[450px] lg:min-h-[550px] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] bg-gradient-to-br from-[#f8faff] to-blue-50 border border-slate-100/50 flex flex-col justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-10 md:py-12">
             
             {/* Background Image confined strictly to this banner */}
             <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-               <Image src="/home/hero-home.png" alt="Dehapa Hero" fill className="object-cover object-right opacity-90 filter hue-rotate-[5deg]" priority />
+               {/* 
+                  MOBILE IMAGE STRATEGY: 
+                  Generate a 9:16 vertical image. The main subject (doctor) must be positioned at the VERY BOTTOM.
+               */}
+               <Image src="/home/hero-home.png" alt="Dehapa Hero Desktop" fill className="object-cover object-right hidden md:block opacity-90 filter hue-rotate-[5deg]" priority />
+               <Image src="/home/hero-home.png" alt="Dehapa Hero Mobile" fill className="object-cover object-bottom md:hidden opacity-40 filter blur-[1px]" priority />
             </div>
 
             {/* Gradient Overlay just to ensure the text on the left is readable */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent z-0 pointer-events-none"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-white md:hidden z-0 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent z-0 pointer-events-none hidden md:block"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-transparent md:hidden z-0 pointer-events-none"></div>
 
             {/* CONTENT BOX (Left Aligned over the background inside the banner) */}
-            <div className="relative z-10 flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
+            <div className="relative z-10 flex flex-col items-center md:items-start text-center md:text-left max-w-2xl mt-4 md:mt-0">
               
-              <h1 className="text-4xl md:text-5xl lg:text-[64px] font-black text-slate-900 tracking-tight mb-4 leading-[1.1]">
+              <h1 className="text-4xl md:text-5xl lg:text-[64px] font-black text-slate-900 tracking-tight mb-3 md:mb-4 leading-[1.1]">
                 Connecting You to <br className="hidden md:block" />
                 <span className="text-[#0461be]">Better Health</span>
               </h1>
               
-              <p className="text-lg md:text-xl text-slate-700 mb-10 font-medium max-w-xl">
+              <p className="text-base md:text-lg lg:text-xl text-slate-700 mb-8 md:mb-10 font-medium max-w-xl">
                 Empower your health journey with Dehapa Hub. Find doctors, book hospitals, and order medicines instantly.
               </p>
 
-              {/* IT Hub Style "Power" Search Bar */}
-              <form onSubmit={handleSearch} className="w-full max-w-2xl relative shadow-[0_20px_40px_rgba(0,0,0,0.06)] rounded-xl bg-white border border-slate-200 focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-1.5 mb-8 group hover:shadow-[0_25px_50px_rgba(0,0,0,0.08)]">
-                <div className="flex items-center pl-3 md:pl-4 border-r border-slate-200 shrink-0">
-                  <Search className="w-5 h-5 text-slate-400 mr-1 md:mr-2 hidden sm:block" />
-                  <select className="bg-transparent border-none outline-none text-slate-700 font-bold text-sm md:text-base cursor-pointer pr-1 md:pr-2 appearance-none focus:ring-0">
+              {/* Refined Glassmorphism Search Bar */}
+              <form onSubmit={handleSearch} className="w-full max-w-2xl relative shadow-[0_8px_30px_rgba(0,0,0,0.12)] rounded-xl bg-white/90 backdrop-blur-xl border border-white focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-1.5 mb-6 md:mb-8 group hover:shadow-[0_15px_40px_rgba(0,0,0,0.15)]">
+                <div className="flex items-center pl-2 md:pl-4 border-r border-slate-200 shrink-0">
+                  <Search className="w-4 h-4 md:w-5 md:h-5 text-slate-400 mr-1 md:mr-2 hidden sm:block" />
+                  {/* Cleaned up select styling */}
+                  <select className="bg-transparent border-none outline-none text-slate-700 font-bold text-xs sm:text-sm md:text-base cursor-pointer pr-1 md:pr-2 appearance-none focus:ring-0">
                     <option value="all">Directory</option>
                     <option value="doctor">Doctors</option>
                     <option value="hospital">Hospitals</option>
@@ -163,32 +169,32 @@ export default function DehapaHome() {
                     <option value="pharmacy">Pharmacies</option>
                     <option value="ambulance">Ambulance</option>
                   </select>
-                  <svg className="w-4 h-4 text-slate-400 ml-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  <svg className="w-3 h-3 md:w-4 md:h-4 text-slate-400 ml-0.5 md:ml-1 mr-1 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
                 
                 <input 
                   type="text" 
                   placeholder="Search for services..." 
-                  className="flex-1 bg-transparent border-none outline-none text-slate-800 px-3 md:px-4 py-3 md:py-4 placeholder-slate-400 font-medium text-base md:text-lg min-w-0"
+                  className="flex-1 bg-transparent border-none outline-none text-slate-800 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 md:py-4 placeholder-slate-400 font-medium text-sm sm:text-base md:text-lg min-w-0"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 
-                <button type="submit" className="bg-[#f39c12] hover:bg-[#d68910] text-white font-bold text-sm md:text-base py-3 md:py-4 px-6 md:px-8 rounded-lg transition-colors mr-1 shadow-md hover:shadow-lg">
+                <button type="submit" className="bg-[#f39c12] hover:bg-[#d68910] text-white font-bold text-xs sm:text-sm md:text-base py-2.5 sm:py-3 md:py-4 px-4 sm:px-6 md:px-8 rounded-lg transition-colors mr-0.5 sm:mr-1 shadow-md hover:shadow-lg shadow-orange-500/20">
                   Search
                 </button>
               </form>
 
-              {/* Perfect Single-Row CTA Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-2xl">
-                <Link href="/join" className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base hover:-translate-y-0.5">
-                   <Stethoscope className="w-4 h-4" /> Join as Doctor
+              {/* Improved CTA Buttons with Inner Glow for 3D effect */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full max-w-2xl px-4 sm:px-0">
+                <Link href="/join" className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg px-3 sm:px-4 py-3 sm:py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_10px_rgba(0,0,0,0.2)] transition-all font-bold text-xs sm:text-sm md:text-base hover:-translate-y-0.5">
+                   <Stethoscope className="w-3 h-3 sm:w-4 sm:h-4" /> Join as Doctor
                 </Link>
-                <Link href="/join" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#c0392b] to-[#a93226] hover:from-[#a93226] hover:to-[#922b21] text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base hover:-translate-y-0.5">
-                   <Building2 className="w-4 h-4" /> List Hospital
+                <Link href="/join" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#c0392b] to-[#a93226] hover:from-[#a93226] hover:to-[#922b21] text-white rounded-lg px-3 sm:px-4 py-3 sm:py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_4px_10px_rgba(231,76,60,0.3)] transition-all font-bold text-xs sm:text-sm md:text-base hover:-translate-y-0.5">
+                   <Building2 className="w-3 h-3 sm:w-4 sm:h-4" /> List Hospital
                 </Link>
-                <Link href="/claim" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#d68910] to-[#b9770e] hover:from-[#b9770e] hover:to-[#9c640c] text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base hover:-translate-y-0.5">
-                   <ShieldCheck className="w-4 h-4" /> Claim Listing
+                <Link href="/claim" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#d68910] to-[#b9770e] hover:from-[#b9770e] hover:to-[#9c640c] text-white rounded-lg px-3 sm:px-4 py-3 sm:py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_4px_10px_rgba(243,156,18,0.3)] transition-all font-bold text-xs sm:text-sm md:text-base hover:-translate-y-0.5">
+                   <ShieldCheck className="w-3 h-3 sm:w-4 sm:h-4" /> Claim Listing
                 </Link>
               </div>
 
