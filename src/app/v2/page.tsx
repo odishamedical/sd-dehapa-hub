@@ -64,38 +64,58 @@ export default function V2GlassHomepage() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 w-full max-w-6xl">
               
               {/* Card 1: Doctors */}
-              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
-                <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">👨‍⚕️</div>
-                <h3 className="font-black text-xl text-slate-800 mb-1">Doctors</h3>
-                <p className="text-sm text-slate-600 font-medium">Find Specialists</p>
+              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
+                <div className="flex-1 flex items-center justify-center pt-4">
+                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">👨‍⚕️</div>
+                </div>
+                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
+                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Doctors</h3>
+                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Find Specialists</p>
+                </div>
               </div>
 
               {/* Card 2: Hospitals */}
-              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
-                <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">🏥</div>
-                <h3 className="font-black text-xl text-slate-800 mb-1">Hospitals</h3>
-                <p className="text-sm text-slate-600 font-medium">Nearby Clinics</p>
+              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
+                <div className="flex-1 flex items-center justify-center pt-4">
+                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">🏥</div>
+                </div>
+                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
+                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Hospitals</h3>
+                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Nearby Clinics</p>
+                </div>
               </div>
 
               {/* Card 3: Pharmacies */}
-              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
-                <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">💊</div>
-                <h3 className="font-black text-xl text-slate-800 mb-1">Pharmacies</h3>
-                <p className="text-sm text-slate-600 font-medium">Get Medicines</p>
+              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
+                <div className="flex-1 flex items-center justify-center pt-4">
+                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">💊</div>
+                </div>
+                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
+                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Pharmacies</h3>
+                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Get Medicines</p>
+                </div>
               </div>
 
               {/* Card 4: Lab Tests */}
-              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
-                <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">🔬</div>
-                <h3 className="font-black text-xl text-slate-800 mb-1">Lab Tests</h3>
-                <p className="text-sm text-slate-600 font-medium">Diagnostic Services</p>
+              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group min-h-[220px] relative overflow-hidden">
+                <div className="flex-1 flex items-center justify-center pt-4">
+                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">🔬</div>
+                </div>
+                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
+                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Lab Tests</h3>
+                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Diagnostic Services</p>
+                </div>
               </div>
 
               {/* Card 5: Ambulance */}
-              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group col-span-2 md:col-span-1 lg:col-span-1 min-h-[220px]">
-                <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">🚑</div>
-                <h3 className="font-black text-xl text-slate-800 mb-1">Ambulance</h3>
-                <p className="text-sm text-slate-600 font-medium">Emergency Help</p>
+              <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 flex flex-col items-center justify-between text-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),inset_-1px_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,100,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_2px_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,100,200,0.2)] transition-all cursor-pointer group col-span-2 md:col-span-1 lg:col-span-1 min-h-[220px] relative overflow-hidden">
+                <div className="flex-1 flex items-center justify-center pt-4">
+                   <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">🚑</div>
+                </div>
+                <div className="w-full bg-gradient-to-b from-transparent to-white/40 pt-3 pb-5 border-t border-white/30 rounded-b-3xl">
+                  <h3 className="font-black text-[22px] text-[#0a2540] mb-0.5 tracking-tight">Ambulance</h3>
+                  <p className="text-[13px] text-slate-600 font-medium tracking-wide">Emergency Help</p>
+                </div>
               </div>
               
             </div>
