@@ -122,22 +122,15 @@ export default function DehapaHome() {
     <main className="min-h-screen font-sans text-slate-900 overflow-x-hidden bg-white">
       
       {/* Search Hero Section */}
-      <section className="relative pt-28 lg:pt-40 pb-24 md:pb-32 lg:pb-48 z-20 flex justify-center bg-gradient-to-br from-[#f8faff] to-white overflow-hidden">
+      <section className="relative pt-28 lg:pt-40 pb-20 md:pb-28 lg:pb-36 z-20 flex justify-center bg-gradient-to-br from-[#f8faff] to-white overflow-hidden">
         
-        {/* Responsive Full-Background Images */}
-        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-          {/* Note: Using placeholders. User should generate 'hero-home-desktop.png' and 'hero-home-mobile.png' */}
-          <Image src="/home/hero-home.png" alt="Dehapa Hero Desktop" fill className="object-cover object-right hidden md:block opacity-90 filter hue-rotate-[5deg]" priority />
-          <Image src="/home/hero-home.png" alt="Dehapa Hero Mobile" fill className="object-cover object-bottom md:hidden opacity-70" priority />
-        </div>
-        
-        {/* Overlay gradient to ensure text readability against the background image */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-0 pointer-events-none"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-white md:hidden z-0 pointer-events-none"></div>
+        {/* Soft abstract background blobs instead of a hard image */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-50/50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-teal-50/40 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
 
-        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-10">
           
-          {/* CONTENT BOX (Left Aligned over the background) */}
+          {/* LEFT COLUMN: Content & Interactive Elements */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-2xl">
             
             <h1 className="text-4xl md:text-5xl lg:text-[64px] font-black text-slate-900 tracking-tight mb-4 leading-[1.1]">
@@ -150,10 +143,10 @@ export default function DehapaHome() {
             </p>
 
             {/* IT Hub Style "Power" Search Bar */}
-            <form onSubmit={handleSearch} className="w-full max-w-2xl relative shadow-[0_20px_40px_rgba(0,0,0,0.06)] rounded-xl bg-white border border-slate-200 focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-1.5 mb-8 group">
+            <form onSubmit={handleSearch} className="w-full max-w-2xl relative shadow-[0_20px_40px_rgba(0,0,0,0.06)] rounded-xl bg-white border border-slate-200 focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-1.5 mb-8 group hover:shadow-[0_25px_50px_rgba(0,0,0,0.08)]">
               <div className="flex items-center pl-3 md:pl-4 border-r border-slate-200 shrink-0">
                 <Search className="w-5 h-5 text-slate-400 mr-1 md:mr-2 hidden sm:block" />
-                <select className="bg-transparent border-none outline-none text-slate-700 font-bold text-sm md:text-base cursor-pointer pr-1 md:pr-2 appearance-none">
+                <select className="bg-transparent border-none outline-none text-slate-700 font-bold text-sm md:text-base cursor-pointer pr-1 md:pr-2 appearance-none focus:ring-0">
                   <option value="all">Directory</option>
                   <option value="doctor">Doctors</option>
                   <option value="hospital">Hospitals</option>
@@ -173,25 +166,42 @@ export default function DehapaHome() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               
-              <button type="submit" className="bg-[#f39c12] hover:bg-[#d68910] text-white font-bold text-sm md:text-base py-3 md:py-4 px-6 md:px-8 rounded-lg transition-colors mr-1 shadow-md">
+              <button type="submit" className="bg-[#f39c12] hover:bg-[#d68910] text-white font-bold text-sm md:text-base py-3 md:py-4 px-6 md:px-8 rounded-lg transition-colors mr-1 shadow-md hover:shadow-lg">
                 Search
               </button>
             </form>
 
             {/* Perfect Single-Row CTA Buttons */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-2xl">
-              <Link href="/join" className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base">
+              <Link href="/join" className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base hover:-translate-y-0.5">
                  <Stethoscope className="w-4 h-4" /> Join as Doctor
               </Link>
-              <Link href="/join" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#c0392b] to-[#a93226] hover:from-[#a93226] hover:to-[#922b21] text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base">
+              <Link href="/join" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#c0392b] to-[#a93226] hover:from-[#a93226] hover:to-[#922b21] text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base hover:-translate-y-0.5">
                  <Building2 className="w-4 h-4" /> List Hospital
               </Link>
-              <Link href="/claim" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#d68910] to-[#b9770e] hover:from-[#b9770e] hover:to-[#9c640c] text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base">
+              <Link href="/claim" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#d68910] to-[#b9770e] hover:from-[#b9770e] hover:to-[#9c640c] text-white rounded-lg px-4 py-4 shadow-lg transition-all font-bold text-sm md:text-base hover:-translate-y-0.5">
                  <ShieldCheck className="w-4 h-4" /> Claim Listing
               </Link>
             </div>
 
           </div>
+
+          {/* RIGHT COLUMN: Contained Hero Image (IT Hub Style) */}
+          <div className="relative order-1 lg:order-2 w-full flex items-center justify-center lg:justify-end">
+            <div className="relative w-full max-w-[650px] aspect-[4/3] rounded-[2rem] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.12)] border border-white/50 bg-white">
+               {/* Note: User should generate a realistic photo or high-quality illustration specifically designed for this 4:3 box */}
+               <Image 
+                 src="/home/hero-home.png" 
+                 alt="Dehapa Health Network" 
+                 fill 
+                 className="object-cover hover:scale-105 transition-transform duration-700" 
+                 priority 
+               />
+               {/* Premium inner shadow ring */}
+               <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_0_20px_rgba(0,0,0,0.05)] pointer-events-none border border-black/5"></div>
+            </div>
+          </div>
+
         </div>
       </section>
 
