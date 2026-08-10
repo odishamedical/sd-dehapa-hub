@@ -29,6 +29,8 @@ const SEO_PHRASES = [
 export default function DehapaHome() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchCategory, setSearchCategory] = useState('Directory');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const [isPinging, setIsPinging] = useState(false);
   const [ambulanceETA, setAmbulanceETA] = useState<string | null>(null);
@@ -158,18 +160,42 @@ export default function DehapaHome() {
 
               {/* Refined Glassmorphism Search Bar */}
               <form onSubmit={handleSearch} className="w-full max-w-2xl relative shadow-[0_8px_30px_rgba(0,0,0,0.12)] rounded-xl bg-white/90 backdrop-blur-xl border border-white focus-within:ring-4 focus-within:ring-blue-400/20 transition-all flex items-center p-1.5 mb-6 md:mb-8 group hover:shadow-[0_15px_40px_rgba(0,0,0,0.15)]">
-                <div className="flex items-center pl-2 md:pl-4 border-r border-slate-200 shrink-0">
+                <div className="flex items-center pl-2 md:pl-4 border-r border-slate-200 shrink-0 relative">
                   <Search className="w-4 h-4 md:w-5 md:h-5 text-slate-400 mr-1 md:mr-2 hidden sm:block" />
-                  {/* Cleaned up select styling */}
-                  <select className="bg-transparent border-none outline-none text-slate-700 font-bold text-xs sm:text-sm md:text-base cursor-pointer pr-1 md:pr-2 appearance-none focus:ring-0">
-                    <option value="all">Directory</option>
-                    <option value="doctor">Doctors</option>
-                    <option value="hospital">Hospitals</option>
-                    <option value="lab">Labs</option>
-                    <option value="pharmacy">Pharmacies</option>
-                    <option value="ambulance">Ambulance</option>
-                  </select>
-                  <svg className="w-3 h-3 md:w-4 md:h-4 text-slate-400 ml-0.5 md:ml-1 mr-1 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  
+                  {/* Custom React Dropdown */}
+                  <div 
+                    className="flex items-center cursor-pointer group/dropdown"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    <span className="text-slate-700 font-bold text-xs sm:text-sm md:text-base pr-1 md:pr-2 select-none">
+                      {searchCategory}
+                    </span>
+                    <svg className={`w-3 h-3 md:w-4 md:h-4 text-slate-400 ml-0.5 md:ml-1 mr-1 md:mr-2 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
+
+                  {/* Dropdown Menu - Custom UI */}
+                  {isDropdownOpen && (
+                    <>
+                      {/* Invisible backdrop to close dropdown when clicking outside */}
+                      <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
+                      
+                      <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 backdrop-blur-xl border border-white/50 rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.12)] z-50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                        {['Directory', 'Doctors', 'Hospitals', 'Labs', 'Pharmacies', 'Ambulance'].map((cat) => (
+                          <div 
+                            key={cat}
+                            className={`px-4 py-2.5 text-sm md:text-base font-medium cursor-pointer transition-colors ${searchCategory === cat ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                            onClick={() => {
+                              setSearchCategory(cat);
+                              setIsDropdownOpen(false);
+                            }}
+                          >
+                            {cat}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
                 
                 <input 
