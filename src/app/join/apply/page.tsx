@@ -249,9 +249,16 @@ function ApplyContent() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
-        <div className="flex-1 flex items-center justify-center p-6 py-12">
-          <div className="bg-white/80 backdrop-blur-2xl border border-white p-8 sm:p-10 rounded-[32px] shadow-[0_20px_50px_rgba(0,30,80,0.1)] max-w-2xl w-full text-center">
+      <div className="min-h-screen bg-[#f8fafc] flex flex-col relative overflow-hidden">
+        {/* Dynamic Abstract Background for Glassmorphism */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-gradient-to-br from-blue-400/30 to-indigo-500/20 rounded-full blur-[100px] animate-pulse-slow mix-blend-multiply"></div>
+          <div className="absolute bottom-[-10%] left-[-10%] w-[800px] h-[800px] bg-gradient-to-tr from-teal-400/30 to-emerald-300/20 rounded-full blur-[120px] mix-blend-multiply"></div>
+        </div>
+
+        <div className="flex-1 flex items-center justify-center p-6 py-12 relative z-10">
+          <div className="bg-white/60 backdrop-blur-3xl border-2 border-white rounded-[2.5rem] p-8 sm:p-12 shadow-[0_30px_60px_-15px_rgba(0,30,80,0.15)] ring-1 ring-black/5 max-w-2xl w-full text-center overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
             <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-200">
               <CheckCircle2 className="w-10 h-10 text-emerald-600" />
             </div>
@@ -268,9 +275,15 @@ function ApplyContent() {
 
   if (authChecked && !auth.currentUser) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
-        <div className="flex-1 flex items-center justify-center p-6">
-          <div className="bg-white/80 backdrop-blur-2xl border border-white p-8 sm:p-10 rounded-[32px] max-w-lg w-full text-center shadow-lg">
+      <div className="min-h-screen bg-[#f8fafc] flex flex-col relative overflow-hidden">
+        {/* Dynamic Abstract Background for Glassmorphism */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-gradient-to-br from-blue-400/30 to-indigo-500/20 rounded-full blur-[100px] mix-blend-multiply"></div>
+          <div className="absolute bottom-[-10%] left-[-10%] w-[800px] h-[800px] bg-gradient-to-tr from-teal-400/30 to-emerald-300/20 rounded-full blur-[120px] mix-blend-multiply"></div>
+        </div>
+
+        <div className="flex-1 flex items-center justify-center p-6 relative z-10">
+          <div className="bg-white/60 backdrop-blur-3xl border-2 border-white rounded-[2.5rem] p-8 sm:p-12 max-w-lg w-full text-center shadow-[0_30px_60px_-15px_rgba(0,30,80,0.15)] ring-1 ring-black/5">
             <h2 className="text-2xl font-black text-[#0a2540] mb-4">Authentication Required</h2>
             <p className="text-slate-600 mb-8 font-medium">You must be logged in to Dehapa to submit a verified provider application.</p>
             <Link href="/login?redirect=/join/apply" className="inline-flex justify-center items-center bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition-all">
@@ -283,14 +296,17 @@ function ApplyContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-blue-500/30 font-sans">
-      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 py-12 relative overflow-hidden">
-        
-        {/* V2 Premium Background Shapes */}
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-blue-200/50 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-cyan-100/50 rounded-full blur-[120px] pointer-events-none"></div>
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col selection:bg-blue-500/30 font-sans relative overflow-hidden">
+      
+      {/* V2 Premium Background Shapes (Deeply saturated for glass refraction) */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-15%] right-[-10%] w-[800px] h-[800px] bg-gradient-to-bl from-blue-500/20 to-indigo-400/20 rounded-full blur-[120px] mix-blend-multiply"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[900px] h-[900px] bg-gradient-to-tr from-teal-400/20 to-cyan-300/20 rounded-full blur-[140px] mix-blend-multiply"></div>
+      </div>
 
-        <div className="w-full max-w-3xl relative z-10">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 py-12 relative z-10">
+        
+        <div className="w-full max-w-3xl">
           {/* Progress Header */}
           <div className="flex items-center justify-between mb-8 px-4">
             {[
@@ -313,10 +329,12 @@ function ApplyContent() {
             ))}
           </div>
 
-          <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[32px] p-6 sm:p-10 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)]">
-            <div className="text-center mb-10">
-              <h1 className="text-3xl font-black text-[#0a2540] mb-2 capitalize">Join as {role}</h1>
-              <p className="text-slate-500 font-medium">Complete your V2 Premium Profile setup.</p>
+          <div className="bg-white/60 backdrop-blur-3xl border-2 border-white rounded-[2.5rem] p-8 sm:p-12 shadow-[0_30px_60px_-15px_rgba(0,30,80,0.15)] ring-1 ring-black/5 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-teal-400 to-cyan-500 opacity-50"></div>
+            
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-black text-[#0a2540] mb-3 capitalize tracking-tight">Join as {role}</h1>
+              <p className="text-slate-500 font-medium text-lg">Complete your V2 Premium Profile setup.</p>
             </div>
 
             {error && (
@@ -332,18 +350,18 @@ function ApplyContent() {
               {step === 1 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Phone Number *</label>
-                    <input type="tel" required value={phone} onChange={handlePhoneChange} className="w-full bg-white/60 border border-white/80 rounded-xl px-4 py-4 text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium placeholder:text-slate-400 shadow-sm" placeholder="+91 XXXXX XXXXX" />
+                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 ml-1">Phone Number *</label>
+                    <input type="tel" required value={phone} onChange={handlePhoneChange} className="w-full bg-white/70 backdrop-blur-md border-2 border-white/80 rounded-2xl px-5 py-4 text-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-bold placeholder:text-slate-400 shadow-sm" placeholder="+91 XXXXX XXXXX" />
                   </div>
                   <div>
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex justify-between items-center mb-2 px-1">
                       <label className="block text-xs font-bold uppercase tracking-widest text-slate-500">WhatsApp Number *</label>
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
-                        <input type="checkbox" checked={sameAsPhone} onChange={handleSameAsPhoneChange} className="rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors bg-white/50 px-3 py-1 rounded-full border border-white">
+                        <input type="checkbox" checked={sameAsPhone} onChange={handleSameAsPhoneChange} className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" />
                         Same as Phone
                       </label>
                     </div>
-                    <input type="tel" required value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} disabled={sameAsPhone} className="w-full bg-white/60 border border-white/80 rounded-xl px-4 py-4 text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium placeholder:text-slate-400 shadow-sm disabled:opacity-60" placeholder="+91 XXXXX XXXXX" />
+                    <input type="tel" required value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} disabled={sameAsPhone} className="w-full bg-white/70 backdrop-blur-md border-2 border-white/80 rounded-2xl px-5 py-4 text-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-bold placeholder:text-slate-400 shadow-sm disabled:opacity-60 disabled:bg-slate-50" placeholder="+91 XXXXX XXXXX" />
                   </div>
                   <div className="pt-6 border-t border-slate-200/50 mt-8">
                     <button type="button" onClick={handleNextStep} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(37,99,235,0.3)]">
