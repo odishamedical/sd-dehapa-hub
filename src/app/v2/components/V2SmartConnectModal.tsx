@@ -14,12 +14,28 @@ export default function V2SmartConnectModal({ isOpen, onClose, entityType, entit
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
 
+  // Form State
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+  // Mocked Slots (In reality, fetch these based on selectedDate and entityId)
+  const mockSlots = [
+    { time: '09:00 AM', isBooked: true },
+    { time: '10:00 AM', isBooked: false },
+    { time: '11:30 AM', isBooked: false },
+    { time: '02:00 PM', isBooked: true },
+    { time: '04:00 PM', isBooked: false },
+    { time: '06:30 PM', isBooked: false },
+  ];
+
   if (!isOpen) return null;
 
   // Reset state when closing
   const handleClose = () => {
     setStep(1);
     setSelectedAction(null);
+    setSelectedDate('');
+    setSelectedTime(null);
     onClose();
   };
 
@@ -104,9 +120,49 @@ export default function V2SmartConnectModal({ isOpen, onClose, entityType, entit
       </div>
 
       {selectedAction !== 'instant_video' && (
-         <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Preferred Date</label>
-            <input type="date" className="w-full bg-white/60 border border-white/80 rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400 font-medium text-slate-700" />
+         <div className="bg-white/40 border border-white/60 rounded-xl p-4">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Select Date & Time</label>
+            
+            {/* Date Input */}
+            <input 
+              type="date" 
+              value={selectedDate}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setSelectedTime(null); // Reset time when date changes
+              }}
+              className="w-full bg-white/80 border border-white rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-700 mb-4" 
+            />
+
+            {/* Time Slots (Only show if a date is picked) */}
+            {selectedDate ? (
+              <div>
+                <span className="block text-xs font-bold text-slate-500 mb-2">Available Slots</span>
+                <div className="grid grid-cols-3 gap-2">
+                  {mockSlots.map((slot, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      disabled={slot.isBooked}
+                      onClick={() => setSelectedTime(slot.time)}
+                      className={`py-2 px-1 rounded-lg text-xs font-bold border transition-all ${
+                        slot.isBooked 
+                          ? 'bg-slate-200/50 border-slate-300 text-slate-400 cursor-not-allowed line-through' 
+                          : selectedTime === slot.time
+                            ? 'bg-blue-600 border-blue-600 text-white shadow-[0_4px_10px_rgba(37,99,235,0.3)]'
+                            : 'bg-white border-white hover:border-blue-300 text-slate-700 shadow-sm'
+                      }`}
+                    >
+                      {slot.time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-4 bg-slate-50/50 rounded-lg border border-slate-200 border-dashed">
+                 <p className="text-xs font-bold text-slate-400">Please select a date to view available slots.</p>
+              </div>
+            )}
          </div>
       )}
 
@@ -122,9 +178,16 @@ export default function V2SmartConnectModal({ isOpen, onClose, entityType, entit
          </button>
       </div>
 
-      <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition-colors mt-2 flex items-center justify-center gap-2">
+      <button 
+        type="submit" 
+        disabled={selectedAction !== 'instant_video' && (!selectedDate || !selectedTime)}
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] transition-all mt-2 flex items-center justify-center gap-2"
+      >
         <Send className="w-5 h-5" />
-        Confirm & Request
+        {selectedAction !== 'instant_video' && (!selectedDate || !selectedTime) 
+          ? 'Select a Slot to Continue' 
+          : 'Confirm & Request'
+        }
       </button>
 
       <button type="button" onClick={() => setStep(1)} className="w-full text-slate-500 hover:text-slate-800 font-bold text-sm py-2">
