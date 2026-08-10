@@ -27,7 +27,7 @@ export default function V2Header() {
 
   return (
     <header 
-      className={`fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200 h-20 flex items-center px-8 shadow-sm transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
+      className={`fixed top-0 w-full z-50 bg-white/30 backdrop-blur-xl border-b border-white/40 h-20 flex items-center px-8 shadow-[0_4px_30px_rgba(0,0,0,0.05)] transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
     >
       <Link href="/v2" className="font-black text-2xl tracking-tight text-slate-900">
         dehapa<span className="text-blue-600">.v2</span>
