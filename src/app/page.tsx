@@ -351,55 +351,80 @@ export default function DehapaHome() {
           </section>
         )}
 
-        {/* B2B PROVIDER CARDS */}
-        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-32 mb-10">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* B2B PROVIDER CARDS (Elite Onboarding Experience) */}
+        <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full mt-32 mb-20 relative">
+          
+          <div className="text-center mb-16 relative">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tight">
+              Grow Your Practice with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 font-serif italic font-normal">dehapa</span>
+            </h2>
+            <p className="text-slate-500 font-medium text-lg mt-4 max-w-2xl mx-auto">Join thousands of top-tier healthcare providers delivering better care.</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
             
             {/* Doctor Card */}
-            <div className="bg-gradient-to-br from-[#eef7ff] to-white border-0 rounded-[2rem] overflow-hidden flex flex-col sm:flex-row shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all">
-               <div className="w-full sm:w-[45%] h-56 sm:h-auto relative overflow-hidden">
-                  {/* Pull image down slightly to bleed off edges */}
-                  <div className="absolute inset-x-0 bottom-[-10%] h-[120%]">
-                    <Image src="/home/provider-doctor-.png" alt="For Doctors" fill className="object-cover object-bottom" />
+            <div className="group relative bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden flex flex-col sm:flex-row lg:flex-col shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_30px_60px_rgba(9,125,235,0.12)] transition-all duration-500 hover:-translate-y-2">
+               <div className="absolute inset-0 bg-gradient-to-br from-[#eef7ff] via-white to-white opacity-100 group-hover:opacity-0 transition-opacity duration-500"></div>
+               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-blue-100/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+               
+               <div className="w-full sm:w-[45%] lg:w-full h-64 sm:h-auto lg:h-72 relative overflow-hidden flex items-end justify-center z-10 p-6">
+                  <div className="relative w-full h-[110%] group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
+                    <Image src="/home/provider-doctor-.png" alt="For Doctors" fill className="object-contain object-bottom drop-shadow-xl" />
                   </div>
                </div>
-               <div className="w-full sm:w-[55%] p-6 md:p-10 flex flex-col justify-center">
-                  <h3 className="text-xl md:text-3xl font-black text-slate-800 mb-3">For Doctors</h3>
-                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed">Register your practice and connect with more patients.</p>
-                  <Link href="/join" className="bg-gradient-to-r from-[#097deb] to-[#0461be] text-white font-bold py-3 px-8 rounded-full w-fit shadow-[0_10px_20px_rgba(9,125,235,0.3)] hover:shadow-[0_15px_30px_rgba(9,125,235,0.4)] transition-all text-sm uppercase tracking-wider">
-                    Get Started
+               
+               <div className="w-full sm:w-[55%] lg:w-full p-8 lg:p-10 flex flex-col justify-center relative z-10 bg-white/50 backdrop-blur-sm lg:bg-transparent">
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">For Doctors</h3>
+                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed font-medium">Elevate your practice, manage appointments, and connect seamlessly with patients.</p>
+                  
+                  <Link href="/join" className="relative overflow-hidden bg-white text-blue-600 font-bold py-3 px-8 rounded-full w-fit shadow-md border border-blue-100 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-blue-500 group-hover:text-white group-hover:shadow-[0_10px_20px_rgba(9,125,235,0.3)] transition-all duration-300 flex items-center gap-2">
+                    <span>Get Started</span>
+                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                   </Link>
                </div>
             </div>
 
             {/* Hospital Card */}
-            <div className="bg-gradient-to-br from-[#fff4e5] to-white border-0 rounded-[2rem] overflow-hidden flex flex-col sm:flex-row shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all">
-               <div className="w-full sm:w-[45%] h-56 sm:h-auto relative overflow-hidden">
-                  <div className="absolute inset-x-0 bottom-[-10%] h-[120%]">
-                    <Image src="/home/provider-hospital.png" alt="For Hospitals" fill className="object-cover object-bottom" />
+            <div className="group relative bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden flex flex-col sm:flex-row lg:flex-col shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_30px_60px_rgba(4,97,190,0.12)] transition-all duration-500 hover:-translate-y-2 lg:-mt-8">
+               <div className="absolute inset-0 bg-gradient-to-br from-[#fff4e5] via-white to-white opacity-100 group-hover:opacity-0 transition-opacity duration-500"></div>
+               <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-indigo-100/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+               
+               <div className="w-full sm:w-[45%] lg:w-full h-64 sm:h-auto lg:h-72 relative overflow-hidden flex items-end justify-center z-10 p-6">
+                  <div className="relative w-full h-[110%] group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
+                    <Image src="/home/provider-hospital.png" alt="For Hospitals" fill className="object-contain object-bottom drop-shadow-xl" />
                   </div>
                </div>
-               <div className="w-full sm:w-[55%] p-6 md:p-10 flex flex-col justify-center">
-                  <h3 className="text-xl md:text-3xl font-black text-slate-800 mb-3">For Hospitals</h3>
-                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed">List your hospital and manage your profile easily.</p>
-                  <Link href="/join" className="bg-gradient-to-r from-[#0461be] to-[#034d98] text-white font-bold py-3 px-8 rounded-full w-fit shadow-[0_10px_20px_rgba(4,97,190,0.3)] hover:shadow-[0_15px_30px_rgba(4,97,190,0.4)] transition-all text-sm uppercase tracking-wider">
-                    Learn More
+               
+               <div className="w-full sm:w-[55%] lg:w-full p-8 lg:p-10 flex flex-col justify-center relative z-10 bg-white/50 backdrop-blur-sm lg:bg-transparent">
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors">For Hospitals</h3>
+                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed font-medium">List your facilities, manage departments, and streamline patient onboarding.</p>
+                  
+                  <Link href="/join" className="relative overflow-hidden bg-white text-indigo-600 font-bold py-3 px-8 rounded-full w-fit shadow-md border border-indigo-100 group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-indigo-500 group-hover:text-white group-hover:shadow-[0_10px_20px_rgba(79,70,229,0.3)] transition-all duration-300 flex items-center gap-2">
+                    <span>Learn More</span>
+                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                   </Link>
                </div>
             </div>
 
             {/* Already Listed Card */}
-            <div className="bg-gradient-to-br from-[#fff7dd] to-white border-0 rounded-[2rem] overflow-hidden flex flex-col sm:flex-row shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-all">
-               <div className="w-full sm:w-[45%] h-56 sm:h-auto relative overflow-hidden">
-                  <div className="absolute inset-x-0 bottom-[-10%] h-[120%]">
-                    <Image src="/home/provider-alredylisted.png" alt="Already Listed" fill className="object-cover object-bottom" />
+            <div className="group relative bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden flex flex-col sm:flex-row lg:flex-col shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_30px_60px_rgba(243,156,18,0.12)] transition-all duration-500 hover:-translate-y-2">
+               <div className="absolute inset-0 bg-gradient-to-br from-[#fff7dd] via-white to-white opacity-100 group-hover:opacity-0 transition-opacity duration-500"></div>
+               <div className="absolute inset-0 bg-gradient-to-br from-orange-50/80 via-orange-100/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+               
+               <div className="w-full sm:w-[45%] lg:w-full h-64 sm:h-auto lg:h-72 relative overflow-hidden flex items-end justify-center z-10 p-6">
+                  <div className="relative w-full h-[110%] group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
+                    <Image src="/home/provider-alredylisted.png" alt="Already Listed" fill className="object-contain object-bottom drop-shadow-xl" />
                   </div>
                </div>
-               <div className="w-full sm:w-[55%] p-6 md:p-10 flex flex-col justify-center">
-                  <h3 className="text-xl md:text-3xl font-black text-slate-800 mb-3">Already Listed?</h3>
-                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed">Claim your existing profile and update your details.</p>
-                  <Link href="/claim" className="bg-gradient-to-r from-[#f39c12] to-[#d68910] text-white font-bold py-3 px-8 rounded-full w-fit shadow-[0_10px_20px_rgba(243,156,18,0.3)] hover:shadow-[0_15px_30px_rgba(243,156,18,0.4)] transition-all text-sm uppercase tracking-wider">
-                    Claim Now
+               
+               <div className="w-full sm:w-[55%] lg:w-full p-8 lg:p-10 flex flex-col justify-center relative z-10 bg-white/50 backdrop-blur-sm lg:bg-transparent">
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-800 mb-3 group-hover:text-orange-500 transition-colors">Already Listed?</h3>
+                  <p className="text-slate-600 text-sm md:text-base mb-8 leading-relaxed font-medium">Claim your existing profile, update your details, and take control of your reputation.</p>
+                  
+                  <Link href="/claim" className="relative overflow-hidden bg-white text-orange-500 font-bold py-3 px-8 rounded-full w-fit shadow-md border border-orange-100 group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-orange-400 group-hover:text-white group-hover:shadow-[0_10px_20px_rgba(243,156,18,0.3)] transition-all duration-300 flex items-center gap-2">
+                    <span>Claim Now</span>
+                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                   </Link>
                </div>
             </div>
