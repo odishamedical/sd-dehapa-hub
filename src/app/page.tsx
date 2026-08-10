@@ -127,7 +127,7 @@ export default function DehapaHome() {
         {/* Constrained Background Image Container */}
         <div className="absolute inset-0 w-full flex justify-center z-0 pointer-events-none">
           <div className="relative w-full max-w-[1400px] h-full">
-            <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-cover md:object-contain object-bottom opacity-90" priority />
+            <Image src="/home/hero-home.png" alt="Dehapa Hero Background" fill className="object-contain object-top md:object-bottom opacity-90" priority />
           </div>
         </div>
         
@@ -176,8 +176,8 @@ export default function DehapaHome() {
             </button>
           </div>
 
-          {/* Floating CTAs - Relative positioning with transform to overlap correctly on all devices */}
-          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full max-w-5xl z-20 relative translate-y-12 md:translate-y-24 lg:translate-y-32 px-4 mt-6 md:mt-0">
+          {/* Floating CTAs - Negative margin to overlap the next section safely without clipping */}
+          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 w-full max-w-5xl z-20 relative -mb-28 md:-mb-32 lg:-mb-40 px-4 mt-6 md:mt-0">
             <Link href="/join" className="flex-1 bg-gradient-to-r from-[#e74c3c] to-[#c0392b] hover:from-[#c0392b] hover:to-[#a93226] text-white rounded-[2rem] p-4 md:p-6 flex items-center justify-center gap-4 shadow-[0_20px_40px_rgba(231,76,60,0.3)] hover:shadow-[0_25px_50px_rgba(231,76,60,0.4)] hover:-translate-y-1 transition-all group">
                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0"><Stethoscope className="w-4 h-4 md:w-5 md:h-5 text-white" /></div>
                <span className="font-bold text-base md:text-2xl">Join as Doctor</span>
@@ -195,19 +195,19 @@ export default function DehapaHome() {
         </div>
       </section>
 
-      <div className="relative z-10 pb-20 bg-white pt-24 md:pt-36 lg:pt-48">
+      <div className="relative z-10 pb-20 bg-white pt-32 md:pt-40 lg:pt-48">
 
         {/* DIRECTORY CATEGORIES */}
         <section className="px-4 sm:px-8 lg:px-16 max-w-[1400px] mx-auto w-full">
           
           {/* Tabs */}
-          <div className="flex items-center justify-center md:justify-start gap-4 md:gap-8 border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
-            <button className="relative pb-4 text-white bg-[#0461be] font-bold text-lg whitespace-nowrap px-8 py-3 rounded-t-2xl">
+          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 sm:gap-4 md:gap-8 border-b-0 sm:border-b border-slate-200 mb-8 w-full">
+            <button className="relative text-white bg-[#0461be] font-bold text-base sm:text-lg w-full sm:w-auto px-6 py-4 sm:py-3 rounded-full sm:rounded-t-2xl sm:rounded-b-none sm:pb-4 transition-all">
               Browse Directory
-              {/* Little down arrow for the active tab */}
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#0461be] rotate-45"></div>
+              {/* Little down arrow for the active tab (desktop only) */}
+              <div className="hidden sm:block absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#0461be] rotate-45"></div>
             </button>
-            <button className="pb-4 text-slate-500 hover:text-slate-700 font-bold text-lg whitespace-nowrap px-4 py-3">
+            <button className="text-slate-600 bg-slate-100 hover:bg-slate-200 sm:bg-transparent sm:hover:bg-transparent sm:text-slate-500 sm:hover:text-slate-700 font-bold text-base sm:text-lg w-full sm:w-auto px-6 py-4 sm:py-3 rounded-full sm:rounded-none sm:pb-4 transition-all">
               Book Health Services
             </button>
           </div>
