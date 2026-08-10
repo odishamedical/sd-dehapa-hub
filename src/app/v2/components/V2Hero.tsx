@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Search, MapPin, Stethoscope, Building2, CheckCircle } from "lucide-react";
+import React, { useState } from "react";
+import { Search, MapPin, Stethoscope, Building2, CheckCircle, ChevronDown, Activity } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -15,6 +15,15 @@ interface V2HeroProps {
   mobileBgImage?: string;
 }
 
+const CATEGORIES = [
+  { id: 'all', label: 'All Services', icon: Activity },
+  { id: 'doctor', label: 'Doctor', icon: Stethoscope },
+  { id: 'hospital', label: 'Hospital', icon: Building2 },
+  { id: 'lab', label: 'Lab', icon: Activity },
+  { id: 'pharmacy', label: 'Pharmacy', icon: Activity },
+  { id: 'ambulance', label: 'Ambulance', icon: Activity },
+];
+
 export default function V2Hero({ 
   titleStart, 
   highlight, 
@@ -24,6 +33,9 @@ export default function V2Hero({
   desktopBgImage = "/v2/v2-heropc.png",
   mobileBgImage = "/v2/hero-mobile.png"
 }: V2HeroProps) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
+
   return (
     <section className="relative z-10 w-full px-4 md:px-8 pt-8 pb-12 flex justify-center">
       
@@ -69,10 +81,44 @@ export default function V2Hero({
 
           {/* Search Bar */}
           {showSearch && (
-            <div className="w-full max-w-4xl bg-white/70 backdrop-blur-3xl border-t-[2px] border-l-[2px] border-white border-r border-b border-white/50 shadow-[inset_0_2px_10px_rgba(255,255,255,0.8),0_15px_40px_rgba(0,100,200,0.1)] rounded-3xl md:rounded-full p-2 md:p-3 flex flex-col md:flex-row items-center gap-2 transition-all hover:bg-white/90 mb-8 md:mb-10">
+            <div className="w-full max-w-5xl bg-white/70 backdrop-blur-3xl border-t-[2px] border-l-[2px] border-white border-r border-b border-white/50 shadow-[inset_0_2px_10px_rgba(255,255,255,0.8),0_15px_40px_rgba(0,100,200,0.1)] rounded-3xl md:rounded-full p-2 md:p-3 flex flex-col md:flex-row items-center gap-2 transition-all hover:bg-white/90 mb-8 md:mb-10 relative">
               
+              {/* Category Dropdown (Glassmorphism) */}
+              <div className="relative w-full md:w-auto md:min-w-[180px] border-b md:border-b-0 md:border-r border-slate-300">
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="w-full flex items-center justify-between px-4 md:px-6 py-3 text-slate-800 font-bold text-lg outline-none"
+                >
+                  <span className="flex items-center gap-2 text-blue-600">
+                    <selectedCategory.icon className="w-5 h-5" />
+                    <span className="text-slate-800">{selectedCategory.label}</span>
+                  </span>
+                  <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Glassmorphism Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute top-[120%] left-0 w-full min-w-[200px] bg-white/70 backdrop-blur-2xl border border-white/50 shadow-2xl rounded-2xl overflow-hidden z-50 py-2">
+                    {CATEGORIES.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          setSelectedCategory(cat);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-6 py-3 text-left font-bold transition-all hover:bg-white/80 ${selectedCategory.id === cat.id ? 'text-blue-600 bg-blue-50/50' : 'text-slate-700'}`}
+                      >
+                        <cat.icon className={`w-5 h-5 ${selectedCategory.id === cat.id ? 'text-blue-600' : 'text-slate-400'}`} />
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Search Query Input */}
               <div className="flex items-center w-full md:flex-1 px-4 md:px-6 py-3 border-b md:border-b-0 md:border-r border-slate-300">
-                <Search className="w-6 h-6 text-blue-600 mr-3 md:mr-4" />
+                <Search className="w-6 h-6 text-slate-400 mr-3 md:mr-4 hidden md:block" />
                 <input 
                   type="text" 
                   placeholder="Search doctors, clinics..." 
@@ -80,8 +126,9 @@ export default function V2Hero({
                 />
               </div>
 
+              {/* Location Input */}
               <div className="flex items-center w-full md:flex-1 px-4 md:px-6 py-3">
-                <MapPin className="w-6 h-6 text-blue-600 mr-3 md:mr-4" />
+                <MapPin className="w-6 h-6 text-slate-400 mr-3 md:mr-4" />
                 <input 
                   type="text" 
                   placeholder="Enter location" 
@@ -89,7 +136,8 @@ export default function V2Hero({
                 />
               </div>
 
-              <Link href="/v2/search" className="w-full md:w-auto">
+              {/* Search Button */}
+              <Link href={`/v2/search?category=${selectedCategory.id}`} className="w-full md:w-auto">
                 <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-10 rounded-2xl md:rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_4px_10px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center text-xl hover:scale-105">
                   Search
                 </button>
