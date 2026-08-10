@@ -100,7 +100,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
           <div className="lg:col-span-8 flex flex-col gap-8">
             
             {/* HERO CARD & 5-IMAGE BENTO */}
-            <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[2.5rem] p-6 sm:p-8 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] relative overflow-hidden group">
+            <div className="bg-white/20 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-6 sm:p-8 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_1px_1px_1px_rgba(255,255,255,0.8)] relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-white/40 to-transparent pointer-events-none"></div>
 
                <div className="flex flex-col sm:flex-row gap-8 items-start relative z-10 mb-8">
@@ -141,11 +141,11 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                </div>
 
                {/* 5-Image Glassmorphism Bento Gallery */}
-               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 rounded-3xl overflow-hidden border-2 border-white/80 shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] w-full relative z-10 bg-slate-100/50">
+               <div className="grid grid-cols-4 grid-rows-2 gap-2 h-64 sm:h-80 md:h-96 rounded-3xl overflow-hidden border-2 border-white/80 shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] w-full relative z-10 bg-white/30">
                  {Array.from({ length: 5 }).map((_, i) => {
                    const img = allImgs[i] || `https://placehold.co/600x400/e2e8f0/64748b.png?text=Photo+${i+1}`;
                    return (
-                     <div key={i} className={`relative bg-slate-200 overflow-hidden group/img ${i === 0 ? 'col-span-2 row-span-2 aspect-square sm:aspect-video' : 'col-span-1 row-span-1 aspect-square'}`}>
+                     <div key={i} className={`relative bg-white/50 overflow-hidden group/img h-full w-full ${i === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}`}>
                        <Image 
                          src={img} 
                          fill 
@@ -161,7 +161,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             {/* DYNAMIC TRUST BAR (Metrics Engine) */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
               {metrics.map((metric, idx) => (
-                <div key={idx} className="bg-[linear-gradient(135deg,rgba(255,255,255,0.8)_0%,rgba(255,255,255,0.3)_100%)] backdrop-blur-xl border border-white/60 rounded-[2rem] p-5 flex flex-col items-center text-center justify-center shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_10px_20px_rgba(0,100,200,0.08)] hover:-translate-y-1 transition-transform">
+                <div key={idx} className="bg-white/20 backdrop-blur-2xl border border-white/60 rounded-[2rem] p-5 flex flex-col items-center text-center justify-center shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_1px_1px_1px_rgba(255,255,255,0.8)] hover:-translate-y-1 transition-transform">
                   <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center mb-3 shadow-[0_5px_15px_rgba(0,0,0,0.05)]">
                     {metric.icon}
                   </div>
@@ -172,7 +172,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             </div>
 
             {/* ABOUT SECTION */}
-            <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[2.5rem] p-8 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] relative">
+            <div className="bg-white/20 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_1px_1px_1px_rgba(255,255,255,0.8)] relative">
               <h2 className="text-2xl font-black text-[#0a2540] mb-6 flex items-center gap-3">
                 <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center"><Award className="w-4 h-4 text-blue-600" /></span>
                 About the Profile
@@ -190,7 +190,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
           <div className="lg:col-span-4 flex flex-col gap-6 sticky top-24">
             
             {/* Map & Contact Card */}
-            <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[2.5rem] p-6 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] overflow-hidden relative">
+            <div className="bg-white/20 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_1px_1px_1px_rgba(255,255,255,0.8)] overflow-hidden relative">
               <div className="w-full h-48 bg-slate-200 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-inner group">
                  {/* Fake Map */}
                  <Image src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800&h=400" fill className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Map" />
@@ -223,7 +223,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             </div>
 
             {/* Quick Actions (Connect) */}
-            <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(210,240,250,0.6)_100%)] backdrop-blur-xl border border-white rounded-[2.5rem] p-6 shadow-[0_15px_35px_rgba(0,100,200,0.12)]">
+            <div className="bg-white/30 backdrop-blur-2xl border border-white/70 rounded-[2.5rem] p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.1),inset_1px_1px_1px_rgba(255,255,255,1)]">
                <h3 className="font-black text-[#0a2540] text-lg mb-4 flex items-center gap-2">
                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                  Available for Connect
@@ -239,7 +239,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             </div>
 
             {/* AD ZONE 1: Sidebar Medium Rectangle (300x250) */}
-            <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-1 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] h-[280px] flex items-center justify-center overflow-hidden">
+            <div className="bg-white/20 backdrop-blur-2xl border border-white/60 rounded-3xl p-1 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_1px_1px_1px_rgba(255,255,255,0.8)] h-[280px] flex items-center justify-center overflow-hidden">
                <div className="w-[95%] h-[95%] border-2 border-dashed border-slate-400/30 rounded-2xl flex items-center justify-center bg-white/20 relative group">
                   <div className="absolute top-2 right-3 text-[10px] font-bold text-slate-400 uppercase">Ad</div>
                   <span className="text-slate-500 font-bold tracking-widest uppercase text-xs text-center leading-relaxed">
@@ -281,7 +281,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
         </div>
 
         {/* AD ZONE 2: Global Leaderboard (728x90) */}
-        <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0.0)_100%)] backdrop-blur-2xl border border-white/50 rounded-[2.5rem] p-2 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.12)] w-full h-[140px] flex items-center justify-center">
+        <div className="bg-white/20 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-2 shadow-[0_8px_32px_0_rgba(31,38,135,0.07),inset_1px_1px_1px_rgba(255,255,255,0.8)] w-full h-[140px] flex items-center justify-center">
            <div className="w-[95%] h-[90%] border-2 border-dashed border-slate-400/30 rounded-[2rem] flex flex-col items-center justify-center bg-white/20 relative">
               <div className="absolute top-2 right-4 text-[10px] font-bold text-slate-400 uppercase">Sponsored</div>
               <span className="text-slate-500 font-bold tracking-widest uppercase text-sm">[ GLOBAL LEADERBOARD AD INJECTION ZONE ]</span>
