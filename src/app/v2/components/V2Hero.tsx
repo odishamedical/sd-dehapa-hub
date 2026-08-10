@@ -40,35 +40,39 @@ export default function V2Hero({
     <section className="relative z-10 w-full px-4 md:px-8 pt-8 pb-12 flex justify-center">
       
       {/* The Constrained Widescreen Hero Container (21:9) */}
-      <div className="relative w-full max-w-[1600px] aspect-auto md:aspect-[21/9] rounded-[40px] overflow-hidden shadow-[0_20px_50px_-10px_rgba(0,30,80,0.2)] border border-white/60 bg-slate-50 flex flex-col justify-center">
+      {/* Removed overflow-hidden from here so the dropdown menu doesn't get clipped */}
+      <div className="relative w-full max-w-[1600px] aspect-auto md:aspect-[21/9] rounded-[40px] shadow-[0_20px_50px_-10px_rgba(0,30,80,0.2)] border border-white/60 flex flex-col justify-center">
         
-        {/* Desktop Background Image - Next.js Optimized */}
-        <div className="absolute inset-0 z-0 hidden md:block">
-          <Image 
-            src={desktopBgImage}
-            alt="Medical Hero Background"
-            fill
-            priority
-            quality={90}
-            className="object-cover object-center"
-          />
-        </div>
-        
-        {/* Mobile Background Image - Next.js Optimized */}
-        <div className="absolute inset-0 z-0 block md:hidden">
-          <Image 
-            src={mobileBgImage}
-            alt="Medical Hero Background Mobile"
-            fill
-            priority
-            quality={90}
-            className="object-cover object-center"
-          />
-        </div>
+        {/* Background Layer with Overflow Hidden to preserve rounded corners */}
+        <div className="absolute inset-0 z-0 rounded-[40px] overflow-hidden bg-slate-50">
+          {/* Desktop Background Image - Next.js Optimized */}
+          <div className="absolute inset-0 z-0 hidden md:block">
+            <Image 
+              src={desktopBgImage}
+              alt="Medical Hero Background"
+              fill
+              priority
+              quality={90}
+              className="object-cover object-center"
+            />
+          </div>
+          
+          {/* Mobile Background Image - Next.js Optimized */}
+          <div className="absolute inset-0 z-0 block md:hidden">
+            <Image 
+              src={mobileBgImage}
+              alt="Medical Hero Background Mobile"
+              fill
+              priority
+              quality={90}
+              className="object-cover object-center"
+            />
+          </div>
 
-        {/* Very subtle gradient ONLY to guarantee text readability, without ruining the image's native glass effect */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent hidden md:block" />
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/90 via-white/70 to-transparent block md:hidden" />
+          {/* Very subtle gradient ONLY to guarantee text readability, without ruining the image's native glass effect */}
+          <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/80 via-white/40 to-transparent hidden md:block" />
+          <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/90 via-white/70 to-transparent block md:hidden" />
+        </div>
 
         {/* Text Content - strictly 70% on left */}
         <div className="relative z-10 flex flex-col items-start w-full md:w-[70%] p-8 md:p-12 lg:p-20">
