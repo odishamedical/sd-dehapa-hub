@@ -8,10 +8,10 @@ export default function V2Layout({
   return (
     <div className="v2-root min-h-screen bg-gradient-to-br from-[#cff3f8] via-[#e2f9fb] to-[#91d1e4] flex flex-col font-sans relative overflow-hidden">
       
-      {/* Decorative Blur Orbs for extra mesh gradient effect */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-300/40 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute top-[20%] right-[-10%] w-[30%] h-[50%] bg-teal-200/40 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] bg-cyan-300/30 rounded-full blur-[120px] pointer-events-none"></div>
+      {/* Sweeping Light Rays (Crucial for Glass Distortion) */}
+      <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[50%] bg-white/20 -rotate-12 rounded-[100%] blur-[2px] pointer-events-none"></div>
+      <div className="absolute top-[30%] left-[-20%] w-[140%] h-[20%] bg-blue-300/30 rotate-6 rounded-[100%] blur-[4px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-20%] w-[80%] h-[60%] bg-teal-200/40 -rotate-45 rounded-[100%] blur-[6px] pointer-events-none"></div>
       
       <V2Header />
 

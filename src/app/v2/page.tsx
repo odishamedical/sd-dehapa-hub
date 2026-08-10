@@ -23,7 +23,7 @@ export default function V2GlassHomepage() {
         </p>
 
         {/* PILL-SHAPED GLASS SEARCH BAR (Matching Reference Image) */}
-        <div className="w-full max-w-4xl bg-white/30 backdrop-blur-md border border-white/60 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-1px_4px_rgba(255,255,255,0.4),0_10px_40px_rgba(0,120,200,0.15)] rounded-full p-2 flex flex-col md:flex-row items-center gap-2 transition-all hover:bg-white/40">
+        <div className="w-full max-w-4xl bg-white/10 backdrop-blur-3xl border-t-[2px] border-l-[2px] border-white/70 border-r border-b border-white/20 shadow-[inset_0_2px_10px_rgba(255,255,255,0.4),0_15px_40px_rgba(0,100,200,0.2)] rounded-full p-2 flex flex-col md:flex-row items-center gap-2 transition-all hover:bg-white/20">
           
           {/* Main Input (e.g., Search doctors...) */}
           <div className="flex items-center w-full md:flex-1 px-6 py-2 border-b md:border-b-0 md:border-r border-slate-400/20">
@@ -64,35 +64,35 @@ export default function V2GlassHomepage() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 w-full max-w-6xl">
               
               {/* Card 1: Doctors */}
-              <div className="bg-gradient-to-br from-white/80 to-white/30 backdrop-blur-md border border-white/60 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,120,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_0_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,120,200,0.2)] transition-all cursor-pointer group min-h-[200px]">
+              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
                 <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">👨‍⚕️</div>
                 <h3 className="font-black text-xl text-slate-800 mb-1">Doctors</h3>
                 <p className="text-sm text-slate-600 font-medium">Find Specialists</p>
               </div>
 
               {/* Card 2: Hospitals */}
-              <div className="bg-gradient-to-br from-white/80 to-white/30 backdrop-blur-md border border-white/60 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,120,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_0_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,120,200,0.2)] transition-all cursor-pointer group min-h-[200px]">
+              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
                 <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">🏥</div>
                 <h3 className="font-black text-xl text-slate-800 mb-1">Hospitals</h3>
                 <p className="text-sm text-slate-600 font-medium">Nearby Clinics</p>
               </div>
 
               {/* Card 3: Pharmacies */}
-              <div className="bg-gradient-to-br from-white/80 to-white/30 backdrop-blur-md border border-white/60 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,120,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_0_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,120,200,0.2)] transition-all cursor-pointer group min-h-[200px]">
+              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
                 <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">💊</div>
                 <h3 className="font-black text-xl text-slate-800 mb-1">Pharmacies</h3>
                 <p className="text-sm text-slate-600 font-medium">Get Medicines</p>
               </div>
 
               {/* Card 4: Lab Tests */}
-              <div className="bg-gradient-to-br from-white/80 to-white/30 backdrop-blur-md border border-white/60 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,120,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_0_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,120,200,0.2)] transition-all cursor-pointer group min-h-[200px]">
+              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group min-h-[220px]">
                 <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">🔬</div>
                 <h3 className="font-black text-xl text-slate-800 mb-1">Lab Tests</h3>
                 <p className="text-sm text-slate-600 font-medium">Diagnostic Services</p>
               </div>
 
               {/* Card 5: Ambulance */}
-              <div className="bg-gradient-to-br from-white/80 to-white/30 backdrop-blur-md border border-white/60 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-1px_3px_rgba(0,0,0,0.05),0_15px_35px_rgba(0,120,200,0.12)] hover:-translate-y-2 hover:shadow-[inset_0_2px_4px_rgba(255,255,255,1),0_20px_40px_rgba(0,120,200,0.2)] transition-all cursor-pointer group col-span-2 md:col-span-1 lg:col-span-1 min-h-[200px]">
+              <div className="bg-gradient-to-br from-white/30 to-white/5 backdrop-blur-2xl border-t-[3px] border-l-[3px] border-white/80 border-r border-b border-white/20 rounded-3xl p-6 pb-8 flex flex-col items-center justify-end text-center shadow-[inset_0_4px_10px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,100,200,0.25)] hover:-translate-y-2 hover:shadow-[inset_0_4px_10px_rgba(255,255,255,0.7),0_25px_50px_rgba(0,100,200,0.3)] transition-all cursor-pointer group col-span-2 md:col-span-1 lg:col-span-1 min-h-[220px]">
                 <div className="text-6xl mb-6 drop-shadow-xl group-hover:scale-110 transition-transform">🚑</div>
                 <h3 className="font-black text-xl text-slate-800 mb-1">Ambulance</h3>
                 <p className="text-sm text-slate-600 font-medium">Emergency Help</p>
