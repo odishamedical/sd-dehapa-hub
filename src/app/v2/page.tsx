@@ -22,6 +22,8 @@ export default function V2GlassHomepage() {
         highlight="Premium Healthcare."
         subtitle="The most trusted medical professionals, instantly available near you."
         showSearch={true}
+        desktopBgImage="/v2/pc-hero.png"
+        mobileBgImage="/v2/phone-hero.png"
       />
 
       {/* =========================================
