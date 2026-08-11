@@ -11,7 +11,7 @@ export default function GlobalFooter() {
   };
 
   return (
-    <footer className="w-full relative pt-10 pb-20 px-4 md:px-8 mt-10">
+    <footer className="w-full relative pt-10 pb-20 px-4 md:px-8 mt-10 bg-[#020b14]">
       
       {/* 3D Ambient Glowing Orbs (BEHIND THE GLASS) */}
       <div className="absolute bottom-0 left-1/4 w-[50%] h-[300px] bg-teal-400/20 rounded-[100%] blur-[120px] pointer-events-none -z-10"></div>
@@ -19,7 +19,7 @@ export default function GlobalFooter() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[200px] bg-cyan-300/20 rounded-[100%] blur-[100px] pointer-events-none -z-10"></div>
 
       {/* Floating 3D Glass Card */}
-      <div className="w-full max-w-[1400px] mx-auto bg-[#041a2f]/70 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[0_30px_80px_rgba(0,100,200,0.2)] relative overflow-hidden flex flex-col">
+      <div className="w-full max-w-[1400px] mx-auto bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.3)] relative overflow-hidden flex flex-col">
         
         {/* Inner Glass Highlights */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/40 pointer-events-none rounded-[2.5rem]"></div>
@@ -196,7 +196,7 @@ export default function GlobalFooter() {
       </div>
         
       {/* Bottom Legal/Copyright Area with Distinct Background */}
-      <div className="bg-[#020b14]/60 backdrop-blur-xl border-t border-white/10 w-full relative z-10 pt-8 pb-48 lg:pb-8">
+      <div className="bg-black/20 backdrop-blur-xl border-t border-white/10 w-full relative z-10 pt-8 pb-48 lg:pb-8">
         <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
           
           {/* Company Info & Socials Row */}
