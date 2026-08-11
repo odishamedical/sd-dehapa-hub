@@ -78,8 +78,8 @@ export default function PharmaciesDirectory() {
         highlight="Directory"
         subtitle="Discover retail chemists, wholesale distributors, and pharma manufacturers."
         showSearch={true}
-        desktopBgImage="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80&w=2000&h=600"
-        mobileBgImage="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80&w=800&h=800"
+        desktopBgImage="/v2/pc-pharmaces.png"
+        mobileBgImage="/v2/phone-pharmaces.png"
       />
 
       <div className="w-full flex justify-center px-4 mt-6 mb-12">

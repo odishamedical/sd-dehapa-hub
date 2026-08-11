@@ -84,14 +84,14 @@ export default function HospitalsDirectory() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center pb-20 relative z-10">
       
-      {/* --- REUSABLE HERO SECTION --- */}
+      {/* --- HERO SECTION --- */}
       <V2Hero 
         titleStart="Hospital"
         highlight="Directory"
         subtitle="Find top-rated corporate hospitals, nursing homes, and specialized surgical centers."
         showSearch={true}
-        desktopBgImage="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=2000&h=600"
-        mobileBgImage="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800&h=800"
+        desktopBgImage="/v2/pc-hospital.png"
+        mobileBgImage="/v2/phone-hospital.png"
       />
 
       <div className="w-full flex justify-center px-4 mt-6 mb-12">

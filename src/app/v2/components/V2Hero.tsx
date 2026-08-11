@@ -39,14 +39,25 @@ export default function V2Hero({
   return (
     <section className="relative z-10 w-full px-4 md:px-8 pt-8 pb-12 flex justify-center">
       
-      {/* The Constrained Widescreen Hero Container (21:9 PC) & Tall Portrait (Mobile) */}
+      {/* The Constrained Widescreen Hero Container (21:9 PC) & Auto-height Content (Mobile) */}
       {/* Removed overflow-hidden from here so the dropdown menu doesn't get clipped */}
-      <div className="relative w-full max-w-[1600px] aspect-auto min-h-[750px] md:min-h-0 md:aspect-[21/9] rounded-[40px] shadow-[0_20px_50px_-10px_rgba(0,30,80,0.2)] border border-white/60 flex flex-col justify-end md:justify-center pb-8 md:pb-0">
+      <div className="relative w-full max-w-[1600px] aspect-auto md:aspect-[21/9] rounded-[40px] shadow-[0_20px_50px_-10px_rgba(0,30,80,0.2)] border border-white/60 flex flex-col md:justify-center bg-white/40 md:bg-transparent backdrop-blur-md md:backdrop-blur-none">
         
-        {/* Background Layer with Overflow Hidden to preserve rounded corners */}
-        <div className="absolute inset-0 z-0 rounded-[40px] overflow-hidden bg-slate-50">
-          {/* Desktop Background Image - Next.js Optimized */}
-          <div className="absolute inset-0 z-0 hidden md:block">
+        {/* Mobile Inline Image (Visible ONLY on mobile, sits at the top of the card) */}
+        <div className="w-full relative aspect-video block md:hidden rounded-t-[40px] overflow-hidden shrink-0">
+          <Image 
+            src={mobileBgImage}
+            alt="Medical Hero Background Mobile"
+            fill
+            priority
+            quality={90}
+            className="object-cover object-center"
+          />
+        </div>
+
+        {/* PC Background Layer (Visible ONLY on PC) */}
+        <div className="absolute inset-0 z-0 rounded-[40px] overflow-hidden bg-slate-50 hidden md:block">
+          <div className="absolute inset-0 z-0">
             <Image 
               src={desktopBgImage}
               alt="Medical Hero Background"
@@ -56,28 +67,12 @@ export default function V2Hero({
               className="object-cover object-center"
             />
           </div>
-          
-          {/* Mobile Background Image - Next.js Optimized */}
-          <div className="absolute inset-0 z-0 block md:hidden">
-            <Image 
-              src={mobileBgImage}
-              alt="Medical Hero Background Mobile"
-              fill
-              priority
-              quality={90}
-              className="object-cover object-center"
-            />
-          </div>
-
           {/* PC Gradient: Left-to-Right to hide empty hallway */}
-          <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/90 via-white/50 to-transparent hidden md:block" />
-          
-          {/* Mobile Gradient: Bottom-to-Top to preserve faces at the top of portrait image */}
-          <div className="absolute inset-0 z-0 bg-gradient-to-t from-white via-white/90 to-transparent block md:hidden" />
+          <div className="absolute inset-0 z-0 bg-gradient-to-r from-white/90 via-white/50 to-transparent" />
         </div>
 
-        {/* Text Content - strictly 70% on left (PC), 100% bottom-anchored (Mobile) */}
-        <div className="relative z-10 flex flex-col items-start w-full md:w-[70%] p-6 md:p-12 lg:p-20 mt-auto md:mt-0 overflow-y-auto custom-scrollbar max-h-full">
+        {/* Text Content - strictly 70% on left (PC), 100% flow (Mobile) */}
+        <div className="relative z-10 flex flex-col items-start w-full md:w-[70%] p-6 pt-8 md:p-12 lg:p-20 overflow-y-auto custom-scrollbar max-h-full">
           <h1 className="shrink-0 text-4xl md:text-5xl lg:text-7xl font-black text-[#0a2540] tracking-tight mb-4 md:mb-6 drop-shadow-sm leading-tight">
             {titleStart} <span className="text-blue-600">{highlight}</span> {titleEnd}
           </h1>

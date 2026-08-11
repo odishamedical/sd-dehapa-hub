@@ -78,8 +78,8 @@ export default function AmbulancesDirectory() {
         highlight="Services"
         subtitle="Find rapid response ICU ambulances and patient transport vehicles."
         showSearch={true}
-        desktopBgImage="https://images.unsplash.com/photo-1588627196020-f5a63c6db2be?auto=format&fit=crop&q=80&w=2000&h=600"
-        mobileBgImage="https://images.unsplash.com/photo-1588627196020-f5a63c6db2be?auto=format&fit=crop&q=80&w=800&h=800"
+        desktopBgImage="/v2/pc-ambulance.png"
+        mobileBgImage="/v2/phone-ambulance.png"
       />
 
       <div className="w-full flex justify-center px-4 mt-6 mb-12">

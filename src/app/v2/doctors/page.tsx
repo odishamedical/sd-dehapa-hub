@@ -87,14 +87,15 @@ export default function DoctorsDirectoryHub() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center pb-20 relative z-10">
       
-      {/* --- REUSABLE HERO SECTION --- */}
+      {/* --- HERO SECTION --- */}
       <V2Hero 
-        titleStart="Doctor"
-        highlight="Directory"
-        subtitle="Browse the largest network of verified healthcare professionals, categorized by specialty for your convenience."
+        titleStart="Find Top"
+        highlight="Doctors"
+        titleEnd="Near You"
+        subtitle="Book appointments with trusted specialists, available for in-clinic visits and telemedicine."
         showSearch={true}
-        desktopBgImage="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=2000&h=600"
-        mobileBgImage="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=800&h=800"
+        desktopBgImage="/v2/pc-doctor.png"
+        mobileBgImage="/v2/phone-doctor.png"
       />
 
       <div className="w-full flex justify-center px-4 mt-6 mb-12">
