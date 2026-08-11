@@ -77,17 +77,17 @@ export default function V2Hero({
         </div>
 
         {/* Text Content - strictly 70% on left (PC), 100% bottom-anchored (Mobile) */}
-        <div className="relative z-10 flex flex-col items-start w-full md:w-[70%] p-6 md:p-12 lg:p-20 mt-auto md:mt-0">
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-[#0a2540] tracking-tight mb-4 md:mb-6 drop-shadow-sm leading-tight">
+        <div className="relative z-10 flex flex-col items-start w-full md:w-[70%] p-6 md:p-12 lg:p-20 mt-auto md:mt-0 overflow-y-auto custom-scrollbar max-h-full">
+          <h1 className="shrink-0 text-4xl md:text-5xl lg:text-7xl font-black text-[#0a2540] tracking-tight mb-4 md:mb-6 drop-shadow-sm leading-tight">
             {titleStart} <span className="text-blue-600">{highlight}</span> {titleEnd}
           </h1>
-          <p className="text-slate-700 text-lg md:text-2xl font-bold max-w-2xl mb-8 md:mb-12 drop-shadow-sm">
+          <p className="shrink-0 text-slate-700 text-lg md:text-2xl font-bold max-w-2xl mb-6 md:mb-12 drop-shadow-sm">
             {subtitle}
           </p>
 
           {/* Search Bar */}
           {showSearch && (
-            <div className="w-full max-w-5xl bg-white/70 backdrop-blur-3xl border-t-[2px] border-l-[2px] border-white border-r border-b border-white/50 shadow-[inset_0_2px_10px_rgba(255,255,255,0.8),0_15px_40px_rgba(0,100,200,0.1)] rounded-3xl md:rounded-full p-2 md:p-3 flex flex-col md:flex-row items-center gap-2 transition-all hover:bg-white/90 mb-8 md:mb-10 relative">
+            <div className="shrink-0 w-full max-w-5xl bg-white/70 backdrop-blur-3xl border-t-[2px] border-l-[2px] border-white border-r border-b border-white/50 shadow-[inset_0_2px_10px_rgba(255,255,255,0.8),0_15px_40px_rgba(0,100,200,0.1)] rounded-3xl md:rounded-full p-2 md:p-3 flex flex-col md:flex-row items-center gap-2 transition-all hover:bg-white/90 mb-6 md:mb-10 relative">
               
               {/* Category Dropdown (Glassmorphism) */}
               <div className="relative w-full md:w-auto md:min-w-[180px] border-b md:border-b-0 md:border-r border-slate-300">
