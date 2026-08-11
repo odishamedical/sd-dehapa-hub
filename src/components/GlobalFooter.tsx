@@ -11,9 +11,20 @@ export default function GlobalFooter() {
   };
 
   return (
-    <footer className="bg-white/40 backdrop-blur-3xl border-t border-white/60 shadow-[0_-10px_40px_rgba(0,100,200,0.05)] text-slate-700 pt-10 relative overflow-hidden mt-10">
+    <footer className="w-full relative pt-10 pb-20 px-4 md:px-8 mt-10">
       
-      <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8 relative z-10">
+      {/* 3D Ambient Glowing Orbs (BEHIND THE GLASS) */}
+      <div className="absolute bottom-0 left-1/4 w-[50%] h-[300px] bg-teal-400/20 rounded-[100%] blur-[120px] pointer-events-none -z-10"></div>
+      <div className="absolute bottom-0 right-1/4 w-[40%] h-[250px] bg-blue-500/10 rounded-[100%] blur-[100px] pointer-events-none -z-10"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[200px] bg-cyan-300/20 rounded-[100%] blur-[100px] pointer-events-none -z-10"></div>
+
+      {/* Floating 3D Glass Card */}
+      <div className="w-full max-w-[1400px] mx-auto bg-white/40 backdrop-blur-3xl rounded-[2.5rem] border border-white/60 shadow-[0_30px_80px_rgba(0,100,200,0.08)] relative overflow-hidden flex flex-col">
+        
+        {/* Inner Glass Highlights */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-white/10 pointer-events-none rounded-[2.5rem]"></div>
+        
+        <div className="w-full px-6 lg:px-12 pt-12 relative z-10">
         
         {/* =========================================================================
             SUBSCRIPTION BANNER (Top of Footer)
@@ -297,6 +308,7 @@ export default function GlobalFooter() {
             </button>
           </div>
 
+        </div>
         </div>
       </div>
     </footer>
