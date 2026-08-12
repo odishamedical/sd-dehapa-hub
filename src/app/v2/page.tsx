@@ -84,7 +84,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 1: FEATURED DOCTORS (Portrait & Square Mix)
           ========================================= */}
-      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-16 pt-24 max-w-7xl mx-auto">
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-10 max-w-7xl mx-auto">
         <div className="w-full flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Featured Professionals</h2>
@@ -118,7 +118,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 2: HOSPITALS (Wide Tickets)
           ========================================= */}
-      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-10 max-w-7xl mx-auto">
         <div className="w-full flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Top Hospitals</h2>
@@ -136,7 +136,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 3: LABS/PHARMACY + 50% AD BANNER
           ========================================= */}
-      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-10 max-w-7xl mx-auto">
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Left Side: 50% Tickets */}
@@ -165,7 +165,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 4: AMBULANCES (Square Grid)
           ========================================= */}
-      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-10 max-w-7xl mx-auto">
         <div className="w-full flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Emergency Services</h2>
@@ -185,7 +185,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 5: PATIENT GUIDE (How it Works)
           ========================================= */}
-      <section className="relative z-10 w-full px-4 md:px-8 py-16 mt-8 max-w-7xl mx-auto">
+      <section className="relative z-10 w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] p-12 shadow-2xl flex flex-col items-center text-center text-white relative overflow-hidden">
           {/* Glass Overlay Elements */}
           <div className="absolute top-0 left-0 w-full h-full bg-white/5 backdrop-blur-3xl pointer-events-none"></div>
@@ -224,7 +224,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 6: PROVIDER GUIDE (How it Works)
           ========================================= */}
-      <section className="relative z-10 w-full px-4 md:px-8 py-16 max-w-7xl mx-auto">
+      <section className="relative z-10 w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
         <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-12 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] flex flex-col items-center text-center">
           
           <h2 className="text-4xl font-black text-[#0a2540] tracking-tight mb-4">Grow Your Medical Practice</h2>
