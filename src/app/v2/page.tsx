@@ -27,6 +27,61 @@ export default function V2GlassHomepage() {
       />
 
       {/* =========================================
+          NEW ROW: QUICK SERVICES GRID (FOR PATIENTS)
+          ========================================= */}
+      <section className="relative z-10 w-full px-4 md:px-8 py-12 pt-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
+          {/* Service 1: Instant Video Call */}
+          <Link href="/v2/search/doctors?mode=instant-video" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+            <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-3">
+              <Video className="w-7 h-7" />
+            </div>
+            <span className="font-bold text-[#0a2540] text-center text-sm group-hover:text-blue-600 transition-colors">Instant Video Call</span>
+          </Link>
+
+          {/* Service 2: Schedule Video Call */}
+          <Link href="/v2/search/doctors?mode=schedule-video" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+            <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-3">
+              <Calendar className="w-7 h-7" />
+            </div>
+            <span className="font-bold text-[#0a2540] text-center text-sm group-hover:text-indigo-600 transition-colors">Schedule Video</span>
+          </Link>
+
+          {/* Service 3: Book Clinic Visit */}
+          <Link href="/v2/search/doctors?mode=clinic" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+            <div className="w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mb-3">
+              <Building2 className="w-7 h-7" />
+            </div>
+            <span className="font-bold text-[#0a2540] text-center text-sm group-hover:text-teal-600 transition-colors">Book Clinic Visit</span>
+          </Link>
+
+          {/* Service 4: Find Hospitals */}
+          <Link href="/v2/search/hospitals" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+            <div className="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-3">
+              <span className="text-2xl">🏥</span>
+            </div>
+            <span className="font-bold text-[#0a2540] text-center text-sm group-hover:text-rose-600 transition-colors">Find Hospitals</span>
+          </Link>
+
+          {/* Service 5: Order Medicines */}
+          <Link href="/v2/search/pharmacies" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+            <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-3">
+              <Pill className="w-7 h-7" />
+            </div>
+            <span className="font-bold text-[#0a2540] text-center text-sm group-hover:text-amber-600 transition-colors">Order Medicines</span>
+          </Link>
+
+          {/* Service 6: Book Labs */}
+          <Link href="/v2/search/labs" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+            <div className="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-3">
+              <TestTube2 className="w-7 h-7" />
+            </div>
+            <span className="font-bold text-[#0a2540] text-center text-sm group-hover:text-purple-600 transition-colors">Book Lab Tests</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* =========================================
           ROW 1: FEATURED DOCTORS (Portrait & Square Mix)
           ========================================= */}
       <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-16 pt-24 max-w-7xl mx-auto">
@@ -128,9 +183,48 @@ export default function V2GlassHomepage() {
       </section>
 
       {/* =========================================
-          ROW 5: PROVIDER GUIDE (How it Works)
+          ROW 5: PATIENT GUIDE (How it Works)
           ========================================= */}
       <section className="relative z-10 w-full px-4 md:px-8 py-16 mt-8 max-w-7xl mx-auto">
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] p-12 shadow-2xl flex flex-col items-center text-center text-white relative overflow-hidden">
+          {/* Glass Overlay Elements */}
+          <div className="absolute top-0 left-0 w-full h-full bg-white/5 backdrop-blur-3xl pointer-events-none"></div>
+          <div className="absolute -top-32 -left-32 w-64 h-64 bg-blue-400/40 rounded-full blur-[80px]"></div>
+          <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-indigo-400/40 rounded-full blur-[80px]"></div>
+
+          <h2 className="text-4xl font-black tracking-tight mb-4 relative z-10 text-white">Your Health Journey, Simplified</h2>
+          <p className="text-lg text-blue-100 font-medium mb-12 max-w-2xl relative z-10">Access premium healthcare from the comfort of your home. Search, book, and consult with the best professionals in seconds.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mb-12 relative z-10">
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 bg-white/20 border border-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg">🔍</div>
+              <h4 className="font-bold text-white text-xl mb-2">Find Services</h4>
+              <p className="text-blue-100 text-sm">Search for doctors, hospitals, pharmacies, or instant video consultations.</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 bg-white/20 border border-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg">📅</div>
+              <h4 className="font-bold text-white text-xl mb-2">Book & Consult</h4>
+              <p className="text-blue-100 text-sm">Schedule a clinic visit or start an immediate video call with verified experts.</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-20 h-20 bg-white/20 border border-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg">❤️</div>
+              <h4 className="font-bold text-white text-xl mb-2">Get Care</h4>
+              <p className="text-blue-100 text-sm">Receive prescriptions, order medicines, and track your health progress seamlessly.</p>
+            </div>
+          </div>
+
+          <Link href="/v2/search/doctors" className="relative z-10">
+             <button className="bg-white hover:bg-slate-100 text-blue-700 font-bold text-lg py-4 px-12 rounded-2xl shadow-xl transition-transform hover:-translate-y-1">
+                Explore Services Now
+             </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* =========================================
+          ROW 6: PROVIDER GUIDE (How it Works)
+          ========================================= */}
+      <section className="relative z-10 w-full px-4 md:px-8 py-16 max-w-7xl mx-auto">
         <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-12 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] flex flex-col items-center text-center">
           
           <h2 className="text-4xl font-black text-[#0a2540] tracking-tight mb-4">Grow Your Medical Practice</h2>
