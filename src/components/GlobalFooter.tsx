@@ -11,15 +11,15 @@ export default function GlobalFooter() {
   };
 
   return (
-    <footer className="w-full relative pt-10 pb-20 px-4 md:px-8 mt-10 bg-[#020b14]">
+    <footer className="w-full relative pt-10 pb-20 px-4 md:px-8 mt-10 bg-[#01050a]">
       
       {/* 3D Ambient Glowing Orbs (BEHIND THE GLASS) */}
-      <div className="absolute bottom-0 left-1/4 w-[50%] h-[300px] bg-teal-400/20 rounded-[100%] blur-[120px] pointer-events-none -z-10"></div>
-      <div className="absolute bottom-0 right-1/4 w-[40%] h-[250px] bg-blue-500/10 rounded-[100%] blur-[100px] pointer-events-none -z-10"></div>
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[200px] bg-cyan-300/20 rounded-[100%] blur-[100px] pointer-events-none -z-10"></div>
+      <div className="absolute bottom-0 left-1/4 w-[50%] h-[300px] bg-teal-400/30 rounded-[100%] blur-[120px] pointer-events-none -z-10"></div>
+      <div className="absolute bottom-0 right-1/4 w-[40%] h-[250px] bg-blue-500/20 rounded-[100%] blur-[100px] pointer-events-none -z-10"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[200px] bg-cyan-300/30 rounded-[100%] blur-[100px] pointer-events-none -z-10"></div>
 
       {/* Floating 3D Glass Card */}
-      <div className="w-full max-w-[1400px] mx-auto bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.3)] relative overflow-hidden flex flex-col">
+      <div className="w-full max-w-[1400px] mx-auto bg-white/[0.02] backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_30px_80px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col">
         
         {/* Inner Glass Highlights */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/40 pointer-events-none rounded-[2.5rem]"></div>
@@ -29,7 +29,7 @@ export default function GlobalFooter() {
         {/* =========================================================================
             SUBSCRIPTION BANNER (Top of Footer)
            ========================================================================= */}
-        <div className="mb-8 bg-slate-900/40 backdrop-blur-md border border-white/10 hover:border-cyan-400/50 rounded-3xl p-4 lg:py-5 lg:px-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-1 group cursor-default">
+        <div className="mb-8 bg-white/5 backdrop-blur-2xl border border-white/10 hover:border-white/20 rounded-3xl p-4 lg:py-5 lg:px-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1 group cursor-default">
           <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-cyan-500/10 to-transparent pointer-events-none"></div>
           
           <div className="w-full lg:w-1/3 text-center lg:text-left z-10">
