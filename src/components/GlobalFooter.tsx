@@ -11,40 +11,40 @@ export default function GlobalFooter() {
   };
 
   return (
-    <footer className="w-full relative pt-10 pb-20 px-4 md:px-8 mt-10 bg-[#01050a]">
+    <footer className="w-full relative pt-10 pb-20 px-4 md:px-8 mt-10 bg-gradient-to-br from-[#cff3f8] via-[#85d8ce] to-[#0891b2]">
       
       {/* 3D Ambient Glowing Orbs (BEHIND THE GLASS) */}
-      <div className="absolute bottom-0 left-1/4 w-[50%] h-[300px] bg-teal-400/40 rounded-[100%] blur-[100px] pointer-events-none z-0"></div>
-      <div className="absolute bottom-0 right-1/4 w-[40%] h-[250px] bg-blue-500/30 rounded-[100%] blur-[100px] pointer-events-none z-0"></div>
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[200px] bg-cyan-300/40 rounded-[100%] blur-[100px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-0 left-1/4 w-[50%] h-[300px] bg-white/40 rounded-[100%] blur-[100px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-0 right-1/4 w-[40%] h-[250px] bg-teal-300/40 rounded-[100%] blur-[100px] pointer-events-none z-0"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[200px] bg-cyan-200/50 rounded-[100%] blur-[100px] pointer-events-none z-0"></div>
 
       {/* Floating 3D Glass Card */}
-      <div className="w-full max-w-[1400px] mx-auto bg-white/[0.05] backdrop-blur-3xl rounded-[2.5rem] border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_30px_80px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col z-10">
+      <div className="w-full max-w-[1400px] mx-auto bg-white/40 backdrop-blur-2xl rounded-[2.5rem] border border-white/40 shadow-xl relative overflow-hidden flex flex-col z-10">
         
         {/* Inner Glass Highlights */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/40 pointer-events-none rounded-[2.5rem]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-white/20 pointer-events-none rounded-[2.5rem]"></div>
         
         <div className="w-full px-6 lg:px-12 pt-12 relative z-10">
         
         {/* =========================================================================
             SUBSCRIPTION BANNER (Top of Footer)
            ========================================================================= */}
-        <div className="mb-8 bg-white/10 backdrop-blur-2xl border border-white/20 hover:border-white/30 rounded-3xl p-4 lg:py-5 lg:px-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1 group cursor-default">
-          <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-cyan-500/10 to-transparent pointer-events-none"></div>
+        <div className="mb-8 bg-white/40 backdrop-blur-2xl border border-white/40 hover:border-white/60 rounded-3xl p-4 lg:py-5 lg:px-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 group cursor-default">
+          <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-white/40 to-transparent pointer-events-none"></div>
           
           <div className="w-full lg:w-1/3 text-center lg:text-left z-10">
-            <h3 className="text-lg font-black text-white mb-0.5">Get Health Insights</h3>
-            <p className="text-xs text-slate-400">Updates on healthcare, new hospitals, and wellness tips.</p>
+            <h3 className="text-lg font-black text-[#0a2540] mb-0.5">Get Health Insights</h3>
+            <p className="text-xs text-slate-600">Updates on healthcare, new hospitals, and wellness tips.</p>
           </div>
           
           <form className="w-full lg:w-2/3 flex flex-col md:flex-row gap-3 z-10" onSubmit={(e) => e.preventDefault()}>
             <div className="flex-1 relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input type="email" placeholder="Your Email Address" className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-500 text-sm font-medium shadow-inner" />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input type="email" placeholder="Your Email Address" className="w-full bg-white/50 border border-white/40 rounded-xl py-3 pl-10 pr-4 text-[#0a2540] focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-500 text-sm font-medium shadow-sm" />
             </div>
             <div className="flex-1 relative">
-              <MessageCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input type="tel" placeholder="WhatsApp Number" className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-500 text-sm font-medium shadow-inner" />
+              <MessageCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input type="tel" placeholder="WhatsApp Number" className="w-full bg-white/50 border border-white/40 rounded-xl py-3 pl-10 pr-4 text-[#0a2540] focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-500 text-sm font-medium shadow-sm" />
             </div>
             <button type="submit" className="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all whitespace-nowrap active:scale-95 text-sm">
               Subscribe Free
@@ -58,13 +58,13 @@ export default function GlobalFooter() {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1.5fr_1.5fr] gap-8 lg:gap-10 mb-8">
           
           {/* Brand & Contact Column (Drops to bottom on mobile) */}
-          <div className="order-last lg:order-first mt-8 lg:mt-0 pt-8 lg:pt-0 border-t border-white/10 lg:border-none pr-0 lg:pr-8">
+          <div className="order-last lg:order-first mt-8 lg:mt-0 pt-8 lg:pt-0 border-t border-slate-300/40 lg:border-none pr-0 lg:pr-8">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-slate-900 rounded-xl shadow-lg border border-white/10 p-1 flex items-center justify-center shrink-0 relative">
+              <div className="w-12 h-12 bg-white/50 rounded-xl shadow-sm border border-white/40 p-1 flex items-center justify-center shrink-0 relative">
                 <Image src="/logo.png" alt="DehaPa Logo" fill sizes="48px" className="object-contain" />
               </div>
               <div>
-                <h3 className="font-serif font-black text-2xl text-white tracking-tight leading-none mb-1">
+                <h3 className="font-serif font-black text-2xl text-[#0a2540] tracking-tight leading-none mb-1">
                   Dehapa.com
                 </h3>
                 <p className="text-cyan-400 font-bold text-xs tracking-widest uppercase">
@@ -72,7 +72,7 @@ export default function GlobalFooter() {
                 </p>
               </div>
             </div>
-            <p className="text-slate-300 text-sm leading-relaxed mb-8">
+            <p className="text-slate-600 font-medium text-sm leading-relaxed mb-8">
               Dehapa is a next-generation Health Care service portal connecting users to top doctors, state-of-the-art hospitals, diagnostic labs, and rapid emergency ambulance response teams.
             </p>
             
@@ -101,18 +101,18 @@ export default function GlobalFooter() {
           </div>
 
           {/* For Patients Column (Desktop) */}
-          <div className="hidden lg:block order-1 lg:border-l lg:border-white/10 lg:pl-8">
-            <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
+          <div className="hidden lg:block order-1 lg:border-l lg:border-slate-300/40 lg:pl-8">
+            <h4 className="font-black uppercase tracking-[0.1em] text-[#0a2540] text-sm mb-6 flex items-center gap-2">
               <Users className="w-4 h-4 text-rose-500" />
               For Patients
             </h4>
             <ul className="space-y-4">
-              <li><Link href="/doctors" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Find a Specialist</Link></li>
-              <li><Link href="/hospitals" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Book Hospital Beds</Link></li>
-              <li><Link href="/labs" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Diagnostic Tests & Scans</Link></li>
-              <li><Link href="/pharmacies" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Order Medicines</Link></li>
-              <li><Link href="/portal" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />My Health Vault</Link></li>
-              <li><Link href="#" className="group flex items-center text-sm font-bold text-rose-400 hover:text-rose-300 transition-colors mt-2"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
+              <li><Link href="/doctors" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Find a Specialist</Link></li>
+              <li><Link href="/hospitals" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Book Hospital Beds</Link></li>
+              <li><Link href="/labs" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Diagnostic Tests & Scans</Link></li>
+              <li><Link href="/pharmacies" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Order Medicines</Link></li>
+              <li><Link href="/portal" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />My Health Vault</Link></li>
+              <li><Link href="#" className="group flex items-center text-sm font-bold text-rose-500 hover:text-rose-400 transition-colors mt-2"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
             </ul>
           </div>
 
@@ -133,18 +133,18 @@ export default function GlobalFooter() {
           </details>
 
           {/* For Providers Column (Desktop) */}
-          <div className="hidden lg:block order-2 lg:border-l lg:border-white/10 lg:pl-8">
-            <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
-              <Stethoscope className="w-4 h-4 text-cyan-400" />
+          <div className="hidden lg:block order-2 lg:border-l lg:border-slate-300/40 lg:pl-8">
+            <h4 className="font-black uppercase tracking-[0.1em] text-[#0a2540] text-sm mb-6 flex items-center gap-2">
+              <Stethoscope className="w-4 h-4 text-cyan-600" />
               For Providers
             </h4>
             <ul className="space-y-4">
-              <li><Link href="/join/doctor" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Join as Doctor</Link></li>
-              <li><Link href="/join/hospital" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Partner Hospital Network</Link></li>
-              <li><Link href="/join/lab" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Diagnostic Lab Partners</Link></li>
-              <li><Link href="/join/pharmacy" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Pharmacy Network</Link></li>
-              <li><Link href="/join/ambulance" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Ambulance Network</Link></li>
-              <li><Link href="/portal/doctor" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Provider Portal Login</Link></li>
+              <li><Link href="/join/doctor" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Join as Doctor</Link></li>
+              <li><Link href="/join/hospital" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Partner Hospital Network</Link></li>
+              <li><Link href="/join/lab" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Diagnostic Lab Partners</Link></li>
+              <li><Link href="/join/pharmacy" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Pharmacy Network</Link></li>
+              <li><Link href="/join/ambulance" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Ambulance Network</Link></li>
+              <li><Link href="/portal/doctor" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Provider Portal Login</Link></li>
             </ul>
           </div>
 
@@ -165,16 +165,16 @@ export default function GlobalFooter() {
           </details>
 
           {/* Support & Security Column (Desktop) */}
-          <div className="hidden lg:block order-3 lg:border-l lg:border-white/10 lg:pl-8">
-            <h4 className="font-black uppercase tracking-[0.1em] text-white text-sm mb-6 flex items-center gap-2">
-              <HelpCircle className="w-4 h-4 text-purple-400" />
+          <div className="hidden lg:block order-3 lg:border-l lg:border-slate-300/40 lg:pl-8">
+            <h4 className="font-black uppercase tracking-[0.1em] text-[#0a2540] text-sm mb-6 flex items-center gap-2">
+              <HelpCircle className="w-4 h-4 text-purple-600" />
               Support & Legal
             </h4>
             <ul className="space-y-4 mb-0 lg:mb-8">
-              <li><Link href="/about" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />About Dehapa</Link></li>
-              <li><Link href="/contact" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Contact Us</Link></li>
-              <li><Link href="/privacy" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Privacy Policy</Link></li>
-              <li><Link href="/terms" className="group flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-400" />Terms of Service</Link></li>
+              <li><Link href="/about" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />About Dehapa</Link></li>
+              <li><Link href="/contact" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Contact Us</Link></li>
+              <li><Link href="/privacy" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Privacy Policy</Link></li>
+              <li><Link href="/terms" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Terms of Service</Link></li>
             </ul>
           </div>
 
@@ -196,7 +196,7 @@ export default function GlobalFooter() {
       </div>
         
       {/* Bottom Legal/Copyright Area with Distinct Background */}
-      <div className="bg-black/20 backdrop-blur-xl border-t border-white/10 w-full relative z-10 pt-8 pb-48 lg:pb-8">
+      <div className="bg-white/30 backdrop-blur-xl border-t border-white/40 w-full relative z-10 pt-8 pb-48 lg:pb-8">
         <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-8">
           
           {/* Company Info & Socials Row */}
@@ -207,30 +207,30 @@ export default function GlobalFooter() {
               
               {/* Premium Transparent Logo (Matches Header) */}
               <div className="flex items-center gap-3 shrink-0">
-                <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-slate-900 rounded-xl shadow-lg border border-white/10 p-1">
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/50 rounded-xl shadow-sm border border-white/40 p-1">
                   <Image src="/logo.png" alt="DehaPa Logo" fill sizes="48px" className="object-contain relative z-10" />
-                  <div className="absolute inset-0 bg-blue-400/10 rounded-full blur-lg pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-white/20 rounded-full blur-lg pointer-events-none"></div>
                 </div>
                 <div className="flex flex-col justify-center text-left">
-                  <span className="text-lg sm:text-xl font-black tracking-wide text-white font-serif drop-shadow-sm leading-none">
+                  <span className="text-lg sm:text-xl font-black tracking-wide text-[#0a2540] font-serif drop-shadow-sm leading-none">
                     Dehapa
                   </span>
-                  <span className="text-[8px] sm:text-[9px] text-cyan-400 tracking-[0.1em] font-medium mt-1">Your Health Our Mission</span>
+                  <span className="text-[8px] sm:text-[9px] text-cyan-700 tracking-[0.1em] font-bold mt-1">Your Health Our Mission</span>
                 </div>
               </div>
 
               {/* Divider */}
-              <div className="w-px h-10 bg-slate-700 hidden md:block shrink-0"></div>
+              <div className="w-px h-10 bg-slate-300 hidden md:block shrink-0"></div>
 
               {/* Company Info */}
               <div className="flex-1 overflow-hidden">
-                <strong className="text-white block mb-2 text-[10px] sm:text-[11px] uppercase tracking-widest font-black">
-                  <span className="text-cyan-400">Dehapa : India's own Health Network</span> <span className="text-slate-500 mx-1">{'}'}</span> A product by : Shyam Dash Creation
+                <strong className="text-[#0a2540] block mb-2 text-[10px] sm:text-[11px] uppercase tracking-widest font-black">
+                  <span className="text-cyan-700">Dehapa : India's own Health Network</span> <span className="text-slate-400 mx-1">{'}'}</span> A product by : Shyam Dash Creation
                 </strong>
-                <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center lg:justify-start gap-1 lg:gap-3 text-[10px] sm:text-[11px] text-slate-400 font-medium">
+                <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center lg:justify-start gap-1 lg:gap-3 text-[10px] sm:text-[11px] text-slate-600 font-bold">
                   <span className="truncate">R7/A2, Jagannath Mandir Colony, Budharaja, Sambalpur, Odisha, India 768004</span>
-                  <span className="hidden lg:block text-slate-600 shrink-0">•</span>
-                  <span className="flex items-center gap-1 text-cyan-400 font-bold shrink-0"><PhoneCall className="w-3 h-3"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</span>
+                  <span className="hidden lg:block text-slate-400 shrink-0">•</span>
+                  <span className="flex items-center gap-1 text-cyan-700 font-black shrink-0"><PhoneCall className="w-3 h-3"/> +91 78479 04847, +91 76848 11120, +91 63713 90831</span>
                 </div>
               </div>
             </div>
@@ -257,39 +257,39 @@ export default function GlobalFooter() {
           </div>
           
           {/* Very Bottom Row: Socials, Copyright, Links, Back to Top */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-bold tracking-widest uppercase text-slate-400 border-t border-white/10 pt-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] font-bold tracking-widest uppercase text-slate-600 border-t border-white/40 pt-6">
             
             {/* Left side: Copyright -> Links */}
             <div className="flex flex-col md:flex-row items-center justify-start gap-6 md:gap-8 w-full">
 
               <p className="text-center xl:text-left whitespace-nowrap shrink-0">© 2026 DEHAPA.COM. ALL RIGHTS RESERVED.</p>
 
-              <div className="w-px h-4 bg-slate-700 hidden xl:block shrink-0"></div>
+              <div className="w-px h-4 bg-slate-300 hidden xl:block shrink-0"></div>
 
               <div className="flex items-center gap-6 shrink-0">
-                <Link href="/privacy" className="hover:text-cyan-400 transition-colors">Privacy Policy</Link>
-                <Link href="/terms" className="hover:text-cyan-400 transition-colors">Terms of Service</Link>
+                <Link href="/privacy" className="hover:text-cyan-700 transition-colors">Privacy Policy</Link>
+                <Link href="/terms" className="hover:text-cyan-700 transition-colors">Terms of Service</Link>
               </div>
 
             </div>
 
             {/* Right side: Badges & Back to Top */}
             <div className="flex items-center gap-3 shrink-0">
-              <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 shadow-sm" title="All telemetry and biometric data is end-to-end encrypted">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-500 text-[9px] uppercase tracking-widest font-bold hidden xl:block">HIPAA Encrypted</span>
-                <span className="text-emerald-500 text-[9px] uppercase tracking-widest font-bold xl:hidden hidden sm:block">HIPAA</span>
+              <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/30 shadow-sm" title="All telemetry and biometric data is end-to-end encrypted">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-emerald-700 text-[9px] uppercase tracking-widest font-bold hidden xl:block">HIPAA Encrypted</span>
+                <span className="text-emerald-700 text-[9px] uppercase tracking-widest font-bold xl:hidden hidden sm:block">HIPAA</span>
               </div>
-              <div className="flex items-center gap-2 text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-white/10 shadow-sm">
+              <div className="flex items-center gap-2 text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 shadow-sm">
                 <span className="text-slate-400 text-[9px] uppercase tracking-widest font-bold hidden xl:block">Architect</span>
-                <span className="text-[9px] uppercase tracking-widest font-bold">SD IT Services</span>
+                <span className="text-[9px] uppercase tracking-widest font-bold text-white">SD IT Services</span>
               </div>
               
-              <div className="w-px h-6 bg-slate-700 mx-1 hidden md:block"></div>
+              <div className="w-px h-6 bg-slate-300 mx-1 hidden md:block"></div>
               
               <button 
                 onClick={scrollToTop}
-                className="hidden md:flex shrink-0 items-center justify-center w-8 h-8 rounded-full bg-slate-800 hover:bg-cyan-600 hover:text-white text-slate-400 transition-all border border-white/10 hover:border-cyan-500 shadow-md group"
+                className="hidden md:flex shrink-0 items-center justify-center w-8 h-8 rounded-full bg-white/60 hover:bg-cyan-600 hover:text-white text-slate-500 transition-all border border-white/40 hover:border-cyan-500 shadow-sm group"
                 title="Back to Top"
               >
                 <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
@@ -299,10 +299,10 @@ export default function GlobalFooter() {
           </div>
           
           {/* Mobile Back to Top */}
-          <div className="md:hidden flex justify-center mt-8 border-t border-white/10 pt-6">
+          <div className="md:hidden flex justify-center mt-8 border-t border-white/40 pt-6">
             <button 
               onClick={scrollToTop}
-              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-cyan-400 transition-colors bg-slate-800 px-4 py-2 rounded-full border border-white/10 shadow-sm"
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#0a2540] hover:text-white transition-colors bg-white/60 hover:bg-cyan-600 px-4 py-2 rounded-full border border-white/40 shadow-sm"
             >
               <ArrowUp className="w-3 h-3" /> Back to Top
             </button>
