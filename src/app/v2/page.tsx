@@ -106,11 +106,14 @@ export default function V2GlassHomepage() {
              />
           </div>
           
-          {/* 3 Squares */}
+          {/* 6 Squares (2 rows of 3 to perfectly align with 1 Portrait ticket) */}
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
              <SquareTicket title="Dr. Rahul Sharma" subtitle="Neurologist" rating="4.8" icon="👨‍⚕️" href="/v2/doctor/rahul" actionText="Book Now" />
              <SquareTicket title="Dr. Priya Patel" subtitle="Dermatologist" rating="5.0" icon="👩‍⚕️" href="/v2/doctor/priya" actionText="Book Now" />
              <SquareTicket title="Dr. Amit Kumar" subtitle="Pediatrician" rating="4.7" icon="👨‍⚕️" href="/v2/doctor/amit" actionText="Book Now" />
+             <SquareTicket title="Dr. Kavita Reddy" subtitle="Gynecologist" rating="4.9" icon="👩‍⚕️" href="/v2/doctor/kavita" actionText="Book Now" />
+             <SquareTicket title="Dr. James Wilson" subtitle="Orthopedic" rating="4.6" icon="👨‍⚕️" href="/v2/doctor/james" actionText="Book Now" />
+             <SquareTicket title="Dr. Ananya Singh" subtitle="Psychiatrist" rating="5.0" icon="👩‍⚕️" href="/v2/doctor/ananya" actionText="Book Now" />
           </div>
         </div>
       </section>
@@ -145,6 +148,8 @@ export default function V2GlassHomepage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <SquareTicket title="MediCare Pharmacy" subtitle="24/7 Delivery" rating="4.9" icon="💊" href="/v2/pharmacy/medicare" actionText="Order Meds" />
               <SquareTicket title="AccuPath Labs" subtitle="Home Collection" rating="4.8" icon="🔬" href="/v2/lab/accupath" actionText="Book Test" />
+              <SquareTicket title="Apollo Pharmacy" subtitle="Express Delivery" rating="4.7" icon="💊" href="/v2/pharmacy/apollo" actionText="Order Meds" />
+              <SquareTicket title="City Diagnostics" subtitle="Full Body Scans" rating="4.9" icon="🔬" href="/v2/lab/city" actionText="Book Test" />
             </div>
           </div>
 
@@ -186,35 +191,34 @@ export default function V2GlassHomepage() {
           ROW 5: PATIENT GUIDE (How it Works)
           ========================================= */}
       <section className="relative z-10 w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[40px] p-12 shadow-2xl flex flex-col items-center text-center text-white relative overflow-hidden">
-          {/* Glass Overlay Elements */}
-          <div className="absolute top-0 left-0 w-full h-full bg-white/5 backdrop-blur-3xl pointer-events-none"></div>
-          <div className="absolute -top-32 -left-32 w-64 h-64 bg-blue-400/40 rounded-full blur-[80px]"></div>
-          <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-indigo-400/40 rounded-full blur-[80px]"></div>
+        <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-12 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] flex flex-col items-center text-center relative overflow-hidden">
+          {/* Subtle Glows to keep it interesting but light */}
+          <div className="absolute -top-32 -left-32 w-64 h-64 bg-blue-300/30 rounded-full blur-[80px]"></div>
+          <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-teal-300/30 rounded-full blur-[80px]"></div>
 
-          <h2 className="text-4xl font-black tracking-tight mb-4 relative z-10 text-white">Your Health Journey, Simplified</h2>
-          <p className="text-lg text-blue-100 font-medium mb-12 max-w-2xl relative z-10">Access premium healthcare from the comfort of your home. Search, book, and consult with the best professionals in seconds.</p>
+          <h2 className="text-4xl font-black tracking-tight mb-4 relative z-10 text-[#0a2540]">Your Health Journey, Simplified</h2>
+          <p className="text-lg text-slate-600 font-medium mb-12 max-w-2xl relative z-10">Access premium healthcare from the comfort of your home. Search, book, and consult with the best professionals in seconds.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mb-12 relative z-10">
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 bg-white/20 border border-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg">🔍</div>
-              <h4 className="font-bold text-white text-xl mb-2">Find Services</h4>
-              <p className="text-blue-100 text-sm">Search for doctors, hospitals, pharmacies, or instant video consultations.</p>
+              <div className="w-20 h-20 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm text-blue-600">🔍</div>
+              <h4 className="font-bold text-[#0a2540] text-xl mb-2">Find Services</h4>
+              <p className="text-slate-600 text-sm">Search for doctors, hospitals, pharmacies, or instant video consultations.</p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 bg-white/20 border border-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg">📅</div>
-              <h4 className="font-bold text-white text-xl mb-2">Book & Consult</h4>
-              <p className="text-blue-100 text-sm">Schedule a clinic visit or start an immediate video call with verified experts.</p>
+              <div className="w-20 h-20 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm text-indigo-600">📅</div>
+              <h4 className="font-bold text-[#0a2540] text-xl mb-2">Book & Consult</h4>
+              <p className="text-slate-600 text-sm">Schedule a clinic visit or start an immediate video call with verified experts.</p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-20 h-20 bg-white/20 border border-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg">❤️</div>
-              <h4 className="font-bold text-white text-xl mb-2">Get Care</h4>
-              <p className="text-blue-100 text-sm">Receive prescriptions, order medicines, and track your health progress seamlessly.</p>
+              <div className="w-20 h-20 bg-teal-50 border border-teal-100 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-sm text-teal-600">❤️</div>
+              <h4 className="font-bold text-[#0a2540] text-xl mb-2">Get Care</h4>
+              <p className="text-slate-600 text-sm">Receive prescriptions, order medicines, and track your health progress seamlessly.</p>
             </div>
           </div>
 
           <Link href="/v2/search/doctors" className="relative z-10">
-             <button className="bg-white hover:bg-slate-100 text-blue-700 font-bold text-lg py-4 px-12 rounded-2xl shadow-xl transition-transform hover:-translate-y-1">
+             <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-12 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-transform hover:-translate-y-1">
                 Explore Services Now
              </button>
           </Link>
