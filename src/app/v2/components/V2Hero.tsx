@@ -37,7 +37,7 @@ export default function V2Hero({
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
 
   return (
-    <section className="relative z-10 w-full px-4 md:px-8 pt-8 pb-12 flex justify-center">
+    <section className="relative z-10 w-full px-4 md:px-8 pt-0 pb-12 flex justify-center">
       
       {/* The Constrained Widescreen Hero Container (21:9 PC) & Auto-height Content (Mobile) */}
       {/* Removed overflow-hidden from here so the dropdown menu doesn't get clipped */}

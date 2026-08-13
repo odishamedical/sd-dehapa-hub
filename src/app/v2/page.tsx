@@ -172,7 +172,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 4: AMBULANCES (Square Grid)
           ========================================= */}
-      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-10 max-w-7xl mx-auto">
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-4 max-w-7xl mx-auto">
         <div className="w-full flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Emergency Services</h2>
@@ -192,7 +192,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 5: PATIENT GUIDE (How it Works)
           ========================================= */}
-      <section className="relative z-10 w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+      <section className="relative z-10 w-full px-4 md:px-8 pt-4 pb-4 max-w-7xl mx-auto">
         <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-12 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] flex flex-col items-center text-center relative overflow-hidden">
           {/* Subtle Glows to keep it interesting but light */}
           <div className="absolute -top-32 -left-32 w-64 h-64 bg-blue-300/30 rounded-full blur-[80px]"></div>
@@ -230,7 +230,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 6: PROVIDER GUIDE (How it Works)
           ========================================= */}
-      <section className="relative z-10 w-full px-4 md:px-8 py-12 max-w-7xl mx-auto">
+      <section className="relative z-10 w-full px-4 md:px-8 pt-4 pb-4 max-w-7xl mx-auto">
         <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-12 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] flex flex-col items-center text-center">
           
           <h2 className="text-4xl font-black text-[#0a2540] tracking-tight mb-4">Grow Your Medical Practice</h2>
@@ -263,9 +263,9 @@ export default function V2GlassHomepage() {
       </section>
 
       {/* =========================================
-          ROW 6: GLOBAL BOTTOM AD BANNER
+          ROW 7: GLOBAL BOTTOM AD BANNER
           ========================================= */}
-      <section className="relative z-10 w-full px-4 md:px-8 py-12 pb-24 max-w-7xl mx-auto">
+      <section className="relative z-10 w-full px-4 md:px-8 pt-4 pb-24 max-w-7xl mx-auto">
         <div className="bg-white/40 backdrop-blur-2xl border border-white rounded-[40px] p-2 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] w-full h-[120px] flex items-center justify-center">
            {/* Placeholder for standard 728x90 Leaderboard Ad */}
            <div className="w-[95%] h-[90%] border-2 border-dashed border-slate-400/50 rounded-2xl flex items-center justify-center bg-white/20">

@@ -7,8 +7,8 @@ import { usePathname } from 'next/navigation';
 export default function GlobalBreadcrumbs() {
   const pathname = usePathname();
 
-  // Don't show breadcrumbs on the absolute homepage
-  if (!pathname || pathname === '/') {
+  // Don't show breadcrumbs on the absolute homepage or V2 platform
+  if (!pathname || pathname === '/' || pathname.startsWith('/v2')) {
     return null;
   }
 

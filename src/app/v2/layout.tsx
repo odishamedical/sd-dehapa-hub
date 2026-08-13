@@ -1,4 +1,5 @@
 import V2Header from "./components/V2Header";
+import V2Breadcrumbs from "./components/V2Breadcrumbs";
 
 export default function V2Layout({
   children,
@@ -20,7 +21,8 @@ export default function V2Layout({
       <div className="relative z-10 flex flex-col min-h-screen w-full">
         <V2Header />
 
-        <main className="flex-1 flex flex-col pt-20">
+        <main className="flex-1 flex flex-col pt-0">
+          <V2Breadcrumbs />
           {children}
         </main>
       </div>
