@@ -29,10 +29,12 @@ export default function V2GlassHomepage() {
       {/* =========================================
           NEW ROW: QUICK SERVICES GRID (FOR PATIENTS)
           ========================================= */}
-      <section className="relative z-10 w-full px-4 md:px-8 py-12 pt-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
+      <section className="relative z-10 w-full px-4 md:px-8 pb-6 pt-2 max-w-7xl mx-auto">
+        {/* Mobile: Horizontal Scroll (Slider), Desktop: 6-Col Grid */}
+        <div className="flex overflow-x-auto lg:grid lg:grid-cols-6 gap-4 w-full pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] -mx-4 px-4 md:mx-0 md:px-0">
+          
           {/* Service 1: Instant Video Call */}
-          <Link href="/v2/search/doctors?mode=instant-video" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/doctors?mode=instant-video" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-3">
               <Video className="w-7 h-7" />
             </div>
@@ -40,7 +42,7 @@ export default function V2GlassHomepage() {
           </Link>
 
           {/* Service 2: Schedule Video Call */}
-          <Link href="/v2/search/doctors?mode=schedule-video" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/doctors?mode=schedule-video" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-3">
               <Calendar className="w-7 h-7" />
             </div>
@@ -48,7 +50,7 @@ export default function V2GlassHomepage() {
           </Link>
 
           {/* Service 3: Book Clinic Visit */}
-          <Link href="/v2/search/doctors?mode=clinic" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/doctors?mode=clinic" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mb-3">
               <Building2 className="w-7 h-7" />
             </div>
@@ -56,7 +58,7 @@ export default function V2GlassHomepage() {
           </Link>
 
           {/* Service 4: Find Hospitals */}
-          <Link href="/v2/search/hospitals" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/hospitals" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-3">
               <span className="text-2xl">🏥</span>
             </div>
@@ -64,7 +66,7 @@ export default function V2GlassHomepage() {
           </Link>
 
           {/* Service 5: Order Medicines */}
-          <Link href="/v2/search/pharmacies" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/pharmacies" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-3">
               <Pill className="w-7 h-7" />
             </div>
@@ -72,7 +74,7 @@ export default function V2GlassHomepage() {
           </Link>
 
           {/* Service 6: Book Labs */}
-          <Link href="/v2/search/labs" className="group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/labs" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-3">
               <TestTube2 className="w-7 h-7" />
             </div>
@@ -84,7 +86,7 @@ export default function V2GlassHomepage() {
       {/* =========================================
           ROW 1: FEATURED DOCTORS (Portrait & Square Mix)
           ========================================= */}
-      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 py-10 max-w-7xl mx-auto">
+      <section className="relative z-10 flex flex-col items-center w-full px-4 md:px-8 pb-10 pt-4 max-w-7xl mx-auto">
         <div className="w-full flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Featured Professionals</h2>
