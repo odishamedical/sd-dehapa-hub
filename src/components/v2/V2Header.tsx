@@ -58,15 +58,15 @@ export default function V2Header() {
       }`}
     >
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 group">
-        <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
-          <Image src="/logo.png" alt="DehaPa Logo" fill sizes="40px" className="object-contain relative z-10" priority />
+      <Link href="/" className="flex items-center gap-3 group">
+        <div className="relative w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
+          <Image src="/logo.png" alt="DehaPa Logo" fill sizes="64px" className="object-contain relative z-10" priority />
         </div>
         <div className="flex flex-col justify-center">
-          <span className="font-black text-2xl md:text-3xl tracking-tight text-[#0a2540] leading-none">
+          <span className="font-black text-3xl md:text-4xl tracking-tight text-[#0a2540] leading-none">
             DehaPa
           </span>
-          <span className="text-[9px] md:text-[10px] font-bold text-blue-600 uppercase tracking-widest leading-tight mt-0.5">
+          <span className="text-[10px] md:text-xs font-bold text-blue-600 uppercase tracking-widest leading-tight mt-1">
             Your Health, Our Mission
           </span>
         </div>
