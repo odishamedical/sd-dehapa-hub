@@ -12,6 +12,7 @@ import {
 import V2SmartConnectModal from './V2SmartConnectModal';
 import SquareTicket from './SquareTicket';
 import WideTicket from './WideTicket';
+import ClaimProfileModal from '@/components/ClaimProfileModal';
 
 interface V2UnifiedProfileProps {
   profile: any;
@@ -29,6 +30,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
   const [showPhone, setShowPhone] = useState(false);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
 
   // Parse images
   const allImgs = [...(profile.rawImages || []), ...(profile.galleryImages || [])];
@@ -135,6 +137,26 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-6 sm:p-8 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-white/60 to-transparent pointer-events-none"></div>
 
+               {!verified && (
+                 <div className="mb-8 w-full bg-orange-50 border border-orange-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm relative z-10">
+                   <div className="flex items-start sm:items-center gap-3">
+                     <div className="bg-orange-100 p-2 rounded-full shrink-0">
+                       <Shield className="w-5 h-5 text-orange-500" />
+                     </div>
+                     <div>
+                       <h4 className="text-orange-800 font-bold text-sm">Unverified Profile</h4>
+                       <p className="text-orange-600/80 text-xs font-medium mt-0.5">This data was collected from reliable sources, but the profile has not been verified by the owner.</p>
+                     </div>
+                   </div>
+                   <button 
+                     onClick={() => setShowClaimModal(true)}
+                     className="shrink-0 bg-white border border-orange-200 hover:border-orange-300 text-orange-600 font-bold px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all text-sm w-full sm:w-auto"
+                   >
+                     Claim this Listing
+                   </button>
+                 </div>
+               )}
+
                <div className="flex flex-col sm:flex-row gap-8 items-start relative z-10 mb-8">
                  {/* Portrait */}
                  <div className="w-32 h-32 sm:w-40 sm:h-40 shrink-0 rounded-3xl overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.1)] border-4 border-white bg-white relative group-hover:scale-[1.02] transition-transform duration-500">
@@ -226,15 +248,28 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             
             {/* Map & Contact Card */}
             <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-6 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] overflow-hidden relative">
-              <div className="w-full h-48 bg-slate-200 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-inner group">
-                 {/* Fake Map */}
-                 <Image src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800&h=400" fill className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Map" />
-                 <div className="absolute inset-0 flex items-center justify-center bg-blue-900/10">
-                   <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center border-2 border-white shadow-xl animate-bounce">
-                     <MapPin className="w-7 h-7 text-blue-600" />
+              {profile.mapUrl ? (
+                <a href={profile.mapUrl} target="_blank" rel="noopener noreferrer" className="block w-full h-48 bg-slate-200 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-inner group cursor-pointer">
+                   <Image src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800&h=400" fill className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Map" />
+                   <div className="absolute inset-0 flex items-center justify-center bg-blue-900/10">
+                     <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center border-2 border-white shadow-xl animate-bounce">
+                       <MapPin className="w-7 h-7 text-blue-600" />
+                     </div>
                    </div>
-                 </div>
-              </div>
+                   <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm text-xs font-bold text-blue-600 px-3 py-1 rounded-full shadow-sm">
+                     Open in Google Maps
+                   </div>
+                </a>
+              ) : (
+                <div className="w-full h-48 bg-slate-200 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-inner group">
+                   <Image src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800&h=400" fill className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Map" />
+                   <div className="absolute inset-0 flex items-center justify-center bg-blue-900/10">
+                     <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center border-2 border-white shadow-xl animate-bounce">
+                       <MapPin className="w-7 h-7 text-blue-600" />
+                     </div>
+                   </div>
+                </div>
+              )}
 
               <h3 className="font-black text-xl text-[#0a2540] mb-2">{profile.clinicName || profile.name}</h3>
               <p className="text-slate-600 font-medium text-sm mb-6 flex items-start gap-2">
@@ -250,10 +285,17 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                   <Phone className="w-5 h-5 text-blue-600" />
                   {showPhone ? (profile.phone || "+91 9876543210") : "Show Phone Number"}
                 </button>
-                <button className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-black py-4 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                  <Navigation className="w-5 h-5" />
-                  Get Directions
-                </button>
+                {profile.mapUrl ? (
+                  <a href={profile.mapUrl} target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-black py-4 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <Navigation className="w-5 h-5" />
+                    Get Directions
+                  </a>
+                ) : (
+                  <button className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-black py-4 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <Navigation className="w-5 h-5" />
+                    Get Directions
+                  </button>
+                )}
               </div>
             </div>
 
@@ -338,6 +380,14 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
         entityType={type}
         entityName={profile.name}
       />
+
+      {showClaimModal && (
+        <ClaimProfileModal 
+          entityId={profile.id}
+          entityName={profile.name}
+          onClose={() => setShowClaimModal(false)}
+        />
+      )}
     </div>
   );
 }

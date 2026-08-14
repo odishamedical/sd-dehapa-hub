@@ -31,10 +31,11 @@ export default function DoctorsDirectoryHub() {
           .map((d: any) => ({
             id: d.id,
             name: d.name || "Unknown Doctor",
-            specialty: d.subCategory || d.category || "Specialist",
+            specialty: d.primarySpecialty || d.subCategory || d.category || "Specialist",
+            tier: d.doctorLevel || d.taxonomy || "",
             rating: d.rating || "New",
             isFeatured: d.verified || d.tier === "premium",
-            image: d.image || (d.rawImages && d.rawImages.length > 0 ? d.rawImages[0] : null) || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Doc")}&background=0a2540&color=fff&size=400`
+            image: d.image || (d.galleryImages && d.galleryImages.length > 0 ? d.galleryImages[0] : null) || (d.rawImages && d.rawImages.length > 0 ? d.rawImages[0] : null) || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name || "Doc")}&background=0a2540&color=fff&size=400`
           }));
 
         setLiveDoctors(mappedData);
@@ -53,10 +54,22 @@ export default function DoctorsDirectoryHub() {
     const buckets = { general: [] as any[], specialists: [] as any[], superSpecialists: [] as any[] };
     
     liveDoctors.forEach(doc => {
-      const group = getTaxonomyGroup(doc.specialty);
-      if (group === "GENERAL") buckets.general.push(doc);
-      else if (group === "SPECIALIST") buckets.specialists.push(doc);
-      else buckets.superSpecialists.push(doc);
+      const tierLower = doc.tier.toLowerCase();
+      
+      // Trust the explicit tier from the crawler/admin first
+      if (tierLower.includes("super")) {
+        buckets.superSpecialists.push(doc);
+      } else if (tierLower.includes("general") || tierLower.includes("ayush") || tierLower.includes("mbbs")) {
+        buckets.general.push(doc);
+      } else if (tierLower === "specialist" || tierLower.includes("specialist")) {
+        buckets.specialists.push(doc);
+      } else {
+        // Fallback to text parsing if no explicit tier exists
+        const group = getTaxonomyGroup(doc.specialty);
+        if (group === "GENERAL") buckets.general.push(doc);
+        else if (group === "SPECIALIST") buckets.specialists.push(doc);
+        else buckets.superSpecialists.push(doc);
+      }
     });
     
     return buckets;
@@ -111,6 +124,7 @@ export default function DoctorsDirectoryHub() {
                       subtitle={doc.specialty} 
                       rating={doc.rating} 
                       icon="👨‍⚕️" 
+                      imageSrc={doc.image}
                       href={`/doctor/${doc.id}`} 
                       actionText="View Profile" 
                     />

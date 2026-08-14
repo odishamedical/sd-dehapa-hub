@@ -92,9 +92,15 @@ export default function AdminDashboard() {
   // Staging Grid State
   const [stagedListings, setStagedListings] = useState<StagedListing[]>([]);
   const [selectedListingIds, setSelectedListingIds] = useState<string[]>([]);
+  const [previewListing, setPreviewListing] = useState<StagedListing | null>(null);
   const [isExtracting, setIsExtracting] = useState(false);
   const [isInjecting, setIsInjecting] = useState(false);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
+
+  const handleSelectMainImage = (listingId: string, imgUrl: string) => {
+    setStagedListings(prev => prev.map(l => l.id === listingId ? { ...l, image: imgUrl } : l));
+    setPreviewListing(prev => prev ? { ...prev, image: imgUrl } : null);
+  };
 
   // Claims State Removed (Moved to AdminVerificationCRM)
 
@@ -603,8 +609,8 @@ export default function AdminDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                     {stagedListings.map((listing) => (
-                      <div key={listing.id} className={`relative bg-white border ${selectedListingIds.includes(listing.id) ? 'border-teal-500 ring-1 ring-teal-500' : 'border-slate-200'} rounded-xl p-4 shadow-sm transition-all flex gap-4`}>
-                        <div className="absolute top-4 right-4 z-10">
+                      <div key={listing.id} onClick={() => setPreviewListing(listing)} className={`relative bg-white border ${selectedListingIds.includes(listing.id) ? 'border-teal-500 ring-1 ring-teal-500' : 'border-slate-200 hover:border-teal-400'} rounded-xl p-4 shadow-sm transition-all flex gap-4 cursor-pointer`}>
+                        <div className="absolute top-4 right-4 z-10" onClick={(e) => e.stopPropagation()}>
                           <input 
                             type="checkbox" 
                             checked={selectedListingIds.includes(listing.id)}
@@ -803,6 +809,72 @@ export default function AdminDashboard() {
           {activeTab === "tenants" && (
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
               <AdminTenantGenerator />
+            </div>
+          )}
+
+          {/* Preview Modal for Crawler */}
+          {previewListing && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setPreviewListing(null)} />
+              <div className="relative bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+                <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                  <h3 className="font-bold text-lg text-slate-800 truncate">Extracted Data: {previewListing.name}</h3>
+                  <button onClick={() => setPreviewListing(null)} className="p-2 text-slate-400 hover:text-slate-600 bg-white rounded-full shadow-sm">✕</button>
+                </div>
+                <div className="p-6 overflow-y-auto bg-slate-50 flex-1">
+                  <div className="flex gap-4 mb-6">
+                    {previewListing.image && (
+                      <img src={previewListing.image} alt={previewListing.name} className="w-24 h-24 rounded-lg object-cover border border-slate-200 shadow-sm" />
+                    )}
+                    <div>
+                      <h2 className="text-xl font-black text-slate-900">{previewListing.name}</h2>
+                      <p className="text-sm text-slate-600 mt-1 flex items-center gap-1"><span className="text-teal-600">📍</span> {previewListing.address}</p>
+                      {previewListing.phone && <p className="text-sm text-slate-600 mt-1 flex items-center gap-1"><span className="text-teal-600">📞</span> {previewListing.phone}</p>}
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                     <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Metrics</h4>
+                        <p className="text-sm font-bold text-slate-800">⭐ {previewListing.rating || 'N/A'} <span className="text-slate-400 font-normal">({previewListing.reviews || 0} reviews)</span></p>
+                     </div>
+                     {previewListing.website && (
+                       <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Website</h4>
+                          <a href={previewListing.website} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-blue-600 hover:underline truncate block">{previewListing.website}</a>
+                       </div>
+                     )}
+                  </div>
+
+                  {/* Image Selector Gallery */}
+                  {(previewListing.rawImages?.length > 0 || previewListing.galleryImages?.length > 0) && (
+                    <div className="mb-6 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Select Main Image (Logo/Profile)</h4>
+                      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-300 snap-x">
+                         {Array.from(new Set([...(previewListing.rawImages || []), ...(previewListing.galleryImages || [])])).map((img, idx) => (
+                           <div 
+                             key={idx} 
+                             onClick={() => handleSelectMainImage(previewListing.id, img as string)}
+                             className={`w-24 h-24 shrink-0 snap-start rounded-xl cursor-pointer border-4 overflow-hidden transition-all ${previewListing.image === img ? 'border-teal-500 shadow-lg scale-100 ring-2 ring-teal-500 ring-offset-2' : 'border-transparent hover:border-teal-300 hover:scale-105 opacity-80 hover:opacity-100'}`}
+                           >
+                             <img src={img as string} className="w-full h-full object-cover" />
+                           </div>
+                         ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="bg-slate-900 rounded-xl p-4 overflow-x-auto">
+                    <div className="flex justify-between items-center mb-2 border-b border-slate-700 pb-2">
+                       <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Raw Data Dump</h4>
+                       <span className="text-[10px] text-teal-400 font-mono">{(previewListing.rawImages?.length || 0)} Raw Images | {(previewListing.galleryImages?.length || 0)} Gallery</span>
+                    </div>
+                    <pre className="text-[10px] text-green-400 font-mono whitespace-pre-wrap break-all">
+                      {JSON.stringify(previewListing, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
     </DashboardLayout>

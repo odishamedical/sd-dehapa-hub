@@ -8,11 +8,12 @@ interface SquareTicketProps {
   subtitle: string;
   rating: string;
   icon: string;
+  imageSrc?: string;
   href: string;
   actionText: string;
 }
 
-export default function SquareTicket({ title, subtitle, rating, icon, href, actionText }: SquareTicketProps) {
+export default function SquareTicket({ title, subtitle, rating, icon, imageSrc, href, actionText }: SquareTicketProps) {
   return (
     <Link href={href} className="block w-full">
       <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-3xl p-1 flex flex-col shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] hover:-translate-y-2 hover:shadow-[0_25px_50px_-10px_rgba(0,20,60,0.2)] transition-all group relative overflow-hidden h-full min-h-[260px]">
@@ -23,8 +24,14 @@ export default function SquareTicket({ title, subtitle, rating, icon, href, acti
         </div>
 
         {/* Image/Icon Area */}
-        <div className="flex-1 flex items-center justify-center p-6 rounded-t-3xl bg-white/10">
-           <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">{icon}</div>
+        <div className="flex-1 flex items-center justify-center p-6 rounded-t-3xl bg-white/10 relative overflow-hidden">
+           {imageSrc ? (
+             <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white/50 shadow-lg group-hover:scale-110 transition-transform bg-white">
+               <img src={imageSrc} alt={title} className="w-full h-full object-cover" />
+             </div>
+           ) : (
+             <div className="text-7xl drop-shadow-[0_10px_10px_rgba(0,0,0,0.15)] group-hover:scale-110 transition-transform">{icon}</div>
+           )}
         </div>
 
         {/* Content Area with Divider */}
