@@ -6,7 +6,9 @@ import { Building2, FlaskConical, Stethoscope, Truck, Activity, ArrowRight, Shie
 import V2Hero from "../components/V2Hero";
 import Link from "next/link";
 
-export default function JoinV2Page() {
+import { Suspense } from "react";
+
+function JoinV2Content() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const role = searchParams.get("role");
@@ -201,5 +203,17 @@ export default function JoinV2Page() {
       )}
 
     </div>
+  );
+}
+
+export default function JoinV2Page() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <JoinV2Content />
+    </Suspense>
   );
 }
