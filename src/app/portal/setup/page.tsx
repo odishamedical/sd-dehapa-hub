@@ -12,10 +12,9 @@ function SetupHealthPassportInner() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/portal';
 
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
-  const [age, setAge] = useState('');
-  const [sex, setSex] = useState('');
-  const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -33,7 +32,7 @@ function SetupHealthPassportInner() {
     e.preventDefault();
     if (!auth.currentUser) return;
     
-    if (!whatsapp || !age || !sex || !address) {
+    if (!name || !phone || !whatsapp) {
       setError("Please complete all fields to secure your health passport.");
       return;
     }
@@ -44,10 +43,9 @@ function SetupHealthPassportInner() {
     try {
       const userRef = doc(db, 'users', auth.currentUser.uid);
       await updateDoc(userRef, {
-        whatsapp,
-        age: parseInt(age),
-        sex,
-        address,
+        displayName: name,
+        phone: phone,
+        whatsapp: whatsapp,
         isProfileComplete: true,
         updatedAt: new Date()
       });
@@ -62,6 +60,11 @@ function SetupHealthPassportInner() {
       setError("Failed to save profile. Please try again.");
       setLoading(false);
     }
+  };
+
+  const handleSkip = () => {
+      // Just redirect them without completing profile
+      router.push(redirectUrl);
   };
 
   return (
@@ -96,6 +99,40 @@ function SetupHealthPassportInner() {
             <form onSubmit={handleSubmit} className="space-y-5">
               
               <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <UserCircle className="h-5 w-5 text-slate-500" />
+                  </div>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-slate-950/50 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                    placeholder="Your Full Name"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Phone className="h-5 w-5 text-slate-500" />
+                  </div>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-slate-950/50 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                    placeholder="+91 98765 43210"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -112,70 +149,23 @@ function SetupHealthPassportInner() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Age</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Activity className="h-5 w-5 text-slate-500" />
-                    </div>
-                    <input
-                      type="number"
-                      value={age}
-                      onChange={(e) => setAge(e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
-                      placeholder="e.g. 34"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Biological Sex</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <UserCircle className="h-5 w-5 text-slate-500" />
-                    </div>
-                    <select
-                      value={sex}
-                      onChange={(e) => setSex(e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-10 appearance-none focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
-                      required
-                    >
-                      <option value="" disabled>Select...</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                </div>
+              <div className="flex flex-col gap-3 mt-8">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-teal-400 to-emerald-500 hover:from-teal-300 hover:to-emerald-400 text-slate-900 py-4 rounded-xl font-black text-sm transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] hover:-translate-y-1 flex justify-center items-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Saving...' : 'Save & Continue'}
+                  {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  className="w-full bg-transparent border border-slate-700 hover:bg-slate-800 text-slate-300 py-4 rounded-xl font-bold text-sm transition-all flex justify-center items-center"
+                >
+                  Skip for now
+                </button>
               </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Current Location (City / Area)</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <MapPin className="h-5 w-5 text-slate-500" />
-                  </div>
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="w-full bg-slate-950/50 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
-                    placeholder="e.g. Bhubaneswar, Odisha"
-                    required
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-6 bg-gradient-to-r from-teal-400 to-emerald-500 hover:from-teal-300 hover:to-emerald-400 text-slate-900 py-4 rounded-xl font-black text-sm transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_30px_rgba(20,184,166,0.5)] hover:-translate-y-1 flex justify-center items-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Saving Identity...' : 'Save & Continue'}
-                {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
-              </button>
             </form>
             
           </div>

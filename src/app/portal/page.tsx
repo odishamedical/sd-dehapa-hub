@@ -320,9 +320,8 @@ export default function UserDashboard() {
              }
            }
            
-           if (!exemptRoles.includes(currentRole.toLowerCase())) {
-              window.location.href = '/portal/setup';
-           }
+           // Removed forced redirect to /portal/setup to allow read-only browsing
+           // If they want to book, ProfileBlockerModal will intercept.
         };
         checkRoleAndRedirect();
 
