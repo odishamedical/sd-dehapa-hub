@@ -127,8 +127,8 @@ export default function HospitalsDirectory() {
         highlight="Directory"
         subtitle="Find top-rated corporate hospitals, nursing homes, and specialized surgical centers."
         showSearch={true}
-        desktopBgImage="/pc-hospital.png"
-        mobileBgImage="/phone-hospital.png"
+        desktopBgImage="/v2/pc-hospital.png"
+        mobileBgImage="/v2/phone-hospital.png"
       />
 
       <div className="w-full flex justify-center px-4 mt-6 mb-12">

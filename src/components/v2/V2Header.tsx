@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Bell, ChevronDown, LogOut, Settings, Calendar, FileText, LayoutDashboard } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Settings, Calendar, FileText, LayoutDashboard, Menu, X } from "lucide-react";
 import Image from "next/image";
 
 export default function V2Header() {
@@ -10,6 +10,7 @@ export default function V2Header() {
   // Mock state to demonstrate both Auth views easily for you
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Smooth scroll background effect instead of hiding the header
   useEffect(() => {
@@ -85,11 +86,11 @@ export default function V2Header() {
         </button>
 
         {!isLoggedIn ? (
-          <div className="flex items-center gap-3">
-            <button className="text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors px-4 py-2">
+          <div className="flex items-center gap-2 lg:gap-3">
+            <button className="text-xs lg:text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors px-2 lg:px-4 py-2">
               Login
             </button>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2.5 px-6 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-0.5">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs lg:text-sm font-bold py-2 lg:py-2.5 px-3 lg:px-6 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-0.5">
               Sign Up
             </button>
           </div>
@@ -155,7 +156,42 @@ export default function V2Header() {
             </div>
           </div>
         )}
+
+        {/* Mobile Hamburger Menu Toggle */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="lg:hidden p-2 text-slate-700 hover:text-blue-600 transition-colors bg-white/40 backdrop-blur-md rounded-xl border border-white/60 shadow-sm"
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-2xl border-b border-white/80 shadow-2xl flex flex-col py-4 px-6 z-50 transition-all">
+          <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-lg font-bold text-slate-800 border-b border-slate-100 flex items-center gap-2">
+            Home
+          </Link>
+          
+          <div className="py-3 border-b border-slate-100 flex flex-col gap-2">
+            <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Find Care</span>
+            <Link href="/search/doctors" onClick={() => setIsMobileMenuOpen(false)} className="pl-4 py-2 text-base font-bold text-slate-700 hover:text-blue-600">Doctors</Link>
+            <Link href="/search/hospitals" onClick={() => setIsMobileMenuOpen(false)} className="pl-4 py-2 text-base font-bold text-slate-700 hover:text-blue-600">Hospitals</Link>
+            <Link href="/search/labs" onClick={() => setIsMobileMenuOpen(false)} className="pl-4 py-2 text-base font-bold text-slate-700 hover:text-blue-600">Labs</Link>
+            <Link href="/search/pharmacies" onClick={() => setIsMobileMenuOpen(false)} className="pl-4 py-2 text-base font-bold text-slate-700 hover:text-blue-600">Pharmacies</Link>
+          </div>
+
+          <div className="py-3 border-b border-slate-100 flex flex-col gap-2">
+            <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Telehealth</span>
+            <Link href="/search/doctors?mode=instant" onClick={() => setIsMobileMenuOpen(false)} className="pl-4 py-2 text-base font-bold text-slate-700 hover:text-indigo-600">Instant Video Call</Link>
+            <Link href="/search/doctors?mode=schedule" onClick={() => setIsMobileMenuOpen(false)} className="pl-4 py-2 text-base font-bold text-slate-700 hover:text-indigo-600">Schedule Consultation</Link>
+          </div>
+
+          <Link href="/join" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-lg font-bold text-slate-800 flex items-center gap-2 mt-2">
+            For Providers
+          </Link>
+        </div>
+      )}
     </header>
   );
 }

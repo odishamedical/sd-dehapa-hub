@@ -123,8 +123,8 @@ export default function LabsDirectory() {
         highlight="Labs"
         subtitle="Find certified pathology labs, radiology centers, and blood banks near you."
         showSearch={true}
-        desktopBgImage="/pc-lab.png"
-        mobileBgImage="/phone-lab.png"
+        desktopBgImage="/v2/pc-lab.png"
+        mobileBgImage="/v2/phone-lab.png"
       />
 
       <div className="w-full flex justify-center px-4 mt-6 mb-12">

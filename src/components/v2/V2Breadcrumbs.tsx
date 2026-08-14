@@ -18,7 +18,7 @@ export default function V2Breadcrumbs() {
   const pathSegments = pathname.split('/').filter(segment => segment !== '');
 
   return (
-    <div className="w-full bg-[#0a2540] text-slate-300 border-b border-[#0a2540] px-4 md:px-8 py-2.5 flex items-center z-40 relative shadow-inner">
+    <div className="w-full bg-[#0a2540] text-slate-300 border-b border-[#0a2540] px-4 md:px-8 py-2.5 flex items-center z-40 relative shadow-inner mt-20 md:mt-24">
       <nav className="max-w-7xl mx-auto w-full flex text-[13px] font-medium tracking-wide" aria-label="Breadcrumb">
         <ol className="flex items-center space-x-1 md:space-x-2">
           <li>

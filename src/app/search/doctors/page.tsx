@@ -133,8 +133,8 @@ export default function DoctorsDirectoryHub() {
         titleEnd="Near You"
         subtitle="Book appointments with trusted specialists, available for in-clinic visits and telemedicine."
         showSearch={true}
-        desktopBgImage="/pc-doctor.png"
-        mobileBgImage="/phone-doctor.png"
+        desktopBgImage="/v2/pc-doctor.png"
+        mobileBgImage="/v2/phone-doctor.png"
       />
 
       <div className="w-full flex justify-center px-4 mt-6 mb-12">
