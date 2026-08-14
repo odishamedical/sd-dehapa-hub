@@ -35,6 +35,7 @@ import GlobalScannerController from "@/components/GlobalScannerController";
 import GlobalTelemedicineFAB from "@/components/GlobalTelemedicineFAB";
 import DoctorCommandDock from "@/components/DoctorCommandDock";
 import UserPresenceProvider from "@/components/UserPresenceProvider";
+import GlobalFooter from "@/components/GlobalFooter";
 
 export default function RootLayout({
   children,
@@ -80,6 +81,7 @@ export default function RootLayout({
               </div>
             </div>
 
+            <GlobalFooter />
             <GlobalScannerController />
             <GlobalTelemedicineFAB />
             <DoctorCommandDock />

@@ -11,7 +11,7 @@ export default function V2Breadcrumbs() {
   // If we are exactly on /v2, we don't necessarily need breadcrumbs, but the user wants them for SEO.
   // Let's show "Home > V2" on the V2 root, and expand it for subpages.
   
-  if (!pathname || !pathname.startsWith('/v2')) {
+  if (!pathname || pathname === '/') {
     return null;
   }
 
@@ -24,7 +24,7 @@ export default function V2Breadcrumbs() {
           <li>
             <Link href="/" className="flex items-center hover:text-white transition-colors">
               <Home className="w-3.5 h-3.5 mr-1" />
-              Main Site
+              Home
             </Link>
           </li>
           
