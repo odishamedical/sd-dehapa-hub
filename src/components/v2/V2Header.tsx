@@ -11,6 +11,7 @@ export default function V2Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [userName, setUserName] = useState<string | null>(null);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -18,12 +19,15 @@ export default function V2Header() {
     const checkAuth = () => {
       const email = localStorage.getItem("sd_current_user_email");
       const name = localStorage.getItem("sd_current_user_name");
+      const avatar = localStorage.getItem("sd_current_user_avatar");
       if (email) {
         setIsLoggedIn(true);
         // Default to email prefix if name is not set
         setUserName(name && name !== "null" ? name : email.split('@')[0]);
+        setUserAvatar(avatar && avatar !== "null" ? avatar : null);
       } else {
         setIsLoggedIn(false);
+        setUserAvatar(null);
       }
     };
     
@@ -126,9 +130,13 @@ export default function V2Header() {
                 onBlur={() => setTimeout(() => setShowUserMenu(false), 200)}
                 className="flex items-center gap-2 p-1 pr-3 bg-white/60 backdrop-blur-md border border-white/80 rounded-full shadow-sm hover:shadow-md transition-all group"
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase">
-                  {userName ? userName.substring(0, 2) : "U"}
-                </div>
+                {userAvatar ? (
+                  <img src={userAvatar} alt={userName || "User"} className="w-9 h-9 rounded-full object-cover shadow-inner border border-white/60" />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase">
+                    {userName ? userName.substring(0, 2) : "U"}
+                  </div>
+                )}
                 <span className="text-sm font-bold text-slate-700 group-hover:text-blue-600 max-w-[100px] truncate">{userName || "User"}</span>
                 <ChevronDown className={`w-4 h-4 text-slate-500 group-hover:text-blue-600 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
               </button>
@@ -172,6 +180,7 @@ export default function V2Header() {
                         localStorage.removeItem("sd_current_user_name");
                         localStorage.removeItem("sd_current_user_uid");
                         localStorage.removeItem("sd_current_user_role");
+                        localStorage.removeItem("sd_current_user_avatar");
                         localStorage.removeItem("sd_current_user_profile_complete");
                         window.dispatchEvent(new Event("sd_auth_change"));
                         setIsLoggedIn(false);
