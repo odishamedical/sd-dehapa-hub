@@ -23,6 +23,7 @@ import AdminSupportTickets from '@/components/AdminSupportTickets';
 import AdminViralAnalytics from '@/components/AdminViralAnalytics';
 import AdminAdEngine from '@/components/AdminAdEngine';
 import AdminPlatformSettings from '@/components/AdminPlatformSettings';
+import AdminPageBuilder from '@/components/AdminPageBuilder';
 import AdminMasterSwitchboard from '@/components/AdminMasterSwitchboard';
 import AdminTenantGenerator from '@/components/AdminTenantGenerator';
 import AdminATSManagement from '@/components/AdminATSManagement';
@@ -366,6 +367,13 @@ export default function AdminDashboard() {
       icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
     },
     {
+      id: "page-builder",
+      label: "Page Builder",
+      section: "System Controls",
+      badge: "CMS",
+      icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
+    },
+    {
       id: "tenants",
       label: "App Generator",
       section: "System Controls",
@@ -441,6 +449,10 @@ export default function AdminDashboard() {
 
           {activeTab === "support" && (
             <AdminSupportTickets />
+          )}
+
+          {activeTab === "page-builder" && (
+            <AdminPageBuilder />
           )}
 
           {activeTab === "ads" && (
