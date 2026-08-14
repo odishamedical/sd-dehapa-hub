@@ -2,33 +2,31 @@
 
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { Activity, MapPin, Filter, ShieldCheck, Star, AlertCircle } from "lucide-react";
+import { Search, MapPin, Filter } from "lucide-react";
+import V2Hero from "@/components/v2/V2Hero";
+import SquareTicket from "@/components/v2/SquareTicket";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query } from "firebase/firestore";
 
-function SearchResultsContent() {
+function SearchEngineContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const initialType = searchParams.get('type') || 'all';
-  const initialQuery = searchParams.get('q') || '';
-  const initialCountry = searchParams.get('country') || 'India';
-  const initialState = searchParams.get('state') || '';
-  const initialDistrict = searchParams.get('district') || '';
+  // URL State Syncing
+  const [type, setType] = useState(searchParams.get('type') || 'all');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+  const [country, setCountry] = useState(searchParams.get('country') || 'India');
+  const [state, setState] = useState(searchParams.get('state') || '');
+  const [district, setDistrict] = useState(searchParams.get('district') || '');
 
-  const [type, setType] = useState(initialType);
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [country, setCountry] = useState(initialCountry);
-  const [state, setState] = useState(initialState);
-  const [district, setDistrict] = useState(initialDistrict);
+  // Mobile Filter Modal State
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   // Firebase Data States
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Update state when URL params change
+  // Sync state when URL params change
   useEffect(() => {
     setType(searchParams.get('type') || 'all');
     setSearchQuery(searchParams.get('q') || '');
@@ -37,17 +35,14 @@ function SearchResultsContent() {
     setDistrict(searchParams.get('district') || '');
   }, [searchParams]);
 
-  // Fetch from Firebase
+  // Fetch Live Data from Firebase
   useEffect(() => {
     const fetchResults = async () => {
       setLoading(true);
-      setError(null);
       try {
         const q = query(collection(db, 'directory'));
         const querySnapshot = await getDocs(q);
-        const docsData = querySnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter((d: any) => d.adminLocked !== true);
+        const docsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         const mappedData = docsData.map((d: any) => {
           const name = d.name || d.legalName || d.basicInfo?.fullName || d.firstName || "Unknown Entity";
@@ -56,13 +51,7 @@ function SearchResultsContent() {
           const state = d.state || "Odisha";
           const country = d.country || "India";
           
-          const tags = Array.isArray(d.tags) ? d.tags.join(' ') : '';
-          const services = Array.isArray(d.services) ? d.services.join(' ') : '';
-          const beds = Array.isArray(d.beds) ? d.beds.join(' ') : '';
-          const tests = Array.isArray(d.tests) ? d.tests.join(' ') : '';
-          const about = d.about || d.description || '';
-
-          const searchableString = `${name} ${subtitle} ${city} ${state} ${country} ${tags} ${services} ${beds} ${tests} ${about} ${d.category || ''}`.toLowerCase();
+          const searchableString = `${name} ${subtitle} ${city} ${state} ${country} ${d.category || ''}`.toLowerCase();
 
           return {
             id: d.id,
@@ -70,13 +59,7 @@ function SearchResultsContent() {
             name: name,
             subtitle: subtitle,
             location: `${city}, ${state}`,
-            rating: d.rating || 0,
-            verified: d.verified || false,
-            experience: d.experience,
-            beds: d.beds,
-            tests: d.tests,
-            delivery: d.delivery,
-            response: d.response,
+            rating: d.rating || "4.8", // Default for demo
             country: country,
             state: state,
             district: d.district || "Unknown",
@@ -85,9 +68,8 @@ function SearchResultsContent() {
         });
 
         setResults(mappedData);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Error fetching search results:", err);
-        setError(err.message || "Failed to load data.");
       } finally {
         setLoading(false);
       }
@@ -96,21 +78,7 @@ function SearchResultsContent() {
     fetchResults();
   }, []);
 
-  const handleCountryChange = (val: string) => {
-    setCountry(val);
-    if (val !== 'India') {
-      setState('');
-      setDistrict('');
-    }
-  };
-
-  const handleStateChange = (val: string) => {
-    setState(val);
-    if (val !== 'Odisha') {
-      setDistrict('');
-    }
-  };
-
+  // Update URL parameters to trigger a new search shareable link
   const handleUpdateFilter = () => {
     const params = new URLSearchParams();
     if (type !== 'all') params.append('type', type);
@@ -119,9 +87,11 @@ function SearchResultsContent() {
     if (state) params.append('state', state);
     if (district) params.append('district', district);
     
-    router.push(`/search?${params.toString()}`);
+    router.push(`/v2/search?${params.toString()}`);
+    setIsMobileFilterOpen(false); // Close modal on apply
   };
 
+  // Client-Side Filtering Engine
   const filteredResults = results.filter(item => {
     if (type !== "all" && item.type !== type) return false;
     if (searchQuery) {
@@ -129,8 +99,6 @@ function SearchResultsContent() {
       const matches = queryTerms.every(term => item.searchableString.includes(term));
       if (!matches) return false;
     }
-    
-    // Cascading Location Logic Match
     if (district && item.district.toLowerCase() !== district.toLowerCase()) return false;
     if (state && item.state.toLowerCase() !== state.toLowerCase()) return false;
     if (country && item.country.toLowerCase() !== country.toLowerCase()) return false;
@@ -138,235 +106,222 @@ function SearchResultsContent() {
     return true;
   });
 
-  return (
-    <div className="min-h-screen bg-[#F9FAFB] font-sans pb-24">
-      {/* Header Area */}
-      <div className="bg-teal-900 text-white pt-24 pb-12 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 150%, #14b8a6 0%, transparent 50%)' }}></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2 text-teal-200 hover:text-white text-sm font-bold uppercase tracking-widest mb-4 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Back to Home
-          </Link>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-            Search Results
-          </h1>
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="bg-teal-800/50 border border-teal-700/50 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-              <Activity className="w-4 h-4 text-teal-300" />
-              <span className="capitalize">{type === 'all' ? 'All Services' : type}</span>
-            </div>
-            <div className="bg-teal-800/50 border border-teal-700/50 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-teal-300" />
-              <span>{district ? district + ', ' : ''}{state ? state + ', ' : ''}{country}</span>
-            </div>
-            {searchQuery && (
-              <div className="bg-teal-800/50 border border-teal-700/50 px-4 py-2 rounded-full text-sm font-medium">
-                "{searchQuery}"
-              </div>
-            )}
-          </div>
+  // Extracted Filter UI to reuse in both Sidebar and Mobile Modal
+  const renderFilters = () => (
+    <div className="space-y-6">
+      {/* Keyword Search */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Search</label>
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input 
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Names, specialties..."
+            className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl pl-9 pr-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
+          />
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 mt-8 relative z-20">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          
-          {/* Left Sidebar: Filters */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 sticky top-24">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-bold text-slate-900 uppercase tracking-widest text-sm">Refine Search</h3>
-                <Filter className="w-4 h-4 text-slate-400" />
-              </div>
-              
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Listing Type</label>
-                  <select value={type} onChange={(e) => setType(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
-                    <option value="all">All Services</option>
-                    <option value="doctor">Doctors</option>
-                    <option value="hospital">Hospitals</option>
-                    <option value="ambulance">Ambulances</option>
-                    <option value="pharmacy">Pharmacies</option>
-                    <option value="lab">Pathology Labs</option>
-                  </select>
-                </div>
+      {/* Listing Type Dropdown */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Type</label>
+        <select 
+          value={type} 
+          onChange={(e) => setType(e.target.value)} 
+          className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl px-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner appearance-none"
+        >
+          <option value="all">All Services</option>
+          <option value="doctor">Doctors</option>
+          <option value="hospital">Hospitals</option>
+          <option value="ambulance">Ambulances</option>
+          <option value="pharmacy">Pharmacies</option>
+          <option value="lab">Pathology Labs</option>
+        </select>
+      </div>
 
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Search</label>
-                  <input 
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Name, specialty..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                  />
-                </div>
+      {/* 5-Tier Location: State */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">State</label>
+        <div className="relative">
+          <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <select 
+            value={state} 
+            onChange={(e) => setState(e.target.value)}
+            className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl pl-9 pr-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner appearance-none"
+          >
+            <option value="">All States</option>
+            <option value="Odisha">Odisha</option>
+          </select>
+        </div>
+      </div>
 
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Location</label>
-                  <div className="space-y-2">
-                    <select value={country} onChange={(e) => handleCountryChange(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
-                      <option value="India">India</option>
-                      <option value="USA">USA</option>
-                      <option value="UK">United Kingdom</option>
-                      <option value="UAE">UAE</option>
-                      <option value="Australia">Australia</option>
-                      <option value="Canada">Canada</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    
-                    {country === 'India' ? (
-                      <select value={state} onChange={(e) => handleStateChange(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
-                        <option value="">Any State</option>
-                        <option value="Odisha">Odisha</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Karnataka">Karnataka</option>
-                        <option value="Delhi">Delhi</option>
-                      </select>
-                    ) : (
-                      <input 
-                        type="text"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                        placeholder="Enter State"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                      />
-                    )}
+      {/* 5-Tier Location: District */}
+      <div className="space-y-2">
+        <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">District</label>
+        <select 
+          value={district} 
+          onChange={(e) => setDistrict(e.target.value)}
+          disabled={!state}
+          className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-xl px-4 py-3 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 transition-all shadow-inner disabled:opacity-50 appearance-none"
+        >
+          <option value="">All Districts</option>
+          <option value="Khordha">Khordha</option>
+          <option value="Cuttack">Cuttack</option>
+          <option value="Ganjam">Ganjam</option>
+          <option value="Puri">Puri</option>
+        </select>
+      </div>
 
-                    {country === 'India' && state === 'Odisha' ? (
-                      <select value={district} onChange={(e) => setDistrict(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
-                        <option value="">Any District</option>
-                        <option value="Bhubaneswar">Bhubaneswar</option>
-                        <option value="Cuttack">Cuttack</option>
-                        <option value="Puri">Puri</option>
-                        <option value="Rourkela">Rourkela</option>
-                      </select>
-                    ) : (
-                      <input 
-                        type="text"
-                        value={district}
-                        onChange={(e) => setDistrict(e.target.value)}
-                        placeholder="Enter District/City"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                      />
-                    )}
-                  </div>
-                </div>
+      {/* Apply Filter Button */}
+      <button 
+        onClick={handleUpdateFilter}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-[0_4px_14px_rgba(37,99,235,0.3)] transition-all mt-4"
+      >
+        Apply Filters
+      </button>
+    </div>
+  );
 
-                <button onClick={handleUpdateFilter} className="w-full py-3 bg-slate-900 hover:bg-black text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md">
-                  Update Results
-                </button>
-              </div>
-            </div>
-          </div>
+  return (
+    <div className="w-full flex flex-col items-center">
+      
+      {/* Shared Modular Hero (Search Bar Disabled to prevent duplication with Sidebar) */}
+      <V2Hero 
+        titleStart="Find"
+        highlight="Specialists"
+        subtitle="Search thousands of verified medical professionals across the state."
+        showSearch={false}
+        desktopBgImage="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=2000&h=600"
+        mobileBgImage="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800&h=800"
+      />
 
-          {/* Right Column: Results Grid */}
-          <div className="lg:col-span-3">
+      {/* 2-Column Search Layout */}
+      <div className="w-full max-w-[1400px] px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8 relative z-10">
+        
+        {/* ==============================
+            LEFT: THE GLASS SIDEBAR (Hidden on Mobile)
+            ============================== */}
+        <div className="hidden lg:block w-1/4 flex-shrink-0">
+          <div className="bg-[linear-gradient(135deg,rgba(255,255,255,0.7)_0%,rgba(255,255,255,0.2)_100%)] backdrop-blur-2xl border border-white/50 rounded-3xl p-6 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.9),0_15px_35px_rgba(0,100,200,0.08)] sticky top-24">
             
-            <div className="mb-6 flex justify-between items-center">
-              <p className="text-slate-500 font-medium">Found {loading ? "..." : filteredResults.length} result(s) for your search.</p>
-            </div>
-
-            <div className="flex flex-col gap-6">
-              
-              {loading ? (
-                <div className="col-span-full py-20 flex justify-center items-center">
-                  <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              ) : error ? (
-                <div className="col-span-full py-20 text-center bg-red-50 rounded-3xl border border-red-100 shadow-sm">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-red-400">
-                    <AlertCircle className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-red-900 mb-2">Database Error</h3>
-                  <p className="text-red-500 max-w-sm mx-auto">{error}</p>
-                </div>
-              ) : filteredResults.length === 0 ? (
-                <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">No Results Found</h3>
-                  <p className="text-slate-500 max-w-sm mx-auto">We couldn't find any listings matching your specific filters. Try broadening your location or entity type.</p>
-                </div>
-              ) : (
-                filteredResults.map(result => (
-                  <div key={result.id} className="bg-white rounded-3xl p-4 sm:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(20,184,166,0.15)] border border-slate-100 transition-all duration-300 group flex flex-col md:flex-row gap-6 relative overflow-hidden items-stretch">
-                    
-                    {/* Hover Glow Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-teal-50/0 via-teal-50/30 to-teal-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-                    {/* Column 1: Image / Avatar (20-30%) */}
-                    <div className="w-full md:w-48 shrink-0 flex flex-col items-center justify-center relative">
-                      <div className="w-full h-48 md:h-full min-h-[120px] rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 flex items-center justify-center text-4xl shadow-inner relative overflow-hidden group-hover:scale-[1.02] transition-transform">
-                        {result.type === 'doctor' && '👨‍⚕️'}
-                        {result.type === 'hospital' && '🏥'}
-                        {result.type === 'lab' && '🔬'}
-                        {result.type === 'pharmacy' && '💊'}
-                        {result.type === 'ambulance' && '🚑'}
-                        {result.type === 'unknown' && '✨'}
-                      </div>
-                    </div>
-
-                    {/* Column 2: Details (50%) */}
-                    <div className="flex-1 flex flex-col justify-center relative z-10 py-2">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="bg-amber-50 text-amber-600 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-amber-200 shadow-sm">
-                          <Star className="w-3 h-3 fill-current" /> {result.rating || 'New'}
-                        </div>
-                        {result.verified && (
-                          <div className="bg-emerald-50 text-emerald-600 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-emerald-200 shadow-sm">
-                            <ShieldCheck className="w-3 h-3" /> Verified
-                          </div>
-                        )}
-                      </div>
-                      
-                      <h3 className="text-xl md:text-2xl font-black text-slate-800 mb-1 group-hover:text-teal-600 transition-colors">{result.name}</h3>
-                      <p className="text-teal-600 font-bold text-sm uppercase tracking-wider mb-4">{result.subtitle}</p>
-                      
-                      <div className="flex flex-wrap items-center gap-4 text-slate-500 text-sm mt-auto">
-                        <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                          <MapPin className="w-4 h-4 text-teal-500" />
-                          <span className="font-medium">{result.location}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Column 3: CTA Button (20%) */}
-                    <div className="w-full md:w-48 shrink-0 flex flex-col items-center justify-center relative z-10 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6">
-                      <Link href={`/profile/${result.type}/${result.id}`} className="w-full py-4 bg-white border-2 border-teal-500 text-teal-600 hover:bg-teal-500 hover:text-white text-center font-bold text-sm uppercase tracking-widest rounded-xl transition-all shadow-sm hover:shadow-[0_10px_20px_rgba(20,184,166,0.3)] hover:-translate-y-1">
-                        View Profile
-                      </Link>
-                      <p className="text-xs text-slate-400 font-medium mt-3 text-center">Available Online</p>
-                    </div>
-
-                  </div>
-                ))
-              )}
-
+            <div className="flex items-center justify-between mb-6 border-b border-white/40 pb-4">
+              <h3 className="font-black text-[#0a2540] text-xl">Filters</h3>
+              <Filter className="w-5 h-5 text-blue-600" />
             </div>
             
-            <div className="mt-8 text-center bg-teal-50 rounded-2xl p-8 border border-teal-100">
-               <h4 className="text-teal-900 font-bold mb-2">Can't find what you're looking for?</h4>
-               <p className="text-teal-700 text-sm mb-4">Our concierge team can help you find the right provider.</p>
-               <button onClick={() => window.dispatchEvent(new Event('open-telemedicine-fab'))} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider shadow-lg transition-all hover:scale-105">
-                 Contact Concierge
-               </button>
-            </div>
-
+            {renderFilters()}
           </div>
         </div>
-      </main>
+
+        {/* ==============================
+            RIGHT: THE RESULTS GRID 
+            ============================== */}
+        <div className="w-full lg:w-3/4 flex flex-col">
+          <div className="mb-6 flex justify-between items-end border-b border-white/40 pb-2">
+            <h2 className="text-2xl font-black text-[#0a2540]">Search Results</h2>
+            <span className="text-sm font-bold text-slate-500">{filteredResults.length} Found</span>
+          </div>
+
+          {loading ? (
+            <div className="w-full flex justify-center py-20">
+               <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : filteredResults.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredResults.map((item) => (
+                <SquareTicket 
+                  key={item.id}
+                  title={item.name}
+                  subtitle={item.subtitle}
+                  rating={item.rating}
+                  icon={item.type === 'hospital' ? '🏥' : item.type === 'pharmacy' ? '💊' : '👨‍⚕️'}
+                  href={`/v2/${item.type}/${item.id}`}
+                  actionText="View Profile"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full flex flex-col items-center justify-center py-20 bg-white/10 backdrop-blur-md rounded-3xl border border-white/30 text-center px-4">
+              <span className="text-6xl mb-4">🔍</span>
+              <h3 className="text-xl font-black text-slate-700 mb-2">No results found</h3>
+              <p className="text-slate-500 font-medium">Try adjusting your filters or searching for a different term.</p>
+              <button 
+                onClick={() => router.push('/v2/search')}
+                className="mt-6 text-blue-600 font-bold hover:underline"
+              >
+                Clear all filters
+              </button>
+            </div>
+          )}
+        </div>
+
+      </div>
+
+      {/* ==============================
+          MOBILE FLOATING FILTER BUTTON
+          ============================== */}
+      <div className="fixed bottom-6 right-6 lg:hidden z-40">
+        <button 
+          onClick={() => setIsMobileFilterOpen(true)}
+          className="bg-blue-600 text-white rounded-full p-4 shadow-[0_10px_25px_rgba(37,99,235,0.5)] flex items-center justify-center hover:scale-105 transition-transform"
+        >
+          <Filter className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* ==============================
+          MOBILE BOTTOM SHEET MODAL
+          ============================== */}
+      {isMobileFilterOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end lg:hidden">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            onClick={() => setIsMobileFilterOpen(false)}
+          />
+          
+          {/* Bottom Sheet */}
+          <div className="relative w-full bg-[linear-gradient(135deg,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.7)_100%)] backdrop-blur-3xl border-t border-white/80 rounded-t-3xl p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] pb-12 max-h-[85vh] overflow-y-auto slide-up-animation">
+            
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+            </div>
+
+            <div className="flex items-center justify-between mb-6 border-b border-white/40 pb-4">
+              <h3 className="font-black text-[#0a2540] text-2xl">Refine Search</h3>
+              <button onClick={() => setIsMobileFilterOpen(false)} className="text-slate-500 font-bold bg-white/50 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
+            </div>
+            
+            {renderFilters()}
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .slide-up-animation {
+          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
 
-export default function SearchPage() {
+export default function V2SearchPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center"><div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div></div>}>
-      <SearchResultsContent />
-    </Suspense>
+    <div className="min-h-screen pb-20 relative">
+      <Suspense fallback={
+        <div className="w-full h-screen flex items-center justify-center bg-transparent">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }>
+        <SearchEngineContent />
+      </Suspense>
+    </div>
   );
 }
