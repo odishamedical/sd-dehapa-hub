@@ -249,25 +249,27 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             {/* Map & Contact Card */}
             <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-6 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] overflow-hidden relative">
               {profile.mapUrl ? (
-                <a href={profile.mapUrl} target="_blank" rel="noopener noreferrer" className="block w-full h-48 bg-slate-200 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-inner group cursor-pointer">
-                   <Image src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800&h=400" fill className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Map" />
-                   <div className="absolute inset-0 flex items-center justify-center bg-blue-900/10">
-                     <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center border-2 border-white shadow-xl animate-bounce">
-                       <MapPin className="w-7 h-7 text-blue-600" />
-                     </div>
-                   </div>
-                   <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm text-xs font-bold text-blue-600 px-3 py-1 rounded-full shadow-sm">
-                     Open in Google Maps
-                   </div>
-                </a>
+                <div className="w-full h-56 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-[0_10px_20px_rgba(0,0,0,0.1)] group">
+                  <iframe 
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.clinicName || profile.name || '')}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                    className="w-full h-full border-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                  <a href={profile.mapUrl} target="_blank" rel="noopener noreferrer" className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg transition-transform hover:scale-105">
+                     Open in App
+                  </a>
+                </div>
               ) : (
-                <div className="w-full h-48 bg-slate-200 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-inner group">
-                   <Image src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800&h=400" fill className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Map" />
-                   <div className="absolute inset-0 flex items-center justify-center bg-blue-900/10">
-                     <div className="w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center border-2 border-white shadow-xl animate-bounce">
-                       <MapPin className="w-7 h-7 text-blue-600" />
-                     </div>
-                   </div>
+                <div className="w-full h-56 rounded-3xl mb-6 overflow-hidden relative border-4 border-white shadow-[0_10px_20px_rgba(0,0,0,0.1)] group bg-slate-100 flex flex-col items-center justify-center">
+                  <iframe 
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(profile.address || profile.clinicName || profile.name || '')}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                    className="w-full h-full border-0 absolute inset-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
                 </div>
               )}
 
