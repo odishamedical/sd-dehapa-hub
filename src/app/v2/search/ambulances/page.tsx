@@ -2,10 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
-import SquareTicket from "../components/SquareTicket";
-import WideTicket from "../components/WideTicket";
-import AdBanner from "../components/AdBanner";
-import V2Hero from "../components/V2Hero";
+import SquareTicket from "../../components/SquareTicket";
+import WideTicket from "../../components/WideTicket";
+import AdBanner from "../../components/AdBanner";
+import V2Hero from "../../components/V2Hero";
 
 // Dummy data using actual database schema (lifeSupportLevel)
 const MOCK_AMBULANCES = [

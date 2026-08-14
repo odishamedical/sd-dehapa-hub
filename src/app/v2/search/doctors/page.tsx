@@ -2,10 +2,10 @@
 
 import React, { useMemo } from "react";
 import Link from "next/link";
-import SquareTicket from "../components/SquareTicket";
-import PortraitTicket from "../components/PortraitTicket";
-import AdBanner from "../components/AdBanner";
-import V2Hero from "../components/V2Hero";
+import SquareTicket from "../../components/SquareTicket";
+import PortraitTicket from "../../components/PortraitTicket";
+import AdBanner from "../../components/AdBanner";
+import V2Hero from "../../components/V2Hero";
 import { getTaxonomyGroup } from "../../../data/taxonomy";
 
 // Dummy data to simulate the massive SEO database
