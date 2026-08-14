@@ -44,9 +44,10 @@ export default function ShareProfileButton() {
     <div className="relative">
       <button 
         onClick={handleNativeShare}
-        className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold px-4 py-3 rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
+        className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold px-6 py-3 rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 h-full"
       >
         <Share2 className="w-5 h-5" />
+        <span className="text-sm uppercase tracking-wider">SHARE</span>
       </button>
 
       {showMenu && (

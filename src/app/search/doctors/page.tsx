@@ -157,32 +157,56 @@ export default function DoctorsDirectoryHub() {
         </Link>
       </div>
 
-      {/* Row 1: Super Specialists */}
-      <section className="w-full max-w-7xl mb-16 px-4 md:px-8">
-        <div className="mb-6 flex justify-between items-end border-b border-white/40 pb-2">
-          <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Super Specialists</h2>
-          <span className="text-sm font-bold text-slate-500 uppercase tracking-widest bg-white/30 px-3 py-1 rounded-full">Group C</span>
-        </div>
-        {renderGridWithAds(superSpecialists)}
-      </section>
+      {/* Helper to group docs by specialty */}
+      {(() => {
+        const renderGroup = (docs: any[], groupName: string, groupBadge: string, badgeColor: string) => {
+          if (docs.length === 0) return null;
+          
+          const groups: Record<string, any[]> = {};
+          docs.forEach(d => {
+            const sp = d.specialty || "General Physician";
+            if (!groups[sp]) groups[sp] = [];
+            groups[sp].push(d);
+          });
+          
+          const sortedGroups = Object.entries(groups).sort((a, b) => b[1].length - a[1].length);
 
-      {/* Row 2: Specialists */}
-      <section className="w-full max-w-7xl mb-16 px-4 md:px-8">
-        <div className="mb-6 flex justify-between items-end border-b border-white/40 pb-2">
-          <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Specialists</h2>
-          <span className="text-sm font-bold text-slate-500 uppercase tracking-widest bg-white/30 px-3 py-1 rounded-full">Group B</span>
-        </div>
-        {renderGridWithAds(specialists)}
-      </section>
+          return (
+            <>
+              <div className="w-full max-w-7xl mb-8 mt-12 px-4 md:px-8 flex items-center justify-center relative">
+                <div className="absolute w-full h-px bg-white/50 top-1/2 left-0 z-0"></div>
+                <div className={`relative z-10 ${badgeColor} text-white px-8 py-2 rounded-full font-black text-lg tracking-widest uppercase shadow-md`}>
+                   {groupName}
+                </div>
+              </div>
+              
+              {sortedGroups.map(([specialty, specialtyDocs]) => {
+                const heading = specialty.endsWith('s') ? `Top ${specialty}` : `Top ${specialty}s`;
+                return (
+                  <section key={specialty} className="w-full max-w-7xl mb-16 px-4 md:px-8">
+                    <div className="mb-6 flex justify-between items-end border-b border-white/40 pb-2">
+                      <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">{heading}</h2>
+                      <span className="text-sm font-bold text-slate-500 uppercase tracking-widest bg-white/30 px-3 py-1 rounded-full flex gap-2 items-center">
+                        <span className="text-xs text-slate-400">Popular</span>
+                        {groupBadge}
+                      </span>
+                    </div>
+                    {renderGridWithAds(specialtyDocs)}
+                  </section>
+                );
+              })}
+            </>
+          );
+        };
 
-      {/* Row 3: General Practitioners */}
-      <section className="w-full max-w-7xl mb-16 px-4 md:px-8">
-        <div className="mb-6 flex justify-between items-end border-b border-white/40 pb-2">
-          <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">General Practitioners</h2>
-          <span className="text-sm font-bold text-slate-500 uppercase tracking-widest bg-white/30 px-3 py-1 rounded-full">Group A</span>
-        </div>
-        {renderGridWithAds(general)}
-      </section>
+        return (
+          <>
+            {renderGroup(superSpecialists, "Super Specialists", "Group C", "bg-[#0a2540]")}
+            {renderGroup(specialists, "Specialists", "Group B", "bg-blue-600")}
+            {renderGroup(general, "General Practitioners", "Group A", "bg-emerald-600")}
+          </>
+        );
+      })()}
 
     </div>
   );
