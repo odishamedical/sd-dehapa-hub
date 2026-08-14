@@ -27,6 +27,33 @@ function LoginContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Auto-redirect if already logged in
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const email = localStorage.getItem("sd_current_user_email");
+      const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
+      const role = localStorage.getItem("sd_current_user_role") || "user";
+      
+      if (email) {
+        // We know the getSmartRedirect function is defined below, but we can just duplicate its simple logic or use a static route
+        let finalRedirect = redirectUrl;
+        if (finalRedirect === '/portal') {
+          if (role === 'doctor') finalRedirect = '/portal/doctor';
+          else if (role === 'hospital') finalRedirect = '/portal/hospital';
+          else if (role === 'pharmacy') finalRedirect = '/portal/pharmacy';
+          else if (role === 'lab') finalRedirect = '/portal/lab';
+          else if (role === 'super_admin') finalRedirect = '/portal/admin';
+        }
+        
+        if (!isProfileComplete) {
+          router.replace(`/portal/setup?redirect=${encodeURIComponent(finalRedirect)}`);
+        } else {
+          router.replace(finalRedirect);
+        }
+      }
+    }
+  }, [router, redirectUrl]);
+
   // Save user to Firestore after login
   const saveUserToFirestore = async (user: any, additionalData: any = {}) => {
     const userRef = doc(db, 'users', user.uid);

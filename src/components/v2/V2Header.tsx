@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Bell, ChevronDown, LogOut, Settings, Calendar, FileText, LayoutDashboard, Menu, X } from "lucide-react";
 import Image from "next/image";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 export default function V2Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,7 +20,8 @@ export default function V2Header() {
       const name = localStorage.getItem("sd_current_user_name");
       if (email) {
         setIsLoggedIn(true);
-        setUserName(name || "User");
+        // Default to email prefix if name is not set
+        setUserName(name && name !== "null" ? name : email.split('@')[0]);
       } else {
         setIsLoggedIn(false);
       }
@@ -123,10 +126,10 @@ export default function V2Header() {
                 onBlur={() => setTimeout(() => setShowUserMenu(false), 200)}
                 className="flex items-center gap-2 p-1 pr-3 bg-white/60 backdrop-blur-md border border-white/80 rounded-full shadow-sm hover:shadow-md transition-all group"
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-inner">
-                  JS
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-inner uppercase">
+                  {userName ? userName.substring(0, 2) : "U"}
                 </div>
-                <span className="text-sm font-bold text-slate-700 group-hover:text-blue-600">John</span>
+                <span className="text-sm font-bold text-slate-700 group-hover:text-blue-600 max-w-[100px] truncate">{userName || "User"}</span>
                 <ChevronDown className={`w-4 h-4 text-slate-500 group-hover:text-blue-600 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
               </button>
 
@@ -159,13 +162,20 @@ export default function V2Header() {
                   {/* Logout Footer */}
                   <div className="border-t border-slate-100 py-2">
                     <button 
-                      onClick={() => {
+                      onClick={async () => {
+                        try {
+                          await signOut(auth);
+                        } catch (e) {
+                          console.error("Firebase logout failed", e);
+                        }
                         localStorage.removeItem("sd_current_user_email");
                         localStorage.removeItem("sd_current_user_name");
                         localStorage.removeItem("sd_current_user_uid");
                         localStorage.removeItem("sd_current_user_role");
+                        localStorage.removeItem("sd_current_user_profile_complete");
                         window.dispatchEvent(new Event("sd_auth_change"));
                         setIsLoggedIn(false);
+                        window.location.href = "/";
                       }}
                       className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors text-left"
                     >
