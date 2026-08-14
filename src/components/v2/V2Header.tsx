@@ -98,14 +98,6 @@ export default function V2Header() {
 
       {/* Auth & Actions */}
       <div className="flex items-center gap-4">
-        {/* Toggle State Button (Just for you to easily test the UI) */}
-        <button 
-          onClick={() => setIsLoggedIn(!isLoggedIn)} 
-          className="text-[10px] uppercase font-bold tracking-wider text-slate-400 border border-slate-200 px-2 py-1 rounded hidden lg:block hover:bg-slate-50 hover:text-slate-600 transition-colors"
-          title="Toggle Login State for Demo"
-        >
-          Toggle Auth
-        </button>
 
         {!isLoggedIn ? (
           <div className="flex items-center gap-2 lg:gap-3">
