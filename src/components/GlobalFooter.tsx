@@ -107,12 +107,12 @@ export default function GlobalFooter() {
               For Patients
             </h4>
             <ul className="space-y-4">
-              <li><Link href="/doctors" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Find a Specialist</Link></li>
-              <li><Link href="/hospitals" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Book Hospital Beds</Link></li>
-              <li><Link href="/labs" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Diagnostic Tests & Scans</Link></li>
-              <li><Link href="/pharmacies" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Order Medicines</Link></li>
+              <li><Link href="/search/doctors" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Find a Specialist</Link></li>
+              <li><Link href="/search/hospitals" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Book Hospital Beds</Link></li>
+              <li><Link href="/search/labs" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Diagnostic Tests & Scans</Link></li>
+              <li><Link href="/search/pharmacies" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Order Medicines</Link></li>
               <li><Link href="/portal" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />My Health Vault</Link></li>
-              <li><Link href="#" className="group flex items-center text-sm font-bold text-rose-500 hover:text-rose-400 transition-colors mt-2"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
+              <li><Link href="/search/ambulances" className="group flex items-center text-sm font-bold text-rose-500 hover:text-rose-400 transition-colors mt-2"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
             </ul>
           </div>
 
@@ -123,12 +123,12 @@ export default function GlobalFooter() {
               <span className="transition group-open:rotate-180"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></span>
             </summary>
             <ul className="space-y-4 mt-6 px-2">
-              <li><Link href="/doctors" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Find a Specialist</Link></li>
-              <li><Link href="/hospitals" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Book Hospital Beds</Link></li>
-              <li><Link href="/labs" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Diagnostic Tests & Scans</Link></li>
-              <li><Link href="/pharmacies" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Order Medicines</Link></li>
+              <li><Link href="/search/doctors" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Find a Specialist</Link></li>
+              <li><Link href="/search/hospitals" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Book Hospital Beds</Link></li>
+              <li><Link href="/search/labs" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Diagnostic Tests & Scans</Link></li>
+              <li><Link href="/search/pharmacies" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Order Medicines</Link></li>
               <li><Link href="/portal" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">My Health Vault</Link></li>
-              <li><Link href="#" className="flex items-center text-sm font-bold text-rose-400 hover:text-rose-300"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
+              <li><Link href="/search/ambulances" className="flex items-center text-sm font-bold text-rose-400 hover:text-rose-300"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
             </ul>
           </details>
 
@@ -139,12 +139,12 @@ export default function GlobalFooter() {
               For Providers
             </h4>
             <ul className="space-y-4">
-              <li><Link href="/join/doctor" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Join as Doctor</Link></li>
-              <li><Link href="/join/hospital" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Partner Hospital Network</Link></li>
-              <li><Link href="/join/lab" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Diagnostic Lab Partners</Link></li>
-              <li><Link href="/join/pharmacy" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Pharmacy Network</Link></li>
-              <li><Link href="/join/ambulance" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Ambulance Network</Link></li>
-              <li><Link href="/portal/doctor" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Provider Portal Login</Link></li>
+              <li><Link href="/join" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Join as Doctor</Link></li>
+              <li><Link href="/join" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Partner Hospital Network</Link></li>
+              <li><Link href="/join" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Diagnostic Lab Partners</Link></li>
+              <li><Link href="/join" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Pharmacy Network</Link></li>
+              <li><Link href="/join" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Ambulance Network</Link></li>
+              <li><Link href="/portal" className="group flex items-center text-sm font-bold text-slate-500 hover:text-cyan-600 transition-colors"><ArrowRight className="w-3 h-3 mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-cyan-600" />Provider Portal Login</Link></li>
             </ul>
           </div>
 
@@ -155,12 +155,12 @@ export default function GlobalFooter() {
               <span className="transition group-open:rotate-180"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></span>
             </summary>
             <ul className="space-y-4 mt-6 px-2">
-              <li><Link href="/join/doctor" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Join as Doctor</Link></li>
-              <li><Link href="/join/hospital" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Partner Hospital Network</Link></li>
-              <li><Link href="/join/lab" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Diagnostic Lab Partners</Link></li>
-              <li><Link href="/join/pharmacy" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Pharmacy Network</Link></li>
-              <li><Link href="/join/ambulance" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Ambulance Network</Link></li>
-              <li><Link href="/portal/doctor" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Provider Portal Login</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Join as Doctor</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Partner Hospital Network</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Diagnostic Lab Partners</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Pharmacy Network</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Ambulance Network</Link></li>
+              <li><Link href="/portal" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Provider Portal Login</Link></li>
             </ul>
           </details>
 
