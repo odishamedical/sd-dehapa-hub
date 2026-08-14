@@ -98,14 +98,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         
-        {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-xs font-bold tracking-widest text-slate-500 uppercase mb-8">
-          <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-          <span>/</span>
-          <Link href={`/${type}s`} className="hover:text-blue-600 transition-colors">{type}s</Link>
-          <span>/</span>
-          <span className="text-[#0a2540]">{profile.name}</span>
-        </div>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
           
