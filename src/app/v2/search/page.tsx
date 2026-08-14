@@ -3,8 +3,8 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, MapPin, Filter } from "lucide-react";
-import V2Hero from "../../components/V2Hero";
-import SquareTicket from "../../components/SquareTicket";
+import V2Hero from "../components/V2Hero";
+import SquareTicket from "../components/SquareTicket";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query } from "firebase/firestore";
 
