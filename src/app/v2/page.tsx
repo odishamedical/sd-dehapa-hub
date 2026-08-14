@@ -34,7 +34,7 @@ export default function V2GlassHomepage() {
         <div className="flex overflow-x-auto lg:grid lg:grid-cols-6 gap-4 w-full pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] -mx-4 px-4 md:mx-0 md:px-0">
           
           {/* Service 1: Instant Video Call */}
-          <Link href="/v2/search/doctors?mode=instant-video" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/doctors?mode=instant" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-3">
               <Video className="w-7 h-7" />
             </div>
@@ -42,7 +42,7 @@ export default function V2GlassHomepage() {
           </Link>
 
           {/* Service 2: Schedule Video Call */}
-          <Link href="/v2/search/doctors?mode=schedule-video" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/doctors?mode=schedule" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-3">
               <Calendar className="w-7 h-7" />
             </div>
@@ -50,7 +50,7 @@ export default function V2GlassHomepage() {
           </Link>
 
           {/* Service 3: Book Clinic Visit */}
-          <Link href="/v2/search/doctors?mode=clinic" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
+          <Link href="/v2/search/doctors?mode=in-clinic" className="min-w-[150px] lg:min-w-0 snap-center group flex flex-col items-center justify-center bg-white/40 backdrop-blur-md border border-white/60 hover:border-blue-400 rounded-3xl p-6 shadow-[0_8px_30px_-10px_rgba(0,20,60,0.1)] transition-all hover:-translate-y-1">
             <div className="w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mb-3">
               <Building2 className="w-7 h-7" />
             </div>
@@ -219,7 +219,7 @@ export default function V2GlassHomepage() {
             </div>
           </div>
 
-          <Link href="/v2/search/doctors" className="relative z-10">
+          <Link href="/v2/search" className="relative z-10">
              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-12 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-transform hover:-translate-y-1">
                 Explore Services Now
              </button>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Bell, ChevronDown, LogOut, Settings, Calendar, FileText, LayoutDashboard } from "lucide-react";
+import Image from "next/image";
 
 export default function V2Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -28,8 +29,13 @@ export default function V2Header() {
       }`}
     >
       {/* Logo */}
-      <Link href="/v2" className="font-black text-2xl tracking-tight text-[#0a2540]">
-        dehapa<span className="text-blue-600">.v2</span>
+      <Link href="/v2" className="flex items-center gap-2 group">
+        <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
+          <Image src="/logo.png" alt="DehaPa Logo" fill sizes="40px" className="object-contain relative z-10" priority />
+        </div>
+        <span className="font-black text-2xl tracking-tight text-[#0a2540]">
+          dehapa<span className="text-blue-600">.v2</span>
+        </span>
       </Link>
 
       {/* Main Navigation */}
@@ -57,12 +63,12 @@ export default function V2Header() {
             Telehealth <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
           </button>
           <div className="absolute top-12 left-0 w-60 bg-white/95 backdrop-blur-xl border border-white/80 shadow-2xl rounded-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top group-hover:translate-y-0 translate-y-2">
-            <Link href="/v2/search/doctors?mode=instant-video" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Instant Video Call</Link>
-            <Link href="/v2/search/doctors?mode=schedule-video" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Schedule Consultation</Link>
+            <Link href="/v2/search/doctors?mode=instant" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Instant Video Call</Link>
+            <Link href="/v2/search/doctors?mode=schedule" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Schedule Consultation</Link>
           </div>
         </div>
 
-        <Link href="/partner" className="text-sm font-bold text-slate-700 hover:text-teal-700 bg-white/40 hover:bg-white/60 border border-white/60 px-4 py-2 rounded-full transition-all shadow-sm">
+        <Link href="/v2/join" className="text-sm font-bold text-slate-700 hover:text-teal-700 bg-white/40 hover:bg-white/60 border border-white/60 px-4 py-2 rounded-full transition-all shadow-sm">
           For Providers
         </Link>
       </nav>
