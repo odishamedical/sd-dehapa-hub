@@ -102,7 +102,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
         <div className="flex items-center gap-2 text-xs font-bold tracking-widest text-slate-500 uppercase mb-8">
           <Link href="/v2" className="hover:text-blue-600 transition-colors">Home</Link>
           <span>/</span>
-          <Link href={`/v2/${type}s`} className="hover:text-blue-600 transition-colors">{type}s</Link>
+          <Link href={`/${type}s`} className="hover:text-blue-600 transition-colors">{type}s</Link>
           <span>/</span>
           <span className="text-[#0a2540]">{profile.name}</span>
         </div>
@@ -285,21 +285,21 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Similar Providers</h2>
                <p className="text-slate-600 font-medium mt-2">Explore other highly rated {type}s near this location.</p>
              </div>
-             <Link href={`/v2/search/${type}s`} className="text-blue-600 font-bold hover:underline hidden sm:block">View All {type}s →</Link>
+             <Link href={`/search/${type}s`} className="text-blue-600 font-bold hover:underline hidden sm:block">View All {type}s →</Link>
            </div>
 
            {/* Render Specific Tickets based on Type */}
            {type === 'hospital' ? (
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <WideTicket title="Caremax General" subtitle="Multi-Specialty Facility" rating="4.9" icon="🏥" href="/v2/hospital/mock-1" actionText="View Services" stats="450 Beds • 24/7 ER" />
-                <WideTicket title="City Hope Hospital" subtitle="Advanced Care Center" rating="4.8" icon="🏨" href="/v2/hospital/mock-2" actionText="View Services" stats="200 Beds • Level 1 Trauma" />
+                <WideTicket title="Caremax General" subtitle="Multi-Specialty Facility" rating="4.9" icon="🏥" href="/hospital/mock-1" actionText="View Services" stats="450 Beds • 24/7 ER" />
+                <WideTicket title="City Hope Hospital" subtitle="Advanced Care Center" rating="4.8" icon="🏨" href="/hospital/mock-2" actionText="View Services" stats="200 Beds • Level 1 Trauma" />
              </div>
            ) : (
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                <SquareTicket title="Alternative Provider 1" subtitle="Top Rated" rating="4.9" icon="⭐" href={`/v2/${type}/mock-1`} actionText="View Profile" />
-                <SquareTicket title="Alternative Provider 2" subtitle="Highly Recommended" rating="4.8" icon="🌟" href={`/v2/${type}/mock-2`} actionText="View Profile" />
-                <SquareTicket title="Alternative Provider 3" subtitle="Verified" rating="4.7" icon="🛡️" href={`/v2/${type}/mock-3`} actionText="View Profile" />
-                <SquareTicket title="Alternative Provider 4" subtitle="Popular Choice" rating="5.0" icon="🔥" href={`/v2/${type}/mock-4`} actionText="View Profile" />
+                <SquareTicket title="Alternative Provider 1" subtitle="Top Rated" rating="4.9" icon="⭐" href={`/${type}/mock-1`} actionText="View Profile" />
+                <SquareTicket title="Alternative Provider 2" subtitle="Highly Recommended" rating="4.8" icon="🌟" href={`/${type}/mock-2`} actionText="View Profile" />
+                <SquareTicket title="Alternative Provider 3" subtitle="Verified" rating="4.7" icon="🛡️" href={`/${type}/mock-3`} actionText="View Profile" />
+                <SquareTicket title="Alternative Provider 4" subtitle="Popular Choice" rating="5.0" icon="🔥" href={`/${type}/mock-4`} actionText="View Profile" />
              </div>
            )}
         </div>

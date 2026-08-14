@@ -102,7 +102,7 @@ export default function DoctorsDirectoryHub() {
                       subtitle={doc.specialty} 
                       rating={doc.rating} 
                       imageSrc={doc.image || ""} 
-                      href={`/v2/doctor/${doc.id}`} 
+                      href={`/doctor/${doc.id}`} 
                       actionText="Book Consultation" 
                     />
                  ) : (
@@ -111,7 +111,7 @@ export default function DoctorsDirectoryHub() {
                       subtitle={doc.specialty} 
                       rating={doc.rating} 
                       icon="👨‍⚕️" 
-                      href={`/v2/doctor/${doc.id}`} 
+                      href={`/doctor/${doc.id}`} 
                       actionText="View Profile" 
                     />
                  )}

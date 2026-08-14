@@ -138,7 +138,7 @@ export default function V2Hero({
               </div>
 
               {/* Search Button */}
-              <Link href={`/v2/search?category=${selectedCategory.id}`} className="w-full md:w-auto mt-2 md:mt-0">
+              <Link href={`/search?category=${selectedCategory.id}`} className="w-full md:w-auto mt-2 md:mt-0">
                 <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-10 rounded-2xl md:rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_4px_10px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center text-xl hover:scale-105">
                   Search
                 </button>
@@ -148,13 +148,13 @@ export default function V2Hero({
 
           {/* Quick Action Buttons (2x1 Grid on Mobile, Row on PC) */}
           <div className="grid grid-cols-2 md:flex md:flex-row items-center gap-3 w-full">
-            <Link href="/v2/join?role=doctor" className="col-span-1 md:flex-none flex items-center justify-center gap-2 bg-[#0a2540] hover:bg-slate-800 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
+            <Link href="/join?role=doctor" className="col-span-1 md:flex-none flex items-center justify-center gap-2 bg-[#0a2540] hover:bg-slate-800 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
               <Stethoscope className="w-4 h-4 md:w-5 md:h-5" /> <span className="hidden sm:inline">Join as </span>Doctor
             </Link>
-            <Link href="/v2/join?role=hospital" className="col-span-1 md:flex-none flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
+            <Link href="/join?role=hospital" className="col-span-1 md:flex-none flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
               <Building2 className="w-4 h-4 md:w-5 md:h-5" /> <span className="hidden sm:inline">List </span>Hospital
             </Link>
-            <Link href="/v2/claim" className="col-span-2 md:col-span-1 md:flex-none flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
+            <Link href="/claim" className="col-span-2 md:col-span-1 md:flex-none flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-2 md:px-8 rounded-2xl shadow-lg transition-all hover:scale-105 border border-white/20 text-sm md:text-lg">
               <CheckCircle className="w-4 h-4 md:w-5 md:h-5" /> Claim Listing
             </Link>
           </div>

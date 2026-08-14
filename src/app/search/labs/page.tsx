@@ -88,7 +88,7 @@ export default function LabsDirectory() {
                 subtitle={l.labType}
                 rating={l.rating}
                 icon={l.icon}
-                href={`/v2/lab/${l.id}`}
+                href={`/lab/${l.id}`}
                 actionText="View Lab"
                 stats="MRI • CT Scan • Ultrasound"
              />
@@ -100,7 +100,7 @@ export default function LabsDirectory() {
               subtitle={l.labType}
               rating={l.rating}
               icon={l.icon}
-              href={`/v2/lab/${l.id}`}
+              href={`/lab/${l.id}`}
               actionText="View Lab"
             />
           </div>

@@ -91,7 +91,7 @@ export default function HospitalsDirectory() {
                 subtitle={h.facilityType}
                 rating={h.rating}
                 icon={h.icon}
-                href={`/v2/hospital/${h.id}`}
+                href={`/hospital/${h.id}`}
                 actionText="View Hospital"
                 stats="Verified Facility • 24/7 Support"
              />
@@ -103,7 +103,7 @@ export default function HospitalsDirectory() {
               subtitle={h.facilityType}
               rating={h.rating}
               icon={h.icon}
-              href={`/v2/hospital/${h.id}`}
+              href={`/hospital/${h.id}`}
               actionText="View Hospital"
             />
           </div>

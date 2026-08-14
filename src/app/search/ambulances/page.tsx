@@ -88,7 +88,7 @@ export default function AmbulancesDirectory() {
                 subtitle={`${a.lifeSupportLevel} Ambulance`}
                 rating={a.rating}
                 icon={a.icon}
-                href={`/v2/ambulance/${a.id}`}
+                href={`/ambulance/${a.id}`}
                 actionText="View Fleet"
                 stats="ICU Setup • 24/7"
              />
@@ -100,7 +100,7 @@ export default function AmbulancesDirectory() {
               subtitle={`${a.lifeSupportLevel} Ambulance`}
               rating={a.rating}
               icon={a.icon}
-              href={`/v2/ambulance/${a.id}`}
+              href={`/ambulance/${a.id}`}
               actionText="View Details"
             />
           </div>

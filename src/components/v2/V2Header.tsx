@@ -50,10 +50,10 @@ export default function V2Header() {
             Find Care <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
           </button>
           <div className="absolute top-12 left-0 w-56 bg-white/95 backdrop-blur-xl border border-white/80 shadow-2xl rounded-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top group-hover:translate-y-0 translate-y-2">
-            <Link href="/v2/search/doctors" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Doctors</Link>
-            <Link href="/v2/search/hospitals" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Hospitals</Link>
-            <Link href="/v2/search/labs" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Labs</Link>
-            <Link href="/v2/search/pharmacies" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Pharmacies</Link>
+            <Link href="/search/doctors" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Doctors</Link>
+            <Link href="/search/hospitals" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Hospitals</Link>
+            <Link href="/search/labs" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Labs</Link>
+            <Link href="/search/pharmacies" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600">Pharmacies</Link>
           </div>
         </div>
 
@@ -63,12 +63,12 @@ export default function V2Header() {
             Telehealth <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
           </button>
           <div className="absolute top-12 left-0 w-60 bg-white/95 backdrop-blur-xl border border-white/80 shadow-2xl rounded-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform origin-top group-hover:translate-y-0 translate-y-2">
-            <Link href="/v2/search/doctors?mode=instant" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Instant Video Call</Link>
-            <Link href="/v2/search/doctors?mode=schedule" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Schedule Consultation</Link>
+            <Link href="/search/doctors?mode=instant" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Instant Video Call</Link>
+            <Link href="/search/doctors?mode=schedule" className="block px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600">Schedule Consultation</Link>
           </div>
         </div>
 
-        <Link href="/v2/join" className="text-sm font-bold text-slate-700 hover:text-teal-700 bg-white/40 hover:bg-white/60 border border-white/60 px-4 py-2 rounded-full transition-all shadow-sm">
+        <Link href="/join" className="text-sm font-bold text-slate-700 hover:text-teal-700 bg-white/40 hover:bg-white/60 border border-white/60 px-4 py-2 rounded-full transition-all shadow-sm">
           For Providers
         </Link>
       </nav>

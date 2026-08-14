@@ -237,7 +237,7 @@ function SearchEngineContent() {
                   subtitle={item.subtitle}
                   rating={item.rating}
                   icon={item.type === 'hospital' ? '🏥' : item.type === 'pharmacy' ? '💊' : '👨‍⚕️'}
-                  href={`/v2/${item.type}/${item.id}`}
+                  href={`/${item.type}/${item.id}`}
                   actionText="View Profile"
                 />
               ))}

@@ -135,7 +135,7 @@ export default function ClaimListingPage() {
                         <p className="text-slate-600 font-medium mb-6">
                            Claim this listing to unlock your dashboard, update your photo, and start managing your direct patient bookings.
                         </p>
-                        <Link href={`/v2/join?role=${searchResult.role}`} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg py-4 px-8 rounded-xl shadow-lg shadow-emerald-500/30 transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                        <Link href={`/join?role=${searchResult.role}`} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg py-4 px-8 rounded-xl shadow-lg shadow-emerald-500/30 transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
                            <ShieldCheck className="w-6 h-6" /> Claim This Profile
                         </Link>
                      </div>

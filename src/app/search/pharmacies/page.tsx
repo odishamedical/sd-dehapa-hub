@@ -88,7 +88,7 @@ export default function PharmaciesDirectory() {
                 subtitle={p.pharmacyType}
                 rating={p.rating}
                 icon={p.icon}
-                href={`/v2/pharmacy/${p.id}`}
+                href={`/pharmacy/${p.id}`}
                 actionText="View Details"
                 stats="B2B • Bulk Orders"
              />
@@ -100,7 +100,7 @@ export default function PharmaciesDirectory() {
               subtitle={p.pharmacyType}
               rating={p.rating}
               icon={p.icon}
-              href={`/v2/pharmacy/${p.id}`}
+              href={`/pharmacy/${p.id}`}
               actionText="View Store"
             />
           </div>
