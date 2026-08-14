@@ -264,7 +264,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-transparent flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-cyan-500/30">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link href="/" className="flex justify-center mb-6">
           <div className="w-20 h-20 bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-center transform transition-transform hover:scale-105 p-2">
@@ -458,7 +458,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-500 font-bold tracking-widest uppercase text-sm">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-transparent flex items-center justify-center text-slate-500 font-bold tracking-widest uppercase text-sm">Loading...</div>}>
       <LoginContent />
     </Suspense>
   );
