@@ -999,12 +999,25 @@ function UniversalOwnerDashboardContent({ expectedRole, customTabs = [], renderC
             <div className="space-y-6">
               <ObjectArrayEditor 
                 title="Operational Licenses & Certificates"
-                description="Add multiple operational certificates. Click below to upload a new document."
                 items={entityData.documentVault || []}
-                onChange={(items) => setEntityData({ ...entityData, documentVault: items })}
+                onUpdate={(idx, k, val) => {
+                  const newArr = [...(entityData.documentVault || [])];
+                  newArr[idx] = { ...newArr[idx], [k]: val };
+                  setEntityData({...entityData, documentVault: newArr});
+                }}
+                onAdd={() => {
+                  const newArr = [...(entityData.documentVault || [])];
+                  newArr.push({});
+                  setEntityData({...entityData, documentVault: newArr});
+                }}
+                onRemove={(idx) => {
+                  const newArr = [...(entityData.documentVault || [])];
+                  newArr.splice(idx, 1);
+                  setEntityData({...entityData, documentVault: newArr});
+                }}
                 fields={[
-                  { key: "documentName", label: "Document Name (e.g. Fire Safety Certificate)", type: "text" },
-                  { key: "documentImage", label: "Upload Document Scan", type: "image_upload" }
+                  { key: "documentName", label: "Document Name (e.g. Fire Safety Certificate)", type: "text" as any },
+                  { key: "documentImage", label: "Upload Document Scan", type: "image_upload" as any }
                 ]}
               />
 

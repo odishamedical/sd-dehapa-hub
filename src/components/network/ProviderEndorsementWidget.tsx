@@ -28,7 +28,7 @@ export default function ProviderEndorsementWidget({ targetProviderId, targetProv
         const q = query(collection(db, "endorsements"), where("targetId", "==", targetProviderId));
         const snap = await getDocs(q);
         
-        const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const results = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
         setEndorsements(results);
         
         if (currentUserId) {

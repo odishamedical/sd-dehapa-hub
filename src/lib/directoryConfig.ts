@@ -1,13 +1,16 @@
 export interface FieldConfig {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'boolean' | 'select' | 'object_array' | 'string_array' | 'entity_selector' | 'hybrid_entity_selector' | 'image_upload' | 'hybrid_test_array';
+  type: 'text' | 'textarea' | 'number' | 'boolean' | 'select' | 'object_array' | 'string_array' | 'entity_selector' | 'hybrid_entity_selector' | 'image_upload' | 'hybrid_test_array' | 'dynamic_select';
   placeholder?: string;
   options?: string[]; // For select type
-  arrayFields?: { key: string; label: string; type: string, targetEntity?: string, placeholder?: string }[]; // For object_array type
+  arrayFields?: { key: string; label: string; type: string, targetEntity?: string, placeholder?: string, sourceField?: string, sourceKey?: string, options?: string[] }[]; // For object_array type
   mandatory?: boolean;
   hiddenIf?: { field: string; in: string[] }; // Hide this field if the target field's value is in the array
   targetEntity?: string; // e.g. "Doctor", "Hospital" for entity_selector or hybrid_entity_selector
+  showIf?: (entityData: any) => boolean;
+  sourceField?: string;
+  sourceKey?: string;
 }
 
 export interface TabConfig {

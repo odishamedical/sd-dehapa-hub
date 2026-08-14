@@ -112,7 +112,7 @@ export default function PharmacyPluginStore({ entityData }: PharmacyPluginStoreP
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {TIERS.map((tier) => {
           const isActive = hasAccessToTier(tier);
-          const colorStyles = {
+          const colorStyles: Record<string, string> = {
             emerald: "border-emerald-200 bg-emerald-50/50 hover:border-emerald-300",
             sky: "border-sky-200 bg-sky-50/50 hover:border-sky-300 shadow-[0_0_30px_rgba(14,165,233,0.1)]",
             purple: "border-purple-200 bg-purple-50/50 hover:border-purple-300 shadow-[0_0_30px_rgba(168,85,247,0.15)] relative overflow-hidden"

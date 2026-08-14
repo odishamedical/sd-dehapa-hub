@@ -20,7 +20,7 @@ export default function CareTeamSeatingChart({ currentUserId }: { currentUserId:
         
         const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
         
-        const connections = [...snap1.docs, ...snap2.docs].map(d => ({ id: d.id, ...d.data() }));
+        const connections = [...snap1.docs, ...snap2.docs].map(d => ({ id: d.id, ...d.data() } as any));
         
         // Filter to only include providers (doctors, hospitals, labs, pharmacies)
         const team = connections.map(c => {

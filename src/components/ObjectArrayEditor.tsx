@@ -18,7 +18,7 @@ interface ObjectArrayEditorProps {
   title: string;
   items: any[];
   fields: FieldDef[];
-  onUpdate: (index: number, key: string, value: string) => void;
+  onUpdate: (index: number, key: string, value: any) => void;
   onAdd: () => void;
   onRemove: (index: number) => void;
   currentUserId?: string;
