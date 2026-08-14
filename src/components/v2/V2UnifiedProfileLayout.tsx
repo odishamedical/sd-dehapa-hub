@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { 
   Award, MapPin, Phone, Star, Shield, 
   Clock, Activity, HeartPulse, 
-  Navigation, GraduationCap, Briefcase, Building2, Truck, Droplets, Pill
+  Navigation, GraduationCap, Briefcase, Building2, Truck, Droplets, Pill,
+  Home, ChevronRight
 } from 'lucide-react';
 import V2SmartConnectModal from './V2SmartConnectModal';
 import SquareTicket from './SquareTicket';
@@ -91,16 +92,38 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
   return (
     <div className="w-full bg-transparent text-[#0a2540] relative font-sans selection:bg-cyan-500/30 overflow-hidden flex-1">
       
+      {/* Custom Breadcrumb for Profiles (Replaces the Global one to inject the Name) */}
+      <div className="w-full bg-[#0a2540] text-slate-300 border-b border-[#0a2540] px-4 md:px-8 py-2.5 flex items-center z-40 relative shadow-inner mt-20 md:mt-24">
+        <nav className="max-w-7xl mx-auto w-full flex text-[13px] font-medium tracking-wide" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-1 md:space-x-2">
+            <li>
+              <Link href="/" className="flex items-center hover:text-white transition-colors">
+                <Home className="w-3.5 h-3.5 mr-1" />
+                Home
+              </Link>
+            </li>
+            <li><ChevronRight className="w-4 h-4 text-slate-500 mx-0.5" /></li>
+            <li>
+              <Link href={`/search/${type}s`} className="hover:text-white transition-colors capitalize">
+                {type}s
+              </Link>
+            </li>
+            <li><ChevronRight className="w-4 h-4 text-slate-500 mx-0.5" /></li>
+            <li>
+              <span className="text-white font-bold" aria-current="page">
+                {profile.name}
+              </span>
+            </li>
+          </ol>
+        </nav>
+      </div>
+
       {/* V2 Background Elements (Light Mode) */}
       <div className="fixed inset-0 pointer-events-none z-0">
          <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-white/30 to-transparent"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        
-
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-8">
           
           {/* =========================================================================
               LEFT COLUMN: MAIN PROFILE DETAILS

@@ -17,6 +17,12 @@ export default function V2Breadcrumbs() {
 
   const pathSegments = pathname.split('/').filter(segment => segment !== '');
 
+  // Hide global breadcrumbs on profile pages, as they render their own with the correct entity name
+  const profileTypes = ['doctor', 'hospital', 'lab', 'pharmacy', 'ambulance'];
+  if (pathSegments.length >= 2 && profileTypes.includes(pathSegments[0])) {
+    return null;
+  }
+
   return (
     <div className="w-full bg-[#0a2540] text-slate-300 border-b border-[#0a2540] px-4 md:px-8 py-2.5 flex items-center z-40 relative shadow-inner mt-20 md:mt-24">
       <nav className="max-w-7xl mx-auto w-full flex text-[13px] font-medium tracking-wide" aria-label="Breadcrumb">
