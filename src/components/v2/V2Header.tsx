@@ -12,6 +12,7 @@ export default function V2Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [userName, setUserName] = useState<string | null>(null);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -20,14 +21,17 @@ export default function V2Header() {
       const email = localStorage.getItem("sd_current_user_email");
       const name = localStorage.getItem("sd_current_user_name");
       const avatar = localStorage.getItem("sd_current_user_avatar");
+      const role = localStorage.getItem("sd_current_user_role");
       if (email) {
         setIsLoggedIn(true);
         // Default to email prefix if name is not set
         setUserName(name && name !== "null" ? name : email.split('@')[0]);
         setUserAvatar(avatar && avatar !== "null" ? avatar : null);
+        setUserRole(role);
       } else {
         setIsLoggedIn(false);
         setUserAvatar(null);
+        setUserRole(null);
       }
     };
     
@@ -127,7 +131,6 @@ export default function V2Header() {
             <div className="relative">
               <button 
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                onBlur={() => setTimeout(() => setShowUserMenu(false), 200)}
                 className="flex items-center gap-2 p-1 pr-3 bg-white/60 backdrop-blur-md border border-white/80 rounded-full shadow-sm hover:shadow-md transition-all group"
               >
                 {userAvatar ? (
@@ -153,6 +156,11 @@ export default function V2Header() {
                   
                   {/* Menu Links */}
                   <div className="py-2">
+                    {(userRole === 'super_admin' || userRole === 'admin') && (
+                      <Link href="/portal/admin" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-teal-700 hover:bg-teal-50 transition-colors border-b border-slate-100">
+                        <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Admin Panel
+                      </Link>
+                    )}
                     <Link href="/portal" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                       <LayoutDashboard className="w-4 h-4 text-slate-400" /> My Dashboard
                     </Link>
