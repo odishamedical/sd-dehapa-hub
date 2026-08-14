@@ -124,6 +124,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
           
           {/* =========================================================================
               LEFT COLUMN: MAIN PROFILE DETAILS
