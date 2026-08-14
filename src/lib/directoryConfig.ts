@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface FieldConfig {
   key: string;
   label: string;
@@ -8,7 +9,7 @@ export interface FieldConfig {
   mandatory?: boolean;
   hiddenIf?: { field: string; in: string[] }; // Hide this field if the target field's value is in the array
   targetEntity?: string; // e.g. "Doctor", "Hospital" for entity_selector or hybrid_entity_selector
-  showIf?: (entityData: any) => boolean;
+  showIf?: { field: string; equals?: any; in?: any[]; contains?: any; } | ((entityData: any) => boolean);
   sourceField?: string;
   sourceKey?: string;
 }

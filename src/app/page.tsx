@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Search, MapPin, Video, Building2, Pill, TestTube2, Ambulance, Star, Calendar, MessageCircle, ArrowRight } from "lucide-react";
 import Image from "next/image";
-import SquareTicket from "./components/SquareTicket";
-import WideTicket from "./components/WideTicket";
-import PortraitTicket from "./components/PortraitTicket";
-import V2Hero from "./components/V2Hero";
+import SquareTicket from "@/components/v2/SquareTicket";
+import WideTicket from "@/components/v2/WideTicket";
+import PortraitTicket from "@/components/v2/PortraitTicket";
+import V2Hero from "@/components/v2/V2Hero";
 
 export default function V2GlassHomepage() {
   const [searchSpecialty, setSearchSpecialty] = useState("");

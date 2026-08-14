@@ -1,5 +1,5 @@
-import V2Header from "./components/V2Header";
-import V2Breadcrumbs from "./components/V2Breadcrumbs";
+import V2Header from "@/components/v2/V2Header";
+import V2Breadcrumbs from "@/components/v2/V2Breadcrumbs";
 
 export default function V2Layout({
   children,
