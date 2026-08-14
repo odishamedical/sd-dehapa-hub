@@ -248,9 +248,18 @@ export default function AdminDashboard() {
           image: listing.image || "",
           category: crawlerCategory,
           subCategory: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
+          
+          // Strict Schema Subcategory Mappings
+          ...(crawlerCategory === "Pharmacy" && { pharmacyType: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory }),
+          ...(crawlerCategory === "Hospital" && { facilityType: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory }),
+          ...(crawlerCategory === "Lab" && { labType: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory }),
           ...(crawlerCategory === "Doctor" && { 
-            taxonomy: getTaxonomyCategory(crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory) || crawlerTier.toLowerCase().replace(' ', '-') 
+            taxonomy: getTaxonomyCategory(crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory) || crawlerTier.toLowerCase().replace(' ', '-'),
+            primarySpecialty: crawlerSubCategory === "Other" ? customSubCategory : crawlerSubCategory,
+            doctorLevel: crawlerTier,
+            qualificationsList: (crawlerTier === "MBBS" || crawlerTier === "Ayush") ? [{ degree: crawlerTier, institution: "Map Later", year: "" }] : []
           }),
+
           country: crawlerAddress.country,
           state: crawlerAddress.state,
           district: crawlerAddress.district,
