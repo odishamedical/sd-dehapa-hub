@@ -30,18 +30,23 @@ export default function V2Header() {
       }`}
     >
       {/* Logo */}
-      <Link href="/v2" className="flex items-center gap-2 group">
+      <Link href="/" className="flex items-center gap-2 group">
         <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
           <Image src="/logo.png" alt="DehaPa Logo" fill sizes="40px" className="object-contain relative z-10" priority />
         </div>
-        <span className="font-black text-2xl tracking-tight text-[#0a2540]">
-          dehapa<span className="text-blue-600">.v2</span>
-        </span>
+        <div className="flex flex-col justify-center">
+          <span className="font-black text-2xl md:text-3xl tracking-tight text-[#0a2540] leading-none">
+            DehaPa
+          </span>
+          <span className="text-[9px] md:text-[10px] font-bold text-blue-600 uppercase tracking-widest leading-tight mt-0.5">
+            Your Health, Our Mission
+          </span>
+        </div>
       </Link>
 
       {/* Main Navigation */}
       <nav className="hidden lg:flex gap-3 items-center h-full">
-        <Link href="/v2" className="text-sm font-bold text-blue-700 hover:text-blue-800 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 px-4 py-2 rounded-full transition-all shadow-sm">
+        <Link href="/" className="text-sm font-bold text-blue-700 hover:text-blue-800 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 px-4 py-2 rounded-full transition-all shadow-sm">
           Home
         </Link>
         

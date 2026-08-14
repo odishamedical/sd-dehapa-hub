@@ -87,7 +87,7 @@ function SearchEngineContent() {
     if (state) params.append('state', state);
     if (district) params.append('district', district);
     
-    router.push(`/v2/search?${params.toString()}`);
+    router.push(`/search?${params.toString()}`);
     setIsMobileFilterOpen(false); // Close modal on apply
   };
 
@@ -248,8 +248,8 @@ function SearchEngineContent() {
               <h3 className="text-xl font-black text-slate-700 mb-2">No results found</h3>
               <p className="text-slate-500 font-medium">Try adjusting your filters or searching for a different term.</p>
               <button 
-                onClick={() => router.push('/v2/search')}
-                className="mt-6 text-blue-600 font-bold hover:underline"
+                onClick={() => router.push('/search')}
+                className="mt-4 px-6 py-2 bg-blue-100 text-blue-700 font-bold rounded-lg hover:bg-blue-200 transition-colors"
               >
                 Clear all filters
               </button>

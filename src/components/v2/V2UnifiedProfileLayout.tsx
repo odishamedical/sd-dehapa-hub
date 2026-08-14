@@ -100,7 +100,7 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
         
         {/* Breadcrumbs */}
         <div className="flex items-center gap-2 text-xs font-bold tracking-widest text-slate-500 uppercase mb-8">
-          <Link href="/v2" className="hover:text-blue-600 transition-colors">Home</Link>
+          <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
           <span>/</span>
           <Link href={`/${type}s`} className="hover:text-blue-600 transition-colors">{type}s</Link>
           <span>/</span>
