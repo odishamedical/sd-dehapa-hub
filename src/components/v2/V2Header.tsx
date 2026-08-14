@@ -7,10 +7,27 @@ import Image from "next/image";
 
 export default function V2Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  // Mock state to demonstrate both Auth views easily for you
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [userName, setUserName] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const email = localStorage.getItem("sd_current_user_email");
+      const name = localStorage.getItem("sd_current_user_name");
+      if (email) {
+        setIsLoggedIn(true);
+        setUserName(name || "User");
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+    
+    checkAuth();
+    window.addEventListener("sd_auth_change", checkAuth);
+    return () => window.removeEventListener("sd_auth_change", checkAuth);
+  }, []);
 
   // Smooth scroll background effect instead of hiding the header
   useEffect(() => {
@@ -92,12 +109,12 @@ export default function V2Header() {
 
         {!isLoggedIn ? (
           <div className="flex items-center gap-2 lg:gap-3">
-            <button className="text-xs lg:text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors px-2 lg:px-4 py-2">
+            <Link href="/login" className="text-xs lg:text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors px-2 lg:px-4 py-2">
               Login
-            </button>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs lg:text-sm font-bold py-2 lg:py-2.5 px-3 lg:px-6 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-0.5">
+            </Link>
+            <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white text-xs lg:text-sm font-bold py-2 lg:py-2.5 px-3 lg:px-6 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-0.5">
               Sign Up
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="flex items-center gap-4">
@@ -127,22 +144,22 @@ export default function V2Header() {
                   
                   {/* User Info Header */}
                   <div className="px-5 py-3 border-b border-slate-100 bg-slate-50/50">
-                    <p className="text-sm font-bold text-slate-800">John Smith</p>
-                    <p className="text-xs text-slate-500 font-medium truncate">john.smith@example.com</p>
+                    <p className="text-sm font-bold text-slate-800">{userName}</p>
+                    <p className="text-xs text-slate-500 font-medium truncate">My Account</p>
                   </div>
                   
                   {/* Menu Links */}
                   <div className="py-2">
-                    <Link href="/dashboard" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <Link href="/portal" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                       <LayoutDashboard className="w-4 h-4 text-slate-400" /> My Dashboard
                     </Link>
-                    <Link href="/dashboard/appointments" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <Link href="/portal#appointments" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                       <Calendar className="w-4 h-4 text-slate-400" /> My Appointments
                     </Link>
-                    <Link href="/dashboard/records" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <Link href="/portal#medical_vault" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                       <FileText className="w-4 h-4 text-slate-400" /> Medical Records
                     </Link>
-                    <Link href="/dashboard/settings" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <Link href="/portal#settings" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                       <Settings className="w-4 h-4 text-slate-400" /> Settings
                     </Link>
                   </div>
@@ -150,7 +167,14 @@ export default function V2Header() {
                   {/* Logout Footer */}
                   <div className="border-t border-slate-100 py-2">
                     <button 
-                      onClick={() => setIsLoggedIn(false)}
+                      onClick={() => {
+                        localStorage.removeItem("sd_current_user_email");
+                        localStorage.removeItem("sd_current_user_name");
+                        localStorage.removeItem("sd_current_user_uid");
+                        localStorage.removeItem("sd_current_user_role");
+                        window.dispatchEvent(new Event("sd_auth_change"));
+                        setIsLoggedIn(false);
+                      }}
                       className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors text-left"
                     >
                       <LogOut className="w-4 h-4" /> Sign Out
