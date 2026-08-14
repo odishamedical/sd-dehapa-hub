@@ -13,6 +13,10 @@ import V2SmartConnectModal from './V2SmartConnectModal';
 import SquareTicket from './SquareTicket';
 import WideTicket from './WideTicket';
 import ClaimProfileModal from '@/components/ClaimProfileModal';
+import SmartQRWidget from './SmartQRWidget';
+import FollowConnectButton from './FollowConnectButton';
+import ShareProfileButton from './ShareProfileButton';
+import FollowerStatsWidget from './FollowerStatsWidget';
 
 interface V2UnifiedProfileProps {
   profile: any;
@@ -168,9 +172,10 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                    />
                  </div>
                  
-                 {/* Titles */}
-                 <div className="flex-1 flex flex-col justify-center">
-                   <h1 className="text-3xl sm:text-4xl font-black text-[#0a2540] tracking-tight leading-tight mb-2">
+                 {/* Text Info */}
+                 <div className="flex-1">
+                   <FollowerStatsWidget profileId={profile.id} />
+                   <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0a2540] mb-2 sm:mb-4 tracking-tight leading-tight">
                      {profile.name}
                    </h1>
                    <div className="text-slate-600 text-lg font-bold mb-4 flex items-center gap-2">
@@ -303,25 +308,29 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
 
             {/* Quick Actions (Connect) */}
             <div className="bg-gradient-to-br from-white/70 to-white/40 backdrop-blur-2xl border-2 border-white rounded-[2.5rem] p-6 shadow-[0_20px_50px_-10px_rgba(0,100,200,0.15)]">
-               <h3 className="font-black text-[#0a2540] text-lg mb-4 flex items-center gap-2">
-                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                 Available for Connect
-               </h3>
-               {isDoctor && (
-                 <button 
-                   onClick={() => setIsConnectModalOpen(true)}
-                   className="w-full bg-white border-2 border-blue-100 text-blue-600 hover:bg-blue-50 font-black py-4 rounded-2xl transition-transform hover:-translate-y-1 shadow-sm mb-3"
-                 >
-                   Book Appointment
-                 </button>
-               )}
-               <button 
-                 onClick={() => setIsConnectModalOpen(true)}
-                 className="w-full bg-[#0a2540] hover:bg-[#113a63] text-white font-black py-4 rounded-2xl transition-transform hover:-translate-y-1 shadow-[0_10px_20px_rgba(10,37,64,0.3)]"
-               >
-                 Send Inquiry
-               </button>
+              
+              <div className="flex items-center gap-2 mb-6">
+                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                 <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Available for Connect</h3>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                 <FollowConnectButton profileId={profile.id} profileRole={type} profileName={profile.name} />
+                 
+                 <div className="flex gap-3 mt-2">
+                   <button 
+                     onClick={() => setIsConnectModalOpen(true)}
+                     className="flex-1 bg-white hover:bg-slate-50 text-blue-600 font-bold px-4 py-3 rounded-xl shadow-sm border border-slate-200 hover:border-blue-300 hover:shadow transition-all text-sm flex items-center justify-center gap-2"
+                   >
+                     Book Appointment
+                   </button>
+                   <ShareProfileButton />
+                 </div>
+              </div>
             </div>
+
+            {/* Smart QR Widget */}
+            <SmartQRWidget profileUrl={typeof window !== 'undefined' ? window.location.href : `https://dehapa.com/profile/${type}/${profile.id}`} profileName={profile.name} role={type} />
 
             {/* AD ZONE 1: Sidebar Medium Rectangle (300x250) */}
             <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-3xl p-1 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] h-[280px] flex items-center justify-center overflow-hidden">
