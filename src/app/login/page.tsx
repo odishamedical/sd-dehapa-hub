@@ -264,32 +264,32 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060B14] flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-teal-500/30">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-cyan-500/30">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link href="/" className="flex justify-center mb-6">
-          <div className="w-20 h-20 bg-slate-900 rounded-2xl shadow-[0_0_30px_rgba(20,184,166,0.1)] border border-slate-700 flex items-center justify-center transform transition-transform hover:scale-105 p-2">
+          <div className="w-20 h-20 bg-white rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-center transform transition-transform hover:scale-105 p-2">
             <img src="/logo.png" alt="DehaPa Logo" className="w-full h-full object-contain" />
           </div>
         </Link>
         {referralCode && (
           <div className="flex justify-center mb-4 animate-in fade-in slide-in-from-top-4">
-            <span className="bg-cyan-500/10 text-cyan-400 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest shadow-sm border border-cyan-500/20">
+            <span className="bg-cyan-500/10 text-cyan-600 font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest shadow-sm border border-cyan-500/20">
               You've been invited!
             </span>
           </div>
         )}
-        <h2 className="text-center text-3xl font-serif font-bold text-white drop-shadow-sm">
+        <h2 className="text-center text-3xl font-serif font-black text-[#0a2540] tracking-tight drop-shadow-sm">
           Welcome to DehaPa
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-400 font-medium">
+        <p className="mt-2 text-center text-sm text-slate-500 font-medium">
           {referralCode ? 'Sign in to accept the invite and connect.' : 'Sign in to access your healthcare portal'}
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-slate-900/50 backdrop-blur-xl py-8 px-4 shadow-2xl sm:rounded-[24px] sm:px-10 border border-slate-700/50 relative overflow-hidden">
+        <div className="bg-white/70 backdrop-blur-xl py-8 px-4 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] sm:rounded-[24px] sm:px-10 border border-white relative overflow-hidden">
           {/* Accent Line */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-teal-500 to-cyan-400"></div>
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-500 to-blue-600"></div>
 
           {error && (
             <div className="mb-6 bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg">
@@ -302,7 +302,7 @@ function LoginContent() {
               <button 
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white px-4 py-4 rounded-xl font-bold shadow-sm transition-all focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 focus:ring-offset-slate-900 disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-4 rounded-xl font-bold shadow-sm transition-all focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-white disabled:opacity-50"
               >
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5" alt="Google" />
                 Continue with Google
@@ -310,7 +310,7 @@ function LoginContent() {
 
               <button 
                 onClick={() => setAuthMethod('whatsapp')}
-                className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-4 rounded-xl font-bold shadow-md shadow-green-900/20 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-[#25D366] focus:ring-offset-slate-900"
+                className="w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-4 rounded-xl font-bold shadow-[0_4px_15px_rgba(37,211,102,0.3)] transition-all focus:ring-2 focus:ring-offset-2 focus:ring-[#25D366] focus:ring-offset-white"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.128.552 4.199 1.6 6.02L.213 23.315l5.421-1.423A11.97 11.97 0 0012.031 24c6.645 0 12.03-5.385 12.03-12.03S18.676 0 12.031 0zm0 22.008a9.98 9.98 0 01-5.088-1.385l-.365-.216-3.778.992.999-3.682-.237-.377a9.972 9.972 0 01-1.522-5.309c0-5.503 4.478-9.981 9.982-9.981 5.505 0 9.982 4.478 9.982 9.981 0 5.504-4.477 9.981-9.982 9.981h-.001zm5.474-7.481c-.301-.15-1.782-.879-2.059-.979-.277-.101-.479-.15-.68.15s-.777.979-.953 1.18c-.175.201-.35.226-.651.076-2.148-1.077-3.633-2.608-4.148-3.486-.176-.299.172-.279.467-.866.075-.15.038-.276-.001-.351-.038-.075-.68-1.637-.932-2.242-.244-.588-.492-.508-.68-.517-.175-.008-.377-.01-.578-.01s-.527.075-.803.376c-.276.301-1.054 1.028-1.054 2.508s1.079 2.909 1.23 3.109c.15.201 2.115 3.226 5.12 4.526 2.053.888 2.859.953 3.935.794.88-.13 1.782-.728 2.034-1.433.251-.705.251-1.308.176-1.433-.075-.125-.276-.201-.577-.351z"/></svg>
                 Continue with WhatsApp
@@ -318,18 +318,18 @@ function LoginContent() {
 
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-700" />
+                  <div className="w-full border-t border-slate-200" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-[#0d1526] text-slate-400 font-medium rounded-md">Or</span>
+                  <span className="px-2 bg-white text-slate-400 font-medium rounded-md">Or</span>
                 </div>
               </div>
 
               <button 
                 onClick={() => setAuthMethod('email')}
-                className="w-full flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-4 py-4 rounded-xl font-bold shadow-md transition-all focus:ring-2 focus:ring-offset-2 focus:ring-slate-700 focus:ring-offset-slate-900"
+                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-4 rounded-xl font-bold shadow-sm transition-all focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 focus:ring-offset-white"
               >
-                <svg className="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 Continue with Email
               </button>
             </div>
@@ -344,7 +344,7 @@ function LoginContent() {
                   required 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-4 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors placeholder:text-slate-500" 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm text-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors placeholder:text-slate-400" 
                   placeholder="name@example.com" 
                 />
               </div>
@@ -355,7 +355,7 @@ function LoginContent() {
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-4 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors placeholder:text-slate-500" 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm text-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors placeholder:text-slate-400" 
                   placeholder="••••••••" 
                 />
               </div>
@@ -363,14 +363,14 @@ function LoginContent() {
                 <button 
                   type="submit" 
                   disabled={loading}
-                  className="w-full flex items-center justify-center bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-900 px-4 py-4 rounded-xl font-bold shadow-lg shadow-teal-500/20 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 focus:ring-offset-slate-900 disabled:opacity-50"
+                  className="w-full flex items-center justify-center bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-4 py-4 rounded-xl font-bold shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-all focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-white disabled:opacity-50"
                 >
                   {loading ? 'Signing in...' : 'Sign In / Register'}
                 </button>
                 <button 
                   type="button"
                   onClick={() => setAuthMethod('select')}
-                  className="w-full mt-4 text-sm text-slate-400 hover:text-white font-bold transition-colors"
+                  className="w-full mt-4 text-sm text-slate-500 hover:text-slate-800 font-bold transition-colors"
                 >
                   &larr; Back to options
                 </button>
@@ -385,7 +385,7 @@ function LoginContent() {
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">WhatsApp Number</label>
                     <div className="flex">
-                      <span className="inline-flex items-center px-4 rounded-l-xl border border-r-0 border-slate-700 bg-slate-800 text-slate-400 text-sm font-bold">
+                      <span className="inline-flex items-center px-4 rounded-l-xl border border-r-0 border-slate-200 bg-slate-100 text-slate-500 text-sm font-bold">
                         +91
                       </span>
                       <input 
@@ -393,7 +393,7 @@ function LoginContent() {
                         required 
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="flex-1 min-w-0 block w-full px-5 py-4 rounded-none rounded-r-xl bg-slate-800/50 border border-slate-700 text-sm text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-colors placeholder:text-slate-500" 
+                        className="flex-1 min-w-0 block w-full px-5 py-4 rounded-none rounded-r-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors placeholder:text-slate-400" 
                         placeholder="10-digit number" 
                       />
                     </div>
@@ -402,14 +402,14 @@ function LoginContent() {
                     <button 
                       type="submit" 
                       disabled={loading || phone.length < 10}
-                      className="w-full flex items-center justify-center bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-4 rounded-xl font-bold shadow-md shadow-green-900/20 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-[#25D366] focus:ring-offset-slate-900 disabled:opacity-50"
+                      className="w-full flex items-center justify-center bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-4 rounded-xl font-bold shadow-[0_4px_15px_rgba(37,211,102,0.3)] transition-all focus:ring-2 focus:ring-offset-2 focus:ring-[#25D366] focus:ring-offset-white disabled:opacity-50"
                     >
                       {loading ? 'Sending...' : 'Get OTP on WhatsApp'}
                     </button>
                     <button 
                       type="button"
                       onClick={() => setAuthMethod('select')}
-                      className="w-full mt-4 text-sm text-slate-400 hover:text-white font-bold transition-colors"
+                      className="w-full mt-4 text-sm text-slate-500 hover:text-slate-800 font-bold transition-colors"
                     >
                       &larr; Back to options
                     </button>
@@ -419,14 +419,14 @@ function LoginContent() {
                 <form onSubmit={verifyWhatsAppOtp}>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Enter WhatsApp OTP</label>
-                    <p className="text-xs text-slate-400 mb-4">We sent a 6-digit code to <strong className="text-white">+91 {phone}</strong></p>
+                    <p className="text-xs text-slate-500 mb-4">We sent a 6-digit code to <strong className="text-[#0a2540]">+91 {phone}</strong></p>
                     <input 
                       type="text" 
                       required 
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
-                      className="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-4 text-center text-2xl tracking-[0.5em] font-mono text-white focus:border-[#25D366] focus:ring-1 focus:ring-[#25D366] outline-none transition-colors placeholder:text-slate-600" 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-center text-2xl tracking-[0.5em] font-mono text-slate-800 focus:border-[#25D366] focus:ring-1 focus:ring-[#25D366] outline-none transition-colors placeholder:text-slate-300" 
                       placeholder="------" 
                     />
                   </div>
@@ -434,14 +434,14 @@ function LoginContent() {
                      <button 
                       type="button"
                       onClick={() => setOtpSent(false)}
-                      className="w-1/3 flex items-center justify-center bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 px-4 py-4 rounded-xl font-bold shadow-sm transition-colors"
+                      className="w-1/3 flex items-center justify-center bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-4 py-4 rounded-xl font-bold shadow-sm transition-colors"
                     >
                       Change
                     </button>
                     <button 
                       type="submit" 
                       disabled={loading || otp.length < 6}
-                      className="w-2/3 flex items-center justify-center bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-4 rounded-xl font-bold shadow-md shadow-green-900/20 transition-all disabled:opacity-50"
+                      className="w-2/3 flex items-center justify-center bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-4 rounded-xl font-bold shadow-[0_4px_15px_rgba(37,211,102,0.3)] transition-all disabled:opacity-50"
                     >
                       {loading ? 'Verifying...' : 'Verify OTP'}
                     </button>
@@ -458,7 +458,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#060B14] flex items-center justify-center text-teal-400 font-bold tracking-widest uppercase text-sm">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-500 font-bold tracking-widest uppercase text-sm">Loading...</div>}>
       <LoginContent />
     </Suspense>
   );
