@@ -118,17 +118,17 @@ export default function GlobalFooter() {
 
           {/* For Patients Accordion (Mobile) */}
           <details className="lg:hidden group border-b border-slate-800 pb-4 order-1">
-            <summary className="flex justify-between items-center font-black uppercase tracking-[0.1em] text-white text-sm cursor-pointer list-none">
+            <summary className="flex justify-between items-center font-black uppercase tracking-[0.1em] text-[#0a2540] text-sm cursor-pointer list-none">
               <div className="flex items-center gap-2"><Users className="w-4 h-4 text-rose-500" />For Patients</div>
               <span className="transition group-open:rotate-180"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></span>
             </summary>
             <ul className="space-y-4 mt-6 px-2">
-              <li><Link href="/search/doctors" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Find a Specialist</Link></li>
-              <li><Link href="/search/hospitals" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Book Hospital Beds</Link></li>
-              <li><Link href="/search/labs" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Diagnostic Tests & Scans</Link></li>
-              <li><Link href="/search/pharmacies" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">Order Medicines</Link></li>
-              <li><Link href="/portal" className="flex items-center text-sm font-medium text-slate-400 hover:text-teal-400">My Health Vault</Link></li>
-              <li><Link href="/search/ambulances" className="flex items-center text-sm font-bold text-rose-400 hover:text-rose-300"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
+              <li><Link href="/search/doctors" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Find a Specialist</Link></li>
+              <li><Link href="/search/hospitals" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Book Hospital Beds</Link></li>
+              <li><Link href="/search/labs" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Diagnostic Tests & Scans</Link></li>
+              <li><Link href="/search/pharmacies" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Order Medicines</Link></li>
+              <li><Link href="/portal" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">My Health Vault</Link></li>
+              <li><Link href="/search/ambulances" className="flex items-center text-sm font-bold text-rose-500 hover:text-rose-600"><HeartPulse className="w-4 h-4 mr-2" />Emergency Ambulance</Link></li>
             </ul>
           </details>
 
@@ -150,17 +150,17 @@ export default function GlobalFooter() {
 
           {/* For Providers Accordion (Mobile) */}
           <details className="lg:hidden group border-b border-white/10 pb-4 order-2">
-            <summary className="flex justify-between items-center font-black uppercase tracking-[0.1em] text-white text-sm cursor-pointer list-none">
-              <div className="flex items-center gap-2"><Stethoscope className="w-4 h-4 text-cyan-400" />For Providers</div>
+            <summary className="flex justify-between items-center font-black uppercase tracking-[0.1em] text-[#0a2540] text-sm cursor-pointer list-none">
+              <div className="flex items-center gap-2"><Stethoscope className="w-4 h-4 text-cyan-600" />For Providers</div>
               <span className="transition group-open:rotate-180"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></span>
             </summary>
             <ul className="space-y-4 mt-6 px-2">
-              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Join as Doctor</Link></li>
-              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Partner Hospital Network</Link></li>
-              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Diagnostic Lab Partners</Link></li>
-              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Pharmacy Network</Link></li>
-              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Ambulance Network</Link></li>
-              <li><Link href="/portal" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Provider Portal Login</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Join as Doctor</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Partner Hospital Network</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Diagnostic Lab Partners</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Pharmacy Network</Link></li>
+              <li><Link href="/join" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Ambulance Network</Link></li>
+              <li><Link href="/portal" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Provider Portal Login</Link></li>
             </ul>
           </details>
 
@@ -180,15 +180,15 @@ export default function GlobalFooter() {
 
           {/* Support Accordion (Mobile) */}
           <details className="lg:hidden group pb-4 order-3">
-            <summary className="flex justify-between items-center font-black uppercase tracking-[0.1em] text-white text-sm cursor-pointer list-none">
-              <div className="flex items-center gap-2"><HelpCircle className="w-4 h-4 text-purple-400" />Support & Legal</div>
+            <summary className="flex justify-between items-center font-black uppercase tracking-[0.1em] text-[#0a2540] text-sm cursor-pointer list-none">
+              <div className="flex items-center gap-2"><HelpCircle className="w-4 h-4 text-purple-600" />Support & Legal</div>
               <span className="transition group-open:rotate-180"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></span>
             </summary>
             <ul className="space-y-4 mt-6 px-2 mb-4">
-              <li><Link href="/about" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">About Dehapa</Link></li>
-              <li><Link href="/contact" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Contact Us</Link></li>
-              <li><Link href="/privacy" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="flex items-center text-sm font-medium text-slate-400 hover:text-cyan-400">Terms of Service</Link></li>
+              <li><Link href="/about" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">About Dehapa</Link></li>
+              <li><Link href="/contact" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Contact Us</Link></li>
+              <li><Link href="/privacy" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="flex items-center text-sm font-medium text-slate-600 hover:text-cyan-700">Terms of Service</Link></li>
             </ul>
           </details>
 

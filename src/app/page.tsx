@@ -39,8 +39,20 @@ export default function V2GlassHomepage() {
           layoutData = layoutSnap.data();
         } else {
           // Fallback if no layout is configured yet
-          setLoading(false);
-          return;
+          layoutData = {
+            hero: {
+              titleStart: "Find & Book",
+              highlight: "Premium Healthcare.",
+              subtitle: "The most trusted medical professionals, instantly available near you.",
+              desktopBgImage: "/v2/pc-hero.png",
+              mobileBgImage: "/v2/phone-hero.png"
+            },
+            rows: [
+              { id: "row1", type: "quick-services-slider", visible: true },
+              { id: "row2", type: "how-it-works-patient", visible: true },
+              { id: "row3", type: "how-it-works-provider", visible: true }
+            ]
+          };
         }
 
         setLayout(layoutData);

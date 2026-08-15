@@ -51,7 +51,7 @@ export default function V2Header() {
 
   return (
     <header 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 h-20 md:h-24 flex items-center justify-between px-8 ${
+      className={`fixed top-0 w-full z-50 transition-all duration-300 h-20 md:h-24 flex items-center justify-between px-4 md:px-8 ${
         isScrolled 
           ? 'bg-white/80 backdrop-blur-2xl border-b border-white/60 shadow-md' 
           : 'bg-white/30 backdrop-blur-md border-b border-white/40 shadow-sm'
@@ -140,7 +140,7 @@ export default function V2Header() {
                     {userName ? userName.substring(0, 2) : "U"}
                   </div>
                 )}
-                <span className="text-sm font-bold text-slate-700 group-hover:text-blue-600 max-w-[100px] truncate">{userName || "User"}</span>
+                <span className="hidden sm:block text-sm font-bold text-slate-700 group-hover:text-blue-600 max-w-[100px] truncate">{userName || "User"}</span>
                 <ChevronDown className={`w-4 h-4 text-slate-500 group-hover:text-blue-600 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
               </button>
 
