@@ -536,30 +536,32 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
             BOTTOM SECTION: RELATED LISTINGS & GLOBAL ADS
             ========================================================================= */}
         
-        <div className="w-full border-t border-blue-900/10 pt-16 mb-16">
-           <div className="flex justify-between items-end mb-10">
-             <div>
-               <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Similar Providers</h2>
-               <p className="text-slate-600 font-medium mt-2">Explore other highly rated {type}s near this location.</p>
+        {profile.relatedProfiles && profile.relatedProfiles.length > 0 && (
+          <div className="w-full border-t border-blue-900/10 pt-16 mb-16">
+             <div className="flex justify-between items-end mb-10">
+               <div>
+                 <h2 className="text-3xl font-black text-[#0a2540] tracking-tight">Similar Providers</h2>
+                 <p className="text-slate-600 font-medium mt-2">Explore other highly rated {type}s near this location.</p>
+               </div>
+               <Link href={`/search/${type}s`} className="text-blue-600 font-bold hover:underline hidden sm:block">View All {type}s →</Link>
              </div>
-             <Link href={`/search/${type}s`} className="text-blue-600 font-bold hover:underline hidden sm:block">View All {type}s →</Link>
-           </div>
 
-           {/* Render Specific Tickets based on Type */}
-           {type === 'hospital' ? (
-             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <WideTicket title="Caremax General" subtitle="Multi-Specialty Facility" rating="4.9" icon="🏥" href="/hospital/mock-1" actionText="View Services" stats="450 Beds • 24/7 ER" />
-                <WideTicket title="City Hope Hospital" subtitle="Advanced Care Center" rating="4.8" icon="🏨" href="/hospital/mock-2" actionText="View Services" stats="200 Beds • Level 1 Trauma" />
-             </div>
-           ) : (
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                <SquareTicket title="Alternative Provider 1" subtitle="Top Rated" rating="4.9" icon="⭐" href={`/${type}/mock-1`} actionText="View Profile" />
-                <SquareTicket title="Alternative Provider 2" subtitle="Highly Recommended" rating="4.8" icon="🌟" href={`/${type}/mock-2`} actionText="View Profile" />
-                <SquareTicket title="Alternative Provider 3" subtitle="Verified" rating="4.7" icon="🛡️" href={`/${type}/mock-3`} actionText="View Profile" />
-                <SquareTicket title="Alternative Provider 4" subtitle="Popular Choice" rating="5.0" icon="🔥" href={`/${type}/mock-4`} actionText="View Profile" />
-             </div>
-           )}
-        </div>
+             {/* Render Specific Tickets based on Type */}
+             {type === 'hospital' ? (
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {profile.relatedProfiles.map((rp: any) => (
+                     <WideTicket key={rp.id} title={rp.clinicName || rp.name} subtitle={rp.subtitle || rp.category || "Hospital"} rating={rp.rating || "4.8"} icon="🏥" href={`/hospital/${rp.id}`} actionText="View Services" stats={`${rp.totalBeds || 100} Beds • ${rp.emergencyServices || '24/7 ER'}`} />
+                  ))}
+               </div>
+             ) : (
+               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                  {profile.relatedProfiles.map((rp: any) => (
+                     <SquareTicket key={rp.id} title={rp.name} subtitle={rp.subtitle || rp.category || "Verified Provider"} rating={rp.rating || "4.8"} icon="⭐" href={`/${type}/${rp.id}`} actionText="View Profile" />
+                  ))}
+               </div>
+             )}
+          </div>
+        )}
 
         {/* AD ZONE 2: Global Leaderboard (728x90) */}
         <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-2 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] w-full h-[140px] flex items-center justify-center">
