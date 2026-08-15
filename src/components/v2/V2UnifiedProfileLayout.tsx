@@ -550,13 +550,13 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
              {type === 'hospital' ? (
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {profile.relatedProfiles.map((rp: any) => (
-                     <WideTicket key={rp.id} title={rp.clinicName || rp.name} subtitle={rp.subtitle || rp.category || "Hospital"} rating={rp.rating || "4.8"} icon="🏥" href={`/hospital/${rp.id}`} actionText="View Services" stats={`${rp.totalBeds || 100} Beds • ${rp.emergencyServices || '24/7 ER'}`} />
+                     <WideTicket key={rp.id} title={rp.clinicName || rp.name} subtitle={rp.subtitle || rp.category || "Hospital"} rating={rp.rating || "4.8"} icon="🏥" imageSrc={rp.image || rp.avatar || rp.ownerImage || rp.galleryImages?.[0] || rp.rawImages?.[0]} href={`/hospital/${rp.id}`} actionText="View Services" stats={`${rp.totalBeds || 100} Beds • ${rp.emergencyServices || '24/7 ER'}`} />
                   ))}
                </div>
              ) : (
                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                   {profile.relatedProfiles.map((rp: any) => (
-                     <SquareTicket key={rp.id} title={rp.name} subtitle={rp.subtitle || rp.category || "Verified Provider"} rating={rp.rating || "4.8"} icon="⭐" href={`/${type}/${rp.id}`} actionText="View Profile" />
+                     <SquareTicket key={rp.id} title={rp.name} subtitle={rp.subtitle || rp.category || "Verified Provider"} rating={rp.rating || "4.8"} icon="⭐" imageSrc={rp.image || rp.avatar || rp.ownerImage || rp.galleryImages?.[0] || rp.rawImages?.[0]} href={`/${type}/${rp.id}`} actionText="View Profile" />
                   ))}
                </div>
              )}
