@@ -239,10 +239,135 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                 <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center"><Award className="w-4 h-4 text-blue-600" /></span>
                 About the Profile
               </h2>
-              <p className="text-slate-600 font-medium leading-loose text-lg">
+              <p className="text-slate-600 font-medium leading-loose text-lg whitespace-pre-wrap">
                 {profile.about || profile.description || `Comprehensive details about ${profile.name} are currently being curated. Recognized for providing top-tier services, exceptional patient care, and a long-standing commitment to excellence in the healthcare ecosystem. Our mission is to ensure every patient receives world-class treatment in a comforting environment.`}
               </p>
+
+              {/* DOCTOR: LANGUAGES */}
+              {isDoctor && profile.languages && profile.languages.length > 0 && (
+                <div className="mt-6 pt-6 border-t border-slate-200/50">
+                  <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">Languages Spoken</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.languages.map((lang: string, idx: number) => (
+                      <span key={idx} className="bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1 rounded-lg text-sm font-bold shadow-sm">{lang}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* DOCTOR: EDUCATION & QUALIFICATIONS */}
+            {isDoctor && profile.qualificationsList && profile.qualificationsList.length > 0 && (
+              <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-8 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] relative">
+                <h2 className="text-2xl font-black text-[#0a2540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center"><GraduationCap className="w-4 h-4 text-indigo-600" /></span>
+                  Education & Qualifications
+                </h2>
+                <div className="space-y-6">
+                  {profile.qualificationsList.map((q: any, idx: number) => (
+                    <div key={idx} className="flex gap-4 relative">
+                      <div className="w-px h-full bg-indigo-200 absolute left-[15px] top-6"></div>
+                      <div className="w-8 h-8 rounded-full bg-white border-4 border-indigo-100 flex-shrink-0 z-10 flex items-center justify-center">
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                      </div>
+                      <div className="pb-4">
+                        <h4 className="text-lg font-bold text-[#0a2540]">{q.degree}</h4>
+                        <p className="text-slate-600 font-medium">{q.institution}</p>
+                        <p className="text-indigo-600 text-sm font-bold mt-1">{q.year}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* DOCTOR: WORK EXPERIENCE */}
+            {isDoctor && profile.experiences && profile.experiences.length > 0 && (
+              <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-8 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] relative">
+                <h2 className="text-2xl font-black text-[#0a2540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center"><Briefcase className="w-4 h-4 text-blue-600" /></span>
+                  Experience History
+                </h2>
+                <div className="space-y-6">
+                  {profile.experiences.map((exp: any, idx: number) => (
+                    <div key={idx} className="flex gap-4 relative">
+                      <div className="w-px h-full bg-blue-200 absolute left-[15px] top-6"></div>
+                      <div className="w-8 h-8 rounded-full bg-white border-4 border-blue-100 flex-shrink-0 z-10 flex items-center justify-center">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      </div>
+                      <div className="pb-4">
+                        <h4 className="text-lg font-bold text-[#0a2540]">{exp.role}</h4>
+                        <p className="text-slate-600 font-medium">{exp.hospital}</p>
+                        <p className="text-blue-600 text-sm font-bold mt-1">{exp.duration}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* DOCTOR: AWARDS */}
+            {isDoctor && profile.awards && profile.awards.length > 0 && (
+              <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-8 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] relative">
+                <h2 className="text-2xl font-black text-[#0a2540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center"><Award className="w-4 h-4 text-amber-600" /></span>
+                  Awards & Recognitions
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {profile.awards.map((aw: any, idx: number) => (
+                    <div key={idx} className="bg-amber-50/50 border border-amber-100 p-4 rounded-2xl flex gap-4 items-start shadow-sm">
+                      <div className="bg-white p-2 rounded-full shadow-sm shrink-0"><Award className="w-5 h-5 text-amber-500" /></div>
+                      <div>
+                        <h4 className="font-bold text-[#0a2540]">{aw.title}</h4>
+                        <p className="text-sm text-slate-600">{aw.organization}</p>
+                        <span className="inline-block mt-2 text-xs font-bold bg-amber-100 text-amber-800 px-2 py-1 rounded-md">{aw.year}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* DOCTOR: RESEARCH */}
+            {isDoctor && profile.research && profile.research.length > 0 && (
+              <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-8 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] relative">
+                <h2 className="text-2xl font-black text-[#0a2540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center"><Activity className="w-4 h-4 text-emerald-600" /></span>
+                  Research & Publications
+                </h2>
+                <div className="space-y-4">
+                  {profile.research.map((res: any, idx: number) => (
+                    <div key={idx} className="bg-white/50 border border-emerald-50 p-4 rounded-2xl shadow-sm">
+                      <h4 className="font-bold text-[#0a2540]">{res.title}</h4>
+                      <p className="text-sm text-slate-600 font-medium mt-1">{res.journal} • {res.year}</p>
+                      {res.link && <a href={res.link} target="_blank" rel="noopener noreferrer" className="text-emerald-600 text-sm font-bold mt-2 inline-block hover:underline">View Publication →</a>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* DOCTOR: YOUTUBE VIDEOS */}
+            {isDoctor && profile.youtubeLinks && profile.youtubeLinks.length > 0 && (
+              <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-8 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)] relative">
+                <h2 className="text-2xl font-black text-[#0a2540] mb-6 flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center"><Star className="w-4 h-4 text-rose-600" /></span>
+                  Featured Media
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {profile.youtubeLinks.map((link: string, idx: number) => {
+                    const videoIdMatch = link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+                    const videoId = videoIdMatch ? videoIdMatch[1] : null;
+                    if (!videoId) return null;
+                    return (
+                      <div key={idx} className="w-full aspect-video rounded-2xl overflow-hidden shadow-sm border-4 border-white bg-slate-100">
+                        <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${videoId}`} title="YouTube video" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
           </div>
 
@@ -292,6 +417,12 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                   <Phone className="w-5 h-5 text-blue-600" />
                   {showPhone ? (profile.phone || "+91 9876543210") : "Show Phone Number"}
                 </button>
+                {profile.whatsapp && (
+                   <a href={`https://wa.me/${profile.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noopener noreferrer" className="w-full bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#075E54] font-black py-4 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-sm">
+                     <span className="w-5 h-5 flex items-center justify-center font-bold text-lg">💬</span>
+                     WhatsApp Clinic
+                   </a>
+                )}
                 {profile.mapUrl ? (
                   <a href={profile.mapUrl} target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-black py-4 rounded-2xl shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
                     <Navigation className="w-5 h-5" />
@@ -305,6 +436,62 @@ export default function V2UnifiedProfileLayout({ profile, type }: V2UnifiedProfi
                 )}
               </div>
             </div>
+
+            {/* DOCTOR: CLINIC TIMINGS */}
+            {isDoctor && profile.clinicTimings && profile.clinicTimings.length > 0 && (
+              <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-6 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)]">
+                <h3 className="font-black text-xl text-[#0a2540] mb-4 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-indigo-600" /> Operating Hours
+                </h3>
+                <div className="space-y-3">
+                  {profile.clinicTimings.map((tm: any, idx: number) => (
+                    <div key={idx} className="flex flex-col p-3 bg-white/60 rounded-xl border border-white shadow-sm">
+                      <span className="font-bold text-sm text-[#0a2540] uppercase tracking-wider mb-1">{tm.day}</span>
+                      <div className="flex items-center justify-between text-sm font-medium text-slate-600">
+                        <span className="flex items-center gap-1">☀️ {tm.morningShift || "Closed"}</span>
+                        <span className="flex items-center gap-1">🌙 {tm.eveningShift || "Closed"}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* DOCTOR: CONSULTATION FEES */}
+            {isDoctor && (profile.offersPhysical || profile.offersDigital || profile.offersEmergencyPing) && (
+              <div className="bg-white/40 backdrop-blur-2xl border border-white/40 rounded-[2.5rem] p-6 shadow-[0_15px_40px_-10px_rgba(0,20,60,0.1)]">
+                <h3 className="font-black text-xl text-[#0a2540] mb-4">Consultation Fees</h3>
+                <div className="space-y-3">
+                  {profile.offersPhysical && (
+                    <div className="flex items-center justify-between p-3 bg-white/80 rounded-xl border border-slate-100 shadow-sm">
+                      <div className="flex items-center gap-2">
+                         <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center"><Building2 className="w-4 h-4 text-blue-600"/></div>
+                         <span className="font-bold text-sm text-[#0a2540]">In-Clinic Visit</span>
+                      </div>
+                      <span className="font-black text-blue-600">₹{profile.inClinicFee || '0'}</span>
+                    </div>
+                  )}
+                  {profile.offersDigital && (
+                    <div className="flex items-center justify-between p-3 bg-white/80 rounded-xl border border-slate-100 shadow-sm">
+                      <div className="flex items-center gap-2">
+                         <div className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center"><Phone className="w-4 h-4 text-teal-600"/></div>
+                         <span className="font-bold text-sm text-[#0a2540]">Video Call</span>
+                      </div>
+                      <span className="font-black text-teal-600">₹{profile.videoFee || '0'}</span>
+                    </div>
+                  )}
+                  {profile.offersEmergencyPing && (
+                    <div className="flex items-center justify-between p-3 bg-rose-50 rounded-xl border border-rose-100 shadow-sm">
+                      <div className="flex items-center gap-2">
+                         <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center"><HeartPulse className="w-4 h-4 text-rose-600"/></div>
+                         <span className="font-bold text-sm text-rose-900">Emergency Ping</span>
+                      </div>
+                      <span className="font-black text-rose-600">₹{profile.emergencyFee || '0'}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Quick Actions (Connect) */}
             <div className="bg-gradient-to-br from-white/70 to-white/40 backdrop-blur-2xl border-2 border-white rounded-[2.5rem] p-6 shadow-[0_20px_50px_-10px_rgba(0,100,200,0.15)]">
