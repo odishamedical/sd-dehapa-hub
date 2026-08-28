@@ -135,12 +135,19 @@ export default function AdminVerificationCRM() {
       } else if (app.collectionName === 'profile_claims') {
          batch.update(doc(db, 'directory', app.entityId), {
            ownerEmail: app.email,
+           ownerUid: app.uid,
+           registrationNumber: app.medicalRegistration || '',
            verified: true,
            founderStatus: true,
            activePlugins: ['plugin_booking_physical', 'plugin_telemedicine_scheduled', 'plugin_telemedicine_urgent', 'plugin_featured_listing', 'plugin_vip_rx_pad'],
            updatedAt: serverTimestamp()
          });
          batch.update(doc(db, 'profile_claims', app.id), { status: 'approved' });
+         
+         // Promote the user account role to 'doctor' securely
+         if (app.uid) {
+           batch.update(doc(db, 'users', app.uid), { role: 'doctor' });
+         }
       } else {
         batch.update(doc(db, app.collectionName, app.id), { status: 'approved' });
       }
@@ -630,10 +637,11 @@ export default function AdminVerificationCRM() {
                 {/* Ownership Claim */}
                 {selectedApp.appType === 'Ownership Claim' && (
                   <div className="bg-slate-800/40 backdrop-blur-md p-6 rounded-2xl border border-white/5 shadow-sm">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Ownership Claim</h4>
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Ownership Verification</h4>
                     <div className="space-y-4">
-                      <div><p className="text-xs text-slate-500">Claimant</p><p className="font-bold text-white">{selectedApp.claimantName} ({selectedApp.claimantRole})</p></div>
-                      <div><p className="text-xs text-slate-500">Target Profile ID</p><p className="font-mono text-sm bg-slate-900 border-white/10 p-2 rounded border inline-block mt-1">{selectedApp.entityId}</p></div>
+                      <div><p className="text-xs text-slate-500">Applicant User ID</p><p className="font-mono text-xs bg-slate-900 border-white/10 p-2 rounded border inline-block mt-1 text-slate-400">{selectedApp.uid}</p></div>
+                      <div><p className="text-xs text-slate-500">Target Profile ID (Directory)</p><p className="font-mono text-sm bg-slate-900 border-white/10 p-2 rounded border inline-block mt-1">{selectedApp.entityId}</p></div>
+                      <div><p className="text-xs text-slate-500">Medical Registration No.</p><p className="font-mono text-lg font-bold text-emerald-400 mt-1">{selectedApp.medicalRegistration || 'N/A'}</p></div>
                       <div><p className="text-xs text-slate-500">Email to Bind</p><p className="text-sm font-medium text-emerald-600">{selectedApp.email}</p></div>
                     </div>
                   </div>

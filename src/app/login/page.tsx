@@ -12,10 +12,17 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   let redirectUrl = searchParams.get('redirect') || '/portal';
+  
+  // New Secure Claim Flow Handshake
   const claimDoctorId = searchParams.get('claim');
-  if (claimDoctorId) {
-    redirectUrl = `/claim-profile?id=${claimDoctorId}`;
+  const claimRegNo = searchParams.get('regNo');
+  const claimPhone = searchParams.get('phone');
+  
+  // If claiming, redirect them to the portal setup or dashboard after login
+  if (claimDoctorId && redirectUrl === '/portal') {
+    redirectUrl = '/portal/setup'; // Force them to complete setup
   }
+
   const referralCode = searchParams.get('ref') || null;
 
   const [authMethod, setAuthMethod] = useState<'select' | 'email' | 'whatsapp'>('select');
@@ -119,6 +126,25 @@ function LoginContent() {
         }
       } catch (err) {
         console.error("Invite connection failed", err);
+      }
+    }
+
+    // Secure Claim Handshake Logic
+    if (claimDoctorId) {
+      try {
+        await addDoc(collection(db, 'profile_claims'), {
+          entityId: claimDoctorId,
+          uid: user.uid,
+          claimantName: userName,
+          email: userEmail,
+          phone: claimPhone || user.phoneNumber || additionalData.phone || '',
+          medicalRegistration: claimRegNo || '',
+          status: 'pending_review',
+          timestamp: serverTimestamp()
+        });
+        console.log("Successfully securely linked claim request to user.");
+      } catch (err) {
+        console.error("Failed to link claim request", err);
       }
     }
 
