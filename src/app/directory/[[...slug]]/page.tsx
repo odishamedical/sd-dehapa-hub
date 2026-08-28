@@ -1,6 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import ClientDirectory from "./ClientDirectory";
+import { getAllApprovedDirectoryItems } from "@/lib/server-db";
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -67,13 +68,21 @@ export default async function DirectoryServerPage({ params }: PageProps) {
   const district = slug[2] ? decodeURIComponent(slug[2]) : "";
   const category = slug[3] ? decodeURIComponent(slug[3]) : "";
 
+  // 1. Fetch via REST Bypass to prevent Vercel node freezing
+  const allData = await getAllApprovedDirectoryItems();
+
+  // 2. We can pass all data down, or pre-filter here. We'll pass all data down
+  // since the client directory does extensive client-side filtering anyway,
+  // but now the initial HTML will contain the data!
+
   return (
     <main>
       <ClientDirectory 
         initialCountry={country} 
         initialState={state} 
         initialDistrict={district} 
-        initialCategory={category} 
+        initialCategory={category}
+        initialData={allData}
       />
     </main>
   );

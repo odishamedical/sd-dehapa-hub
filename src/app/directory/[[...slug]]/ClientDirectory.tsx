@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, MapPin, Filter, Star, ShieldCheck, Activity } from "lucide-react";
-import { db } from "@/lib/firebase";
-import { collection, getDocs, query } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -12,17 +10,20 @@ export default function ClientDirectory({
   initialCountry = 'global', 
   initialState = '', 
   initialDistrict = '',
-  initialCategory = ''
+  initialCategory = '',
+  initialData = []
 }: { 
   initialCountry?: string, 
   initialState?: string, 
   initialDistrict?: string,
-  initialCategory?: string
+  initialCategory?: string,
+  initialData?: any[]
 }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Seed state with server-fetched data for instant SEO rendering
+  const [results, setResults] = useState<any[]>(initialData);
+  const [loading, setLoading] = useState(false);
 
   // Filter States
   const [category, setCategory] = useState(initialCategory || 'all');
@@ -30,56 +31,8 @@ export default function ClientDirectory({
   const [state, setState] = useState(initialState);
   const [district, setDistrict] = useState(initialDistrict);
 
-  useEffect(() => {
-    async function fetchResults() {
-      setLoading(true);
-      try {
-        const q = query(collection(db, 'directory'));
-        const querySnapshot = await getDocs(q);
-        const docsData = querySnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter((d: any) => d.adminLocked !== true);
-
-        const mappedData = docsData.map((d: any) => {
-          const name = d.name || d.legalName || d.basicInfo?.fullName || d.firstName || "Unknown Entity";
-          const subtitle = d.subCategory || d.specialty || d.category || d.basicInfo?.specialityName || "Service Provider";
-          const city = d.city || d.district || "Unknown";
-          const state = d.state || "Odisha";
-          const country = d.country || "India";
-          
-          const tags = Array.isArray(d.tags) ? d.tags.join(' ') : '';
-          const services = Array.isArray(d.services) ? d.services.join(' ') : '';
-          const about = d.about || d.description || '';
-
-          const searchableString = `${name} ${subtitle} ${city} ${state} ${country} ${tags} ${services} ${about} ${d.category || ''}`.toLowerCase();
-
-          return {
-            id: d.id,
-            type: d.category ? d.category.toLowerCase() : 'unknown',
-            name: name,
-            subtitle: subtitle,
-            location: `${city}, ${state}`,
-            rating: d.rating || 0,
-            verified: d.verified || false,
-            country: country,
-            state: state,
-            district: city, // treat city as district
-            searchableString: searchableString,
-            profileImage: d.profileImage || d.logoUrl || "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800",
-            experience: d.experience,
-          };
-        });
-
-        setResults(mappedData);
-      } catch (err: any) {
-        console.error("Error fetching search results:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchResults();
-  }, []);
+  // Firebase fetch is entirely removed to fix Vercel websocket freezing bugs
+  // and ensure 100% SEO visibility. Data is injected directly from page.tsx!
 
   const handleUpdateFilter = () => {
     // Generate the URL based on the current filters
