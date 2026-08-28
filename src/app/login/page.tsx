@@ -59,12 +59,12 @@ function LoginContent() {
     }
     
     if (email) {
-      if (claimDoctorId && !sessionStorage.getItem(`claim_processed_${claimDoctorId}`)) {
+      if (claimDoctorId && !sessionStorage.getItem(`claim_processed_v2_${claimDoctorId}`)) {
         // Wait for auth to initialize so we have permission to write to Firestore
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
           if (user) {
             try {
-              sessionStorage.setItem(`claim_processed_${claimDoctorId}`, 'true');
+              sessionStorage.setItem(`claim_processed_v2_${claimDoctorId}`, 'true');
               const userName = user.displayName || localStorage.getItem("sd_current_user_name") || "User";
               await addDoc(collection(db, 'profile_claims'), {
                 entityId: claimDoctorId,
