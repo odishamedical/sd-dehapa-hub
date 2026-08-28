@@ -51,17 +51,29 @@ export default function AdminVerificationCRM() {
       
       const dirPromises = [getDocs(dirDraftsQ), getDocs(dirPendingQ), getDocs(profileClaimsQ)];
       
-      const results = await Promise.all([...promises, ...dirPromises]);
+      const results = await Promise.allSettled([...promises, ...dirPromises]);
       let allApps: any[] = [];
       
+      // Helper to safely get value from Promise.allSettled
+      const getResultDocs = (result: any) => result.status === 'fulfilled' ? result.value : (result.value?.docs || []);
+      
       // Combine legacy results
-      results.slice(0, collectionsToFetch.length).forEach(res => { allApps = [...allApps, ...res] });
+      results.slice(0, collectionsToFetch.length).forEach((res: any) => { 
+        if (res.status === 'fulfilled') {
+          allApps = [...allApps, ...res.value];
+        } else {
+          console.error("Failed to fetch legacy collection", res.reason);
+        }
+      });
       
       // Combine directory results and map to application schema
       const dirDraftSnap = results[collectionsToFetch.length];
       const dirPendingSnap = results[collectionsToFetch.length + 1];
       
-      const dirApps = [...dirDraftSnap.docs, ...dirPendingSnap.docs].map(doc => {
+      const drafts = dirDraftSnap.status === 'fulfilled' ? dirDraftSnap.value.docs : [];
+      const pendings = dirPendingSnap.status === 'fulfilled' ? dirPendingSnap.value.docs : [];
+      
+      const dirApps = [...drafts, ...pendings].map(doc => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -84,7 +96,9 @@ export default function AdminVerificationCRM() {
       });
       
       const profileClaimsSnap = results[collectionsToFetch.length + 2];
-      const claimApps = profileClaimsSnap.docs.map(doc => {
+      const claimDocs = profileClaimsSnap.status === 'fulfilled' ? profileClaimsSnap.value.docs : [];
+      
+      const claimApps = claimDocs.map((doc: any) => {
         const data = doc.data();
         return {
           id: doc.id,
