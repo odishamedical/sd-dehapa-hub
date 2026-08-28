@@ -36,54 +36,57 @@ function LoginContent() {
 
   // Auto-redirect if already logged in
   useEffect(() => {
-    const processAndRedirect = async () => {
-      const email = localStorage.getItem("sd_current_user_email");
-      const uid = localStorage.getItem("sd_current_user_uid");
-      const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
+    const email = localStorage.getItem("sd_current_user_email");
+    
+    function redirectUser() {
       const role = localStorage.getItem("sd_current_user_role") || "user";
-      const userName = localStorage.getItem("sd_current_user_name") || "User";
+      const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
       
-      if (email && uid) {
-        // Intercept claim for already logged-in users
-        if (claimDoctorId && !sessionStorage.getItem(`claim_processed_${claimDoctorId}`)) {
-          try {
-            sessionStorage.setItem(`claim_processed_${claimDoctorId}`, 'true');
-            await addDoc(collection(db, 'profile_claims'), {
-              entityId: claimDoctorId,
-              uid: uid,
-              claimantName: userName,
-              email: email,
-              phone: claimPhone || '',
-              medicalRegistration: claimRegNo || '',
-              status: 'pending_review',
-              timestamp: serverTimestamp()
-            });
-            console.log("Auto-linked claim for already logged-in user.");
-          } catch (e) {
-            console.error("Failed to auto-link claim", e);
-          }
-        }
-
-        // We know the getSmartRedirect function is defined below, but we can just duplicate its simple logic or use a static route
-        let finalRedirect = redirectUrl;
-        if (finalRedirect === '/portal') {
-          if (role === 'doctor') finalRedirect = '/portal/doctor';
-          else if (role === 'hospital') finalRedirect = '/portal/hospital';
-          else if (role === 'pharmacy') finalRedirect = '/portal/pharmacy';
-          else if (role === 'lab') finalRedirect = '/portal/lab';
-          else if (role === 'super_admin') finalRedirect = '/portal/admin';
-        }
-        
-        if (!isProfileComplete) {
-          router.replace(`/portal/setup?redirect=${encodeURIComponent(finalRedirect)}`);
-        } else {
-          router.replace(finalRedirect);
-        }
+      let finalRedirect = redirectUrl;
+      if (finalRedirect === '/portal') {
+        if (role === 'doctor') finalRedirect = '/portal/doctor';
+        else if (role === 'hospital') finalRedirect = '/portal/hospital';
+        else if (role === 'pharmacy') finalRedirect = '/portal/pharmacy';
+        else if (role === 'lab') finalRedirect = '/portal/lab';
+        else if (role === 'super_admin') finalRedirect = '/portal/admin';
       }
-    };
-
-    if (typeof window !== 'undefined') {
-      processAndRedirect();
+      
+      if (!isProfileComplete) {
+        router.replace(`/portal/setup?redirect=${encodeURIComponent(finalRedirect)}`);
+      } else {
+        router.replace(finalRedirect);
+      }
+    }
+    
+    if (email) {
+      if (claimDoctorId && !sessionStorage.getItem(`claim_processed_${claimDoctorId}`)) {
+        // Wait for auth to initialize so we have permission to write to Firestore
+        const unsubscribe = auth.onAuthStateChanged(async (user) => {
+          if (user) {
+            try {
+              sessionStorage.setItem(`claim_processed_${claimDoctorId}`, 'true');
+              const userName = user.displayName || localStorage.getItem("sd_current_user_name") || "User";
+              await addDoc(collection(db, 'profile_claims'), {
+                entityId: claimDoctorId,
+                uid: user.uid,
+                claimantName: userName,
+                email: user.email || email,
+                phone: claimPhone || '',
+                medicalRegistration: claimRegNo || '',
+                status: 'pending_review',
+                timestamp: serverTimestamp()
+              });
+              console.log("Auto-linked claim for already logged-in user.");
+            } catch (e) {
+              console.error("Failed to auto-link claim", e);
+            }
+            redirectUser();
+          }
+        });
+        return () => unsubscribe();
+      } else {
+        redirectUser();
+      }
     }
   }, [router, redirectUrl, claimDoctorId, claimPhone, claimRegNo]);
 

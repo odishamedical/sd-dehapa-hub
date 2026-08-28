@@ -29,7 +29,7 @@ function UserHomeWidget({ userName, userUid, userRole, userPhoto, onTabChange }:
     <div className="flex flex-col md:grid md:grid-cols-3 gap-4 md:gap-6">
         
         {/* 0. Notification Banner for Providers */}
-        {userRole && userRole !== 'patient' && userRole !== 'super_admin' && userRole !== 'admin' && (
+        {userRole && userRole !== 'user' && userRole !== 'patient' && userRole !== 'super_admin' && userRole !== 'admin' && (
           <div className="md:col-span-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 shadow-[0_10px_30px_rgba(16,185,129,0.3)] flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4">
             <div className="flex items-center gap-4 text-white">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
