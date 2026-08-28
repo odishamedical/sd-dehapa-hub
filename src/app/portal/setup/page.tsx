@@ -10,7 +10,10 @@ import GlobalHeader from '@/components/GlobalHeader';
 function SetupHealthPassportInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get('redirect') || '/portal';
+  let redirectUrl = searchParams.get('redirect') || '/portal';
+  if (redirectUrl.includes('/portal/setup')) {
+    redirectUrl = '/portal';
+  }
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');

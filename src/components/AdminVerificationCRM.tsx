@@ -92,8 +92,8 @@ export default function AdminVerificationCRM() {
           appType: 'Ownership Claim',
           status: data.status === 'pending_review' ? 'pending' : data.status,
           userEmail: data.email,
-          officialName: { full: data.entityName },
-          legalIdentity: { name: data.entityName },
+          officialName: { full: data.claimantName || data.entityId || "Claimant" },
+          legalIdentity: { name: data.claimantName || data.entityId },
           phone: data.phone,
           timestamp: data.timestamp,
           ...data

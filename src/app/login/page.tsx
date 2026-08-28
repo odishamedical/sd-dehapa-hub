@@ -36,12 +36,34 @@ function LoginContent() {
 
   // Auto-redirect if already logged in
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const processAndRedirect = async () => {
       const email = localStorage.getItem("sd_current_user_email");
+      const uid = localStorage.getItem("sd_current_user_uid");
       const isProfileComplete = localStorage.getItem("sd_current_user_profile_complete") === "true";
       const role = localStorage.getItem("sd_current_user_role") || "user";
+      const userName = localStorage.getItem("sd_current_user_name") || "User";
       
-      if (email) {
+      if (email && uid) {
+        // Intercept claim for already logged-in users
+        if (claimDoctorId && !sessionStorage.getItem(`claim_processed_${claimDoctorId}`)) {
+          try {
+            sessionStorage.setItem(`claim_processed_${claimDoctorId}`, 'true');
+            await addDoc(collection(db, 'profile_claims'), {
+              entityId: claimDoctorId,
+              uid: uid,
+              claimantName: userName,
+              email: email,
+              phone: claimPhone || '',
+              medicalRegistration: claimRegNo || '',
+              status: 'pending_review',
+              timestamp: serverTimestamp()
+            });
+            console.log("Auto-linked claim for already logged-in user.");
+          } catch (e) {
+            console.error("Failed to auto-link claim", e);
+          }
+        }
+
         // We know the getSmartRedirect function is defined below, but we can just duplicate its simple logic or use a static route
         let finalRedirect = redirectUrl;
         if (finalRedirect === '/portal') {
@@ -58,8 +80,12 @@ function LoginContent() {
           router.replace(finalRedirect);
         }
       }
+    };
+
+    if (typeof window !== 'undefined') {
+      processAndRedirect();
     }
-  }, [router, redirectUrl]);
+  }, [router, redirectUrl, claimDoctorId, claimPhone, claimRegNo]);
 
   // Save user to Firestore after login
   const saveUserToFirestore = async (user: any, additionalData: any = {}) => {
