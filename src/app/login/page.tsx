@@ -97,7 +97,6 @@ function LoginContent() {
     let userRole = 'user';
     let userName = user.displayName || 'New User';
     let isProfileComplete = false;
-    
     if (!userSnap.exists()) {
       const newUserDoc: any = {
         uid: user.uid,
@@ -126,8 +125,15 @@ function LoginContent() {
       } else if (data?.isProfileComplete) {
           isProfileComplete = true;
       }
+      
+      const updateData: any = { lastLogin: serverTimestamp() };
+      
+      // Patch old users that are missing createdAt so they aren't hidden from Admin CRM
+      if (!data?.createdAt) {
+        updateData.createdAt = serverTimestamp();
+      }
 
-      await setDoc(userRef, { lastLogin: serverTimestamp() }, { merge: true });
+      await setDoc(userRef, updateData, { merge: true });
     }
     
     const userEmail = user.email || user.phoneNumber || additionalData.phone;
